@@ -1,6 +1,6 @@
 package objects;
 
-import flixel.sound.FlxSound;
+import flixel.system.FlxSound;
 import funkin.vis.dsp.SpectralAnalyzer;
 
 import sys.thread.Thread;
