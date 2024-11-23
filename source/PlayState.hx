@@ -1531,7 +1531,7 @@ class PlayState extends MusicBeatState
 		playbackRate = value;
 		FlxG.animationTimeScale = value;
 		Conductor.safeZoneOffset = (ClientPrefs.data.safeFrames / 60) * 1000 * value;
-		setOnScripts('playbackRate', playbackRate);
+		setOnLuas('playbackRate', playbackRate);
 		#else
 		playbackRate = 1.0; // ensuring -Crow
 		#end
@@ -5021,6 +5021,12 @@ class PlayState extends MusicBeatState
 		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
 		super.destroy();
 	}
+	
+	public static function cancelMusicFadeTween()
+	{
+		FlxG.sound.music.fadeTween?.cancel();
+		FlxG.sound.music.fadeTween = null;
+	}
 
 	var lastStepHit:Int = -1;
 	override function stepHit()
@@ -5044,8 +5050,8 @@ class PlayState extends MusicBeatState
 		}
 
 		lastStepHit = curStep;
-		setOnScripts('curStep', curStep);
-		callOnScripts('onStepHit');
+		setOnLuas('curStep', curStep);
+		callOnLuas('onStepHit', []);
 	}
 
 	var lightningStrikeBeat:Int = 0;
