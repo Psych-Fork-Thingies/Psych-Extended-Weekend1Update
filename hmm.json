@@ -25,9 +25,8 @@
     },
     {
       "name": "flixel-addons",
-      "type": "git",
-      "ref": "dev",
-      "url": "https://github.com/Prohack101010/flixel-addons-psych-d-up-engine"
+      "type": "haxelib",
+      "version": "3.2.2"
     },
     {
       "name": "flixel-ui",
