@@ -1419,7 +1419,7 @@ class ChartingState extends MusicBeatState
 
 	function loadSong():Void
 	{
-		FlxG.sound.music?.stop();
+		try { FlxG.sound.music.stop(); }
 		vocals?.stop();
 		vocals?.destroy();
 		opponentVocals?.stop();
