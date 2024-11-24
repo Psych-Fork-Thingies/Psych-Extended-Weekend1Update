@@ -248,9 +248,8 @@ class Paths
 	{	 
 	    var songKey:String = '${formatToSongPath(song)}/Voices';
 		if(postfix != null) songKey += '-' + postfix;
-		//trace('songKey test: $songKey');
 		var voices = returnSound(null, songKey, 'songs');
-		return voices;
+	    return voices;
 	}
 	
 	inline public static function mergeAllTextsNamed(path:String, defaultDirectory:String = null, allowDuplicates:Bool = false)
@@ -635,7 +634,7 @@ class Paths
 	}
 	
 	public static var currentTrackedSounds:Map<String, Sound> = [];
-	public static function returnSound(path:Null<String>, key:String, ?library:String) {
+	public static function returnSound(path:String, key:String, ?library:String) {
 		#if MODS_ALLOWED
 		var modLibPath:String = '';
 		if (library != null) modLibPath = '$library/';
