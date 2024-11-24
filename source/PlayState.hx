@@ -2892,6 +2892,30 @@ class PlayState extends MusicBeatState
 
 		super.onFocusLost();
 	}
+	
+	function resyncVocals():Void
+	{
+		if(finishTimer != null) return;
+
+		vocals.pause();
+		opponentVocals.pause();
+
+		FlxG.sound.music.play();
+		FlxG.sound.music.pitch = playbackRate;
+		Conductor.songPosition = FlxG.sound.music.time;
+		if (Conductor.songPosition <= vocals.length)
+		{
+			vocals.time = Conductor.songPosition;
+			vocals.pitch = playbackRate;
+		}
+		if (Conductor.songPosition <= opponentVocals.length)
+		{
+			opponentVocals.time = Conductor.songPosition;
+			opponentVocals.pitch = playbackRate;
+		}
+		vocals.play();
+		opponentVocals.play();
+	}
 
 	function resyncVocals():Void
 	{
@@ -4716,7 +4740,8 @@ class PlayState extends MusicBeatState
     		}
 		}
 
-		if(opponentVocals.length <= 0) vocals.volume = 1;
+		if (SONG.needsVoices)
+			vocals.volume = 1;
 
 		var time:Float = 0.15;
 		if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
