@@ -3,18 +3,17 @@ package options;
 #if desktop
 import Discord.DiscordClient;
 #end
-import openfl.text.TextField;
+import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
-import openfl.text.TextField;
+import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxSave;
@@ -26,11 +25,6 @@ import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
 
-import flixel.input.keyboard.FlxKey;
-import flixel.input.gamepad.FlxGamepad;
-import flixel.input.gamepad.FlxGamepadInputID;
-import flixel.input.gamepad.FlxGamepadManager;
-
 using StringTools;
 
 class BaseOptionsMenu extends MusicBeatSubstate
@@ -39,21 +33,16 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	private var curSelected:Int = 0;
 	private var optionsArray:Array<Option>;
 
-    private var grpNote:FlxTypedGroup<FlxSprite>;
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private var checkboxGroup:FlxTypedGroup<CheckboxThingie>;
 	private var grpTexts:FlxTypedGroup<AttachedText>;
-	public var showNotes:Bool = false;
 
-    private var boyfriend:Character = null;
+	private var boyfriend:Character = null;
 	private var descBox:FlxSprite;
 	private var descText:FlxText;
 
 	public var title:String;
 	public var rpcTitle:String;
-	
-	public var bg:FlxSprite;
-	final lastVirtualPadType:String = ClientPrefs.data.virtualpadType;
 
 	public function new()
 	{
@@ -66,10 +55,10 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		DiscordClient.changePresence(rpcTitle, null);
 		#end
 		
-		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFFea71fd;
 		bg.screenCenter();
-		bg.antialiasing = ClientPrefs.data.antialiasing;
+		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
 
 		// avoids lagspikes while scrolling through menus!
@@ -107,15 +96,12 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			optionText.targetY = i;
 			grpOptions.add(optionText);
 
-			if(optionsArray[i].type == 'bool')
-			{
-				var checkbox:CheckboxThingie = new CheckboxThingie(optionText.x - 105, optionText.y, Std.string(optionsArray[i].getValue()) == 'true');
+			if(optionsArray[i].type == 'bool') {
+				var checkbox:CheckboxThingie = new CheckboxThingie(optionText.x - 105, optionText.y, optionsArray[i].getValue() == true);
 				checkbox.sprTracker = optionText;
 				checkbox.ID = i;
 				checkboxGroup.add(checkbox);
-			}
-			else
-			{
+			} else {
 				optionText.x -= 80;
 				optionText.startPosition.x -= 80;
 				//optionText.xAdd -= 80;
@@ -124,27 +110,28 @@ class BaseOptionsMenu extends MusicBeatSubstate
 				valueText.copyAlpha = true;
 				valueText.ID = i;
 				grpTexts.add(valueText);
-				optionsArray[i].child = valueText;
+				optionsArray[i].setChild(valueText);
 			}
 			//optionText.snapToPosition(); //Don't ignore me when i ask for not making a fucking pull request to uncomment this line ok
+
 			if(optionsArray[i].showBoyfriend && boyfriend == null)
+			{
 				reloadBoyfriend();
+			}
 			updateTextFrom(optionsArray[i]);
 		}
 
 		changeSelection();
 		reloadCheckboxes();
-
-        addVirtualPad(FULL, A_B_C);
-        
-        grpNote = new FlxTypedGroup<FlxSprite>();
-		add(grpNote);
+		
+		#if mobile
+		addVirtualPad(FULL, A_B_C);
+		#end
 	}
 
 	public function addOption(option:Option) {
 		if(optionsArray == null || optionsArray.length < 1) optionsArray = [];
 		optionsArray.push(option);
-		return option;
 	}
 
 	var nextAccept:Int = 5;
@@ -162,22 +149,19 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		}
 
 		if (controls.BACK) {
-		    if (ClientPrefs.data.virtualpadType != lastVirtualPadType) //Null Object Fix
-		    {
-        		ClientPrefs.data.VirtualPadSkin = 'original';
-        		ClientPrefs.saveSettings();
-        		ClientPrefs.data.VirtualPadSkin = 'original';
-        		CoolUtil.showPopUp('VirtualPad Type has been changed and you needed restart the game!!\nPress OK to close the game.', 'Notice!');
-        		lime.system.System.exit(0);
-        	}
-        	else
-			    close();
+			close();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 		}
 
 		if(nextAccept <= 0)
 		{
-			if(curOption.type == 'bool')
+			var usesCheckbox = true;
+			if(curOption.type != 'bool')
+			{
+				usesCheckbox = false;
+			}
+
+			if(usesCheckbox)
 			{
 				if(controls.ACCEPT)
 				{
@@ -189,13 +173,12 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			} else {
 				if(controls.UI_LEFT || controls.UI_RIGHT) {
 					var pressed = (controls.UI_LEFT_P || controls.UI_RIGHT_P);
-					if(holdTime > 0.5 || pressed)
-					{
-						if(pressed)
-						{
+					if(holdTime > 0.5 || pressed) {
+						if(pressed) {
 							var add:Dynamic = null;
-							if(curOption.type != 'string')
+							if(curOption.type != 'string') {
 								add = controls.UI_LEFT ? -curOption.changeValue : curOption.changeValue;
+							}
 
 							switch(curOption.type)
 							{
@@ -220,10 +203,11 @@ class BaseOptionsMenu extends MusicBeatSubstate
 									if(controls.UI_LEFT_P) --num;
 									else num++;
 
-									if(num < 0)
+									if(num < 0) {
 										num = curOption.options.length - 1;
-									else if(num >= curOption.options.length)
+									} else if(num >= curOption.options.length) {
 										num = 0;
+									}
 
 									curOption.curOption = num;
 									curOption.setValue(curOption.options[num]); //lol
@@ -232,9 +216,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 							updateTextFrom(curOption);
 							curOption.change();
 							FlxG.sound.play(Paths.sound('scrollMenu'));
-						}
-						else if(curOption.type != 'string')
-						{
+						} else if(curOption.type != 'string') {
 							holdValue += curOption.scrollSpeed * elapsed * (controls.UI_LEFT ? -1 : 1);
 							if(holdValue < curOption.minValue) holdValue = curOption.minValue;
 							else if (holdValue > curOption.maxValue) holdValue = curOption.maxValue;
@@ -252,33 +234,38 @@ class BaseOptionsMenu extends MusicBeatSubstate
 						}
 					}
 
-					if(curOption.type != 'string')
+					if(curOption.type != 'string') {
 						holdTime += elapsed;
-				}
-				else if(controls.UI_LEFT_R || controls.UI_RIGHT_R)
-				{
-					if(holdTime > 0.5) FlxG.sound.play(Paths.sound('scrollMenu'));
-					holdTime = 0;
+					}
+				} else if(controls.UI_LEFT_R || controls.UI_RIGHT_R) {
+					clearHold();
 				}
 			}
 
-			if(controls.RESET || _virtualpad.buttonC.justPressed)
+			if(controls.RESET #if mobile || _virtualpad.buttonC.justPressed #end)
 			{
-				var leOption:Option = optionsArray[curSelected];
-				leOption.setValue(leOption.defaultValue);
-				if(leOption.type != 'bool')
+				for (i in 0...optionsArray.length)
 				{
-					if(leOption.type == 'string') leOption.curOption = leOption.options.indexOf(leOption.getValue());
-					updateTextFrom(leOption);
+					var leOption:Option = optionsArray[i];
+					leOption.setValue(leOption.defaultValue);
+					if(leOption.type != 'bool')
+					{
+						if(leOption.type == 'string')
+						{
+							leOption.curOption = leOption.options.indexOf(leOption.getValue());
+						}
+						updateTextFrom(leOption);
+					}
+					leOption.change();
 				}
-				leOption.change();
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				reloadCheckboxes();
 			}
 		}
-		
-		if(boyfriend != null && boyfriend.animation.curAnim.finished)
+
+		if(boyfriend != null && boyfriend.animation.curAnim.finished) {
 			boyfriend.dance();
+		}
 
 		if(nextAccept > 0) {
 			nextAccept -= 1;
@@ -316,38 +303,34 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		var bullShit:Int = 0;
 
-		for (item in grpOptions.members)
-		{
+		for (item in grpOptions.members) {
 			item.targetY = bullShit - curSelected;
 			bullShit++;
 
 			item.alpha = 0.6;
-			if (item.targetY == 0) item.alpha = 1;
+			if (item.targetY == 0) {
+				item.alpha = 1;
+			}
 		}
-		for (text in grpTexts)
-		{
+		for (text in grpTexts) {
 			text.alpha = 0.6;
-			if(text.ID == curSelected) text.alpha = 1;
+			if(text.ID == curSelected) {
+				text.alpha = 1;
+			}
 		}
 
 		descBox.setPosition(descText.x - 10, descText.y - 10);
 		descBox.setGraphicSize(Std.int(descText.width + 20), Std.int(descText.height + 25));
 		descBox.updateHitbox();
-		
+
 		if(boyfriend != null)
+		{
 			boyfriend.visible = optionsArray[curSelected].showBoyfriend;
-		if (optionsArray[curSelected].showNote == false)
-		 remove(grpNote);
-		else{
-		remove(grpNote);		
-		grpNote = new FlxTypedGroup<FlxSprite>();
-		add(grpNote);
-		reloadNotes();
 		}
 		curOption = optionsArray[curSelected]; //shorter lol
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 	}
-	
+
 	public function reloadBoyfriend()
 	{
 		var wasVisible:Bool = false;
@@ -366,32 +349,9 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		boyfriend.visible = wasVisible;
 	}
 
-	public function reloadNotes()
-		{
-			for (i in 0...ClientPrefs.data.arrowHSV.length) {
-				var notes:FlxSprite = new FlxSprite((i * 125), 100);
-				if (ClientPrefs.data.NoteSkin == 'original')
-    			    notes.frames = Paths.getSparrowAtlas('NOTE_assets');
-    			else
-    			    notes.frames = Paths.getSparrowAtlas('NoteSkin/' + ClientPrefs.data.NoteSkin);
-				var animations:Array<String> = ['purple0', 'blue0', 'green0', 'red0'];
-				notes.animation.addByPrefix('idle', animations[i]);
-				notes.animation.play('idle');
-				//notes.visible = true;
-				notes.scale.set(0.8, 0.8);
-				notes.x += 700;
-				notes.antialiasing = ClientPrefs.data.antialiasing;
-				grpNote.add(notes);
-				
-				var newShader:ColorSwap = new ColorSwap();
-			    notes.shader = newShader.shader;
-			    newShader.hue = ClientPrefs.data.arrowHSV[i][0] / 360;
-			    newShader.saturation = ClientPrefs.data.arrowHSV[i][1] / 100;
-			    newShader.brightness = ClientPrefs.data.arrowHSV[i][2] / 100;
+	function reloadCheckboxes() {
+		for (checkbox in checkboxGroup) {
+			checkbox.daValue = (optionsArray[checkbox.ID].getValue() == true);
 		}
 	}
-
-	function reloadCheckboxes()
-		for (checkbox in checkboxGroup)
-			checkbox.daValue = Std.string(optionsArray[checkbox.ID].getValue()) == 'true'; //Do not take off the Std.string() from this, it will break a thing in Mod Settings Menu
 }

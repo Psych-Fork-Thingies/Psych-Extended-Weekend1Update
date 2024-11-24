@@ -32,53 +32,29 @@ import openfl.Lib;
 import haxe.io.Path;
 import sys.FileSystem;
 import sys.io.File;
-import mobile.backend.StorageUtil;
 import mobile.options.MobileOptionsSubState;
+import mobile.backend.StorageUtil;
 
 using StringTools;
 
 class MobileOptionsSubState extends BaseOptionsMenu
 {
     #if android
-	var storageTypes:Array<String> = ["EXTERNAL_DATA", "EXTERNAL", "EXTERNAL_EX", "EXTERNAL_NF", "EXTERNAL_OBB", "EXTERNAL_MEDIA", "EXTERNAL_ONLINE"];
+	var storageTypes:Array<String> = ["EXTERNAL_DATA", "EXTERNAL_OBB", "EXTERNAL_MEDIA", "EXTERNAL"];
 	var externalPaths:Array<String> = StorageUtil.checkExternalPaths(true);
-	final lastStorageType:String = ClientPrefs.data.storageType;
+	final lastStorageType:String = ClientPrefs.storageType;
 	#end
-	
-	var virtualpadTypes:Array<String> = ["New", "Old"];
-	var virtualpadSkinList:Array<String> = CoolUtil.coolTextFile(Paths.getPreloadPath('images/mobilecontrols/virtualpad/virtualpadSkinList.txt'));
-	var virtualpadSkinListModsFolder:Array<String> = CoolUtil.coolTextFile(Paths.modsImages('virtualpad/virtualpadSkinList.txt'));
 	
 	public function new()
 	{
 		title = 'Mobile Options';
 		rpcTitle = 'Mobile Options Menu'; //hi, you can ask what is that, i will answer it's all what you needed lol.
 		
-		if (ClientPrefs.data.virtualpadType == 'New')
-		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.getSharedPath('images/virtualpad/virtualpadSkinList.txt'));
-		    
-		#if MODS_ALLOWED
-		final modsPath:String = Paths.mods('virtualpad/virtualpadSkinList');
-		final modsPathExtra:String = Paths.mods('virtualpad/virtualpadSkinList.txt');
-		if((sys.FileSystem.exists(modsPath) || sys.FileSystem.exists(modsPathExtra)) && ClientPrefs.data.virtualpadType == 'New')
-		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.mods('virtualpad/virtualpadSkinList.txt'));
-		#end
-		
-	if (ClientPrefs.data.VirtualPadAlpha != 0) {
-		var option:Option = new Option('VirtualPad Skin',
-			"Choose VirtualPad Skin",
-			'VirtualPadSkin',
-			'string',
-			virtualpadSkinList);
-
-		addOption(option);
-		option.onChange = resetVirtualPad;
-	}
-		
 		var option:Option = new Option('VirtualPad Alpha:', //mariomaster was here again
 			'Changes VirtualPad Alpha -cool feature',
 			'VirtualPadAlpha',
-			'float');
+			'float',
+			#if mobile 0.75 #else 0 #end);
 		option.scrollSpeed = 1.6;
 		option.minValue = 0;
 		option.maxValue = 1;
@@ -88,44 +64,31 @@ class MobileOptionsSubState extends BaseOptionsMenu
         option.onChange = onChangePadAlpha;
 		super();
 		
-	if (ClientPrefs.data.VirtualPadAlpha != 0) {
-		var option:Option = new Option('Colored VirtualPad',
-			'If unchecked, disables VirtualPad colors\n(can be used to make custom colored VirtualPad)',
-			'coloredvpad',
-			'bool');
-		addOption(option);
-		option.onChange = resetVirtualPad;
-		
-		var option:Option = new Option('VirtualPad Type',
-			'Which VirtualPad should use??',
-			'virtualpadType',
-			'string',
-			virtualpadTypes);
-		addOption(option);
-		
-		var option:Option = new Option('Extra Controls',
-			"Allow Extra Controls",
-			'extraKeys',
-			'float');
-		option.scrollSpeed = 1.6;
-		option.minValue = 0;
-		option.maxValue = 4;
-		option.changeValue = 1;
-		option.decimals = 1;
-		addOption(option);
-	}
+	var option:Option = new Option('Extra Controls',
+		"Allow Extra Controls",
+		'extraKeys',
+		'float',
+		2);
+	option.scrollSpeed = 1.6;
+	option.minValue = 0;
+	option.maxValue = 4;
+	option.changeValue = 1;
+	option.decimals = 1;
+	addOption(option);
 		
 	var option:Option = new Option('Extra Control Location:',
 		"Choose Extra Control Location",
 		'hitboxLocation',
 		'string',
-		['Bottom', 'Top', 'Middle']);
+		'Bottom',
+		['Bottom', 'Top']);
 	addOption(option);
 		  
 	var option:Option = new Option('Hitbox Mode:',
 		"Choose your Hitbox Style!  -mariomaster",
 		'hitboxmode',
 		'string',
+		'New',
 		['Classic', 'New']);
 	addOption(option);
 		  
@@ -133,26 +96,29 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		"Choose how your hitbox should look like.",
 		'hitboxtype',
 		'string',
+		'Gradient',
 		['Gradient', 'No Gradient' , 'No Gradient (Old)']);
 	addOption(option);
 
 	var option:Option = new Option('Hitbox Hint',
 		'Hitbox Hint -I hate this',
 		'hitboxhint',
-		'bool');
+		'bool',
+		false);
 	addOption(option);
 		
 	var option:Option = new Option('Hitbox Opacity', //mariomaster was here again
 		'Changes hitbox opacity -omg',
 		'hitboxalpha',
-		'float');
+		'float',
+		0.7);
 	option.scrollSpeed = 1.6;
 	option.minValue = 0.0;
 	option.maxValue = 1;
 	option.changeValue = 0.1;
 	option.decimals = 1;
 	addOption(option);
-		
+	
 	#if mobile
 	var option:Option = new Option('Wide Screen Mode',
 		'If checked, The game will stetch to fill your whole screen. (WARNING: Can result in bad visuals & break some mods that resizes the game/cameras)',
@@ -167,6 +133,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		'Which folder Psych Engine should use?',
 		'storageType',
 		'string',
+		null,
 		storageTypes);
 		addOption(option);
 	#end
@@ -177,7 +144,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	#if android
 	function onStorageChange():Void
 	{
-		File.saveContent(lime.system.System.applicationStorageDirectory + 'storagetype.txt', ClientPrefs.data.storageType);
+		File.saveContent(lime.system.System.applicationStorageDirectory + 'storagetype.txt', ClientPrefs.storageType);
 	
 		var lastStoragePath:String = StorageType.fromStrForce(lastStorageType) + '/';
 	}
@@ -186,7 +153,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	override public function destroy() {
 		super.destroy();
 		#if android
-		if (ClientPrefs.data.storageType != lastStorageType) {
+		if (ClientPrefs.storageType != lastStorageType) {
 			onStorageChange();
 			ClientPrefs.saveSettings();
 			CoolUtil.showPopUp('Storage Type has been changed and you needed restart the game!!\nPress OK to close the game.', 'Notice!');
@@ -198,12 +165,6 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	function onChangePadAlpha()
 	{
     	ClientPrefs.saveSettings();
-    	_virtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
-	}
-	
-	function resetVirtualPad()
-	{
-	    removeVirtualPad();
-	    addVirtualPad(FULL, A_B_C);
+    	_virtualpad.alpha = ClientPrefs.VirtualPadAlpha;
 	}
 }

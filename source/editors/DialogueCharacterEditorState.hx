@@ -11,6 +11,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.system.FlxSound;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
@@ -22,7 +23,7 @@ import flixel.ui.FlxButton;
 import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import openfl.net.FileFilter;
+import flash.net.FileFilter;
 import haxe.Json;
 import DialogueBoxPsych;
 import flixel.FlxCamera;
@@ -114,7 +115,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 		box = new FlxSprite(70, 370);
 		box.frames = Paths.getSparrowAtlas('speech_bubble');
 		box.scrollFactor.set();
-		box.antialiasing = ClientPrefs.data.antialiasing;
+		box.antialiasing = ClientPrefs.globalAntialiasing;
 		box.animation.addByPrefix('normal', 'speech bubble normal', 24);
 		box.animation.addByPrefix('center', 'speech bubble middle', 24);
 		box.animation.play('normal', true);
@@ -161,8 +162,10 @@ class DialogueCharacterEditorState extends MusicBeatState
 		FlxG.mouse.visible = true;
 		updateCharTypeBox();
 
-    	addVirtualPad(FULL, A_B_X_Y);
-    	addVirtualPadCamera();
+		#if mobile
+		addVirtualPad(FULL, A_B_X_Y);
+		addVirtualPadCamera();
+		#end
 		
 		super.create();
 	}
@@ -535,7 +538,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if((FlxG.keys.justPressed.SPACE || _virtualpad.buttonA.justPressed) && UI_mainbox.selected_tab_id == 'Character') {
+			if(FlxG.keys.justPressed.SPACE #if mobile || _virtualpad.buttonA.justPressed #end && UI_mainbox.selected_tab_id == 'Character') {
 				character.playAnim(character.jsonFile.animations[curAnim].anim);
 				daText.resetDialogue();
 				updateTextBox();
@@ -544,7 +547,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 			//lots of Ifs lol get trolled
 			var offsetAdd:Int = 1;
 			var speed:Float = 300;
-			if(FlxG.keys.pressed.SHIFT #if android || _virtualpad.buttonB.justPressed #end) {
+			if(FlxG.keys.pressed.SHIFT #if mobile || _virtualpad.buttonB.justPressed #end) {
 				speed = 1200;
 				offsetAdd = 10;
 			}
@@ -564,8 +567,8 @@ class DialogueCharacterEditorState extends MusicBeatState
 			if(UI_mainbox.selected_tab_id == 'Animations' && curSelectedAnim != null && character.dialogueAnimations.exists(curSelectedAnim)) {
 				var moved:Bool = false;
 				var animShit:DialogueAnimArray = character.dialogueAnimations.get(curSelectedAnim);
-				var controlArrayLoop:Array<Bool> = [FlxG.keys.justPressed.A || _virtualpad.buttonLeft.justPressed, FlxG.keys.justPressed.W || _virtualpad.buttonUp.justPressed, FlxG.keys.justPressed.D || _virtualpad.buttonRight.justPressed, FlxG.keys.justPressed.S || _virtualpad.buttonDown.justPressed];
-				var controlArrayIdle:Array<Bool> = [FlxG.keys.justPressed.LEFT || _virtualpad.buttonLeft.justPressed, FlxG.keys.justPressed.UP || _virtualpad.buttonUp.justPressed, FlxG.keys.justPressed.RIGHT || _virtualpad.buttonRight.justPressed, FlxG.keys.justPressed.DOWN || _virtualpad.buttonDown.justPressed];
+				var controlArrayLoop:Array<Bool> = [FlxG.keys.justPressed.A #if mobile || _virtualpad.buttonLeft.justPressed #end, FlxG.keys.justPressed.W #if mobile || _virtualpad.buttonUp.justPressed #end, FlxG.keys.justPressed.D #if mobile || _virtualpad.buttonRight.justPressed #end, FlxG.keys.justPressed.S #if mobile || _virtualpad.buttonDown.justPressed #end];
+				var controlArrayIdle:Array<Bool> = [FlxG.keys.justPressed.LEFT #if mobile || _virtualpad.buttonLeft.justPressed #end, FlxG.keys.justPressed.UP #if mobile || _virtualpad.buttonUp.justPressed #end, FlxG.keys.justPressed.RIGHT #if mobile || _virtualpad.buttonRight.justPressed #end, FlxG.keys.justPressed.DOWN #if mobile || _virtualpad.buttonDown.justPressed #end];
 				for (i in 0...controlArrayLoop.length) {
 					if(controlArrayLoop[i]) {
 						if(i % 2 == 1) {
@@ -603,7 +606,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 				camGame.zoom += elapsed * camGame.zoom;
 				if(camGame.zoom > 1) camGame.zoom = 1;
 			}
-			if(FlxG.keys.justPressed.H || _virtualpad.buttonX.justPressed) {
+			if(FlxG.keys.justPressed.H #if mobile || _virtualpad.buttonX.justPressed #end) {
 				if(UI_mainbox.selected_tab_id == 'Animations') {
 					currentGhosts++;
 					if(currentGhosts > 2) currentGhosts = 0;
@@ -616,7 +619,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 					hudGroup.visible = !hudGroup.visible;
 				}
 			}
-			if(FlxG.keys.justPressed.R || _virtualpad.buttonY.justPressed) {
+			if(FlxG.keys.justPressed.R #if mobile || _virtualpad.buttonY.justPressed #end) {
 				camGame.zoom = 1;
 				mainGroup.setPosition(0, 0);
 				hudGroup.visible = true;
@@ -658,7 +661,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 			if(UI_mainbox.selected_tab_id == 'Character')
 			{
 				var negaMult:Array<Int> = [1, -1];
-				var controlAnim:Array<Bool> = [FlxG.keys.justPressed.W || _virtualpad.buttonUp.justPressed, FlxG.keys.justPressed.S || _virtualpad.buttonDown.justPressed];
+				var controlAnim:Array<Bool> = [FlxG.keys.justPressed.W #if mobile || _virtualpad.buttonUp.justPressed #end, FlxG.keys.justPressed.S #if mobile || _virtualpad.buttonDown.justPressed #end];
 
 				if(controlAnim.contains(true))
 				{
@@ -678,7 +681,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 				}
 			}
 
-			if(FlxG.keys.justPressed.ESCAPE  #if android || FlxG.android.justReleased.BACK #end #if ios || _virtualpad.buttonB.pressed #end) {
+			if(FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justReleased.BACK #end) {
 				MusicBeatState.switchState(new editors.MasterEditorMenu());
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 1);
 				transitioning = true;
@@ -774,7 +777,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 			var characterName:String = splittedImage[0].toLowerCase().replace(' ', '');
 
 			#if mobile
-			StorageUtil.saveContent("$characterName.json", data);
+			StorageUtil.saveContent(characterName + ".json", data);
 			#else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);

@@ -7,7 +7,8 @@ import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
-import openfl.media.Sound;
+import flixel.system.FlxSound;
+import flash.media.Sound;
 
 using StringTools;
 
@@ -327,7 +328,7 @@ class AlphaCharacter extends FlxSprite
 		super(x, y);
 		this.parent = parent;
 		image = 'alphabet';
-		antialiasing = ClientPrefs.data.antialiasing;
+		antialiasing = ClientPrefs.globalAntialiasing;
 
 		var curLetter:Letter = allLetters.get('?');
 		var lowercase = character.toLowerCase();

@@ -11,6 +11,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.system.FlxSound;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
@@ -22,7 +23,7 @@ import flixel.ui.FlxButton;
 import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import openfl.net.FileFilter;
+import flash.net.FileFilter;
 import haxe.Json;
 import DialogueBoxPsych;
 import lime.system.Clipboard;
@@ -71,7 +72,7 @@ class DialogueEditorState extends MusicBeatState
 		box = new FlxSprite(70, 370);
 		box.frames = Paths.getSparrowAtlas('speech_bubble');
 		box.scrollFactor.set();
-		box.antialiasing = ClientPrefs.data.antialiasing;
+		box.antialiasing = ClientPrefs.globalAntialiasing;
 		box.animation.addByPrefix('normal', 'speech bubble normal', 24);
 		box.animation.addByPrefix('angry', 'AHH speech bubble', 24);
 		box.animation.addByPrefix('center', 'speech bubble middle', 24);
@@ -105,7 +106,9 @@ class DialogueEditorState extends MusicBeatState
 		add(daText);
 		changeText();
 
+		#if mobile
 		addVirtualPad(FULL, A_B_C);
+		#end
 
 		super.create();
 	}
@@ -357,17 +360,17 @@ class DialogueEditorState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if(FlxG.keys.justPressed.SPACE || _virtualpad.buttonC.justPressed) {
+			if(FlxG.keys.justPressed.SPACE #if mobile || _virtualpad.buttonC.justPressed #end) {
 				reloadText(false);
 			}
-			if(FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justReleased.BACK #end #if ios || _virtualpad.buttonB.pressed #end) {
+			if(FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justReleased.BACK #end) {
 				MusicBeatState.switchState(new editors.MasterEditorMenu());
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 1);
 				transitioning = true;
 			}
 			var negaMult:Array<Int> = [1, -1];
-			var controlAnim:Array<Bool> = [FlxG.keys.justPressed.W || _virtualpad.buttonUp.justPressed, FlxG.keys.justPressed.S || _virtualpad.buttonDown.justPressed];
-			var controlText:Array<Bool> = [FlxG.keys.justPressed.D || _virtualpad.buttonLeft.justPressed, FlxG.keys.justPressed.A || _virtualpad.buttonRight.justPressed];
+			var controlAnim:Array<Bool> = [FlxG.keys.justPressed.W #if mobile || _virtualpad.buttonUp.justPressed #end, FlxG.keys.justPressed.S #if mobile || _virtualpad.buttonDown.justPressed #end];
+			var controlText:Array<Bool> = [FlxG.keys.justPressed.D #if mobile || _virtualpad.buttonLeft.justPressed #end, FlxG.keys.justPressed.A #if mobile || _virtualpad.buttonRight.justPressed #end];
 			for (i in 0...controlAnim.length) {
 				if(controlAnim[i] && character.jsonFile.animations.length > 0) {
 					curAnim -= negaMult[i];
@@ -386,7 +389,7 @@ class DialogueEditorState extends MusicBeatState
 				}
 			}
 
-			if(FlxG.keys.justPressed.O || _virtualpad.buttonA.justPressed) {
+			if(FlxG.keys.justPressed.O #if mobile || _virtualpad.buttonA.justPressed #end) {
 				dialogueFile.dialogue.remove(dialogueFile.dialogue[curSelected]);
 				if(dialogueFile.dialogue.length < 1) //You deleted everything, dumbo!
 				{
@@ -395,7 +398,7 @@ class DialogueEditorState extends MusicBeatState
 					];
 				}
 				changeText();
-			} else if(FlxG.keys.justPressed.P #if android || _virtualpad.buttonB.justPressed #end) {
+			} else if(FlxG.keys.justPressed.P #if mobile || _virtualpad.buttonB.justPressed #end) {
 				dialogueFile.dialogue.insert(curSelected + 1, copyDefaultLine());
 				changeText(1);
 			}
@@ -527,7 +530,7 @@ class DialogueEditorState extends MusicBeatState
 		if (data.length > 0)
 		{
 			#if mobile
-			StorageUtil.saveContent("$dialogue.json", data);
+			StorageUtil.saveContent("dialogue" + ".json", data);
 			#else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);

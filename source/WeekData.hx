@@ -94,7 +94,6 @@ class WeekData {
 		var modsListPath:String = 'modsList.txt';
 		var directories:Array<String> = [Paths.mods(), Paths.getPreloadPath()];
 		var originalLength:Int = directories.length;
-		  
 		if(FileSystem.exists(modsListPath))
 		{
 			var stuff:Array<String> = CoolUtil.coolTextFile(modsListPath);
@@ -105,7 +104,7 @@ class WeekData {
 				{
 					disabledMods.push(splitName[0]);
 				}
-				else // Sort mod loading order based on modsList.txt and modpackList.txt file
+				else // Sort mod loading order based on modsList.txt file
 				{
 					var path = haxe.io.Path.join([Paths.mods(), splitName[0]]);
 					//trace('trying to push: ' + splitName[0]);
@@ -252,7 +251,6 @@ class WeekData {
 		if (FileSystem.exists("modsList.txt"))
 		{
 			var list:Array<String> = CoolUtil.listFromString(File.getContent("modsList.txt"));
-			    
 			var foundTheTop = false;
 			for (i in list)
 			{

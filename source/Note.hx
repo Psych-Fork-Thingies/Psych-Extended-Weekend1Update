@@ -5,7 +5,7 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
-import openfl.display.BitmapData;
+import flash.display.BitmapData;
 import editors.ChartingState;
 
 using StringTools;
@@ -121,11 +121,11 @@ class Note extends FlxSprite
 
 	private function set_noteType(value:String):String {
 		noteSplashTexture = PlayState.SONG.splashSkin;
-		if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
+		if (noteData > -1 && noteData < ClientPrefs.arrowHSV.length)
 		{
-			colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
-			colorSwap.saturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
-			colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+			colorSwap.hue = ClientPrefs.arrowHSV[noteData][0] / 360;
+			colorSwap.saturation = ClientPrefs.arrowHSV[noteData][1] / 100;
+			colorSwap.brightness = ClientPrefs.arrowHSV[noteData][2] / 100;
 		}
 
 		if(noteData > -1 && noteType != value) {
@@ -164,8 +164,6 @@ class Note extends FlxSprite
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inEditor:Bool = false)
 	{
 		super();
-		
-		animation = new PsychAnimationController(this);
 
 		if (prevNote == null)
 			prevNote = this;
@@ -174,11 +172,11 @@ class Note extends FlxSprite
 		isSustainNote = sustainNote;
 		this.inEditor = inEditor;
 
-		x += (ClientPrefs.data.middleScroll ? PlayState.STRUM_X_MIDDLESCROLL : PlayState.STRUM_X) + 50;
+		x += (ClientPrefs.middleScroll ? PlayState.STRUM_X_MIDDLESCROLL : PlayState.STRUM_X) + 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
 		this.strumTime = strumTime;
-		if(!inEditor) this.strumTime += ClientPrefs.data.noteOffset;
+		if(!inEditor) this.strumTime += ClientPrefs.noteOffset;
 
 		this.noteData = noteData;
 
@@ -205,7 +203,7 @@ class Note extends FlxSprite
 			alpha = 0.6;
 			multAlpha = 0.6;
 			hitsoundDisabled = true;
-			if(ClientPrefs.data.downScroll) flipY = true;
+			if(ClientPrefs.downScroll) flipY = true;
 
 			offsetX += width / 2;
 			copyAngle = false;
@@ -259,10 +257,7 @@ class Note extends FlxSprite
 		if(texture.length < 1) {
 			skin = PlayState.SONG.arrowSkin;
 			if(skin == null || skin.length < 1) {
-			    if (ClientPrefs.data.NoteSkin != 'original' && !PlayState.isPixelStage)
-				    skin = 'NoteSkin/' + ClientPrefs.data.NoteSkin;
-				else
-				    skin = 'NOTE_assets';
+				skin = 'NOTE_assets';
 			}
 		}
 
@@ -308,7 +303,7 @@ class Note extends FlxSprite
 		} else {
 			frames = Paths.getSparrowAtlas(blahblah);
 			loadNoteAnims();
-			antialiasing = ClientPrefs.data.antialiasing;
+			antialiasing = ClientPrefs.globalAntialiasing;
 		}
 		if(isSustainNote) {
 			scale.y = lastScaleY;

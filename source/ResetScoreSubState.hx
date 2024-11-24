@@ -2,7 +2,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.util.FlxColor;
-import flixel.addons.transition.FlxTransitionableState;
 
 using StringTools;
 
@@ -18,8 +17,6 @@ class ResetScoreSubState extends MusicBeatSubstate
 	var song:String;
 	var difficulty:Int;
 	var week:Int;
-	
-	var camFix:FlxCamera;
 
 	// Week -1 = Freeplay
 	public function new(song:String, difficulty:Int, character:String, week:Int = -1)
@@ -29,21 +26,16 @@ class ResetScoreSubState extends MusicBeatSubstate
 		this.week = week;
 
 		super();
-		
-		camFix = new FlxCamera();
-		camFix.bgColor = 0x00;
-		FlxG.cameras.add(camFix, false);
 
 		var name:String = song;
 		if(week > -1) {
 			name = WeekData.weeksLoaded.get(WeekData.weeksList[week]).weekName;
 		}
-		name += ' (' + Difficulty.getString(difficulty) + ')?';
+		name += ' (' + CoolUtil.difficulties[difficulty] + ')?';
 
 		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0;
 		bg.scrollFactor.set();
-		bg.camera = camFix;
 		add(bg);
 
 		var tooLong:Float = (name.length > 18) ? 0.8 : 1; //Fucking Winter Horrorland
@@ -51,7 +43,6 @@ class ResetScoreSubState extends MusicBeatSubstate
 		text.screenCenter(X);
 		alphabetArray.push(text);
 		text.alpha = 0;
-		text.camera = camFix;
 		add(text);
 		var text:Alphabet = new Alphabet(0, text.y + 90, name, true);
 		text.scaleX = tooLong;
@@ -59,7 +50,6 @@ class ResetScoreSubState extends MusicBeatSubstate
 		if(week == -1) text.x += 60 * tooLong;
 		alphabetArray.push(text);
 		text.alpha = 0;
-		text.camera = camFix;
 		add(text);
 		if(week == -1) {
 			icon = new HealthIcon(character);
@@ -67,23 +57,23 @@ class ResetScoreSubState extends MusicBeatSubstate
 			icon.updateHitbox();
 			icon.setPosition(text.x - icon.width + (10 * tooLong), text.y - 30);
 			icon.alpha = 0;
-			icon.camera = camFix;
 			add(icon);
 		}
 
 		yesText = new Alphabet(0, text.y + 150, 'Yes', true);
 		yesText.screenCenter(X);
 		yesText.x -= 200;
-		yesText.camera = camFix;
 		add(yesText);
 		noText = new Alphabet(0, text.y + 150, 'No', true);
 		noText.screenCenter(X);
 		noText.x += 200;
-		noText.camera = camFix;
 		add(noText);
 		updateOptions();
-
-        cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		
+		#if mobile
+        addVirtualPad(LEFT_RIGHT, A_B);
+        addVirtualPadCamera();
+        #end
 	}
 
 	override function update(elapsed:Float)
@@ -104,7 +94,7 @@ class ResetScoreSubState extends MusicBeatSubstate
 		}
 		if(controls.BACK) {
 			FlxG.sound.play(Paths.sound('cancelMenu'), 1);
-            close();
+			close();
 		} else if(controls.ACCEPT) {
 			if(onYes) {
 				if(week == -1) {
@@ -114,28 +104,8 @@ class ResetScoreSubState extends MusicBeatSubstate
 				}
 			}
 			FlxG.sound.play(Paths.sound('cancelMenu'), 1);
-                        close();
+			close();
 		}
-		
-    	if(FlxG.mouse.overlaps(yesText) && FlxG.mouse.justPressed && ClientPrefs.data.mobileC)
-    	{
-    		onYes = true;
-    		if(onYes) {
-        		if(week == -1 ) {
-        			Highscore.resetSong(song, difficulty);
-        		} else {
-        			Highscore.resetWeek(WeekData.weeksList[week], difficulty);
-        		}
-        	}
-        	FlxG.sound.play(Paths.sound('cancelMenu'), 1);
-            close();
-        }
-    		
-    	if(FlxG.mouse.overlaps(noText) && FlxG.mouse.justPressed && ClientPrefs.data.mobileC)
-    	{
-        	FlxG.sound.play(Paths.sound('cancelMenu'), 1);
-            close();
-    	}
 		super.update(elapsed);
 	}
 
@@ -144,19 +114,10 @@ class ResetScoreSubState extends MusicBeatSubstate
 		var alphas:Array<Float> = [0.6, 1.25];
 		var confirmInt:Int = onYes ? 1 : 0;
 
-        if (ClientPrefs.data.mobileC) {
-		yesText.alpha = 1.25;
-		yesText.scale.set(1, 1);
-		noText.alpha = 1.25;
-		noText.scale.set(1, 1);
-		if(week == -1) icon.animation.curAnim.curFrame = confirmInt;
-		}
-		else {
 		yesText.alpha = alphas[confirmInt];
 		yesText.scale.set(scales[confirmInt], scales[confirmInt]);
 		noText.alpha = alphas[1 - confirmInt];
 		noText.scale.set(scales[1 - confirmInt], scales[1 - confirmInt]);
 		if(week == -1) icon.animation.curAnim.curFrame = confirmInt;
-		}
 	}
 }

@@ -26,13 +26,8 @@ typedef SwagSong =
 	var gfVersion:String;
 	var stage:String;
 
-	@:optional var gameOverChar:String;
-	@:optional var gameOverSound:String;
-	@:optional var gameOverLoop:String;
-	@:optional var gameOverEnd:String;
-	
-	@:optional var arrowSkin:String;
-	@:optional var splashSkin:String;
+	var arrowSkin:String;
+	var splashSkin:String;
 	var validScore:Bool;
 }
 
@@ -45,10 +40,6 @@ class Song
 	public var needsVoices:Bool = true;
 	public var arrowSkin:String;
 	public var splashSkin:String;
-	public var gameOverChar:String;
-	public var gameOverSound:String;
-	public var gameOverLoop:String;
-	public var gameOverEnd:String;
 	public var speed:Float = 1;
 	public var stage:String;
 	public var player1:String = 'bf';
@@ -109,14 +100,11 @@ class Song
 		#end
 
 		if(rawJson == null) {
-		    var path:String = Paths.json(formattedFolder + '/' + formattedSong);
-		    
 			#if sys
-			if(FileSystem.exists(path))
-				rawJson = File.getContent(path).trim();
-			else
+			rawJson = File.getContent(Paths.json(formattedFolder + '/' + formattedSong)).trim();
+			#else
+			rawJson = Assets.getText(Paths.json(formattedFolder + '/' + formattedSong)).trim();
 			#end
-				rawJson = Assets.getText(Paths.json(formattedFolder + '/' + formattedSong)).trim();
 		}
 
 		while (!rawJson.endsWith("}"))

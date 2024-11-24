@@ -11,6 +11,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.system.FlxSound;
 #if MODS_ALLOWED
 import sys.FileSystem;
 #end
@@ -80,9 +81,11 @@ class MasterEditorMenu extends MusicBeatState
 		#end
 		changeSelection();
 
-		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
+		FlxG.mouse.visible = false;
 
+		#if mobile
 		addVirtualPad(FULL, A_B);
+		#end
 
 		super.create();
 	}
@@ -110,7 +113,7 @@ class MasterEditorMenu extends MusicBeatState
 
 		if (controls.BACK)
 		{
-			CustomSwitchState.switchMenus('MainMenu');
+			MusicBeatState.switchState(new MainMenuState());
 		}
 
 		if (controls.ACCEPT)
@@ -128,16 +131,10 @@ class MasterEditorMenu extends MusicBeatState
 					LoadingState.loadAndSwitchState(new DialogueEditorState(), false);
 				case 'Chart Editor'://felt it would be cool maybe
 					LoadingState.loadAndSwitchState(new ChartingState(), false);
-					PlayState.chartingMode = true; // I don't understand why Psych 0.6.3 doesn't have this
 			}
 			FlxG.sound.music.volume = 0;
 			#if PRELOAD_ALL
-			if (ClientPrefs.data.FreeplayStyle == 'NF')
-			    FreeplayStateNF.destroyFreeplayVocals();
-			else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
-			    FreeplayStateNOVA.destroyFreeplayVocals();
-			else
-			    FreeplayState.destroyFreeplayVocals();
+			FreeplayState.destroyFreeplayVocals();
 			#end
 		}
 		

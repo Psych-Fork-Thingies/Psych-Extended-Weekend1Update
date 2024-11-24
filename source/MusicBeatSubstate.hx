@@ -5,12 +5,11 @@ import flixel.FlxG;
 import flixel.FlxSubState;
 import flixel.FlxBasic;
 import flixel.FlxSprite;
-import flixel.input.actions.FlxActionInput;
-import flixel.util.FlxDestroyUtil;
-import backend.PsychCamera;
 
+#if mobile
 import flixel.input.actions.FlxActionInput;
 import mobile.flixel.FlxVirtualPad;
+#end
 
 class MusicBeatSubstate extends FlxSubState
 {
@@ -31,13 +30,14 @@ class MusicBeatSubstate extends FlxSubState
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
-
+		
+	#if mobile
 	var _virtualpad:FlxVirtualPad;
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
 	
 	public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode) {
-		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75, ClientPrefs.data.antialiasing);
+		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75, ClientPrefs.globalAntialiasing);
 		add(_virtualpad);
 		controls.setVirtualPadUI(_virtualpad, DPad, Action);
 		trackedinputsUI = controls.trackedInputsUI;
@@ -59,14 +59,6 @@ class MusicBeatSubstate extends FlxSubState
 		_virtualpad.cameras = [camcontrol];
 	}
 	
-	public function initPsychCamera():PsychCamera
-	{
-		var camera = new PsychCamera();
-		FlxG.cameras.reset(camera);
-		FlxG.cameras.setDefaultDrawTarget(camera, true);
-		return camera;
-	}
-	
 	override function destroy() {
 		if (trackedinputsUI.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsUI);
@@ -76,6 +68,7 @@ class MusicBeatSubstate extends FlxSubState
 		if (_virtualpad != null)
 			_virtualpad = FlxDestroyUtil.destroy(_virtualpad);
 	}
+	#end
 
 	override function update(elapsed:Float)
 	{
@@ -102,7 +95,7 @@ class MusicBeatSubstate extends FlxSubState
 	{
 		var lastChange = Conductor.getBPMFromSeconds(Conductor.songPosition);
 
-		var shit = ((Conductor.songPosition - ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
+		var shit = ((Conductor.songPosition - ClientPrefs.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
 		curDecStep = lastChange.stepTime + shit;
 		curStep = lastChange.stepTime + Math.floor(shit);
 	}
