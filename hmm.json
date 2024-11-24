@@ -20,12 +20,12 @@
     {
       "name": "flixel",
       "type": "haxelib",
-      "version": "5.3.1"
+      "version": "5.5.0"
     },
     {
       "name": "flixel-addons",
       "type": "haxelib",
-      "version": "3.0.2"
+      "version": "3.2.2"
     },
     {
       "name": "flixel-ui",
