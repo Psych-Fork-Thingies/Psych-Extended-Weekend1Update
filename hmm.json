@@ -19,9 +19,8 @@
     },
     {
       "name": "flixel",
-      "type": "git",
-      "ref": "5.6.1",
-      "url": "https://github.com/MobilePorting/flixel"
+      "type": "haxelib",
+      "version": "5.6.1"
     },
     {
       "name": "flixel-addons",
@@ -59,7 +58,7 @@
     {
       "name": "openfl",
       "type": "haxelib",
-      "version": "9.2.0"
+      "version": "9.2.2"
     },
     {
       "name": "hxcpp-debug-server",
