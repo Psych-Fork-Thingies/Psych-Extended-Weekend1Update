@@ -248,7 +248,7 @@ class Paths
 	{	 
 	    var songKey:String = '${formatToSongPath(song)}/Voices';
 		if(postfix != null) songKey += '-' + postfix;
-		var voices = returnSound(null, songKey, 'songs');
+		var voices = returnSound('songs', songKey);
 	    return voices;
 	}
 	
@@ -315,7 +315,7 @@ class Paths
 	inline static public function inst(song:String):Sound
 	{
 	    var songKey:String = '${formatToSongPath(song)}/Inst';
-		var inst = returnSound(null, songKey, 'songs');
+		var inst = returnSound('songs', songKey);
 		return inst;
 	}
 
@@ -645,18 +645,18 @@ class Paths
 			return currentTrackedSounds.get(file);
 		}
 		#end
-
 		// I hate this so god damn much
 		var gottenPath:String = getPath('$path/$key.$SOUND_EXT', SOUND, library);
 		gottenPath = gottenPath.substring(gottenPath.indexOf(':') + 1, gottenPath.length);
 		// trace(gottenPath);
 		if(!currentTrackedSounds.exists(gottenPath))
-		{
-			#if MODS_ALLOWED
+		#if MODS_ALLOWED
 			currentTrackedSounds.set(gottenPath, Sound.fromFile(#if desktop './' + #end gottenPath));
-			#else
+		#else
+		{
 			var folder:String = '';
 			if(path == 'songs') folder = 'songs:';
+
 			currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(folder + getPath('$path/$key.$SOUND_EXT', SOUND, library)));
 		}
 		#end
