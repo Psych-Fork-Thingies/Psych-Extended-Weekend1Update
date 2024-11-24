@@ -3080,9 +3080,6 @@ class PlayState extends MusicBeatState
 			openChartEditor();
 		}
 
-		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
-		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
-
 		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9 * playbackRate), 0, 1));
 		iconP1.scale.set(mult, mult);
 		iconP1.updateHitbox();
@@ -4717,8 +4714,7 @@ class PlayState extends MusicBeatState
     		}
 		}
 
-		if (SONG.needsVoices)
-			vocals.volume = 1;
+		if(opponentVocals.length <= 0) vocals.volume = 1;
 
 		var time:Float = 0.15;
 		if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
@@ -5011,11 +5007,6 @@ class PlayState extends MusicBeatState
 	override function stepHit()
 	{
 		super.stepHit();
-		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > (20 * playbackRate)
-			|| (SONG.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > (20 * playbackRate)))
-		{
-			resyncVocals();
-		}
 
 		if(curStep == lastStepHit) {
 			return;
