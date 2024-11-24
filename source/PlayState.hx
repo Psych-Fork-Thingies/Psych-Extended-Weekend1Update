@@ -2917,29 +2917,6 @@ class PlayState extends MusicBeatState
 		opponentVocals.play();
 	}
 
-	function resyncVocals():Void
-	{
-		if(finishTimer != null) return;
-
-		trace('resynced vocals at ' + Math.floor(Conductor.songPosition));
-
-		FlxG.sound.music.play();
-		#if FLX_PITCH FlxG.sound.music.pitch = playbackRate; #end
-		Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
-
-		var checkVocals = [vocals, opponentVocals];
-		for (voc in checkVocals)
-		{
-			if (FlxG.sound.music.time < vocals.length)
-			{
-				voc.time = FlxG.sound.music.time;
-				#if FLX_PITCH voc.pitch = playbackRate; #end
-				voc.play();
-			}
-			else voc.pause();
-		}
-	}
-
 	public var paused:Bool = false;
 	public var canReset:Bool = true;
 	var startedCountdown:Bool = false;
