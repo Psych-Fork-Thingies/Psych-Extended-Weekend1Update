@@ -1419,11 +1419,11 @@ class ChartingState extends MusicBeatState
 
 	function loadSong():Void
 	{
-		try { FlxG.sound.music.stop(); }
-		try { vocals.stop();
-		try { vocals.destroy(); }
-		try { opponentVocals.stop(); }
-		try { opponentVocals.destroy(); }
+		FlxG.sound.music?.stop();
+		vocals?.stop();
+		vocals?.destroy();
+		opponentVocals?.stop();
+		opponentVocals?.destroy();
 		vocals = new FlxSound();
 		opponentVocals = new FlxSound();
 		try
@@ -1470,8 +1470,8 @@ class ChartingState extends MusicBeatState
 			curSec = 0;
 			updateGrid();
 			updateSectionUI();
-			try { vocals.play(); }
-			try { opponentVocals.play(); }
+			vocals?.play();
+			opponentVocals?.play();
 		};
 	}
 
@@ -1820,8 +1820,8 @@ class ChartingState extends MusicBeatState
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 				PlayState.SONG = _song;
 				FlxG.sound.music.stop();
-				try { vocals.stop(); }
-				try { opponentVocals.stop(); }
+				vocals?.stop();
+				opponentVocals?.stop();
 
 				//if(_song.stage == null) _song.stage = stageDropDown.selectedLabel;
 				StageData.loadDirectory(_song);
@@ -1883,19 +1883,16 @@ class ChartingState extends MusicBeatState
 
 			if (FlxG.keys.justPressed.SPACE || _virtualpad.buttonY.justPressed)
 			{
-				try { vocals.play(); }
-				try { opponentVocals.play(); }
+				vocals?.play();
+				opponentVocals?.play();
 				pauseAndSetVocalsTime();
 				if (!FlxG.sound.music.playing)
 				{
-					try { FlxG.sound.music.play(); }
-					try { vocals.play(); }
-					try { opponentVocals.play(); }
+					FlxG.sound.music?.play();
+					vocals?.play();
+					opponentVocals?.play();
 				}
-				else
-				{
-				    try { FlxG.sound.music.pause(); }
-				}
+				else FlxG.sound.music?.pause();
 			}
 
 			if (!FlxG.keys.pressed.ALT && FlxG.keys.justPressed.R)
