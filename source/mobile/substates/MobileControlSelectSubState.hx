@@ -63,7 +63,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
             FlxColor.fromRGB(FlxG.random.int(0, 255), FlxG.random.int(0, 255), FlxG.random.int(0, 255))));
         bg.velocity.set(40, 40);
         bg.alpha = 0;
-        bg.antialiasing = ClientPrefs.globalAntialiasing;
+        bg.antialiasing = ClientPrefs.data.antialiasing;
         FlxTween.tween(bg, {alpha: 0.45}, 0.3, {
             ease: FlxEase.quadOut,
             onComplete: (twn:FlxTween) ->
@@ -90,12 +90,12 @@ class MobileControlSelectSubState extends MusicBeatSubstate
         titleText.cameras = [ui];
         add(titleText);
 
-        vpad = new FlxVirtualPad(RIGHT_FULL, controlExtend, 0.75, ClientPrefs.globalAntialiasing);
+        vpad = new FlxVirtualPad(RIGHT_FULL, controlExtend, 0.75, ClientPrefs.data.antialiasing);
         vpad.alpha = 0;
         vpad.cameras = [ui];
         add(vpad);
 
-        hbox = new FlxHitbox(0.75, ClientPrefs.globalAntialiasing);
+        hbox = new FlxHitbox(0.75, ClientPrefs.data.antialiasing);
         hbox.visible = false;
         hbox.cameras = [ui];
         add(hbox);
@@ -273,28 +273,28 @@ class MobileControlSelectSubState extends MusicBeatSubstate
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad(RIGHT_FULL, controlExtend, 0.75, ClientPrefs.globalAntialiasing);
+                vpad = new FlxVirtualPad(RIGHT_FULL, NONE, 0.75, ClientPrefs.data.antialiasing);
                 add(vpad);
                 loadcustom(false);
             case 'Pad-Left':
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad(FULL, controlExtend, 0.75, ClientPrefs.globalAntialiasing);
+                vpad = new FlxVirtualPad(FULL, NONE, 0.75, ClientPrefs.data.antialiasing);
                 add(vpad);
                 loadcustom(false);
             case 'Pad-Custom':
                 reset.visible = true;
                 keyboard.visible = false;
                 remove(vpad);
-                vpad = new FlxVirtualPad(RIGHT_FULL, controlExtend, 0.75, ClientPrefs.globalAntialiasing);
+                vpad = new FlxVirtualPad(RIGHT_FULL, controlExtend, 0.75, ClientPrefs.data.antialiasing);
                 add(vpad);
                 loadcustom(true);
             case 'Duo':
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad(DUO, controlExtend, 0.75, ClientPrefs.globalAntialiasing);
+                vpad = new FlxVirtualPad(DUO, NONE, 0.75, ClientPrefs.data.antialiasing);
                 add(vpad);
                 loadcustom(false);
             case 'Hitbox':
@@ -315,14 +315,14 @@ class MobileControlSelectSubState extends MusicBeatSubstate
         }
         else
         {
-            if(ClientPrefs.hitboxmode != 'New'){
+            if(ClientPrefs.data.hitboxmode != 'New'){
                 hbox.visible = true;
             }else{
                 newhbox.visible = true;
             }
         }
 
-        if (daChoice != "Hitbox" && daChoice != "Keyboard")
+        if (daChoice == "Pad-Custom")
         {
             extra4Pozition.visible = true;
             extra3Pozition.visible = true;
@@ -391,7 +391,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
                 }
             }
         }
-        if (daChoice != "Hitbox" && daChoice != "Keyboard")
+        if (daChoice == 'Pad-Custom')
         {
             if (buttonistouched)
             {
@@ -455,10 +455,6 @@ class MobileControlSelectSubState extends MusicBeatSubstate
         if (daChoice == 'Pad-Custom')
         {
             config.savecustom(vpad);
-            extendConfig.savecustom(vpad);
-        }
-        else if (daChoice != "Hitbox" && daChoice != "Keyboard" && daChoice != 'Pad-Custom')
-        {
             extendConfig.savecustom(vpad);
         }
     }

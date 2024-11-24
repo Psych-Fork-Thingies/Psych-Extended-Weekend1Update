@@ -14,15 +14,16 @@ import flixel.util.FlxGradient;
 import flixel.FlxState;
 import flixel.FlxCamera;
 import flixel.FlxBasic;
+import backend.PsychCamera;
 
-#if mobile
 import flixel.input.actions.FlxActionInput;
 import mobile.flixel.FlxVirtualPad;
 import flixel.util.FlxDestroyUtil;
-#end
 
 class MusicBeatState extends FlxUIState
 {
+    public static var instance:MusicBeatState;
+    
 	private var curSection:Int = 0;
 	private var stepsToDo:Int = 0;
 
@@ -32,15 +33,13 @@ class MusicBeatState extends FlxUIState
 	private var curDecStep:Float = 0;
 	private var curDecBeat:Float = 0;
 	private var controls(get, never):Controls;
+	public static var checkHitbox:Bool = false;
 
 	public static var camBeat:FlxCamera;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
-		
-	#if mobile
-	public static var checkHitbox:Bool = false;
-	
+
 	var _virtualpad:FlxVirtualPad;
 	public static var mobilec:MobileControls;
 	
@@ -51,7 +50,7 @@ class MusicBeatState extends FlxUIState
 		if (_virtualpad != null)
 			removeVirtualPad();
 
-		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75, ClientPrefs.globalAntialiasing);
+		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75, ClientPrefs.data.antialiasing);
 		add(_virtualpad);
 
 		controls.setVirtualPadUI(_virtualpad, DPad, Action);
@@ -75,8 +74,27 @@ class MusicBeatState extends FlxUIState
 			remove(mobilec);
 	}
 	
-	public function addMobileControls() {
+	public function addMobileControls(?mode:Null<String>) {
 		mobilec = new MobileControls();
+		PlayState.MobileCType = 'DEFAULT';
+		
+		switch (mode.toLowerCase())
+		{
+		    case 'normal':
+				PlayState.MobileCType = 'NORMAL';
+				mobilec.visible = true;
+			case 'shift':
+			    PlayState.MobileCType = 'SHIFT';
+			    mobilec.visible = true;
+			case 'space':
+				PlayState.MobileCType = 'SPACE';
+				mobilec.visible = true;
+			case 'both':
+				PlayState.MobileCType = 'BOTH';
+				mobilec.visible = true;
+			default:
+				// do nothing
+		}
 
 		switch (mobilec.mode)
 		{
@@ -87,10 +105,11 @@ class MusicBeatState extends FlxUIState
 				controls.setVirtualPadNOTES(mobilec.vpad, DUO, NONE);
 				MusicBeatState.checkHitbox = false;
 			case HITBOX:
-				if(ClientPrefs.hitboxmode != 'New')
-				    controls.setHitBox(mobilec.hbox);
-				else
-				    controls.setNewHitBox(mobilec.newhbox);
+			   if(ClientPrefs.data.hitboxmode != 'New'){
+				controls.setHitBox(mobilec.hbox);
+				}else{
+				controls.setNewHitBox(mobilec.newhbox);
+				}
 				MusicBeatState.checkHitbox = true;
 			default:
 		}
@@ -128,7 +147,6 @@ class MusicBeatState extends FlxUIState
 		if (mobilec != null)
 			mobilec = FlxDestroyUtil.destroy(mobilec);
 	}
-	#end
 
 	override function create() {
 		camBeat = FlxG.camera;
@@ -136,9 +154,22 @@ class MusicBeatState extends FlxUIState
 		super.create();
 
 		if(!skip) {
-			openSubState(new CustomFadeTransition(0.7, true));
+		    if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
+			    openSubState(new CustomFadeTransitionNOVA(0.7, true));
+			else
+			    openSubState(new CustomFadeTransition(0.7, true));
 		}
 		FlxTransitionableState.skipNextTransOut = false;
+	}
+	
+	public function initPsychCamera():PsychCamera
+	{
+		var camera = new PsychCamera();
+		FlxG.cameras.reset(camera);
+		FlxG.cameras.setDefaultDrawTarget(camera, true);
+		// _psychCameraInitialized = true;
+		//trace('initialized psych camera ' + Sys.cpuTime());
+		return camera;
 	}
 
 	override function update(elapsed:Float)
@@ -211,11 +242,11 @@ class MusicBeatState extends FlxUIState
 	{
 		var lastChange = Conductor.getBPMFromSeconds(Conductor.songPosition);
 
-		var shit = ((Conductor.songPosition - ClientPrefs.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
+		var shit = ((Conductor.songPosition - ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
 		curDecStep = lastChange.stepTime + shit;
 		curStep = lastChange.stepTime + Math.floor(shit);
 	}
-
+	
 	public static function switchState(nextState:FlxState) {
 		// Custom made Trans in
 		var curState:Dynamic = FlxG.state;

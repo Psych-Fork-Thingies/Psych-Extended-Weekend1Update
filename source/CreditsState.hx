@@ -3,7 +3,7 @@ package;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flash.text.TextField;
+import openfl.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -79,13 +79,28 @@ class CreditsState extends MusicBeatState
 			pushModCreditsToList(folder);
 		}
 		#end
-
-		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
-		    ['Psych Engine Mobile Port'],
-			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Android Porter',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
+		
+		/* maybe later
+			['Psych Engine Android Team'],
+			['MaysLastPlay',		'MaysLastPlay',		'Android Porter',							'https://www.youtube.com/channel/UCx0LxtFR8ROd9sFAq-UxDfw',	'5DE7FF'],
+			['Nuno Filipe Studios',	'nuno',				'Android Porter',							'https://www.youtube.com/channel/UCq7G3p4msVN5SX2CpJ86tTw',	'989c99'],
+			['M.A. Jigsaw', 		'saw',				'AndroidTools Creator/Vpad Designer',		'https://www.youtube.com/channel/UC2Sk7vtPzOvbVzdVTWrribQ', '444444'],
+			['MarioMaster',		    'mariomaster',		    'hi its a me',	 'https://www.youtube.com/c/MarioMaster1997',	'D10616'],
+			
+			['Mobile Porting Team'],
+			['mcagabe19',			        'lily',                    'Head Porter of Psych Engine 0.6.3 Mobile',   'https://youtube.com/@mcagabe19',		'FFE7C0'],
 			[''],
-			['Extra Credits'],
-			['MobilePorting',			 'MobilePorting',               'Im using their Codes',                           'https://github.com/MobilePorting',		'FFE7C0'],
+			['NF Engine Team'],
+			['beihu',		                'beihu',		            'Main Programmer',							'https://b23.tv/LVj0JVk',	                'FFC0CB'],
+			[''],
+		*/
+
+		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
+			['Psych Extended'],
+			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Im Just Made This Build',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
+			[''],
+			['Needed Credits'],
+			['mcagabe19',			 'lily',               'Head Porter of Psych Engine 0.6.3 Mobile',                           'https://youtube.com/@mcagabe19',		'FFE7C0'],
 			['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(I used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
 			[''],
 			['Psych Engine Team'],
@@ -113,7 +128,7 @@ class CreditsState extends MusicBeatState
 			['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",								'https://twitter.com/kawaisprite',		'378FC7']
 		];
 		
-		for(i in pisspoop){
+		for(i in defaultList){
 			creditsStuff.push(i);
 		}
 	
@@ -133,7 +148,9 @@ class CreditsState extends MusicBeatState
 					Paths.currentModDirectory = creditsStuff[i][5];
 				}
 
-				var icon:AttachedSprite = new AttachedSprite('credits/' + creditsStuff[i][1]);
+				var str:String = 'credits/missing_icon';
+				if (Paths.image('credits/' + creditsStuff[i][1]) != null) str = 'credits/' + creditsStuff[i][1];
+				var icon:AttachedSprite = new AttachedSprite(str);
 				icon.xAdd = optionText.width + 10;
 				icon.sprTracker = optionText;
 	
@@ -165,9 +182,8 @@ class CreditsState extends MusicBeatState
 		bg.color = getCurrentBGColor();
 		intendedColor = bg.color;
 		changeSelection();
-		#if mobile
+		
         addVirtualPad(UP_DOWN, A_B);
-        #end
 		super.create();
 	}
 
@@ -213,19 +229,19 @@ class CreditsState extends MusicBeatState
 					}
 				}
 			}
-
-			if(controls.ACCEPT && (creditsStuff[curSelected][3] == null || creditsStuff[curSelected][3].length > 4)) {
-				CoolUtil.browserLoad(creditsStuff[curSelected][3]);
-			}
-			if (controls.BACK)
-			{
-				if(colorTween != null) {
-					colorTween.cancel();
-				}
-				FlxG.sound.play(Paths.sound('cancelMenu'));
-				MusicBeatState.switchState(new MainMenuState());
-				quitting = true;
-			}
+            
+    		if(controls.ACCEPT && (creditsStuff[curSelected][3] == null || creditsStuff[curSelected][3].length > 4)) {
+    			CoolUtil.browserLoad(creditsStuff[curSelected][3]);
+    		}
+    		if (controls.BACK)
+    		{
+    			if(colorTween != null) {
+    				colorTween.cancel();
+    			}
+    			FlxG.sound.play(Paths.sound('cancelMenu'));
+    			CustomSwitchState.switchMenus('MainMenu');
+    			quitting = true;
+    		}
 		}
 		
 		for (item in grpOptions.members)
