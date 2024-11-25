@@ -65,6 +65,8 @@ class FPSOld extends TextField
 		multiline = true;
 		text = "FPS: ";
 		textColor = 0xFFFFFFFF;
+		
+		positionFPS(x, y);
  
 		//cacheCount = 0;
 		//currentTime = 0;
@@ -102,6 +104,12 @@ class FPSOld extends TextField
 		0xFFFF0000
 	                                
 	    ];
+	    
+	public inline function positionFPS(X:Float, Y:Float, ?scale:Float = 1){
+		scaleX = scaleY = #if android (scale > 1 ? scale : 1) #else (scale < 1 ? scale : 1) #end;
+		x = FlxG.game.x + X;
+		y = FlxG.game.y + Y;
+	}
 	                             	                  	
 	// Event Handlers
 	@:noCompletion
