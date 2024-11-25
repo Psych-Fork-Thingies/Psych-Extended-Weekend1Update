@@ -2,7 +2,7 @@ package;
 
 import extras.debug.Graphics;
 import extras.debug.FPS as FPSNova;
-import extras.debug.FPSOld as FPSNF;
+import extras.debug.FPSOld as FPS_NF;
 
 import mobile.backend.CrashHandler;
 import openfl.events.UncaughtErrorEvent;
@@ -45,7 +45,7 @@ class Main extends Sprite
 
 	public static var fpsVar:FPSCounter;
 	public static var fpsVarNova:FPSNova;
-	public static var fpsVarNF:FPSNF;
+	public static var fpsVarNF:FPS_NF;
 
 	public static final platform:String = #if mobile "Phones" #else "PCs" #end;
 
@@ -138,13 +138,13 @@ class Main extends Sprite
             fpsVarNova = new FPSNova(5, 5);
     		addChild(fpsVarNova);
     		if(fpsVarNova != null) {
-    		    fpsVarNova.scaleX = fpsVar.scaleY = ClientPrefs.data.FPSScale;		  
+    		    fpsVarNova.scaleX = fpsVarNova.scaleY = 1;		  
     			fpsVarNova.visible = ClientPrefs.data.showFPS;
     		}
 		}
 		else if(ClientPrefs.data.FPSCounter == 'NF')
 		{
-		    fpsVarNF = new FPS(10, 3, 0xFFFFFF);
+		    fpsVarNF = new FPS_NF(10, 3, 0xFFFFFF);
     		addChild(fpsVarNF);
     		Lib.current.stage.align = "tl";
     		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;

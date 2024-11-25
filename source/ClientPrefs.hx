@@ -35,8 +35,11 @@ import TitleState;
 	public var extraKeys:Int = 2;
 	public var hitboxLocation:String = 'Bottom';
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
+	
+	//FPSCounter things
 	public var FPSCounter:String = 'Psych';
 	public var rainbowFPS:Bool = false;
+	public var memoryType:Int = 0;
 	
 	//PsychEngine
 	public var downScroll:Bool = false;
