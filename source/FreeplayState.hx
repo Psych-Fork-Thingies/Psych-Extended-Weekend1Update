@@ -70,9 +70,9 @@ class FreeplayState extends MusicBeatState
 		{
 			FlxTransitionableState.skipNextTransIn = true;
 			persistentUpdate = false;
-			MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
-				function() MusicBeatState.switchState(new states.editors.WeekEditorState()),
-				function() MusicBeatState.switchState(new states.MainMenuState())));
+			MusicBeatState.switchState(new ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
+				function() MusicBeatState.switchState(new editors.WeekEditorState()),
+				function() MusicBeatState.switchState(new MainMenuState())));
 			return;
 		}
 
@@ -188,6 +188,8 @@ class FreeplayState extends MusicBeatState
 		
 		changeSelection();
 		updateTexts();
+		
+		addVirtualPad(FULL, A_B_C_X_Y_Z);
 		super.create();
 	}
 
@@ -196,6 +198,8 @@ class FreeplayState extends MusicBeatState
 		changeSelection(0, false);
 		persistentUpdate = true;
 		super.closeSubState();
+		removeVirtualPad();
+		addVirtualPad(FULL, A_B_C_X_Y_Z);
 	}
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String, color:Int)
@@ -239,7 +243,7 @@ class FreeplayState extends MusicBeatState
 			ratingSplit[1] += '0';
 
 		var shiftMult:Int = 1;
-		if(FlxG.keys.pressed.SHIFT) shiftMult = 3;
+		if((FlxG.keys.pressed.SHIFT || _virtualpad.buttonZ.pressed) && !player.playingMusic) shiftMult = 3;
 
 		if (!player.playingMusic)
 		{
@@ -323,12 +327,13 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		if(FlxG.keys.justPressed.CONTROL && !player.playingMusic)
+		if((FlxG.keys.justPressed.CONTROL || _virtualpad.buttonC.justPressed) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new GameplayChangersSubstate());
+			removeVirtualPad();
 		}
-		else if(FlxG.keys.justPressed.SPACE)
+		else if(FlxG.keys.justPressed.SPACE || _virtualpad.buttonX.justPressed)
 		{
 			if(instPlaying != curSelected && !player.playingMusic)
 			{
@@ -446,10 +451,11 @@ class FreeplayState extends MusicBeatState
 			DiscordClient.loadModRPC();
 			#end
 		}
-		else if(controls.RESET && !player.playingMusic)
+		else if((controls.RESET || _virtualpad.buttonY.justPressed) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
+			removeVirtualPad();
 			FlxG.sound.play(Paths.sound('scrollMenu'));
 		}
 
