@@ -75,6 +75,20 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.showNote = true;
 		addOption(option);
 		option.onChange = onChangeNoteSkin;
+		
+		var option:Option = new Option('FPSCounter:',
+			"Choose your FPSCounter",
+			'FPSCounter',
+			'string',
+			['Psych', 'NovaFlare', 'NF']);
+		addOption(option);
+		option.onChange = onChangeFPSCounter;
+		
+		var option:Option = new Option('FPS Rainbow',
+			"If unchecked, FPS not change color",
+			'rainbowFPS',
+			'bool');
+		addOption(option);
 
 		var option:Option = new Option('Note Splashes',
 			"If unchecked, hitting \"Sick!\" notes won't show particles.",
@@ -188,6 +202,10 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	function onChangeFPSCounter()
 	{
+		if(Main.fpsVarNova != null)
+			Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
+		if(Main.fpsVarNF != null)
+			Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
 		if(Main.fpsVar != null)
 			Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}

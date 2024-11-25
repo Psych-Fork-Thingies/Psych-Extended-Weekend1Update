@@ -1,5 +1,9 @@
 package;
 
+import extras.debug.Graphics;
+import extras.debug.FPS as FPSNova;
+import extras.debug.FPSOld as FPSNF;
+
 import mobile.backend.CrashHandler;
 import openfl.events.UncaughtErrorEvent;
 import debug.FPSCounter;
@@ -40,6 +44,8 @@ class Main extends Sprite
 	};
 
 	public static var fpsVar:FPSCounter;
+	public static var fpsVarNova:FPSNova;
+	public static var fpsVarNF:FPSNF;
 
 	public static final platform:String = #if mobile "Phones" #else "PCs" #end;
 
@@ -127,12 +133,34 @@ class Main extends Sprite
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		addChild(new FlxGame(game.width, game.height, #if (mobile && MODS_ALLOWED) CopyState.checkExistingFiles() ? game.initialState : CopyState #else game.initialState #end, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
-		fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
-		addChild(fpsVar);
-		Lib.current.stage.align = "tl";
-		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-		if(fpsVar != null) {
-			fpsVar.visible = ClientPrefs.data.showFPS;
+        if (ClientPrefs.data.FPSCounter == 'NovaFlare')
+        {
+            fpsVarNova = new FPSNova(5, 5);
+    		addChild(fpsVarNova);
+    		if(fpsVarNova != null) {
+    		    fpsVarNova.scaleX = fpsVar.scaleY = ClientPrefs.data.FPSScale;		  
+    			fpsVarNova.visible = ClientPrefs.data.showFPS;
+    		}
+		}
+		else if(ClientPrefs.data.FPSCounter == 'NF')
+		{
+		    fpsVarNF = new FPS(10, 3, 0xFFFFFF);
+    		addChild(fpsVarNF);
+    		Lib.current.stage.align = "tl";
+    		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+    		if(fpsVarNF != null) {
+    			fpsVarNF.visible = ClientPrefs.data.showFPS;
+    		}
+		}
+		else
+		{
+    		fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
+    		addChild(fpsVar);
+    		Lib.current.stage.align = "tl";
+    		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+    		if(fpsVar != null) {
+    			fpsVar.visible = ClientPrefs.data.showFPS;
+    		}
 		}
 
 		#if linux
@@ -161,7 +189,7 @@ class Main extends Sprite
 
 		// shader coords fix
 		FlxG.signals.gameResized.add(function (w, h) {
-			if(fpsVar != null)
+			if(fpsVar != null && ClientPrefs.data.FPSCounter == 'Psych')
 				fpsVar.positionFPS(10, 3, Math.min(w / FlxG.width, h / FlxG.height));
 		     if (FlxG.cameras != null) {
 			   for (cam in FlxG.cameras.list) {

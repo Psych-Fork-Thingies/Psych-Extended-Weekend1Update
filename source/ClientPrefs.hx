@@ -35,6 +35,8 @@ import TitleState;
 	public var extraKeys:Int = 2;
 	public var hitboxLocation:String = 'Bottom';
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
+	public var FPSCounter:String = 'Psych';
+	public var rainbowFPS:Bool = false;
 	
 	//PsychEngine
 	public var downScroll:Bool = false;
@@ -154,7 +156,11 @@ class ClientPrefs {
 		for (key in Reflect.fields(data))
 			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key))
 				Reflect.setField(data, key, Reflect.field(FlxG.save.data, key));
-		
+				
+		if(Main.fpsVarNova != null)
+			Main.fpsVarNova.visible = data.showFPS;
+		if(Main.fpsVarNF != null)
+			Main.fpsVarNF.visible = data.showFPS;
 		if(Main.fpsVar != null)
 			Main.fpsVar.visible = data.showFPS;
 
