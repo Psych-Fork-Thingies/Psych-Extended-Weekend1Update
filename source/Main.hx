@@ -100,6 +100,16 @@ class Main extends Sprite
 
 		setupGame();
 	}
+	
+	private function detectFPSCounter():Void
+	{
+	    if (ClientPrefs.data.FPSCounter == 'NovaFlare')
+	        fpsVarNova.visible = ClientPrefs.data.showFPS;
+	    else if (ClientPrefs.data.FPSCounter == 'NF')
+	        fpsVarNF.visible = ClientPrefs.data.showFPS;
+	    else
+	        fpsVar.visible = ClientPrefs.data.showFPS;
+	}
 
 	private function setupGame():Void
 	{
@@ -133,35 +143,27 @@ class Main extends Sprite
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		addChild(new FlxGame(game.width, game.height, #if (mobile && MODS_ALLOWED) CopyState.checkExistingFiles() ? game.initialState : CopyState #else game.initialState #end, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
-        if (ClientPrefs.data.FPSCounter == 'NovaFlare')
-        {
-            fpsVarNova = new FPSNova(5, 5);
-    		addChild(fpsVarNova);
-    		if(fpsVarNova != null) {
-    		    fpsVarNova.scaleX = fpsVarNova.scaleY = 1;		  
-    			fpsVarNova.visible = ClientPrefs.data.showFPS;
-    		}
-		}
-		else if(ClientPrefs.data.FPSCounter == 'NF')
-		{
-		    fpsVarNF = new FPS_NF(10, 3, 0xFFFFFF);
-    		addChild(fpsVarNF);
-    		Lib.current.stage.align = "tl";
-    		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-    		if(fpsVarNF != null) {
-    			fpsVarNF.visible = ClientPrefs.data.showFPS;
-    		}
-		}
-		else
-		{
-    		fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
-    		addChild(fpsVar);
-    		Lib.current.stage.align = "tl";
-    		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-    		if(fpsVar != null) {
-    			fpsVar.visible = ClientPrefs.data.showFPS;
-    		}
-		}
+        fpsVarNova = new FPSNova(5, 5);
+    	addChild(fpsVarNova);
+    	if(fpsVarNova != null) {
+    	    fpsVarNova.scaleX = fpsVarNova.scaleY = 1;		  
+    		fpsVarNova.visible = false;
+    	}
+		fpsVarNF = new FPS_NF(10, 3, 0xFFFFFF);
+    	addChild(fpsVarNF);
+    	Lib.current.stage.align = "tl";
+    	Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+    	if(fpsVarNF != null) {
+    		fpsVarNF.visible = false;
+    	}
+    	fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
+    	addChild(fpsVar);
+    	Lib.current.stage.align = "tl";
+    	Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+    	if(fpsVar != null) {
+    		fpsVar.visible = false;
+    	}
+    	detectFPSCounter();
 
 		#if linux
 		var icon = Image.fromFile("icon.png");

@@ -82,7 +82,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'string',
 			['Psych', 'NovaFlare', 'NF']);
 		addOption(option);
-		option.onChange = onChangeFPSCounter;
+		option.onChange = onChangeFPSCounterShit;
 		
 		var option:Option = new Option('FPS Rainbow',
 			"If unchecked, FPS not change color",
@@ -202,12 +202,26 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	function onChangeFPSCounter()
 	{
-		if(Main.fpsVarNova != null)
+		if(Main.fpsVarNova != null && ClientPrefs.data.FPSCounter == 'NovaFlare')
 			Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
-		if(Main.fpsVarNF != null)
+		else if(Main.fpsVarNF != null && ClientPrefs.data.FPSCounter == 'NF')
 			Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
-		if(Main.fpsVar != null)
+		else if(Main.fpsVar != null && ClientPrefs.data.FPSCounter == 'Psych')
 			Main.fpsVar.visible = ClientPrefs.data.showFPS;
+	}
+	
+	function onChangeFPSCounterShit()
+	{
+	    fpsVar.visible = false;
+	    fpsVarNF.visible = false;
+	    fpsVarNova.visible = false;
+	    
+		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
+	        fpsVarNova.visible = ClientPrefs.data.showFPS;
+	    else if (ClientPrefs.data.FPSCounter == 'NF')
+	        fpsVarNF.visible = ClientPrefs.data.showFPS;
+	    else
+	        fpsVar.visible = ClientPrefs.data.showFPS;
 	}
 	
 	function onChangeNoteSkin()
