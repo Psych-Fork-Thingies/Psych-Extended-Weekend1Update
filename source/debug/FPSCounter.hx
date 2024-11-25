@@ -35,22 +35,20 @@ class FPSCounter extends TextField
 
 	@:noCompletion private var times:Array<Float>;
 
-	public var os:String = '';
-	public static var oslua:String = '';
+	public static var os:String = '';
 
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
 		super();
 
 		if (LimeSystem.platformName == LimeSystem.platformVersion || LimeSystem.platformVersion == null)
+		{
 			os = '\nOS: ${LimeSystem.platformName}' #if cpp + ' ${getArch() != 'Unknown' ? getArch() : ''}' #end;
+		}
 		else
+		{
 			os = '\nOS: ${LimeSystem.platformName}' #if cpp + ' ${getArch() != 'Unknown' ? getArch() : ''}' #end + ' - ${LimeSystem.platformVersion}';
-			
-		if (LimeSystem.platformName == LimeSystem.platformVersion || LimeSystem.platformVersion == null)
-			oslua = '${LimeSystem.platformName}' #if cpp + ' ${getArch() != 'Unknown' ? getArch() : ''}' #end;
-		else
-			oslua = '${LimeSystem.platformName}' #if cpp + ' ${getArch() != 'Unknown' ? getArch() : ''}' #end + ' - ${LimeSystem.platformVersion}';
+		}
 
 		positionFPS(x, y);
 

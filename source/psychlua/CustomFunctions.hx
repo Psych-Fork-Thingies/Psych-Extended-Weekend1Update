@@ -16,27 +16,23 @@ class CustomFunctions
 		});
 		
 		Lua_helper.add_callback(lua, "ChangeFPSCounterText", function(text1:String = '', text2:String = '', text3:String = '', text4:String = '', text5:String = '', text6:String = ''):Void
-		{
-		    //I know This is Weird But I'm just Testing
-    		if (text1 == "Memory") text1 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text2 == "Memory") text2 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text3 == "Memory") text3 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text4 == "Memory") text4 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text5 == "Memory") text5 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text6 == "Memory") text6 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text1 == "FPS") text1 = FPSCounter.FPSThing;
-    		if (text2 == "FPS") text2 = FPSCounter.FPSThing;
-    		if (text3 == "FPS") text3 = FPSCounter.FPSThing;
-    		if (text4 == "FPS") text4 = FPSCounter.FPSThing;
-    		if (text5 == "FPS") text5 = FPSCounter.FPSThing;
-    		if (text6 == "FPS") text6 = FPSCounter.FPSThing;
-    		if (text1 == "OS") text1 = FPSCounter.oslua;
-    		if (text2 == "OS") text2 = FPSCounter.oslua;
-    		if (text3 == "OS") text3 = FPSCounter.oslua;
-    		if (text4 == "OS") text4 = FPSCounter.oslua;
-    		if (text5 == "OS") text5 = FPSCounter.oslua;
-    		if (text6 == "OS") text6 = FPSCounter.oslua;
-		    
+		{	
+		    //Bing better than ChatGPT
+    		for (i in 1...7) {
+                var textVar = this['text' + i];
+                
+                switch (textVar) {
+                    case "Memory":
+                        this['text' + i] = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
+                    case "FPS":
+                        this['text' + i] = FPSCounter.FPSThing;
+                    case "OS":
+                        this['text' + i] = FPSCounter.os;
+                    default:
+                        // Handle default case if needed
+                }
+            }
+    				    
 		    if (text1 == '' && text2 == '' && text3 == '' && text4 == '' && text5 == '' && text6 == '')
 		        FunkinLua.FPSCounterText = null;
 		    else
@@ -53,7 +49,7 @@ class CustomFunctions
 			CoolUtil.showPopUp(message, title);
 		});
 		
-		Lua_helper.add_callback(lua, "parseJson", function(directory:String, ?ignoreMods:Bool = false):Dynamic //For Vs Steve Bedrock Edition Psych Port
+		Lua_helper.add_callback(lua, "parseJson", function(directory:String, ?ignoreMods:Bool = false):Dynamic //For Vs Steve Bedrock Edition Psych Port -Useless
 		{
             final funnyPath:String = directory + '.json';
             final jsonContents:String = Paths.getTextFromFile(funnyPath, ignoreMods);
