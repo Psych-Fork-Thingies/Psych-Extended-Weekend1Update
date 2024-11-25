@@ -212,16 +212,16 @@ class VisualsUISubState extends BaseOptionsMenu
 	
 	function onChangeFPSCounterShit()
 	{
-	    fpsVar.visible = false;
-	    fpsVarNF.visible = false;
-	    fpsVarNova.visible = false;
+	    Main.fpsVar.visible = false;
+	    Main.fpsVarNF.visible = false;
+	    Main.fpsVarNova.visible = false;
 	    
 		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
-	        fpsVarNova.visible = ClientPrefs.data.showFPS;
+	        Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
 	    else if (ClientPrefs.data.FPSCounter == 'NF')
-	        fpsVarNF.visible = ClientPrefs.data.showFPS;
+	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
 	    else
-	        fpsVar.visible = ClientPrefs.data.showFPS;
+	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}
 	
 	function onChangeNoteSkin()
