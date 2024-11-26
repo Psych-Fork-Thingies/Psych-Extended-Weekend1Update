@@ -8,7 +8,8 @@ class PauseSubState extends MusicBeatSubstate
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
 	var menuItems:Array<String> = [];
-	var menuItemsOG:Array<String> = [Resume', 'Restart Song', 'Skip Time', 'Botplay', 'Practice Mode', 'Options', 'Change Gameplay Settings', 'Change Difficulty' #if mobile, 'Chart Editor' #end, 'Exit to menu', 'Exit to main menu'];
+	//it looks weird
+	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Skip Time', 'Botplay', 'Practice Mode', 'End Song', 'Options', 'Change Gameplay Settings', 'Change Difficulty' #if mobile, 'Chart Editor' #end, 'Exit to menu', 'Exit to main menu'];
 	var difficultyChoices = [];
 	var curSelected:Int = 0;
 
@@ -138,6 +139,12 @@ class PauseSubState extends MusicBeatSubstate
 		regenMenu();
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
+        if (PlayState.chartingMode)
+    	    addVirtualPad(FULL, A);
+    	else
+    	    addVirtualPad(FULL, A);
+    	addVirtualPadCamera();
+    	
 		super.create();
 	}
 	
@@ -215,7 +222,7 @@ class PauseSubState extends MusicBeatSubstate
 				}
 		}
 
-		if (controls.ACCEPT && (cantUnpause <= 0 || !controls.controllerMode))
+		if (controls.ACCEPT && (cantUnpause <= 0 || !ClientPrefs.data.controllerMode)))
 		{
 			if (menuItems == difficultyChoices)
 			{
@@ -352,6 +359,14 @@ class PauseSubState extends MusicBeatSubstate
 		}
 		skipTimeText = null;
 		skipTimeTracker = null;
+	}
+	
+	override function closeSubState() {
+		persistentUpdate = true;
+		super.closeSubState();
+		removeVirtualPad();
+		addVirtualPad(FULL, A);
+		addVirtualPadCamera();
 	}
 
 	public static function restartSong(noTrans:Bool = false)
