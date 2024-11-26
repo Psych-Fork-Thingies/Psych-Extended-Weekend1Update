@@ -29,7 +29,7 @@ class CustomSwitchState //Now You Can Add and Remove Custom Menus More Easier Th
         }
         else if (Type == 'Options') //Options
         {
-            MusicBeatState.switchState(new options.OptionsState());
+            LoadingState.loadAndSwitchState(new options.OptionsState());
         }
         else if (Type == 'Credits') //Credits
         {

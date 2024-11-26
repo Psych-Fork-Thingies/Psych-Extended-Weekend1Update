@@ -61,33 +61,50 @@
 	<define name="VIDEOS_ALLOWED" if="web || windows || mobile" unless="32bits"/>
 	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<define name="CRASH_HANDLER" if="desktop release || mobile" />
+
+	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
+	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/>
+	<section if="TITLE_SCREEN_EASTER_EGG">
+		<assets path="assets/secrets" rename="assets" exclude="*.ogg" if="web"/>
+		<assets path="assets/secrets" rename="assets" exclude="*.mp3"  unless="web"/>
+	</section>
+
+	<!-- DONT ENABLE THIS -->
+	<define name="CHECK_FOR_UPDATES" if="desktop officialBuild"/>
+
+	<!-- <define name="PRELOAD_ALL" /> -->
+	<define name="PRELOAD_ALL" unless="web" />
+	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
 	
-	<assets path="assets/fonts" />
-	<assets path="assets/shared"        exclude="*.ogg" if="web"/>
-	<assets path="assets/shared"        exclude="*.mp3" unless="web"/>
+	<library name="videos"        preload="true" />
+	<section if="PRELOAD_ALL">
+		<library name="songs"         preload="true" />
+		<library name="shared"        preload="true" />
+		<library name="week_assets"   preload="true" />
+	</section>
+	
+	<section if="NO_PRELOAD_ALL">
+		<library name="songs"         preload="false" />
+		<library name="shared"        preload="false" />
+		<library name="week_assets"   preload="false" />
+	</section>
+	
 	<assets path="assets/videos"        library="videos"        if="VIDEOS_ALLOWED"/>
 	<assets path="assets/songs"         library="songs"         exclude="*.ogg" if="web"/>
 	<assets path="assets/songs"         library="songs"         exclude="*.mp3" unless="web"/>
 	<assets path="assets/shared"        library="shared"        exclude="*.ogg" if="web"/>
 	<assets path="assets/shared"        library="shared"        exclude="*.mp3" unless="web"/>
 	<section if="BASE_GAME_ASSETS">
-	<assets path="assets/base_game/shared"        rename="shared"                exclude="*.ogg"        if="web"/>
-	<assets path="assets/base_game/shared"        rename="shared"                exclude="*.mp3"       unless="web"/>
+	<assets path="assets/base_game/preload"        rename="assets"                exclude="*.ogg"        if="web"/>
+	<assets path="assets/base_game/preload"        rename="assets"                exclude="*.mp3"       unless="web"/>
 	<assets path="assets/base_game/videos"         rename="assets/videos"         library="videos"        if="VIDEOS_ALLOWED"/>
 	<assets path="assets/base_game/songs"          rename="assets/songs"         library="songs"         exclude="*.ogg" if="web"/>
 	<assets path="assets/base_game/songs"          rename="assets/songs"         library="songs"         exclude="*.mp3" unless="web"/>
+	<assets path="assets/base_game/shared"         rename="assets/shared"         library="shared"        exclude="*.ogg" if="web"/>
+	<assets path="assets/base_game/shared"         rename="assets/shared"         library="shared"        exclude="*.mp3" unless="web"/>
 	<assets path="assets/base_game/week_assets"   library="week_assets"           rename="assets"       exclude="*.ogg" if="web"/>
 	<assets path="assets/base_game/week_assets"   library="week_assets"           rename="assets"       exclude="*.mp3" unless="web"/>
 	</section>
-	
-	<section if="TITLE_SCREEN_EASTER_EGG">
-		<assets path="assets/secrets" rename="assets/shared" library="shared" exclude="*.ogg" if="web"/>
-		<assets path="assets/secrets" rename="assets/shared" library="shared" exclude="*.mp3"  unless="web"/>
-	</section>
-	<library name="videos"        preload="true" />
-	<library name="songs"         preload="true" />
-	<library name="week_assets"   preload="true" />
-	<define name="CHECK_FOR_UPDATES" if="desktop officialBuild"/>
 	
 	<section if="MODS_ALLOWED">
 		<assets path='example_mods' rename='mods' embed='false'/>
@@ -98,6 +115,12 @@
 	
 	<!-- assets path="CHANGELOG.md" rename='changelog.txt' -->
 
+	<!-- NOTE FOR FUTURE SELF SINCE FONTS ARE ALWAYS FUCKY 
+		TO FIX ONE OF THEM, I CONVERTED IT TO OTF. DUNNO IF YOU NEED TO
+		THEN UHHH I USED THE NAME OF THE FONT WITH SETFORMAT() ON THE TEXT!!!
+		NOT USING A DIRECT THING TO THE ASSET!!!
+	-->
+	<assets path="assets/fonts" />
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />

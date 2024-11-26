@@ -347,7 +347,7 @@ class EditorPlayState extends MusicBeatState
 	}
 
 	private function endSong() {
-		MusicBeatState.switchState(new editors.ChartingState());
+		LoadingState.loadAndSwitchState(new editors.ChartingState());
 	}
 
 	public var noteKillOffset:Float = 350;
@@ -359,7 +359,7 @@ class EditorPlayState extends MusicBeatState
 			vocals.pause();
 			opponentVocals.pause();
 			MusicBeatState.mobilec.visible = false;
-			MusicBeatState.switchState(new editors.ChartingState());
+			LoadingState.loadAndSwitchState(new editors.ChartingState());
 		}
 
 		if (startingSong) {

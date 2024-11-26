@@ -150,14 +150,18 @@ class Paths
 				if (OpenFlAssets.exists(levelPath, type))
 					return levelPath;
 			}
+
+			levelPath = getLibraryPathForce(file, "shared");
+			if (OpenFlAssets.exists(levelPath, type))
+				return levelPath;
 		}
 
-		return getSharedPath(file);
+		return getPreloadPath(file);
 	}
 
-	static public function getLibraryPath(file:String, library = "shared")
+	static public function getLibraryPath(file:String, library = "preload")
 	{
-		return if (library == "shared") getSharedPath(file); else getLibraryPathForce(file, library);
+		return if (library == "preload" || library == "default") getPreloadPath(file); else getLibraryPathForce(file, library);
 	}
 
 	inline static function getLibraryPathForce(file:String, library:String, ?level:String)
@@ -429,8 +433,8 @@ class Paths
 		if (!ignoreMods && FileSystem.exists(modFolders(key)))
 			return File.getContent(modFolders(key));
 
-		if (FileSystem.exists(getSharedPath(key)))
-			return File.getContent(getSharedPath(key));
+		if (FileSystem.exists(getPreloadPath(key)))
+			return File.getContent(getPreloadPath(key));
 
 		if (currentLevel != null)
 		{
@@ -440,6 +444,10 @@ class Paths
 				if (FileSystem.exists(levelPath))
 					return File.getContent(levelPath);
 			}
+
+			levelPath = getLibraryPathForce(key, 'shared');
+			if (FileSystem.exists(levelPath))
+				return File.getContent(levelPath);
 		}
 		#end
 		return Assets.getText(getPath(key, TEXT));

@@ -1237,7 +1237,7 @@ class FreeplayStateNF extends MusicBeatState {
 				}
 				destroyFreeplayVocals();
 				FlxG.sound.music.stop();
-				MusicBeatState.switchState(new PlayState());
+				LoadingState.loadAndSwitchState(new PlayState());
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 		
 				//FlxG.sound.music.volume = 0;
@@ -1386,7 +1386,7 @@ class FreeplayStateNF extends MusicBeatState {
 					if(colorTween != null) colorTween.cancel();
 					if (rightcolor != null) rightcolor.cancel();
 					if (leftcolor != null) rightcolor.cancel();
-					MusicBeatState.switchState(new ChartingState());
+					LoadingState.loadAndSwitchState(new ChartingState());
 			}
 		}
 	}

@@ -1812,7 +1812,7 @@ class ChartingState extends MusicBeatState
 			if (FlxG.keys.justPressed.ESCAPE #if android || _virtualpad.buttonB.justPressed #end)
 			{
 				autosaveSong();
-				MusicBeatState.switchState(new editors.EditorPlayState(sectionStartTime()));
+				LoadingState.loadAndSwitchState(new editors.EditorPlayState(sectionStartTime()));
 			}
 			if (FlxG.keys.justPressed.ENTER || _virtualpad.buttonA.justPressed)
 			{
@@ -1825,7 +1825,7 @@ class ChartingState extends MusicBeatState
 
 				//if(_song.stage == null) _song.stage = stageDropDown.selectedLabel;
 				StageData.loadDirectory(_song);
-				MusicBeatState.switchState(new PlayState());
+				LoadingState.loadAndSwitchState(new PlayState());
 			}
 
 			if(curSelectedNote != null && curSelectedNote[1] > -1) {
