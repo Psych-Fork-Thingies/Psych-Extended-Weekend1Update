@@ -239,7 +239,7 @@ class TitleState extends MusicBeatState
 	
 	function startCutscenesIn()
 	{
-		if (inGame) {
+		if (inGame || !ClientPrefs.data.DisableIntroVideo) {
 			startIntro();
 			return;
 		}

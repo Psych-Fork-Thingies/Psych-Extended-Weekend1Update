@@ -335,34 +335,62 @@ class FreeplayState extends MusicBeatState
 				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 				if (PlayState.SONG.needsVoices)
 				{
-				    vocals = new FlxSound();
-        		    try
-        		    {
-        			    vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
-        			}
-        			catch(e:Dynamic) {}
-					FlxG.sound.list.add(vocals);
-					vocals.persist = true;
-					vocals.looped = true;
-				}
-				else if (vocals != null)
-				{
-					vocals.stop();
-					vocals.destroy();
-					vocals = null;
+				    try
+					{
+						var playerVocals:String = getVocalFromCharacter(PlayState.SONG.player1);
+						var loadedVocals = Paths.voices(PlayState.SONG.song, (playerVocals != null && playerVocals.length > 0) ? playerVocals : 'Player');
+						if(loadedVocals == null) loadedVocals = Paths.voices(PlayState.SONG.song);
+						
+						if(loadedVocals != null && loadedVocals.length > 0)
+						{
+							vocals.loadEmbedded(loadedVocals);
+							FlxG.sound.list.add(vocals);
+							vocals.persist = vocals.looped = true;
+							vocals.volume = 0.8;
+							vocals.play();
+							vocals.pause();
+						}
+						else vocals = FlxDestroyUtil.destroy(vocals);
+					}
+					catch(e:Dynamic)
+					{
+						vocals = FlxDestroyUtil.destroy(vocals);
+					}
+					
+					opponentVocals = new FlxSound();
+					try
+					{
+						//trace('please work...');
+						var oppVocals:String = getVocalFromCharacter(PlayState.SONG.player2);
+						var loadedVocals = Paths.voices(PlayState.SONG.song, (oppVocals != null && oppVocals.length > 0) ? oppVocals : 'Opponent');
+						
+						if(loadedVocals != null && loadedVocals.length > 0)
+						{
+							opponentVocals.loadEmbedded(loadedVocals);
+							FlxG.sound.list.add(opponentVocals);
+							opponentVocals.persist = opponentVocals.looped = true;
+							opponentVocals.volume = 0.8;
+							opponentVocals.play();
+							opponentVocals.pause();
+							//trace('yaaay!!');
+						}
+						else opponentVocals = FlxDestroyUtil.destroy(opponentVocals);
+					}
+					catch(e:Dynamic)
+					{
+						//trace('FUUUCK');
+						opponentVocals = FlxDestroyUtil.destroy(opponentVocals);
+					}
 				}
 
 				FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 0.8);
-				if(vocals != null) //Sync vocals to Inst
-				{
-					vocals.play();
-					vocals.volume = 0.8;
-				}
+				FlxG.sound.music.pause();
 				instPlaying = curSelected;
 
 				player.playingMusic = true;
 				player.curTime = 0;
 				player.switchPlayMusic();
+				player.pauseOrResume(true);
 			}
 			else if (instPlaying == curSelected && player.playingMusic)
 			{
@@ -426,7 +454,7 @@ class FreeplayState extends MusicBeatState
 	{
 		try
 		{
-			var path:String = Paths.getPath('characters/$char.json', TEXT);
+			var path:String = Paths.getPath('characters/$char.json', TEXT, null, true);
 			#if MODS_ALLOWED
 			var character:Dynamic = Json.parse(File.getContent(path));
 			#else
@@ -440,7 +468,7 @@ class FreeplayState extends MusicBeatState
 	public static function destroyFreeplayVocals() {
 		if(vocals != null) vocals.stop();
 		vocals = FlxDestroyUtil.destroy(vocals);
-
+		
 		if(opponentVocals != null) opponentVocals.stop();
 		opponentVocals = FlxDestroyUtil.destroy(opponentVocals);
 	}

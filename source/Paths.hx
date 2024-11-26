@@ -246,10 +246,16 @@ class Paths
 
 	inline static public function voices(song:String, postfix:String = null):Any
 	{	 
+	    var diffvoice = Difficulty.getString().toUpperCase();
+	    
 	    var songKey:String = '${formatToSongPath(song)}/Voices';
-		if(postfix != null) songKey += '-' + postfix;
-		//trace('songKey test: $songKey');
+	    var songdiffKey:String = '${formatToSongPath(song)}/Voices-$diffvoice';
+	    
+		if(postfix != null) { songKey += '-' + postfix; songdiffKey += '-' + postfix; }
+		
 		var voices = returnSound(null, songKey, 'songs');
+		try
+		    voices = returnSound('songs', songdiffKey);
 		return voices;
 	}
 	
@@ -315,8 +321,14 @@ class Paths
 
 	inline static public function inst(song:String):Sound
 	{
+	    var diffvoice = Difficulty.getString().toUpperCase();
+	    
 	    var songKey:String = '${formatToSongPath(song)}/Inst';
+	    var songdiffKey:String = '${formatToSongPath(song)}/Inst-$diffvoice';
+	    
 		var inst = returnSound(null, songKey, 'songs');
+		try
+		    inst = returnSound('songs', songdiffKey);
 		return inst;
 	}
 

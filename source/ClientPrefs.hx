@@ -35,6 +35,7 @@ import TitleState;
 	public var extraKeys:Int = 2;
 	public var hitboxLocation:String = 'Bottom';
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
+	public var DisableIntroVideo:Bool = false;
 	
 	//FPSCounter things
 	public var FPSCounter:String = 'Psych';

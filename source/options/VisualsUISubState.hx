@@ -89,6 +89,12 @@ class VisualsUISubState extends BaseOptionsMenu
 			'rainbowFPS',
 			'bool');
 		addOption(option);
+		
+		var option:Option = new Option('Disable Intro Video',
+			"If unchecked, disables the Intro Video",
+			'DisableIntroVideo',
+			'bool');
+		addOption(option);
 
 		var option:Option = new Option('Note Splashes',
 			"If unchecked, hitting \"Sick!\" notes won't show particles.",

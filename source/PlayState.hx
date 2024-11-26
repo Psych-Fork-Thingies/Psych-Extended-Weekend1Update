@@ -3456,7 +3456,8 @@ class PlayState extends MusicBeatState
 	    removeMobileControls();
 	}
     	
-	// this things used in indie cross psych extended/0.6.3 port
+	// this things used in indie cross 0.6.3 port -KralOyuncu
+	// I don't need this but I can't remove this because of KralOyuncu -AloneDark
 	function addCupheadGameoverButtons() // Why not
 	{
 	    addVirtualPad(UP_DOWN, A);

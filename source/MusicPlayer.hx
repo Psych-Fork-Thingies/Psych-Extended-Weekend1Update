@@ -1,13 +1,15 @@
-package;
+package objects;
 
 import flixel.group.FlxGroup;
 import flixel.ui.FlxBar;
 import flixel.util.FlxStringUtil;
 
+import states.FreeplayState;
+
 /**
  * Music player used for Freeplay
  */
-@:access(FreeplayState)
+@:access(states.FreeplayState)
 class MusicPlayer extends FlxGroup 
 {
 	public var instance:FreeplayState;
@@ -196,8 +198,8 @@ class MusicPlayer extends FlxGroup
 			}
 		}
 		updatePlaybackTxt();
-
-		if (instance._virtualpad.buttonC.justPressed || instance.controls.RESET)
+	
+		if (instance._virtualpad.buttonC.justPressed || FlxG.keys.pressed.R)
 		{
 			playbackRate = 1;
 			setPlaybackRate();
@@ -247,10 +249,10 @@ class MusicPlayer extends FlxGroup
 
 		if (playingMusic)
 		{
-			if (ClientPrefs.data.mobileC)
-			    instance.bottomText.text = "Press X to Pause / Press B to Exit / Press C to Reset the Song";
+			if (ClientPrefs.data.VirtualPadAlpha != 0)
+				instance.bottomText.text = "Press X to Pause / Press B to Exit / Press C to Reset the Song";
 			else
-			    instance.bottomText.text = "Press SPACE to Pause / Press ESCAPE to Exit / Press R to Reset the Song";
+				instance.bottomText.text = "Press SPACE to Pause / Press ESCAPE to Exit / Press R to Reset the Song";
 			positionSong();
 			
 			progressBar.setRange(0, FlxG.sound.music.length);
