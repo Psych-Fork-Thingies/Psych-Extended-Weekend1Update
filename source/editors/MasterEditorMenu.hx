@@ -117,17 +117,17 @@ class MasterEditorMenu extends MusicBeatState
 		{
 			switch(options[curSelected]) {
 				case 'Character Editor':
-					MusicBeatState.switchState(new CharacterEditorState(Character.DEFAULT_CHARACTER, false));
+					LoadingState.loadAndSwitchState(new CharacterEditorState(Character.DEFAULT_CHARACTER, false));
 				case 'Week Editor':
 					MusicBeatState.switchState(new WeekEditorState());
 				case 'Menu Character Editor':
 					MusicBeatState.switchState(new MenuCharacterEditorState());
 				case 'Dialogue Portrait Editor':
-					MusicBeatState.switchState(new DialogueCharacterEditorState(), false);
+					LoadingState.loadAndSwitchState(new DialogueCharacterEditorState(), false);
 				case 'Dialogue Editor':
-					MusicBeatState.switchState(new DialogueEditorState(), false);
+					LoadingState.loadAndSwitchState(new DialogueEditorState(), false);
 				case 'Chart Editor'://felt it would be cool maybe
-					MusicBeatState.switchState(new ChartingState(), false);
+					LoadingState.loadAndSwitchState(new ChartingState(), false);
 					PlayState.chartingMode = true; // I don't understand why Psych 0.6.3 doesn't have this
 			}
 			FlxG.sound.music.volume = 0;
