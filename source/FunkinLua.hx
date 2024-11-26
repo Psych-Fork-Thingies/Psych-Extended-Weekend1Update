@@ -66,7 +66,6 @@ import Discord;
 #end
 
 import tjson.TJSON as Json;
-import debug.FPSCounter;
 
 using StringTools;
 
@@ -2980,33 +2979,6 @@ class FunkinLua {
 			}
 			#end
 			return list;
-		});
-		
-		Lua_helper.add_callback(lua, "ChangeFPSCounterText", function(text1:String = '', text2:String = '', text3:String = '', text4:String = '', text5:String = '', text6:String = ''):Void
-		{
-		    //ChatGPT 3
-            for (i in 1...7) {
-                var textVar = Reflect.field(this, 'text' + i);
-                
-                switch (textVar) {
-                    case "Memory":
-                        Reflect.setProperty(this, 'text' + i, flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas));
-                        break;
-                    case "FPS":
-                        Reflect.setProperty(this, 'text' + i, FPSCounter.FPSThing);
-                        break;
-                    case "OS":
-                        Reflect.setProperty(this, 'text' + i, FPSCounter.os);
-                        break;
-                    default:
-                        // Handle default case if needed
-                }
-            }
-		
-		    if (text1 == '' && text2 == '' && text3 == '' && text4 == '' && text5 == '' && text6 == '')
-		        FunkinLua.FPSCounterText = null;
-		    else
-		        FunkinLua.FPSCounterText = text1 + text2 + text3 + text4 + text5 + text6;
 		});
 		
 		#if ACHIEVEMENTS_ALLOWED Achievements.addLuaCallbacks(lua); #end

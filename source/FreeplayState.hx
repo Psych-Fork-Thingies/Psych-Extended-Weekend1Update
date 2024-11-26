@@ -10,22 +10,20 @@ import MusicPlayer;
 import GameplayChangersSubstate;
 import ResetScoreSubState;
 
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.math.FlxMath;
 import flixel.util.FlxDestroyUtil;
-
-import openfl.utils.Assets;
-
 import haxe.Json;
 
 class FreeplayState extends MusicBeatState
 {
-	var songs:Array<SongMetadata> = [];
+	public var songs:Array<SongMetadata> = [];
 
 	var selector:FlxText;
-	private static var curSelected:Int = 0;
+	public static var curSelected:Int = 0;
 	var lerpSelected:Float = 0;
 	var curDifficulty:Int = -1;
-	private static var lastDifficultyName:String = Difficulty.getDefault();
+	public static var lastDifficultyName:String = Difficulty.getDefault();
 
 	var scoreBG:FlxSprite;
 	var scoreText:FlxText;
@@ -35,10 +33,10 @@ class FreeplayState extends MusicBeatState
 	var intendedScore:Int = 0;
 	var intendedRating:Float = 0;
 
-	private var grpSongs:FlxTypedGroup<Alphabet>;
-	private var curPlaying:Bool = false;
+	public var grpSongs:FlxTypedGroup<Alphabet>;
+	public var curPlaying:Bool = false;
 
-	private var iconArray:Array<HealthIcon> = [];
+	public var iconArray:Array<HealthIcon> = [];
 
 	var bg:FlxSprite;
 	var intendedColor:Int;
@@ -65,16 +63,6 @@ class FreeplayState extends MusicBeatState
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
 		#end
-
-		if(WeekData.weeksList.length < 1)
-		{
-			FlxTransitionableState.skipNextTransIn = true;
-			persistentUpdate = false;
-			MusicBeatState.switchState(new ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
-				function() MusicBeatState.switchState(new editors.WeekEditorState()),
-				function() MusicBeatState.switchState(new MainMenuState())));
-			return;
-		}
 
 		for (i in 0...WeekData.weeksList.length)
 		{
@@ -175,7 +163,12 @@ class FreeplayState extends MusicBeatState
 		bottomBG.alpha = 0.6;
 		add(bottomBG);
 
-		var leText:String = "Press SPACE to listen to the Song / Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
+        var leText:String;
+        if (ClientPrefs.data.mobileC)
+		    leText = "Press X to listen to the Song / Press C to open the Gameplay Changers Menu / Press Y to Reset your Score and Accuracy.";
+        else
+		    leText = "Press SPACE to listen to the Song / Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
+		
 		bottomString = leText;
 		var size:Int = 16;
 		bottomText = new FlxText(bottomBG.x, bottomBG.y + 4, FlxG.width, leText, size);
@@ -188,7 +181,7 @@ class FreeplayState extends MusicBeatState
 		
 		changeSelection();
 		updateTexts();
-		
+
 		addVirtualPad(FULL, A_B_C_X_Y_Z);
 		super.create();
 	}
@@ -221,9 +214,6 @@ class FreeplayState extends MusicBeatState
 	var stopMusicPlay:Bool = false;
 	override function update(elapsed:Float)
 	{
-		if(WeekData.weeksList.length < 1)
-			return;
-
 		if (FlxG.sound.music.volume < 0.7)
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
@@ -243,7 +233,7 @@ class FreeplayState extends MusicBeatState
 			ratingSplit[1] += '0';
 
 		var shiftMult:Int = 1;
-		if((FlxG.keys.pressed.SHIFT || _virtualpad.buttonZ.pressed) && !player.playingMusic) shiftMult = 3;
+        if((FlxG.keys.pressed.SHIFT || _virtualpad.buttonZ.pressed) && !player.playingMusic) shiftMult = 3;
 
 		if (!player.playingMusic)
 		{
@@ -304,7 +294,7 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		if (controls.BACK)
+        if (controls.BACK)
 		{
 			if (player.playingMusic)
 			{
@@ -323,17 +313,17 @@ class FreeplayState extends MusicBeatState
 			{
 				persistentUpdate = false;
 				FlxG.sound.play(Paths.sound('cancelMenu'));
-				MusicBeatState.switchState(new MainMenuState());
+				CustomSwitchState.switchMenus('MainMenu');
 			}
 		}
 
-		if((FlxG.keys.justPressed.CONTROL || _virtualpad.buttonC.justPressed) && !player.playingMusic)
+        if((FlxG.keys.justPressed.CONTROL || _virtualpad.buttonC.justPressed) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new GameplayChangersSubstate());
 			removeVirtualPad();
 		}
-		else if(FlxG.keys.justPressed.SPACE || _virtualpad.buttonX.justPressed)
+        else if(FlxG.keys.justPressed.SPACE || _virtualpad.buttonX.justPressed)
 		{
 			if(instPlaying != curSelected && !player.playingMusic)
 			{
@@ -342,66 +332,37 @@ class FreeplayState extends MusicBeatState
 
 				Paths.currentModDirectory = songs[curSelected].folder;
 				var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-				Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 				if (PlayState.SONG.needsVoices)
 				{
-					vocals = new FlxSound();
-					try
-					{
-						var playerVocals:String = getVocalFromCharacter(PlayState.SONG.player1);
-						var loadedVocals = Paths.voices(PlayState.SONG.song, (playerVocals != null && playerVocals.length > 0) ? playerVocals : 'Player');
-						if(loadedVocals == null) loadedVocals = Paths.voices(PlayState.SONG.song);
-						
-						if(loadedVocals != null)
-						{
-							vocals.loadEmbedded(loadedVocals);
-							FlxG.sound.list.add(vocals);
-							vocals.persist = vocals.looped = true;
-							vocals.volume = 0.8;
-							vocals.play();
-							vocals.pause();
-						}
-						else vocals = FlxDestroyUtil.destroy(vocals);
-					}
-					catch(e:Dynamic)
-					{
-						vocals = FlxDestroyUtil.destroy(vocals);
-					}
-					
-					opponentVocals = new FlxSound();
-					try
-					{
-						//trace('please work...');
-						var oppVocals:String = getVocalFromCharacter(PlayState.SONG.player2);
-						var loadedVocals = Paths.voices(PlayState.SONG.song, (oppVocals != null && oppVocals.length > 0) ? oppVocals : 'Opponent');
-						
-						if(loadedVocals != null)
-						{
-							opponentVocals.loadEmbedded(loadedVocals);
-							FlxG.sound.list.add(opponentVocals);
-							opponentVocals.persist = opponentVocals.looped = true;
-							opponentVocals.volume = 0.8;
-							opponentVocals.play();
-							opponentVocals.pause();
-							//trace('yaaay!!');
-						}
-						else opponentVocals = FlxDestroyUtil.destroy(opponentVocals);
-					}
-					catch(e:Dynamic)
-					{
-						//trace('FUUUCK');
-						opponentVocals = FlxDestroyUtil.destroy(opponentVocals);
-					}
+				    vocals = new FlxSound();
+        		    try
+        		    {
+        			    vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+        			}
+        			catch(e:Dynamic) {}
+					FlxG.sound.list.add(vocals);
+					vocals.persist = true;
+					vocals.looped = true;
+				}
+				else if (vocals != null)
+				{
+					vocals.stop();
+					vocals.destroy();
+					vocals = null;
 				}
 
 				FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 0.8);
-				FlxG.sound.music.pause();
+				if(vocals != null) //Sync vocals to Inst
+				{
+					vocals.play();
+					vocals.volume = 0.8;
+				}
 				instPlaying = curSelected;
 
 				player.playingMusic = true;
 				player.curTime = 0;
 				player.switchPlayMusic();
-				player.pauseOrResume(true);
 			}
 			else if (instPlaying == curSelected && player.playingMusic)
 			{
@@ -416,19 +377,18 @@ class FreeplayState extends MusicBeatState
 
 			try
 			{
-				Song.loadFromJson(poop, songLowercase);
+				PlayState.SONG = Song.loadFromJson(poop, songLowercase);
 				PlayState.isStoryMode = false;
 				PlayState.storyDifficulty = curDifficulty;
 
 				trace('CURRENT WEEK: ' + WeekData.getWeekFileName());
 			}
-			catch(e:haxe.Exception)
+			catch(e:Dynamic)
 			{
-				trace('ERROR! ${e.message}');
+				trace('ERROR! $e');
 
-				var errorStr:String = e.message;
-				if(errorStr.contains('There is no TEXT asset with an ID of')) errorStr = 'Missing file: ' + errorStr.substring(errorStr.indexOf(songLowercase), errorStr.length-1); //Missing chart
-				else errorStr += '\n\n' + e.stack;
+				var errorStr:String = e.toString();
+				if(errorStr.startsWith('[lime.utils.Assets] ERROR:')) errorStr = 'Missing file: ' + errorStr.substring(errorStr.indexOf(songLowercase), errorStr.length-1); //Missing chart
 
 				missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
 				missingText.screenCenter(Y);
@@ -442,7 +402,7 @@ class FreeplayState extends MusicBeatState
 			}
 
 			LoadingState.loadAndSwitchState(new PlayState());
-			FlxG.sound.music.stop();
+			#if !SHOW_LOADING_SCREEN FlxG.sound.music.stop(); #end
 			stopMusicPlay = true;
 
 			destroyFreeplayVocals();
@@ -450,7 +410,7 @@ class FreeplayState extends MusicBeatState
 			DiscordClient.loadModRPC();
 			#end
 		}
-		else if((controls.RESET || _virtualpad.buttonY.justPressed) && !player.playingMusic)
+        else if((controls.RESET || _virtualpad.buttonY.justPressed) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
@@ -474,7 +434,6 @@ class FreeplayState extends MusicBeatState
 			#end
 			return character.vocals_file;
 		}
-		catch (e:Dynamic) {}
 		return null;
 	}
 
@@ -557,10 +516,10 @@ class FreeplayState extends MusicBeatState
 		_updateSongLastDifficulty();
 	}
 
-	inline private function _updateSongLastDifficulty()
+	inline public function _updateSongLastDifficulty()
 		songs[curSelected].lastDifficulty = Difficulty.getString(curDifficulty);
 
-	private function positionHighscore()
+	public function positionHighscore()
 	{
 		scoreText.x = FlxG.width - scoreText.width - 6;
 		scoreBG.scale.x = FlxG.width - scoreText.x + 6;
