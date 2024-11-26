@@ -19,15 +19,15 @@ class CustomFunctions
 		{	
 		    //Bing better than ChatGPT
     		for (i in 1...7) {
-                static var textVar = this['text' + i];
+                var textVar = this['text' + i];
                 
                 switch (textVar) {
                     case "Memory":
-                        this['text' + i] = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
+                        textVar = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
                     case "FPS":
-                        this['text' + i] = FPSCounter.FPSThing;
+                        textVar = FPSCounter.FPSThing;
                     case "OS":
-                        this['text' + i] = FPSCounter.os;
+                        textVar = FPSCounter.os;
                     default:
                         // Handle default case if needed
                 }

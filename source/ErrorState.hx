@@ -1,4 +1,4 @@
-package states;
+package;
 
 class ErrorState extends MusicBeatState
 {

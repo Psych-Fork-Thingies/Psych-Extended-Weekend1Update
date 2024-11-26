@@ -12,7 +12,6 @@ import ResetScoreSubState;
 
 import flixel.math.FlxMath;
 import flixel.util.FlxDestroyUtil;
-import flixel.addons.transition.FlxTransitionableState;
 
 import openfl.utils.Assets;
 
@@ -20,38 +19,38 @@ import haxe.Json;
 
 class FreeplayState extends MusicBeatState
 {
-	public var songs:Array<SongMetadata> = [];
+	var songs:Array<SongMetadata> = [];
 
-	public var selector:FlxText;
+	var selector:FlxText;
 	private static var curSelected:Int = 0;
-	public var lerpSelected:Float = 0;
-	public var curDifficulty:Int = -1;
+	var lerpSelected:Float = 0;
+	var curDifficulty:Int = -1;
 	private static var lastDifficultyName:String = Difficulty.getDefault();
 
-	public var scoreBG:FlxSprite;
-	public var scoreText:FlxText;
-	public var diffText:FlxText;
-	public var lerpScore:Int = 0;
-	public var lerpRating:Float = 0;
-	public var intendedScore:Int = 0;
-	public var intendedRating:Float = 0;
+	var scoreBG:FlxSprite;
+	var scoreText:FlxText;
+	var diffText:FlxText;
+	var lerpScore:Int = 0;
+	var lerpRating:Float = 0;
+	var intendedScore:Int = 0;
+	var intendedRating:Float = 0;
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
 
-	public var bg:FlxSprite;
-	public var intendedColor:Int;
+	var bg:FlxSprite;
+	var intendedColor:Int;
 
-	public var missingTextBG:FlxSprite;
-	public var missingText:FlxText;
+	var missingTextBG:FlxSprite;
+	var missingText:FlxText;
 
-	public var bottomString:String;
-	public var bottomText:FlxText;
-	public var bottomBG:FlxSprite;
+	var bottomString:String;
+	var bottomText:FlxText;
+	var bottomBG:FlxSprite;
 
-	public var player:MusicPlayer;
+	var player:MusicPlayer;
 
 	override function create()
 	{
@@ -217,7 +216,7 @@ class FreeplayState extends MusicBeatState
 	var instPlaying:Int = -1;
 	public static var vocals:FlxSound = null;
 	public static var opponentVocals:FlxSound = null;
-	public var holdTime:Float = 0;
+	var holdTime:Float = 0;
 
 	var stopMusicPlay:Bool = false;
 	override function update(elapsed:Float)
@@ -498,7 +497,7 @@ class FreeplayState extends MusicBeatState
 		intendedRating = Highscore.getRating(songs[curSelected].songName, curDifficulty);
 		#end
 
-		lastDifficultyName = Difficulty.getString(curDifficulty);
+		lastDifficultyName = Difficulty.getString(curDifficulty, false);
 		var displayDiff:String = Difficulty.getString(curDifficulty);
 		if (Difficulty.list.length > 1)
 			diffText.text = '< ' + displayDiff.toUpperCase() + ' >';
@@ -559,7 +558,7 @@ class FreeplayState extends MusicBeatState
 	}
 
 	inline private function _updateSongLastDifficulty()
-		songs[curSelected].lastDifficulty = Difficulty.getString(curDifficulty);
+		songs[curSelected].lastDifficulty = Difficulty.getString(curDifficulty, false);
 
 	private function positionHighscore()
 	{
@@ -601,7 +600,7 @@ class FreeplayState extends MusicBeatState
 	{
 		super.destroy();
 
-		FlxG.autoPause = true;
+		FlxG.autoPause = ClientPrefs.data.autoPause;
 		if (!FlxG.sound.music.playing && !stopMusicPlay)
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 	}	
