@@ -4,8 +4,6 @@ import flixel.group.FlxGroup;
 import flixel.ui.FlxBar;
 import flixel.util.FlxStringUtil;
 
-import states.FreeplayState;
-
 /**
  * Music player used for Freeplay
  */
@@ -242,7 +240,7 @@ class MusicPlayer extends FlxGroup
 
 	public function switchPlayMusic()
 	{
-		FlxG.autoPause = (!playingMusic && ClientPrefs.data.autoPause);
+		FlxG.autoPause = !playingMusic;
 		active = visible = playingMusic;
 
 		instance.scoreBG.visible = instance.diffText.visible = instance.scoreText.visible = !playingMusic; //Hide Freeplay texts and boxes if playingMusic is true
@@ -258,7 +256,7 @@ class MusicPlayer extends FlxGroup
 
 		if (playingMusic)
 		{
-			if (instance.controls.mobileC)
+			if (ClientPrefs.data.VirtualPadAlpha != 0)
 				instance.bottomText.text = "Press X to Pause / Press B to Exit / Press C to Reset the Song";
 			else
 				instance.bottomText.text = "Press SPACE to Pause / Press ESCAPE to Exit / Press R to Reset the Song";
