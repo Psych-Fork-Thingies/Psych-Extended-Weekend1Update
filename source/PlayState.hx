@@ -334,11 +334,14 @@ class PlayState extends MusicBeatState
 	public static var opponentChart:Bool = false;
 	public var cpuControlled_opponent:Bool = false;
 
+    public static var nextReloadAll:Bool = false;
 	override public function create()
 	{
 	    MobileCType = 'DEFAULT';
 		//trace('Playback Rate: ' + playbackRate);
 		Paths.clearStoredMemory();
+		if(nextReloadAll) Paths.clearUnusedMemory();
+		nextReloadAll = false;
 
 		// for lua
 		instance = this;
@@ -3405,7 +3408,7 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.data.PauseMenuStyle == 'NovaFlare')
 		    openSubState(new PauseSubStateNOVA());
 		else
-		    openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+		    openSubState(new PauseSubState());
 
 		#if desktop
 		DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
