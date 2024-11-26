@@ -347,7 +347,7 @@ class EditorPlayState extends MusicBeatState
 	}
 
 	private function endSong() {
-		LoadingState.loadAndSwitchState(new editors.ChartingState());
+		MusicBeatState.switchState(new editors.ChartingState());
 	}
 
 	public var noteKillOffset:Float = 350;
@@ -359,7 +359,7 @@ class EditorPlayState extends MusicBeatState
 			vocals.pause();
 			opponentVocals.pause();
 			MusicBeatState.mobilec.visible = false;
-			LoadingState.loadAndSwitchState(new editors.ChartingState());
+			MusicBeatState.switchState(new editors.ChartingState());
 		}
 
 		if (startingSong) {
@@ -1101,15 +1101,15 @@ class EditorPlayState extends MusicBeatState
 		#if MODS_ALLOWED
 		var path:String = Paths.modFolders(characterPath);
 		if (!FileSystem.exists(path)) {
-			path = Paths.getPreloadPath(characterPath);
+			path = Paths.getSharedPath(characterPath);
 		}
 		if (!FileSystem.exists(path))
 		#else
-		var path:String = Paths.getPreloadPath(characterPath);
+		var path:String = Paths.getSharedPath(characterPath);
 		if (!OpenFlAssets.exists(path))
 		#end
 		{
-			path = Paths.getPreloadPath('characters/' + Character.DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
+			path = Paths.getSharedPath('characters/' + Character.DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
 		}
 		#if MODS_ALLOWED
 		var rawJson = File.getContent(path);

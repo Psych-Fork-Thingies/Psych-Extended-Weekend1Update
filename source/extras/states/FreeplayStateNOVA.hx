@@ -412,7 +412,7 @@ class FreeplayStateNOVA extends MusicBeatState
 			return;
 		}
 		destroyFreeplayVocals();
-		LoadingState.loadAndSwitchState(new PlayState());
+		MusicBeatState.switchState(new PlayState());
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 	}
 
@@ -474,7 +474,7 @@ class FreeplayStateNOVA extends MusicBeatState
 					destroyFreeplayVocals();
 					FlxG.sound.music.stop();
 					ChartingState.isFreePlay = true;
-					LoadingState.loadAndSwitchState(new ChartingState());
+					MusicBeatState.switchState(new ChartingState());
 				}
 			case 4: 
 				if (Math.abs(lerpPosition - position) > 1) return;

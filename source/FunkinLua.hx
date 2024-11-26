@@ -550,13 +550,13 @@ class FunkinLua {
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = Paths.getSharedPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
 			}
 			#else
-			cervix = Paths.getPreloadPath(cervix);
+			cervix = Paths.getSharedPath(cervix);
 			if(Assets.exists(cervix)) {
 				doPush = true;
 			}
@@ -603,13 +603,13 @@ class FunkinLua {
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = Paths.getSharedPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
 			}
 			#else
-			cervix = Paths.getPreloadPath(cervix);
+			cervix = Paths.getSharedPath(cervix);
 			if(Assets.exists(cervix)) {
 				doPush = true;
 			}
@@ -655,13 +655,13 @@ class FunkinLua {
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = Paths.getSharedPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
 			}
 			#else
-			cervix = Paths.getPreloadPath(cervix);
+			cervix = Paths.getSharedPath(cervix);
 			if(Assets.exists(cervix)) {
 				doPush = true;
 			}
@@ -693,13 +693,13 @@ class FunkinLua {
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = Paths.getSharedPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
 			}
 			#else
-			cervix = Paths.getPreloadPath(cervix);
+			cervix = Paths.getSharedPath(cervix);
 			if(Assets.exists(cervix)) {
 				doPush = true;
 			}
@@ -775,13 +775,13 @@ class FunkinLua {
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = Paths.getSharedPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
 			}
 			#else
-			cervix = Paths.getPreloadPath(cervix);
+			cervix = Paths.getSharedPath(cervix);
 			if(Assets.exists(cervix)) {
 				doPush = true;
 			}
@@ -815,13 +815,13 @@ class FunkinLua {
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = Paths.getSharedPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
 			}
 			#else
-			cervix = Paths.getPreloadPath(cervix);
+			cervix = Paths.getSharedPath(cervix);
 			if(Assets.exists(cervix)) {
 				doPush = true;
 			}
@@ -860,13 +860,13 @@ class FunkinLua {
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = Paths.getSharedPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
 			}
 			#else
-			cervix = Paths.getPreloadPath(cervix);
+			cervix = Paths.getSharedPath(cervix);
 			if(Assets.exists(cervix)) {
 				doPush = true;
 			}
@@ -937,7 +937,7 @@ class FunkinLua {
 			PlayState.SONG = Song.loadFromJson(poop, name);
 			PlayState.storyDifficulty = difficultyNum;
 			PlayState.instance.persistentUpdate = false;
-			LoadingState.loadAndSwitchState(new PlayState());
+			MusicBeatState.switchState(new PlayState());
 
 			FlxG.sound.music.pause();
 			FlxG.sound.music.volume = 0;
@@ -3117,7 +3117,7 @@ class FunkinLua {
 			return true;
 		}
 
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('shaders/')];
+		var foldersToCheck:Array<String> = [Paths.getSharedPath('shaders/')];
 
 		if(Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0)
 

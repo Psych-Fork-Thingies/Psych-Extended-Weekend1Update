@@ -327,7 +327,7 @@ class MainMenuState extends MusicBeatState
 
 							#if ACHIEVEMENTS_ALLOWED
 							case 'achievements':
-								LoadingState.loadAndSwitchState(new AchievementsMenuState());
+								MusicBeatState.switchState(new AchievementsMenuState());
 							#end
 
 							case 'credits':
