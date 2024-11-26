@@ -251,11 +251,13 @@ class Paths
 	    var songKey:String = '${formatToSongPath(song)}/Voices';
 	    var songdiffKey:String = '${formatToSongPath(song)}/Voices-$diffvoice';
 	    
-		if(postfix != null) { songKey += '-' + postfix; songdiffKey += '-' + postfix; }
+		if(postfix != null) songKey += '-' + postfix;
 		
 		var voices = returnSound(null, songKey, 'songs');
 		try
+		{
 		    voices = returnSound('songs', songdiffKey);
+		}
 		return voices;
 	}
 	
@@ -328,7 +330,9 @@ class Paths
 	    
 		var inst = returnSound(null, songKey, 'songs');
 		try
+		{
 		    inst = returnSound('songs', songdiffKey);
+		}
 		return inst;
 	}
 
