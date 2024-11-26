@@ -67,6 +67,11 @@ import Discord;
 
 import tjson.TJSON as Json;
 
+/**
+ * CustomFunctions used for amk
+ */
+@:access(psychlua.CustomFunctions)
+
 using StringTools;
 
 class FunkinLua {

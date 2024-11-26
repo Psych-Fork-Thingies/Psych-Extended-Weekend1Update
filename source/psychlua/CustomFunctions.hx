@@ -6,7 +6,7 @@ import debug.FPSCounter;
 
 class CustomFunctions
 {
-	public static function implement(funk:FunkinLua)
+	public function implement(funk:FunkinLua)
 	{
 	    var lua:State = funk.lua;
 	    
