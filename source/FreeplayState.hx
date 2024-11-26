@@ -352,7 +352,7 @@ class FreeplayState extends MusicBeatState
 						var loadedVocals = Paths.voices(PlayState.SONG.song, (playerVocals != null && playerVocals.length > 0) ? playerVocals : 'Player');
 						if(loadedVocals == null) loadedVocals = Paths.voices(PlayState.SONG.song);
 						
-						if(loadedVocals != null && loadedVocals.length > 0)
+						if(loadedVocals != null)
 						{
 							vocals.loadEmbedded(loadedVocals);
 							FlxG.sound.list.add(vocals);
@@ -375,7 +375,7 @@ class FreeplayState extends MusicBeatState
 						var oppVocals:String = getVocalFromCharacter(PlayState.SONG.player2);
 						var loadedVocals = Paths.voices(PlayState.SONG.song, (oppVocals != null && oppVocals.length > 0) ? oppVocals : 'Opponent');
 						
-						if(loadedVocals != null && loadedVocals.length > 0)
+						if(loadedVocals != null)
 						{
 							opponentVocals.loadEmbedded(loadedVocals);
 							FlxG.sound.list.add(opponentVocals);

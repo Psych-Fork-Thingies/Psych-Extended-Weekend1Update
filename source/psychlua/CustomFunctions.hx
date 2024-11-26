@@ -16,23 +16,26 @@ class CustomFunctions
 		});
 		
 		Lua_helper.add_callback(lua, "ChangeFPSCounterText", function(text1:String = '', text2:String = '', text3:String = '', text4:String = '', text5:String = '', text6:String = ''):Void
-		{	
-		    //Bing better than ChatGPT -ChatGPT Fixes
-    		for (i in 1...7) {
-                var textVar = CustomFunctions['text' + i];
+		{
+		    //ChatGPT 3
+            for (i in 1...7) {
+                var textVar = Reflect.field(this, 'text' + i);
                 
                 switch (textVar) {
                     case "Memory":
-                        MyClass['text' + i] = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
+                        Reflect.setProperty(this, 'text' + i, flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas));
+                        break;
                     case "FPS":
-                        MyClass['text' + i] = FPSCounter.FPSThing;
+                        Reflect.setProperty(this, 'text' + i, FPSCounter.FPSThing);
+                        break;
                     case "OS":
-                        MyClass['text' + i] = FPSCounter.os;
+                        Reflect.setProperty(this, 'text' + i, FPSCounter.os);
+                        break;
                     default:
                         // Handle default case if needed
                 }
             }
-    				    
+		
 		    if (text1 == '' && text2 == '' && text3 == '' && text4 == '' && text5 == '' && text6 == '')
 		        FunkinLua.FPSCounterText = null;
 		    else
@@ -75,10 +78,4 @@ class CustomFunctions
 		if (text5 == null) text5 = '';
 		FunkinLua.luaTrace('' + text1 + text2 + text3 + text4 + text5, true, false);
 	}
-}
-
-class MyClass {
-    static function myStaticFunction() {
-        // Do something
-    }
 }
