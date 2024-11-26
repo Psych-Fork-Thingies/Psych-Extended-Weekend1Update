@@ -244,7 +244,7 @@ class Paths
 		return file;
 	}
 
-	inline static public function voices(song:String, postfix:String = null):Any
+	inline static public function voices(song:String, postfix:String = null):Sound
 	{	 
 	    var diffvoice = Difficulty.getString().toUpperCase();
 	    
