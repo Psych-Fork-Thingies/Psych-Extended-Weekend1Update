@@ -28,6 +28,7 @@ class PauseSubState extends MusicBeatSubstate
 	var skipTimeText:FlxText;
 	var skipTimeTracker:Alphabet;
 	var curTime:Float = Math.max(0, Conductor.songPosition);
+	public var camPause:FlxCamera;
 	public static var inPause:Bool = false;
 	//var botplayText:FlxText;
 
@@ -36,6 +37,11 @@ class PauseSubState extends MusicBeatSubstate
 	public function new(x:Float, y:Float)
 	{
 		super();
+		
+		camPause = new FlxCamera();
+		camPause.bgColor = 0x00;
+		FlxG.cameras.add(camPause, false);
+		
 		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
 
 		if(PlayState.chartingMode)

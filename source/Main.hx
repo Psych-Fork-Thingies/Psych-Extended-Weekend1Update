@@ -191,9 +191,9 @@ class Main extends Sprite
 
 		// shader coords fix
 		FlxG.signals.gameResized.add(function (w, h) {
-			if(fpsVarNF != null)
+			if(fpsVarNF != null && ClientPrefs.data.FPSCounter == 'NF')
 				fpsVarNF.positionFPS(10, 3, Math.min(w / FlxG.width, h / FlxG.height));
-			else if(fpsVar != null)
+			else if(fpsVar != null && ClientPrefs.data.FPSCounter == 'Psych')
 				fpsVar.positionFPS(10, 3, Math.min(w / FlxG.width, h / FlxG.height));
 		     if (FlxG.cameras != null) {
 			   for (cam in FlxG.cameras.list) {
