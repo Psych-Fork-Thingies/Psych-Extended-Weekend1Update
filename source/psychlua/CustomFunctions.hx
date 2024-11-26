@@ -17,17 +17,17 @@ class CustomFunctions
 		
 		Lua_helper.add_callback(lua, "ChangeFPSCounterText", function(text1:String = '', text2:String = '', text3:String = '', text4:String = '', text5:String = '', text6:String = ''):Void
 		{	
-		    //Bing better than ChatGPT
+		    //Bing better than ChatGPT -ChatGPT Fixes
     		for (i in 1...7) {
-                var textVar = this['text' + i];
+                var textVar = CustomFunctions['text' + i];
                 
                 switch (textVar) {
                     case "Memory":
-                        textVar = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
+                        CustomFunctions['text' + i] = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
                     case "FPS":
-                        textVar = FPSCounter.FPSThing;
+                        CustomFunctions['text' + i] = FPSCounter.FPSThing;
                     case "OS":
-                        textVar = FPSCounter.os;
+                        CustomFunctions['text' + i] = FPSCounter.os;
                     default:
                         // Handle default case if needed
                 }
