@@ -23,11 +23,11 @@ class CustomFunctions
                 
                 switch (textVar) {
                     case "Memory":
-                        CustomFunctions['text' + i] = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
+                        MyClass['text' + i] = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
                     case "FPS":
-                        CustomFunctions['text' + i] = FPSCounter.FPSThing;
+                        MyClass['text' + i] = FPSCounter.FPSThing;
                     case "OS":
-                        CustomFunctions['text' + i] = FPSCounter.os;
+                        MyClass['text' + i] = FPSCounter.os;
                     default:
                         // Handle default case if needed
                 }
@@ -75,4 +75,10 @@ class CustomFunctions
 		if (text5 == null) text5 = '';
 		FunkinLua.luaTrace('' + text1 + text2 + text3 + text4 + text5, true, false);
 	}
+}
+
+class MyClass {
+    static function myStaticFunction() {
+        // Do something
+    }
 }
