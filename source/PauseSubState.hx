@@ -420,13 +420,13 @@ class PauseSubState extends MusicBeatSubstate
 			obj.destroy();
 		}
 
-		for (num => str in menuItems) {
-			var item = new Alphabet(90, 320, menuItems[str], true);
+		for (i in 0...menuItems.length) {
+			var item = new Alphabet(90, 320, menuItems[i], true);
 			item.isMenuItem = true;
-			item.targetY = num;
+			item.targetY = i;
 			grpMenuShit.add(item);
 
-			if(str == 'Skip Time')
+			if(menuItems[i] == 'Skip Time')
 			{
 				skipTimeText = new FlxText(0, 0, 0, '', 64);
 				skipTimeText.setFormat(Paths.font("vcr.ttf"), 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
