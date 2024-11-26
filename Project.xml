@@ -73,8 +73,6 @@
 	<section if="BASE_GAME_ASSETS">
 	<assets path="assets/base_game/shared"        rename="shared"                exclude="*.ogg"        if="web"/>
 	<assets path="assets/base_game/shared"        rename="shared"                exclude="*.mp3"       unless="web"/>
-	<assets path="assets/base_game/preload"        rename="assets"                exclude="*.ogg"        if="web"/>
-	<assets path="assets/base_game/preload"        rename="assets"                exclude="*.mp3"       unless="web"/>
 	<assets path="assets/base_game/videos"         rename="assets/videos"         library="videos"        if="VIDEOS_ALLOWED"/>
 	<assets path="assets/base_game/songs"          rename="assets/songs"         library="songs"         exclude="*.ogg" if="web"/>
 	<assets path="assets/base_game/songs"          rename="assets/songs"         library="songs"         exclude="*.mp3" unless="web"/>
