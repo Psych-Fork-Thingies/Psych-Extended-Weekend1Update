@@ -19,7 +19,7 @@ class CustomFunctions
 		{	
 		    //Bing better than ChatGPT
     		for (i in 1...7) {
-                public static var textVar = this['text' + i];
+                static var textVar = this['text' + i];
                 
                 switch (textVar) {
                     case "Memory":
