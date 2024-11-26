@@ -2,7 +2,6 @@ package psychlua;
 
 import FunkinLua;
 import tjson.TJSON as Json;
-import debug.FPSCounter;
 
 class CustomFunctions
 {

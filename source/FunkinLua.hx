@@ -66,6 +66,7 @@ import Discord;
 #end
 
 import tjson.TJSON as Json;
+import debug.FPSCounter;
 
 using StringTools;
 
