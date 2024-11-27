@@ -44,17 +44,6 @@ class CopyState extends MusicBeatState
 		}
 
 		CoolUtil.showPopUp("Seems like you have some missing files that are necessary to run the game\nPress OK to begin the copy process", "Notice!");
-		
-		Main.fpsVar.visible = false;
-		Main.fpsVarNova.visible = false;
-		Main.fpsVarNF.visible = false;
-
-		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
-	        Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
-	    else if (ClientPrefs.data.FPSCounter == 'NF')
-	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
-	    else
-	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
 
 		shouldCopy = true;
 

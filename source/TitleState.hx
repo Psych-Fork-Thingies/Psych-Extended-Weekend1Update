@@ -239,7 +239,7 @@ class TitleState extends MusicBeatState
 	
 	function startCutscenesIn()
 	{
-		if (inGame || !ClientPrefs.data.DisableIntroVideo) {
+		if (inGame || ClientPrefs.data.DisableIntroVideo) {
 			startIntro();
 			return;
 		}
@@ -638,9 +638,9 @@ class TitleState extends MusicBeatState
 					#end
 				case 4:
 					#if PSYCH_WATERMARKS
-					addMoreText('KralOyuncu', 15);
+					addMoreText('AloneDsek', 15);
 					addMoreText('and', 15);
-					addMoreText('DarkVerse (Dead)', 15);
+					addMoreText('KralOyuncu', 15);
 					#else
 					addMoreText('present');
 					#end

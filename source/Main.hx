@@ -163,7 +163,6 @@ class Main extends Sprite
     	if(fpsVar != null) {
     		fpsVar.visible = false;
     	}
-    	detectFPSCounter();
 
 		#if linux
 		var icon = Image.fromFile("icon.png");
@@ -188,6 +187,8 @@ class Main extends Sprite
 		#if mobile
 		FlxG.scaleMode = new MobileScaleMode();
 		#end
+		
+		detectFPSCounter();
 
 		// shader coords fix
 		FlxG.signals.gameResized.add(function (w, h) {
