@@ -339,7 +339,6 @@ class FreeplayState extends MusicBeatState
 					{
 						var playerVocals:String = getVocalFromCharacter(PlayState.SONG.player1);
 						var loadedVocals = Paths.voices(PlayState.SONG.song, (playerVocals != null && playerVocals.length > 0) ? playerVocals : 'Player');
-						if(loadedVocals == null) loadedVocals = Paths.voices(PlayState.SONG.song);
 						
 						if(loadedVocals != null && loadedVocals.length > 0)
 						{

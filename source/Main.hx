@@ -151,18 +151,12 @@ class Main extends Sprite
     	}
 		fpsVarNF = new FPS_NF(10, 3, 0xFFFFFF);
     	addChild(fpsVarNF);
-    	Lib.current.stage.align = "tl";
-    	Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-    	if(fpsVarNF != null) {
-    		fpsVarNF.visible = false;
-    	}
+    	if(fpsVarNF != null) fpsVarNF.visible = false;
     	fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
     	addChild(fpsVar);
     	Lib.current.stage.align = "tl";
     	Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-    	if(fpsVar != null) {
-    		fpsVar.visible = false;
-    	}
+    	if(fpsVar != null) fpsVar.visible = false;
 
 		#if linux
 		var icon = Image.fromFile("icon.png");

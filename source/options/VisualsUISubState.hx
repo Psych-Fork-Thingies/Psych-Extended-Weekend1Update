@@ -91,7 +91,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		
 		var option:Option = new Option('Disable Intro Video',
-			"If unchecked, disables the Intro Video",
+			"If checked, disables the Intro Video",
 			'DisableIntroVideo',
 			'bool');
 		addOption(option);

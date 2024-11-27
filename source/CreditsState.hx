@@ -97,11 +97,12 @@ class CreditsState extends MusicBeatState
 
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Psych Extended'],
-			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Im Just Made This Build',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
+			['AloneDark',	 'AloneDark',	'Owner of the Psych Extended',					                        'https://youtube.com/@28alonedark53',	    '444444'],
+			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Porter of Psych Engine 0.6.3 Mobile',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
 			[''],
-			['Needed Credits'],
-			['mcagabe19',			 'lily',               'Head Porter of Psych Engine 0.6.3 Mobile',                           'https://youtube.com/@mcagabe19',		'FFE7C0'],
-			['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(I used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
+			['Psych Engine Mobile'],
+			['MobilePorting',			 'MobilePorting',               'KralOyuncu using their Codes',                           'https://github.com/MobilePorting',		'FFE7C0'],
+			['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(KralOyuncu used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
 			[''],
 			['Psych Engine Team'],
 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],
