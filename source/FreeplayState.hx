@@ -429,7 +429,7 @@ class FreeplayState extends MusicBeatState
 				return;
 			}
 
-			MusicBeatState.switchState(new PlayState());
+			LoadingState.loadAndSwitchState(new PlayState());
 			#if !SHOW_LOADING_SCREEN FlxG.sound.music.stop(); #end
 			stopMusicPlay = true;
 

@@ -33,18 +33,7 @@ class CopyState extends MusicBeatState
 	var loopTimes:Int = 0;
 
 	override function create()
-	{
-	    Main.fpsVar.visible = false;
-		Main.fpsVarNova.visible = false;
-		Main.fpsVarNF.visible = false;
-
-		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
-	        Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
-	    else if (ClientPrefs.data.FPSCounter == 'NF')
-	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
-	    else
-	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
-	        
+	{    
 		locatedFiles = [];
 		maxLoopTimes = 0;
 		checkExistingFiles();
