@@ -142,6 +142,7 @@ class TitleState extends MusicBeatState
 		FlxG.save.bind('funkin' , CoolUtil.getSavePath());
 
 		ClientPrefs.loadPrefs();
+		FPSCounterShit();
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
@@ -825,4 +826,18 @@ class TitleState extends MusicBeatState
 	
 	}
 	#end
+	
+	function FPSCounterShit()
+	{
+	    Main.fpsVar.visible = false;
+	    Main.fpsVarNF.visible = false;
+	    Main.fpsVarNova.visible = false;
+	    
+		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
+	        Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
+	    else if (ClientPrefs.data.FPSCounter == 'NF')
+	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
+	    else if (ClientPrefs.data.FPSCounter == 'Psych')
+	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
+	}
 }

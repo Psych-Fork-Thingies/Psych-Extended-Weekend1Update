@@ -160,6 +160,13 @@ class ClientPrefs {
 		for (key in Reflect.fields(data))
 			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key))
 				Reflect.setField(data, key, Reflect.field(FlxG.save.data, key));
+				
+		if(Main.fpsVarNova != null && ClientPrefs.data.FPSCounter == 'NovaFlare')
+			Main.fpsVarNova.visible = data.showFPS;
+		if(Main.fpsVarNF != null && ClientPrefs.data.FPSCounter == 'NF')
+			Main.fpsVarNF.visible = data.showFPS;
+		if(Main.fpsVar != null && ClientPrefs.data.FPSCounter == 'Psych')
+			Main.fpsVar.visible = data.showFPS;
 
         #if (!html5 && !switch)
 		if(FlxG.save.data.framerate == null) {
@@ -202,17 +209,6 @@ class ClientPrefs {
 			}
 			reloadControls();
 		}
-		
-		Main.fpsVar.visible = false;
-	    Main.fpsVarNF.visible = false;
-	    Main.fpsVarNova.visible = false;
-				
-		if(Main.fpsVarNova != null && ClientPrefs.data.FPSCounter == 'NovaFlare')
-			Main.fpsVarNova.visible = data.showFPS;
-		if(Main.fpsVarNF != null && ClientPrefs.data.FPSCounter == 'NF')
-			Main.fpsVarNF.visible = data.showFPS;
-		if(Main.fpsVar != null && ClientPrefs.data.FPSCounter == 'Psych')
-			Main.fpsVar.visible = data.showFPS;
 	}
 
 	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic = null, ?customDefaultValue:Bool = false):Dynamic

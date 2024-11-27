@@ -70,12 +70,8 @@ class CopyState extends MusicBeatState
 		copyLoop = new FlxAsyncLoop(maxLoopTimes, copyAsset, ticks);
 		add(copyLoop);
 		copyLoop.start();
-		
-		ClientPrefs.loadPrefs();
-        
+
 		super.create();
-		
-		ChangeFPSCounterShit();
 	}
 
 	override function update(elapsed:Float)
@@ -183,20 +179,6 @@ class CopyState extends MusicBeatState
 		}
 
 		return file;
-	}
-	
-	function ChangeFPSCounterShit()
-	{
-	    Main.fpsVar.visible = false;
-	    Main.fpsVarNF.visible = false;
-	    Main.fpsVarNova.visible = false;
-	    
-		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
-	        Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
-	    else if (ClientPrefs.data.FPSCounter == 'NF')
-	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
-	    else if (ClientPrefs.data.FPSCounter == 'Psych')
-	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}
 
 	public static function checkExistingFiles():Bool

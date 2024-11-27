@@ -160,8 +160,6 @@ class Main extends Sprite
     	
     	Lib.current.stage.align = "tl";
     	Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-    	
-    	detectFPSCounter();
 
 		#if linux
 		var icon = Image.fromFile("icon.png");
@@ -186,8 +184,6 @@ class Main extends Sprite
 		#if mobile
 		FlxG.scaleMode = new MobileScaleMode();
 		#end
-		
-		detectFPSCounter();
 
 		// shader coords fix
 		FlxG.signals.gameResized.add(function (w, h) {
