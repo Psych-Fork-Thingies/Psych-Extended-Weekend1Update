@@ -243,7 +243,7 @@ class TitleState extends MusicBeatState
 			startIntro();
 			return;
 		}
-		startVideo('title');
+		startVideo('intro');
 	}
 	
 	function startCutscenesOut()

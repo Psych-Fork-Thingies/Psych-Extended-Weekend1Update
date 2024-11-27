@@ -226,7 +226,7 @@ class VisualsUISubState extends BaseOptionsMenu
 	        Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
 	    else if (ClientPrefs.data.FPSCounter == 'NF')
 	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
-	    else
+	    else if (ClientPrefs.data.FPSCounter == 'Psych')
 	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}
 	

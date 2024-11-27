@@ -161,6 +161,10 @@ class ClientPrefs {
 			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key))
 				Reflect.setField(data, key, Reflect.field(FlxG.save.data, key));
 				
+		Main.fpsVar.visible = false;
+	    Main.fpsVarNF.visible = false;
+	    Main.fpsVarNova.visible = false;
+				
 		if(Main.fpsVarNova != null && ClientPrefs.data.FPSCounter == 'NovaFlare')
 			Main.fpsVarNova.visible = data.showFPS;
 		if(Main.fpsVarNF != null && ClientPrefs.data.FPSCounter == 'NF')
