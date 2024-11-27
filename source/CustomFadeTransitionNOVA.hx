@@ -35,37 +35,36 @@ class CustomFadeTransitionNOVA extends MusicBeatSubstate {
 	public function new(duration:Float, isTransIn:Bool) {
 		super();
 		
-		var cam:FlxCamera = new FlxCamera();
-	    cam.bgColor = 0x00;
-    	FlxG.cameras.add(cam, false);
-		cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]];
+		var camFix:FlxCamera = new FlxCamera();
+	    camFix.bgColor = 0x00;
+    	FlxG.cameras.add(camFix, false);
 
 		this.isTransIn = isTransIn;
 		
 		loadLeft = new FlxSprite(isTransIn ? 0 : -1280, 0).loadGraphic(Paths.image('menuExtend/Loading/loadingL'));
 		loadLeft.scrollFactor.set();
 		loadLeft.antialiasing = ClientPrefs.data.antialiasing;
-		loadLeft.cameras = [cam];
+		loadLeft.cameras = [camFix];
 		add(loadLeft);
 		
 		loadRight = new FlxSprite(isTransIn ? 0 : 1280, 0).loadGraphic(Paths.image('menuExtend/Loading/loadingR'));
 		loadRight.scrollFactor.set();
 		loadRight.antialiasing = ClientPrefs.data.antialiasing;
-		loadRight.cameras = [cam];
+		loadRight.cameras = [camFix];
 		add(loadRight);
 		
 		WaterMark = new FlxText(isTransIn ? 50 : -1230, 720 - 50 - 50 * 2, 0, 'PSYCH EXTENDED V1.0.0', 50);
 		WaterMark.scrollFactor.set();
 		WaterMark.setFormat(Assets.getFont("assets/fonts/loadText.ttf").fontName, 50, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		WaterMark.antialiasing = ClientPrefs.data.antialiasing;
-		WaterMark.cameras = [cam];
+		WaterMark.cameras = [camFix];
 		add(WaterMark);
         
         EventText= new FlxText(isTransIn ? 50 : -1230, 720 - 50 - 50, 0, 'LOADING . . . . . . ', 50);
 		EventText.scrollFactor.set();
 		EventText.setFormat(Assets.getFont("assets/fonts/loadText.ttf").fontName, 50, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		EventText.antialiasing = ClientPrefs.data.antialiasing;
-		EventText.cameras = [cam];
+		EventText.cameras = [camFix];
 		add(EventText);
 		
 		if(!isTransIn) {
@@ -134,12 +133,14 @@ class CustomFadeTransitionNOVA extends MusicBeatSubstate {
 		}
 
 		if(nextCamera != null) {
-			loadRight.cameras = [cam];
-			loadLeft.cameras = [cam];
-			WaterMark.cameras = [cam];
-			EventText.cameras = [cam];
+			loadRight.cameras = [camFix];
+			loadLeft.cameras = [camFix];
+			WaterMark.cameras = [camFix];
+			EventText.cameras = [camFix];
 		}
 		nextCamera = null;
+		
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]];
 	}
 
 	override function destroy() {

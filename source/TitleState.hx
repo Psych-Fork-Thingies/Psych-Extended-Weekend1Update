@@ -142,7 +142,6 @@ class TitleState extends MusicBeatState
 		FlxG.save.bind('funkin' , CoolUtil.getSavePath());
 
 		ClientPrefs.loadPrefs();
-		FPSCounterShit();
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
@@ -255,6 +254,8 @@ class TitleState extends MusicBeatState
 
 	function startIntro()
 	{
+	    FPSCounterShit();
+	    
 		if (!initialized)
 		{
 			/*var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
