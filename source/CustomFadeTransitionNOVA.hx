@@ -44,7 +44,6 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]];
 		
-		if(ClientPrefs.data.CustomFade == 'Move'){
 		loadRight = new FlxSprite(isTransIn ? 0 : 1280, 0).loadGraphic(Paths.image('menuExtend/CustomFadeTransition/loadingR'));
 		loadRight.scrollFactor.set();
 		loadRight.antialiasing = ClientPrefs.data.antialiasing;		
@@ -73,11 +72,7 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 		
 		if(!isTransIn) {
 		    try{
-			FlxG.sound.play(Paths.sound('loading_close_move'),ClientPrefs.data.CustomFadeSound);
-			}
-			if (!ClientPrefs.data.CustomFadeText) {
-			    EventText.text = '';
-			    WaterMark.text = '';
+			FlxG.sound.play(Paths.sound('loading_close_move'), true);
 			}
 			loadLeftTween = FlxTween.tween(loadLeft, {x: 0}, duration, {
 				onComplete: function(twn:FlxTween) {
@@ -113,13 +108,9 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 			
 		} else {
 		    try{
-			    FlxG.sound.play(Paths.sound('loading_open_move'),ClientPrefs.data.CustomFadeSound);
+			    FlxG.sound.play(Paths.sound('loading_open_move'), true);
 			}
 			EventText.text = 'COMPLETED !';
-			if (!ClientPrefs.data.CustomFadeText) {
-			    EventText.text = '';
-			    WaterMark.text = '';
-			}
 			loadLeftTween = FlxTween.tween(loadLeft, {x: -1280}, duration, {
 				onComplete: function(twn:FlxTween) {
 					close();
@@ -146,92 +137,6 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 			
 			
 		}
-		}
-		else{
-		loadAlpha = new FlxSprite( 0, 0).loadGraphic(Paths.image('menuExtend/CustomFadeTransition/loadingAlpha'));
-		loadAlpha.scrollFactor.set();
-		loadAlpha.antialiasing = ClientPrefs.data.antialiasing;		
-		add(loadAlpha);
-		loadAlpha.setGraphicSize(FlxG.width, FlxG.height);
-		loadAlpha.updateHitbox();
-		
-		WaterMark = new FlxText( 50, 720 - 50 - 50 * 2, 0, 'NF ENGINE V' + MainMenuState.novaFlareEngineVersion, 50);
-		WaterMark.scrollFactor.set();
-		WaterMark.setFormat(Assets.getFont("assets/fonts/loadText.ttf").fontName, 50, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		WaterMark.antialiasing = ClientPrefs.data.antialiasing;
-		add(WaterMark);
-        
-        EventText= new FlxText( 50, 720 - 50 - 50, 0, 'LOADING . . . . . . ', 50);
-		EventText.scrollFactor.set();
-		EventText.setFormat(Assets.getFont("assets/fonts/loadText.ttf").fontName, 50, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		EventText.antialiasing = ClientPrefs.data.antialiasing;
-		add(EventText);
-		
-		if(!isTransIn) {
-		    try{
-			    FlxG.sound.play(Paths.sound('loading_close_alpha'),ClientPrefs.data.CustomFadeSound);
-			}
-			if (!ClientPrefs.data.CustomFadeText) {
-			    EventText.text = '';
-			    WaterMark.text = '';
-			}
-			WaterMark.alpha = 0;
-			EventText.alpha = 0;
-			loadAlpha.alpha = 0;
-			loadAlphaTween = FlxTween.tween(loadAlpha, {alpha: 1}, duration, {
-				onComplete: function(twn:FlxTween) {
-					if(finishCallback != null) {
-						finishCallback();
-					}
-				},
-			ease: FlxEase.sineInOut});
-			
-			loadTextTween = FlxTween.tween(WaterMark, {alpha: 1}, duration, {
-				onComplete: function(twn:FlxTween) {
-					if(finishCallback != null) {
-						finishCallback();
-					}
-				},
-			ease: FlxEase.sineInOut});
-			
-			EventTextTween = FlxTween.tween(EventText, {alpha: 1}, duration, {
-				onComplete: function(twn:FlxTween) {
-					if(finishCallback != null) {
-						finishCallback();
-					}
-				},
-			ease: FlxEase.sineInOut});
-			
-		} else {
-		    try{
-			    FlxG.sound.play(Paths.sound('loading_open_alpha'),ClientPrefs.data.CustomFadeSound);
-            }
-			EventText.text = 'COMPLETED !';
-			if (!ClientPrefs.data.CustomFadeText) {
-			    EventText.text = '';
-			    WaterMark.text = '';
-			}
-			loadAlphaTween = FlxTween.tween(loadAlpha, {alpha: 0}, duration, {
-				onComplete: function(twn:FlxTween) {
-					close();
-				},
-			ease: FlxEase.sineInOut});
-			
-			loadTextTween = FlxTween.tween(WaterMark, {alpha: 0}, duration, {
-				onComplete: function(twn:FlxTween) {
-					close();
-				},
-			ease: FlxEase.sineInOut});
-			
-			EventTextTween = FlxTween.tween(EventText, {alpha: 0}, duration, {
-				onComplete: function(twn:FlxTween) {
-					close();
-				},
-			ease: FlxEase.sineInOut});
-			
-			
-    		}
-		}        
 		
 		super.create();
 	}
