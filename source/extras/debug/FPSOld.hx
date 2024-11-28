@@ -198,7 +198,7 @@ class FPSOld extends TextField
 				text += "\nMemory: " + newmemoryMegas + " GB";            
 			}
 						
-            text += "\nPsych Extended V1.0.0 - Hotfix\n"  + Math.floor(1 / DisplayFPS * 10000 + 0.5) / 10 + "ms";
+            text += "\nPsych Extended V" + MainMenuState.psychExtendedVersion + "\n"  + Math.floor(1 / DisplayFPS * 10000 + 0.5) / 10 + "ms";
             /*
             text += "\nfreeMemory: " + flash.system.System.freeMemory;
             text += "\nprivateMemory: " + flash.system.System.privateMemory;

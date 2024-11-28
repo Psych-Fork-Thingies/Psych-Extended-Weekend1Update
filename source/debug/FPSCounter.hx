@@ -84,7 +84,7 @@ class FPSCounter extends TextField
 	    if (FunkinLua.FPSCounterText == null) {
     		text = 
     		'FPS: $currentFPS' + 
-    		'\nPsych Extended 1.0.0 - Hotfix' + 
+    		'\nPsych Extended ' + MainMenuState.psychExtendedVersion +
     		'\nMemory: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}' +
     		os;
     	} else {

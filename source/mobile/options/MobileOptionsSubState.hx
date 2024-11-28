@@ -51,6 +51,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	
 	public function new()
 	{
+	    storageTypes = storageTypes.concat(externalPaths); //for SD Card ig
 		title = 'Mobile Options';
 		rpcTitle = 'Mobile Options Menu'; //hi, you can ask what is that, i will answer it's all what you needed lol.
 		
