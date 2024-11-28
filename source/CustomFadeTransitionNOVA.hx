@@ -58,7 +58,7 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 		loadLeft.setGraphicSize(FlxG.width, FlxG.height);
 		loadLeft.updateHitbox();
 		
-		WaterMark = new FlxText(isTransIn ? 50 : -1230, 720 - 50 - 50 * 2, 0, 'PSYCH EXTENDED V1.0.0', 50);
+		WaterMark = new FlxText(isTransIn ? 50 : -1230, 720 - 50 - 50 * 2, 0, 'PSYCH EXTENDED V1.0.0 - HOTFIX', 50);
 		WaterMark.scrollFactor.set();
 		WaterMark.setFormat(Assets.getFont("assets/fonts/loadText.ttf").fontName, 50, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		WaterMark.antialiasing = ClientPrefs.data.antialiasing;
@@ -72,7 +72,7 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 		
 		if(!isTransIn) {
 		    try{
-			FlxG.sound.play(Paths.sound('loading_close_move'), true);
+			FlxG.sound.play(Paths.sound('loading_close_move'));
 			}
 			loadLeftTween = FlxTween.tween(loadLeft, {x: 0}, duration, {
 				onComplete: function(twn:FlxTween) {
@@ -108,7 +108,7 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 			
 		} else {
 		    try{
-			    FlxG.sound.play(Paths.sound('loading_open_move'), true);
+			    FlxG.sound.play(Paths.sound('loading_open_move'));
 			}
 			EventText.text = 'COMPLETED !';
 			loadLeftTween = FlxTween.tween(loadLeft, {x: -1280}, duration, {
