@@ -1064,7 +1064,7 @@ class FunkinLua {
     		//Old ClientPrefs And Custom PauseMenu Support
     		if (variable == 'globalAntialiasing') variable = 'data.antialiasing';
     		if (classVar == 'ClientPrefs' && !classVar.startsWith('data.')) variable = 'data.' + variable;
-    		if (classVar == 'PauseSubState' && ClientPrefs.data.PauseMenuStyle == 'NovaFlare') classVar = 'PauseSubStateNOVA';
+    		if (classVar == 'PauseSubState' && ClientPrefs.data.PauseMenuStyle == 'NovaFlare') classVar = 'extras.substates.PauseSubStateNOVA';
 			//Normal Code
 			var myClass:Dynamic = classCheck(classVar);
 			var variableplus:String = varCheck(myClass, variable);
@@ -1094,7 +1094,7 @@ class FunkinLua {
     		//Old ClientPrefs And Custom PauseMenu Support
     		if (variable == 'globalAntialiasing') variable = 'data.antialiasing';
     		if (classVar == 'ClientPrefs' && !classVar.startsWith('data.')) variable = 'data.' + variable;
-    		if (classVar == 'PauseSubState' && ClientPrefs.data.PauseMenuStyle == 'NovaFlare') classVar = 'PauseSubStateNOVA';
+    		if (classVar == 'PauseSubState' && ClientPrefs.data.PauseMenuStyle == 'NovaFlare') classVar = 'extras.substates.PauseSubStateNOVA';
 			//Normal Code
 			var killMe:Array<String> = variable.split('.');
 			if(killMe.length > 1) {
