@@ -5,10 +5,6 @@ import objects.AchievementPopup;
 import haxe.Exception;
 import haxe.Json;
 
-#if LUA_ALLOWED
-import FunkinLua;
-#end
-
 typedef Achievement =
 {
 	var name:String;

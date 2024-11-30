@@ -1,6 +1,5 @@
 package mobile.psychlua;
 
-import FunkinLua;
 import lime.ui.Haptic;
 import mobile.backend.TouchFunctions;
 #if android

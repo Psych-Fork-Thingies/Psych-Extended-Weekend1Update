@@ -1,4 +1,4 @@
-package psychlua;;
+package psychlua;
 
 import openfl.Lib;
 import openfl.utils.Assets;
