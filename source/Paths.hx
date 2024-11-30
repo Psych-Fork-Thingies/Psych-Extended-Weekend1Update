@@ -621,24 +621,24 @@ class Paths
 			txtExists = true;
 		}
 
-		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library)), (txtExists ? File.getContent(txt) : file('images/$key.txt', library)));
+		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU))), (txtExists ? File.getContent(txt) : file('images/$key.txt', library)));
 		#else
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library, allowGPU), file('images/$key.txt', library));
 		#end
 	}
 	
 	inline static public function getAssetPackerAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true)
 	{
 		#if MODS_ALLOWED
-		var imageLoaded:FlxGraphic = imageAssets(key, library, allowGPU);
+		var imageLoaded:FlxGraphic = imageAssets(key, allowGPU);
 		var txtExists:Bool = false;
 		if(FileSystem.exists(assetsTxt(key))) {
 			txtExists = true;
 		}
 
-		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (txtExists ? File.getContent(txt) : getPath('images/$key.txt', library)));
+		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU))), (txtExists ? File.getContent(txt) : file('images/$key.txt', library)));
 		#else
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library, allowGPU), getPath('images/$key.txt', library));
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library, allowGPU), file('images/$key.txt', library));
 		#end
 	}
 	
