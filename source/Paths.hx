@@ -615,13 +615,13 @@ class Paths
 		#if MODS_ALLOWED
 		var imageLoaded:FlxGraphic = image(key, allowGPU);
 		var txtExists:Bool = false;
-		
+
 		var txt:String = modsTxt(key);
 		if(FileSystem.exists(txt)) {
 			txtExists = true;
 		}
 
-		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU))), (txtExists ? File.getContent(txt) : file('images/$key.txt', library)));
+		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (txtExists ? File.getContent(txt) : file('images/$key.txt', library)));
 		#else
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library, allowGPU), file('images/$key.txt', library));
 		#end
@@ -636,7 +636,7 @@ class Paths
 			txtExists = true;
 		}
 
-		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU))), (txtExists ? File.getContent(txt) : file('images/$key.txt', library)));
+		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (txtExists ? File.getContent(txt) : file('images/$key.txt', library)));
 		#else
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library, allowGPU), file('images/$key.txt', library));
 		#end
