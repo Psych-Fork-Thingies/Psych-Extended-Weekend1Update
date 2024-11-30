@@ -36,11 +36,6 @@ class CustomFunctions
     		if (text4 == "OS") text4 = FPSCounter.os;
     		if (text5 == "OS") text5 = FPSCounter.os;
     		if (text6 == "OS") text6 = FPSCounter.os;
-		    
-		    if (text1 == '' && text2 == '' && text3 == '' && text4 == '' && text5 == '' && text6 == '')
-		        FunkinLua.FPSCounterText = null;
-		    else
-		        FunkinLua.FPSCounterText = text1 + text2 + text3 + text4 + text5 + text6;
 		});
 		
 		Lua_helper.add_callback(lua, "saveWeekScore", function():Void

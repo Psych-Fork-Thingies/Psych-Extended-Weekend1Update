@@ -1,12 +1,13 @@
 package psychlua;
 
-import WeekData;
-import Character;
+import backend.WeekData;
+import objects.Character;
 
 import openfl.display.BlendMode;
+import animateatlas.AtlasFrameMaker;
 import Type.ValueType;
 
-import GameOverSubstate;
+import substates.GameOverSubstate;
 
 typedef LuaTweenOptions = {
 	type:FlxTweenType,
@@ -33,7 +34,7 @@ class LuaUtils
 		};
 	}
 
-	public static function setVarInArray(instance:Dynamic, variable:String, value:Dynamic, allowMaps:Bool = false):Any
+	public static function setVarInArray(instance:Dynamic, variable:String, value:Dynamic):Any
 	{
 		var splitProps:Array<String> = variable.split('[');
 		if(splitProps.length > 1)
@@ -45,7 +46,8 @@ class LuaUtils
 				if(retVal != null)
 					target = retVal;
 			}
-			else target = Reflect.getProperty(instance, splitProps[0]);
+			else
+				target = Reflect.getProperty(instance, splitProps[0]);
 
 			for (i in 1...splitProps.length)
 			{
@@ -57,23 +59,21 @@ class LuaUtils
 			}
 			return target;
 		}
-
-		if(allowMaps && isMap(instance))
+		if(/*Std.isOfType(instance, Map)*/ instance.set != null) //cheaper way to get a map but less safe
+			instance.set(variable,value);
+		else
 		{
-			//trace(instance);
-			instance.set(variable, value);
-			return value;
-		}
+			if(PlayState.instance.variables.exists(variable))
+			{
+				PlayState.instance.variables.set(variable, value);
+				return true;
+			}
 
-		if(PlayState.instance.variables.exists(variable))
-		{
-			PlayState.instance.variables.set(variable, value);
-			return value;
+			Reflect.setProperty(instance, variable, value);
 		}
-		Reflect.setProperty(instance, variable, value);
-		return value;
+		return true;
 	}
-	public static function getVarInArray(instance:Dynamic, variable:String, allowMaps:Bool = false):Any
+	public static function getVarInArray(instance:Dynamic, variable:String):Any
 	{
 		var splitProps:Array<String> = variable.split('[');
 		if(splitProps.length > 1)
@@ -95,12 +95,6 @@ class LuaUtils
 			}
 			return target;
 		}
-		
-		if(allowMaps && isMap(instance))
-		{
-			//trace(instance);
-			return instance.get(variable);
-		}
 
 		if(PlayState.instance.variables.exists(variable))
 		{
@@ -108,134 +102,57 @@ class LuaUtils
 			if(retVal != null)
 				return retVal;
 		}
+
 		return Reflect.getProperty(instance, variable);
 	}
 
-	public static function getModSetting(saveTag:String, ?modName:String = null)
-	{
-		#if MODS_ALLOWED
-		if(FlxG.save.data.modSettings == null) FlxG.save.data.modSettings = new Map<String, Dynamic>();
-
-		var settings:Map<String, Dynamic> = FlxG.save.data.modSettings.get(modName);
-		var path:String = Paths.mods('$modName/data/settings.json');
-		if(FileSystem.exists(path))
-		{
-			if(settings == null || !settings.exists(saveTag))
-			{
-				if(settings == null) settings = new Map<String, Dynamic>();
-				var data:String = File.getContent(path);
-				try
-				{
-					//FunkinLua.luaTrace('getModSetting: Trying to find default value for "$saveTag" in Mod: "$modName"');
-					var parsedJson:Dynamic = tjson.TJSON.parse(data);
-					for (i in 0...parsedJson.length)
-					{
-						var sub:Dynamic = parsedJson[i];
-						if(sub != null && sub.save != null && !settings.exists(sub.save))
-						{
-							if(sub.type != 'keybind' && sub.type != 'key')
-							{
-								if(sub.value != null)
-								{
-									//FunkinLua.luaTrace('getModSetting: Found unsaved value "${sub.save}" in Mod: "$modName"');
-									settings.set(sub.save, sub.value);
-								}
-							}
-							else
-							{
-								//FunkinLua.luaTrace('getModSetting: Found unsaved keybind "${sub.save}" in Mod: "$modName"');
-								settings.set(sub.save, {keyboard: (sub.keyboard != null ? sub.keyboard : 'NONE'), gamepad: (sub.gamepad != null ? sub.gamepad : 'NONE')});
-							}
-						}
-					}
-					FlxG.save.data.modSettings.set(modName, settings);
-				}
-				catch(e:Dynamic)
-				{
-					var errorTitle = 'Mod name: ' + Paths.currentModDirectory;
-					var errorMsg = 'An error occurred: $e';
-					#if windows
-					lime.app.Application.current.window.alert(errorMsg, errorTitle);
-					#end
-					trace('$errorTitle - $errorMsg');
-				}
+	public static function setGroupStuff(leArray:Dynamic, variable:String, value:Dynamic) {
+		var killMe:Array<String> = variable.split('.');
+		if(killMe.length > 1) {
+			var coverMeInPiss:Dynamic = Reflect.getProperty(leArray, killMe[0]);
+			for (i in 1...killMe.length-1) {
+				coverMeInPiss = Reflect.getProperty(coverMeInPiss, killMe[i]);
 			}
+			Reflect.setProperty(coverMeInPiss, killMe[killMe.length-1], value);
+			return;
 		}
-		else
-		{
-			FlxG.save.data.modSettings.remove(modName);
-			#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-			PlayState.instance.addTextToDebug('getModSetting: $path could not be found!', FlxColor.RED);
-			#else
-			FlxG.log.warn('getModSetting: $path could not be found!');
-			#end
-			return null;
-		}
-
-		if(settings.exists(saveTag)) return settings.get(saveTag);
-		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-		PlayState.instance.addTextToDebug('getModSetting: "$saveTag" could not be found inside $modName\'s settings!', FlxColor.RED);
-		#else
-		FlxG.log.warn('getModSetting: "$saveTag" could not be found inside $modName\'s settings!');
-		#end
-		#end
-		return null;
+		Reflect.setProperty(leArray, variable, value);
 	}
-	
-	public static function isMap(variable:Dynamic)
-	{
-		/*switch(Type.typeof(variable)){
+	public static function getGroupStuff(leArray:Dynamic, variable:String) {
+		var killMe:Array<String> = variable.split('.');
+		if(killMe.length > 1) {
+			var coverMeInPiss:Dynamic = Reflect.getProperty(leArray, killMe[0]);
+			for (i in 1...killMe.length-1) {
+				coverMeInPiss = Reflect.getProperty(coverMeInPiss, killMe[i]);
+			}
+			switch(Type.typeof(coverMeInPiss)){
+				case ValueType.TClass(haxe.ds.StringMap) | ValueType.TClass(haxe.ds.ObjectMap) | ValueType.TClass(haxe.ds.IntMap) | ValueType.TClass(haxe.ds.EnumValueMap):
+					return coverMeInPiss.get(killMe[killMe.length-1]);
+				default:
+					return Reflect.getProperty(coverMeInPiss, killMe[killMe.length-1]);
+			};
+		}
+		switch(Type.typeof(leArray)){
 			case ValueType.TClass(haxe.ds.StringMap) | ValueType.TClass(haxe.ds.ObjectMap) | ValueType.TClass(haxe.ds.IntMap) | ValueType.TClass(haxe.ds.EnumValueMap):
-				return true;
+				return leArray.get(variable);
 			default:
-				return false;
-		}*/
-
-		//trace(variable);
-		if(variable.exists != null && variable.keyValueIterator != null) return true;
-		return false;
+				return Reflect.getProperty(leArray, variable);
+		};
 	}
 
-	public static function setGroupStuff(leArray:Dynamic, variable:String, value:Dynamic, ?allowMaps:Bool = false) {
-		var split:Array<String> = variable.split('.');
-		if(split.length > 1) {
-			var obj:Dynamic = Reflect.getProperty(leArray, split[0]);
-			for (i in 1...split.length-1)
-				obj = Reflect.getProperty(obj, split[i]);
-
-			leArray = obj;
-			variable = split[split.length-1];
-		}
-		if(allowMaps && isMap(leArray)) leArray.set(variable, value);
-		else Reflect.setProperty(leArray, variable, value);
-		return value;
-	}
-	public static function getGroupStuff(leArray:Dynamic, variable:String, ?allowMaps:Bool = false) {
-		var split:Array<String> = variable.split('.');
-		if(split.length > 1) {
-			var obj:Dynamic = Reflect.getProperty(leArray, split[0]);
-			for (i in 1...split.length-1)
-				obj = Reflect.getProperty(obj, split[i]);
-
-			leArray = obj;
-			variable = split[split.length-1];
-		}
-
-		if(allowMaps && isMap(leArray)) return leArray.get(variable);
-		return Reflect.getProperty(leArray, variable);
-	}
-
-	public static function getPropertyLoop(split:Array<String>, ?checkForTextsToo:Bool = true, ?getProperty:Bool=true, ?allowMaps:Bool = false):Dynamic
+	public static function getPropertyLoop(killMe:Array<String>, ?checkForTextsToo:Bool = true, ?getProperty:Bool=true):Dynamic
 	{
-		var obj:Dynamic = getObjectDirectly(split[0], checkForTextsToo);
-		var end = split.length;
-		if(getProperty) end = split.length-1;
+		var obj:Dynamic = getObjectDirectly(killMe[0], checkForTextsToo);
+		var end = killMe.length;
+		if(getProperty) end = killMe.length-1;
 
-		for (i in 1...end) obj = getVarInArray(obj, split[i], allowMaps);
+		for (i in 1...end) {
+			obj = getVarInArray(obj, killMe[i]);
+		}
 		return obj;
 	}
 
-	public static function getObjectDirectly(objectName:String, ?checkForTextsToo:Bool = true, ?allowMaps:Bool = false):Dynamic
+	public static function getObjectDirectly(objectName:String, ?checkForTextsToo:Bool = true):Dynamic
 	{
 		switch(objectName)
 		{
@@ -244,7 +161,7 @@ class LuaUtils
 			
 			default:
 				var obj:Dynamic = PlayState.instance.getLuaObject(objectName, checkForTextsToo);
-				if(obj == null) obj = getVarInArray(getTargetInstance(), objectName, allowMaps);
+				if(obj == null) obj = getVarInArray(getTargetInstance(), objectName);
 				return obj;
 		}
 	}
@@ -294,9 +211,8 @@ class LuaUtils
 		var obj:Dynamic = LuaUtils.getObjectDirectly(obj, false);
 		if(obj != null && obj.animation != null)
 		{
-			if(indices == null)
-				indices = [0];
-			else if(Std.isOfType(indices, String))
+			if(indices == null) indices = [];
+			if(Std.isOfType(indices, String))
 			{
 				var strIndices:Array<String> = cast (indices, String).trim().split(',');
 				var myIndices:Array<Int> = [];
@@ -307,10 +223,8 @@ class LuaUtils
 			}
 
 			obj.animation.addByIndices(name, prefix, indices, '', framerate, loop);
-			if(obj.animation.curAnim == null)
-			{
-				if(obj.playAnim != null) obj.playAnim(name, true);
-				else obj.animation.play(name, true);
+			if(obj.animation.curAnim == null) {
+				obj.animation.play(name, true);
 			}
 			return true;
 		}
@@ -321,11 +235,11 @@ class LuaUtils
 	{
 		switch(spriteType.toLowerCase().trim())
 		{
-			//case "texture" | "textureatlas" | "tex":
-				//spr.frames = AtlasFrameMaker.construct(image);
+			case "texture" | "textureatlas" | "tex":
+				spr.frames = AtlasFrameMaker.construct(image);
 
-			//case "texture_noaa" | "textureatlas_noaa" | "tex_noaa":
-				//spr.frames = AtlasFrameMaker.construct(image, null, true);
+			case "texture_noaa" | "textureatlas_noaa" | "tex_noaa":
+				spr.frames = AtlasFrameMaker.construct(image, null, true);
 
 			case "packer" | "packeratlas" | "pac":
 				spr.frames = Paths.getPackerAtlas(image);
@@ -346,6 +260,20 @@ class LuaUtils
 		PlayState.instance.remove(target, true);
 		target.destroy();
 		PlayState.instance.modchartTexts.remove(tag);
+		#end
+	}
+
+	public static function resetSpriteTag(tag:String) {
+		#if LUA_ALLOWED
+		if(!PlayState.instance.modchartSprites.exists(tag)) {
+			return;
+		}
+
+		var target:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
+		target.kill();
+		PlayState.instance.remove(target, true);
+		target.destroy();
+		PlayState.instance.modchartSprites.remove(tag);
 		#end
 	}
 
