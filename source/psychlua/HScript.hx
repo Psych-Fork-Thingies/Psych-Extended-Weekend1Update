@@ -8,8 +8,6 @@ import hscript.Expr;
 
 import haxe.Exception;
 
-import objects.Character;
-
 class HScript
 {
 	#if hscript
