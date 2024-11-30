@@ -366,54 +366,7 @@ class Paths
 		trace('oh no its returning null NOOOO ($file)');
 		return null;
 	}
-	
-	static public function imageAssets(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxGraphic
-	{
-	    var bitmap:BitmapData = null;
-		var file:String = null;
-		#if MODS_ALLOWED
-		file = assetsImages(key);
-		if (currentTrackedAssets.exists(file))
-		{
-			localTrackedAssets.push(file);
-			return currentTrackedAssets.get(file);
-		}
-		else if (FileSystem.exists(file))
-			bitmap = BitmapData.fromFile(file);
-		else
-		#end
-		{
-			file = getPath('images/$key.png', IMAGE, library);
-			if (currentTrackedAssets.exists(file))
-			{
-				localTrackedAssets.push(file);
-				return currentTrackedAssets.get(file);
-			}
-			else if (OpenFlAssets.exists(file, IMAGE))
-				bitmap = OpenFlAssets.getBitmapData(file);
-		}
-		if (bitmap != null)
-		{
-			localTrackedAssets.push(file);
-			if (allowGPU && ClientPrefs.data.cacheOnGPU)
-			{
-				var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
-				texture.uploadFromBitmapData(bitmap);
-				bitmap.image.data = null;
-				bitmap.dispose();
-				bitmap.disposeImage();
-				bitmap = BitmapData.fromTexture(texture);
-			}
-			var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, file);
-			newGraphic.persist = true;
-			newGraphic.destroyOnNoUse = false;
-			currentTrackedAssets.set(file, newGraphic);
-			return newGraphic;
-		}
-		trace('oh no its returning null NOOOO ($file)');
-		return null;
-	}
-	
+		
 	public static var updatedOnState:Bool = false;
 	inline public static function parseList():ModsList {
 		if(!updatedOnState) updateModList();
@@ -589,22 +542,7 @@ class Paths
 			xmlExists = true;
 		}
 
-		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (xmlExists ? File.getContent(assetsXml(key)) : getPath('images/$key.xml', library)));
-		#else
-		return FlxAtlasFrames.fromSparrow(image(key, library, allowGPU), getPath('images/$key.xml', library));
-		#end
-	}
-	
-	inline static public function getAssetSparrowAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
-	{
-		#if MODS_ALLOWED
-		var imageLoaded:FlxGraphic = imageAssets(key, library, allowGPU);
-		var xmlExists:Bool = false;
-		if(FileSystem.exists(assetsXml(key))) {
-			xmlExists = true;
-		}
-
-		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (xmlExists ? File.getContent(assetsXml(key)) : getPath('images/$key.xml', library)));
+		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (xmlExists ? File.getContent(xml) : getPath('images/$key.xml', library)));
 		#else
 		return FlxAtlasFrames.fromSparrow(image(key, library, allowGPU), getPath('images/$key.xml', library));
 		#end
@@ -618,21 +556,6 @@ class Paths
 
 		var txt:String = modsTxt(key);
 		if(FileSystem.exists(txt)) {
-			txtExists = true;
-		}
-
-		return FlxAtlasFrames.fromSpriteSheetPacker((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (txtExists ? File.getContent(txt) : file('images/$key.txt', library)));
-		#else
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library, allowGPU), file('images/$key.txt', library));
-		#end
-	}
-	
-	inline static public function getAssetPackerAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true)
-	{
-		#if MODS_ALLOWED
-		var imageLoaded:FlxGraphic = imageAssets(key, allowGPU);
-		var txtExists:Bool = false;
-		if(FileSystem.exists(assetsTxt(key))) {
 			txtExists = true;
 		}
 
@@ -772,25 +695,13 @@ class Paths
 	inline static public function modsImages(key:String) {
 		return modFolders('images/' + key + '.png');
 	}
-	
-	inline static public function assetsImages(key:String) {
-		return 'assets/images/' + key + '.png';
-	}
 
 	inline static public function modsXml(key:String) {
 		return modFolders('images/' + key + '.xml');
 	}
 	
-	inline static public function assetsXml(key:String) {
-		return 'assets/images/' + key + '.xml';
-	}
-	
 	inline static public function modsTxt(key:String) {
 		return modFolders('images/' + key + '.txt');
-	}
-	
-	inline static public function assetsTxt(key:String) {
-		return 'assets/images/' + key + '.txt';
 	}
 
 	static public function modFolders(key:String) {
