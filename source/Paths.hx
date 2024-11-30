@@ -627,7 +627,7 @@ class Paths
 		#end
 	}
 	
-	inline static public function getAssetPackerAtlas(key:String, ?library:String, ?allowGPU:Bool = true)
+	inline static public function getAssetPackerAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true)
 	{
 		#if MODS_ALLOWED
 		var imageLoaded:FlxGraphic = imageAssets(key, library, allowGPU);
