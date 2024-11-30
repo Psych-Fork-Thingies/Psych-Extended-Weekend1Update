@@ -91,38 +91,78 @@ class ExtraFunctions
 			return Reflect.getProperty(controller.justReleased, name) == true;
 		});
 
-		Lua_helper.add_callback(lua, "keyJustPressed", function(name:String = '') {
-			name = name.toLowerCase();
+		Lua_helper.add_callback(lua, "keyJustPressed", function(name:String) {
+			var key:Bool = false;
+			if (name == extra1)
+			    key = PlayState.instance.getControl('EXTRA1_P');
+		    if (name == extra2)
+		        key = PlayState.instance.getControl('EXTRA2_P');
+		    if (name == extra3)
+		        key = PlayState.instance.getControl('EXTRA3_P');
+		    if (name == extra4)
+		        key = PlayState.instance.getControl('EXTRA4_P');
 			switch(name) {
-				case 'left': return PlayState.instance.controls.NOTE_LEFT_P;
-				case 'down': return PlayState.instance.controls.NOTE_DOWN_P;
-				case 'up': return PlayState.instance.controls.NOTE_UP_P;
-				case 'right': return PlayState.instance.controls.NOTE_RIGHT_P;
-				default: return PlayState.instance.controls.justPressed(name);
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_P');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_P');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP_P');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_P');
+				case 'accept': key = PlayState.instance.getControl('ACCEPT');
+				case 'back': key = PlayState.instance.getControl('BACK');
+				case 'pause': key = PlayState.instance.getControl('PAUSE');
+				case 'reset': key = PlayState.instance.getControl('RESET');	
+				case 'space': key = FlxG.keys.justPressed.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT_P');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN_P');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP_P');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_P');
 			}
-			return false;
+			return key;
 		});
-		Lua_helper.add_callback(lua, "keyPressed", function(name:String = '') {
-			name = name.toLowerCase();
+		Lua_helper.add_callback(lua, "keyPressed", function(name:String) {
+			var key:Bool = false;
+			if (name == extra1)
+			    key = PlayState.instance.getControl('EXTRA1');
+		    if (name == extra2)
+		        key = PlayState.instance.getControl('EXTRA2');
+		    if (name == extra3)
+		        key = PlayState.instance.getControl('EXTRA3');
+		    if (name == extra4)
+		        key = PlayState.instance.getControl('EXTRA4');
 			switch(name) {
-				case 'left': return PlayState.instance.controls.NOTE_LEFT;
-				case 'down': return PlayState.instance.controls.NOTE_DOWN;
-				case 'up': return PlayState.instance.controls.NOTE_UP;
-				case 'right': return PlayState.instance.controls.NOTE_RIGHT;
-				default: return PlayState.instance.controls.pressed(name);
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT');
+				case 'space': key = FlxG.keys.pressed.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT');
 			}
-			return false;
+			return key;
 		});
-		Lua_helper.add_callback(lua, "keyReleased", function(name:String = '') {
-			name = name.toLowerCase();
+		Lua_helper.add_callback(lua, "keyReleased", function(name:String) {
+			var key:Bool = false;
+			if (name == extra1)
+			    key = PlayState.instance.getControl('EXTRA1_R');
+		    if (name == extra2)
+		        key = PlayState.instance.getControl('EXTRA2_R');
+		    if (name == extra3)
+		        key = PlayState.instance.getControl('EXTRA3_R');
+		    if (name == extra4)
+		        key = PlayState.instance.getControl('EXTRA4_R');
 			switch(name) {
-				case 'left': return PlayState.instance.controls.NOTE_LEFT_R;
-				case 'down': return PlayState.instance.controls.NOTE_DOWN_R;
-				case 'up': return PlayState.instance.controls.NOTE_UP_R;
-				case 'right': return PlayState.instance.controls.NOTE_RIGHT_R;
-				default: return PlayState.instance.controls.justReleased(name);
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_R');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_R');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP_R');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_R');		
+				case 'space': key = FlxG.keys.justReleased.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT_R');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN_R');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP_R');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_R');
 			}
-			return false;
+			return key;
 		});
 
 		// Save data management
