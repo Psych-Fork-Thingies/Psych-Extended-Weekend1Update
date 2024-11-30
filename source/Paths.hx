@@ -589,7 +589,7 @@ class Paths
 			xmlExists = true;
 		}
 
-		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (xmlExists ? File.getContent(xml) : getPath('images/$key.xml', library)));
+		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (xmlExists ? File.getContent(assetsXml(key)) : getPath('images/$key.xml', library)));
 		#else
 		return FlxAtlasFrames.fromSparrow(image(key, library, allowGPU), getPath('images/$key.xml', library));
 		#end
@@ -598,13 +598,13 @@ class Paths
 	inline static public function getAssetSparrowAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
 	{
 		#if MODS_ALLOWED
-		var imageLoaded:FlxGraphic = imageAssets(key, allowGPU);
+		var imageLoaded:FlxGraphic = imageAssets(key, library, allowGPU);
 		var xmlExists:Bool = false;
 		if(FileSystem.exists(assetsXml(key))) {
 			xmlExists = true;
 		}
 
-		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (xmlExists ? File.getContent(xml) : getPath('images/$key.xml', library)));
+		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library, allowGPU)), (xmlExists ? File.getContent(assetsXml(key)) : getPath('images/$key.xml', library)));
 		#else
 		return FlxAtlasFrames.fromSparrow(image(key, library, allowGPU), getPath('images/$key.xml', library));
 		#end
@@ -627,10 +627,10 @@ class Paths
 		#end
 	}
 	
-	inline static public function getAssetPackerAtlas(key:String, ?library:String)
+	inline static public function getAssetPackerAtlas(key:String, ?library:String, ?allowGPU:Bool = true)
 	{
 		#if MODS_ALLOWED
-		var imageLoaded:FlxGraphic = imageAssets(key, allowGPU);
+		var imageLoaded:FlxGraphic = imageAssets(key, library, allowGPU);
 		var txtExists:Bool = false;
 		if(FileSystem.exists(assetsTxt(key))) {
 			txtExists = true;

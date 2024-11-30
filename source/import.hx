@@ -98,4 +98,6 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.frames.FlxAtlasFrames;
 
+openfl.display3D.textures.RectangleTexture
+
 using StringTools;
