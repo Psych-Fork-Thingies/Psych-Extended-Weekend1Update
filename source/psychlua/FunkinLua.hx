@@ -6,6 +6,7 @@ import openfl.display.BitmapData;
 import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.addons.transition.FlxTransitionableState;
+import DialogueBoxPsych;
 
 #if (!flash && sys)
 import flixel.addons.display.FlxRuntimeShader;
@@ -998,9 +999,11 @@ class FunkinLua {
 			}
 
 			PlayState.cancelMusicFadeTween();
+			/*
 			CustomFadeTransition.nextCamera = game.camOther;
 			if(FlxTransitionableState.skipNextTransIn)
 				CustomFadeTransition.nextCamera = null;
+			*/
 
 			if(PlayState.isStoryMode)
 				MusicBeatState.switchState(new StoryMenuState());
@@ -1358,13 +1361,6 @@ class FunkinLua {
 		});
 		Lua_helper.add_callback(lua, "luaSoundExists", function(tag:String) {
 			return game.modchartSounds.exists(tag);
-		});
-
-		Lua_helper.add_callback(lua, "setHealthBarColors", function(left:String, right:String) {
-			game.healthBar.setColors(CoolUtil.colorFromString(left), CoolUtil.colorFromString(right));
-		});
-		Lua_helper.add_callback(lua, "setTimeBarColors", function(left:String, right:String) {
-			game.timeBar.setColors(CoolUtil.colorFromString(left), CoolUtil.colorFromString(right));
 		});
 
 		Lua_helper.add_callback(lua, "setObjectCamera", function(obj:String, camera:String = '') {
@@ -1817,11 +1813,13 @@ class FunkinLua {
 
 	//main
 	public var lastCalledFunction:String = '';
+	public static var lastCalledScript:FunkinLua = null;
 	public function call(func:String, args:Array<Dynamic>):Dynamic {
 		#if LUA_ALLOWED
 		if(closed) return Function_Continue;
 
 		lastCalledFunction = func;
+		lastCalledScript = this;
 		try {
 			if(lua == null) return Function_Continue;
 

@@ -160,10 +160,10 @@ class HScript
 				retVal = funk.hscript.execute(codeToRun, funcToRun, funcArgs);
 			}
 			catch (e:Dynamic) {
-				funk.luaTrace(funk.scriptName + ":" + funk.lastCalledFunction + " - " + e, false, false, FlxColor.RED);
+				FunkinLua.luaTrace(funk.scriptName + ":" + funk.lastCalledFunction + " - " + e, false, false, FlxColor.RED);
 			}
 			#else
-			funk.luaTrace("runHaxeCode: HScript isn't supported on this platform!", false, false, FlxColor.RED);
+			FunkinLua.luaTrace("runHaxeCode: HScript isn't supported on this platform!", false, false, FlxColor.RED);
 			#end
 
 			if(retVal != null && !LuaUtils.isOfTypes(retVal, [Bool, Int, Float, String, Array])) retVal = null;
@@ -176,7 +176,7 @@ class HScript
 			}
 			catch(e:Exception)
 			{
-				funk.luaTrace(Std.string(e));
+				FunkinLua.luaTrace(Std.string(e));
 				return null;
 			}
 		});
@@ -192,7 +192,7 @@ class HScript
 				funk.hscript.variables.set(libName, Type.resolveClass(str + libName));
 			}
 			catch (e:Dynamic) {
-				funk.luaTrace(funk.scriptName + ":" + funk.lastCalledFunction + " - " + e, false, false, FlxColor.RED);
+				FunkinLua.luaTrace(funk.scriptName + ":" + funk.lastCalledFunction + " - " + e, false, false, FlxColor.RED);
 			}
 			#end
 		});
