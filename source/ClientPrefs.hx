@@ -55,6 +55,7 @@ import TitleState;
 	public var noteSplashes:Bool = true;
 	public var lowQuality:Bool = false;
 	public var shaders:Bool = true;
+	public var cacheOnGPU:Bool = false; //From Stilic
 	public var framerate:Int = 60;
 	public var cursing:Bool = true;
 	public var violence:Bool = true;
