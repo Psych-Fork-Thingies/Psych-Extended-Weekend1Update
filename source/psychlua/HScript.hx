@@ -78,7 +78,7 @@ class HScript
 		});
 		interp.variables.set('debugPrint', function(text:String, ?color:FlxColor = null) {
 			if(color == null) color = FlxColor.WHITE;
-			parentLua.luaTrace(text, true, false, color);
+			FunkinLua.luaTrace(text, true, false, color);
 		});
 
 		// For adding your own callbacks
@@ -102,7 +102,7 @@ class HScript
 				interp.variables.set(libName, Type.resolveClass(str + libName));
 			}
 			catch (e:Dynamic) {
-				parentLua.luaTrace(parentLua.scriptName + ":" + parentLua.lastCalledFunction + " - " + e, false, false, FlxColor.RED);
+				FunkinLua.luaTrace(parentLua.scriptName + ":" + parentLua.lastCalledFunction + " - " + e, false, false, FlxColor.RED);
 			}
 		});
 		interp.variables.set('parentLua', parentLua);

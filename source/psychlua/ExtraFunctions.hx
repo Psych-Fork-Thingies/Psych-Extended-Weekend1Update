@@ -14,6 +14,11 @@ import openfl.utils.Assets;
 
 class ExtraFunctions
 {
+    public var extra1:String = ClientPrefs.data.extraKeyReturn1.toUpperCase();
+	public var extra2:String = ClientPrefs.data.extraKeyReturn2.toUpperCase();
+	public var extra3:String = ClientPrefs.data.extraKeyReturn3.toUpperCase();
+	public var extra4:String = ClientPrefs.data.extraKeyReturn4.toUpperCase();
+	
 	public static function implement(funk:FunkinLua)
 	{
 		var lua:State = funk.lua;
