@@ -68,26 +68,26 @@ class LuaUtils
 		return true;
 	}
 	public static function getVarInArray(instance:Dynamic, variable:String):Any
-	{
-		var splitProps:Array<String> = variable.split('[');
-		if(splitProps.length > 1)
+	{        
+		var shit:Array<String> = variable.split('[');
+		if(shit.length > 1)
 		{
-			var target:Dynamic = null;
-			if(PlayState.instance.variables.exists(splitProps[0]))
+			var blah:Dynamic = null;
+			if(PlayState.instance.variables.exists(shit[0]))
 			{
-				var retVal:Dynamic = PlayState.instance.variables.get(splitProps[0]);
+				var retVal:Dynamic = PlayState.instance.variables.get(shit[0]);
 				if(retVal != null)
-					target = retVal;
+					blah = retVal;
 			}
 			else
-				target = Reflect.getProperty(instance, splitProps[0]);
+				blah = Reflect.getProperty(instance, shit[0]);
 
-			for (i in 1...splitProps.length)
+			for (i in 1...shit.length)
 			{
-				var j:Dynamic = splitProps[i].substr(0, splitProps[i].length - 1);
-				target = target[j];
+				var leNum:Dynamic = shit[i].substr(0, shit[i].length - 1);
+				blah = blah[leNum];
 			}
-			return target;
+			return blah;
 		}
 
 		if(PlayState.instance.variables.exists(variable))
