@@ -1305,7 +1305,7 @@ class FunkinLua {
 			var killMe:Array<String> = obj.split('.');
 			var poop:FlxSprite = LuaUtils.getObjectDirectly(killMe[0]);
 			if(killMe.length > 1) {
-				poop = LuaUtils.getVarInArray(LuaUtils.getProperty(killMe), killMe[killMe.length-1]);
+				poop = LuaUtils.getVarInArray(LuaUtils.getPropertyLoop(killMe), killMe[killMe.length-1]);
 			}
 
 			if(poop != null) {
@@ -1324,7 +1324,7 @@ class FunkinLua {
 			}
 
 			var killMe:Array<String> = obj.split('.');
-			var poop:FlxSprite = getObjectDirectly(killMe[0]);
+			var poop:FlxSprite = LuaUtils.getObjectDirectly(killMe[0]);
 			if(killMe.length > 1) {
 				poop = LuaUtils.getVarInArray(LuaUtils.getPropertyLoop(killMe), killMe[killMe.length-1]);
 			}
