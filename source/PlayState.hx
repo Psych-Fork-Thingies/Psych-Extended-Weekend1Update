@@ -4991,8 +4991,7 @@ class PlayState extends MusicBeatState
 	}
 
 	override function destroy() {
-		for (i in 0...luaArray.length) {
-			var lua:FunkinLua = luaArray[0];
+		for (lua in luaArray) {
 			lua.call('onDestroy', []);
 			lua.stop();
 		}
@@ -5210,16 +5209,9 @@ class PlayState extends MusicBeatState
 		if(exclusions == null) exclusions = [];
 		if(excludeValues == null) excludeValues = [];
 
-		var len:Int = luaArray.length;
-		var i:Int = 0;
-		while(i < len)
-		{
-			var script:FunkinLua = luaArray[i];
+		for (script in luaArray) {
 			if(exclusions.contains(script.scriptName))
-			{
-				i++;
 				continue;
-			}
 
 			var myValue = script.call(event, args);
 			if(myValue == FunkinLua.Function_StopLua && !ignoreStops)
@@ -5227,9 +5219,6 @@ class PlayState extends MusicBeatState
 			
 			if(myValue != null && myValue != FunkinLua.Function_Continue)
 				returnVal = myValue;
-			
-			if(!script.closed) i++;
-			else len--;
 		}
 		#end
 		return returnVal;
