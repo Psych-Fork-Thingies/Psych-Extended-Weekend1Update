@@ -251,16 +251,14 @@ class LuaUtils
 		#end
 	}
 
-	function resetSpriteTag(tag:String) {
+	public static function resetSpriteTag(tag:String) {
 		if(!PlayState.instance.modchartSprites.exists(tag)) {
 			return;
 		}
 
 		var pee:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
 		pee.kill();
-		if(pee.wasAdded) {
-			PlayState.instance.remove(pee, true);
-		}
+		if(pee.wasAdded) PlayState.instance.remove(pee, true);
 		pee.destroy();
 		PlayState.instance.modchartSprites.remove(tag);
 	}
