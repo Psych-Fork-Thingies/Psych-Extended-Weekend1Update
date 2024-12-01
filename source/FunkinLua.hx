@@ -9,8 +9,7 @@ import llua.Convert;
 #end
 
 import psychlua.CustomFunctions;
-import psychlua.LuaUtils;
-import psychlua.LuaUtils.LuaTweenOptions;
+import psychlua.ModFunctions;
 
 import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepadInputID;
@@ -2502,7 +2501,7 @@ class FunkinLua {
 				modName = this.modFolder;
 			}
 
-			return LuaUtils.getModSetting(saveTag, modName);
+			return ModFunctions.getModSetting(saveTag, modName);
 		});
 		//
 
