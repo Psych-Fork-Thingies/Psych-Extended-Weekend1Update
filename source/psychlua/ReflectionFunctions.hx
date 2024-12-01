@@ -16,15 +16,16 @@ class ReflectionFunctions
 			var result:Dynamic = null;
 			var killMe:Array<String> = variable.split('.');
 			if(killMe.length > 1)
-				result = LuaUtils.getVarInArray(LuaUtils.getPropertyLoop(killMe), killMe[killMe.length-1]);
+				result = LuaUtils.getVarInArray(getPropertyLoop(killMe), killMe[killMe.length-1]);
 			else
 				result = LuaUtils.getVarInArray(LuaUtils.getTargetInstance(), variable);
+
 			return result;
 		});
 		Lua_helper.add_callback(lua, "setProperty", function(variable:String, value:Dynamic) {
 			var killMe:Array<String> = variable.split('.');
 			if(killMe.length > 1) {
-				LuaUtils.setVarInArray(LuaUtils.getPropertyLoop(killMe), killMe[killMe.length-1], value);
+				LuaUtils.setVarInArray(getPropertyLoop(killMe), killMe[killMe.length-1], value);
 				return true;
 			}
 			LuaUtils.setVarInArray(LuaUtils.getTargetInstance(), variable, value);
@@ -133,10 +134,10 @@ class ReflectionFunctions
 				for (i in 1...killMe.length-1) {
 					coverMeInPiss = LuaUtils.getVarInArray(coverMeInPiss, killMe[i]);
 				}
-				setVarInArray(coverMeInPiss, killMe[killMe.length-1], value);
+				LuaUtils.setVarInArray(coverMeInPiss, killMe[killMe.length-1], value);
 				return true;
 			}
-			setVarInArray(Type.resolveClass(classVar), variable, value);
+			LuaUtils.setVarInArray(Type.resolveClass(classVar), variable, value);
 			return true;
 		});
 		
