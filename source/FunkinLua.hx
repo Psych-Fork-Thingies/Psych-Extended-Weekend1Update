@@ -91,8 +91,6 @@ class FunkinLua {
 	public static var hscript:HScript = null;
 	#end
 	
-	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
-	
 	public function new(script:String) {
 		#if LUA_ALLOWED
 		lua = LuaL.newstate();
@@ -256,12 +254,6 @@ class FunkinLua {
 		#else
 		set('buildTarget', 'unknown');
 		#end
-		
-		for (name => func in customFunctions)
-		{
-			if(func != null)
-				Lua_helper.add_callback(lua, name, func);
-		}
 
 		// custom substate
 		Lua_helper.add_callback(lua, "openCustomSubstate", function(name:String, pauseGame:Bool = false) {
