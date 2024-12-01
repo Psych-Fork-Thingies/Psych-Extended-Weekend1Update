@@ -1270,7 +1270,7 @@ class FunkinLua {
 				if(!shit.wasAdded) {
 					if(front)
 					{
-						getTargetInstance().add(shit);
+						LuaUtils.getTargetInstance().add(shit);
 					}
 					else
 					{
