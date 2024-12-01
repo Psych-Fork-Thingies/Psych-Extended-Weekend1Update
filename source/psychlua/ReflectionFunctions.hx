@@ -107,13 +107,13 @@ class ReflectionFunctions
 			var killMe:Array<String> = variable.split('.');
            
 			if(killMe.length > 1) {
-				var coverMeInPiss:Dynamic = getVarInArray(Type.resolveClass(classVar), killMe[0]);
+				var coverMeInPiss:Dynamic = LuaUtils.getVarInArray(Type.resolveClass(classVar), killMe[0]);
 				for (i in 1...killMe.length-1) {
-					coverMeInPiss = getVarInArray(coverMeInPiss, killMe[i]);
+					coverMeInPiss = LuaUtils.getVarInArray(coverMeInPiss, killMe[i]);
 				}
-				return getVarInArray(coverMeInPiss, killMe[killMe.length-1]);
+				return LuaUtils.getVarInArray(coverMeInPiss, killMe[killMe.length-1]);
 			}
-			return getVarInArray(Type.resolveClass(classVar), variable);
+			return LuaUtils.getVarInArray(Type.resolveClass(classVar), variable);
 		});
 		Lua_helper.add_callback(lua, "setPropertyFromClass", function(classVar:String, variable:String, value:Dynamic) {
 			@:privateAccess
@@ -129,30 +129,15 @@ class ReflectionFunctions
 			//Normal Code
 			var killMe:Array<String> = variable.split('.');
 			if(killMe.length > 1) {
-				var coverMeInPiss:Dynamic = getVarInArray(Type.resolveClass(classVar), killMe[0]);
+				var coverMeInPiss:Dynamic = LuaUtils.getVarInArray(Type.resolveClass(classVar), killMe[0]);
 				for (i in 1...killMe.length-1) {
-					coverMeInPiss = getVarInArray(coverMeInPiss, killMe[i]);
+					coverMeInPiss = LuaUtils.getVarInArray(coverMeInPiss, killMe[i]);
 				}
 				setVarInArray(coverMeInPiss, killMe[killMe.length-1], value);
 				return true;
 			}
 			setVarInArray(Type.resolveClass(classVar), variable, value);
 			return true;
-		});
-		//shitass stuff for epic coders like me B)  *image of obama giving himself a medal*
-		Lua_helper.add_callback(lua, "getObjectOrder", function(obj:String) {
-			var killMe:Array<String> = obj.split('.');
-			var leObj:FlxBasic = getObjectDirectly(killMe[0]);
-			if(killMe.length > 1) {
-				leObj = getVarInArray(getPropertyLoopThingWhatever(killMe), killMe[killMe.length-1]);
-			}
-
-			if(leObj != null)
-			{
-				return getInstance().members.indexOf(leObj);
-			}
-			luaTrace("getObjectOrder: Object " + obj + " doesn't exist!", false, false, FlxColor.RED);
-			return -1;
 		});
 		
 		Lua_helper.add_callback(lua, "callMethod", function(funcToRun:String, ?args:Array<Dynamic> = null) {

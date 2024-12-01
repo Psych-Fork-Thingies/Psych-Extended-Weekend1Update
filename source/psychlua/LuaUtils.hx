@@ -251,18 +251,18 @@ class LuaUtils
 		#end
 	}
 
-	public static function resetSpriteTag(tag:String) {
-		#if LUA_ALLOWED
+	function resetSpriteTag(tag:String) {
 		if(!PlayState.instance.modchartSprites.exists(tag)) {
 			return;
 		}
 
-		var target:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
-		target.kill();
-		PlayState.instance.remove(target, true);
-		target.destroy();
+		var pee:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
+		pee.kill();
+		if(pee.wasAdded) {
+			PlayState.instance.remove(pee, true);
+		}
+		pee.destroy();
 		PlayState.instance.modchartSprites.remove(tag);
-		#end
 	}
 
 	public static function cancelTween(tag:String) {
