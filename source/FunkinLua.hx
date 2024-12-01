@@ -88,7 +88,7 @@ class FunkinLua {
 	public static var FPSCounterText:String = null;
 
 	#if hscript
-	public var hscript:HScript = null;
+	public static var hscript:HScript = null;
 	#end
 	
 	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
