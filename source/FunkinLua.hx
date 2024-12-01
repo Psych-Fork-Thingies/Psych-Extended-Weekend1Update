@@ -9,7 +9,8 @@ import llua.Convert;
 #end
 
 import psychlua.CustomFunctions;
-import psychlua.ModFunctions;
+import psychlua.LuaUtils;
+import psychlua.LuaUtils.LuaTweenOptions;
 
 import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepadInputID;
@@ -54,6 +55,12 @@ import Type.ValueType;
 import Controls;
 import DialogueBoxPsych;
 
+#if hscript
+import hscript.Parser;
+import hscript.Interp;
+import hscript.Expr;
+#end
+
 #if desktop
 import Discord;
 #end
@@ -85,7 +92,6 @@ class FunkinLua {
 	public var hscript:HScript = null;
 	#end
 	
-	public var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
 	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
 	public function new(script:String) {
@@ -116,7 +122,7 @@ class FunkinLua {
 			return;
 		}
 		scriptName = script.trim();
-		#if hscript HScript.initHaxeModule(this); #end
+		initHaxeModule();
 
 		trace('lua file loaded succesfully:' + script);
 		
@@ -893,6 +899,41 @@ class FunkinLua {
 				return;
 			}
 			luaTrace("removeLuaScript: Script doesn't exist!", false, false, FlxColor.RED);
+		});
+
+		Lua_helper.add_callback(lua, "runHaxeCode", function(codeToRun:String) {
+			var retVal:Dynamic = null;
+
+			#if hscript
+			initHaxeModule();
+			try {
+				retVal = hscript.execute(codeToRun);
+			}
+			catch (e:Dynamic) {
+				luaTrace(scriptName + ":" + lastCalledFunction + " - " + e, false, false, FlxColor.RED);
+			}
+			#else
+			luaTrace("runHaxeCode: HScript isn't supported on this platform!", false, false, FlxColor.RED);
+			#end
+
+			if(retVal != null && !isOfTypes(retVal, [Bool, Int, Float, String, Array])) retVal = null;
+			return retVal;
+		});
+
+		Lua_helper.add_callback(lua, "addHaxeLibrary", function(libName:String, ?libPackage:String = '') {
+			#if hscript
+			initHaxeModule();
+			try {
+				var str:String = '';
+				if(libPackage.length > 0)
+					str = libPackage + '.';
+
+				hscript.variables.set(libName, Type.resolveClass(str + libName));
+			}
+			catch (e:Dynamic) {
+				luaTrace(scriptName + ":" + lastCalledFunction + " - " + e, false, false, FlxColor.RED);
+			}
+			#end
 		});
 
 		Lua_helper.add_callback(lua, "loadSong", function(?name:String = null, ?difficultyNum:Int = -1) {
@@ -2461,7 +2502,7 @@ class FunkinLua {
 				modName = this.modFolder;
 			}
 
-			return ModFunctions.getModSetting(saveTag, modName);
+			return LuaUtils.getModSetting(saveTag, modName);
 		});
 		//
 
@@ -2929,7 +2970,6 @@ class FunkinLua {
 		});
 		
 		#if ACHIEVEMENTS_ALLOWED Achievements.addLuaCallbacks(lua); #end
-		#if hscript HScript.implement(this); #end
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
 		#if android AndroidFunctions.implement(this); #end
 		MobileFunctions.implement(this);
@@ -2948,13 +2988,16 @@ class FunkinLua {
 		return false;
 	}
 
-	public function addLocalCallback(name:String, myFunction:Dynamic)
+	#if hscript
+	public function initHaxeModule()
 	{
-		#if LUA_ALLOWED
-		callbacks.set(name, myFunction);
-		Lua_helper.add_callback(lua, name, null); //just so that it gets called
-		#end
+		if(hscript == null)
+		{
+			trace('initializing haxe interp for: $scriptName');
+			hscript = new HScript(); //TO DO: Fix issue with 2 scripts not being able to use the same variable names
+		}
 	}
+	#end
 
 	public static function setVarInArray(instance:Dynamic, variable:String, value:Dynamic):Any
 	{
@@ -3318,7 +3361,7 @@ class FunkinLua {
 		return null;
 	}
 
-	public var lastCalledFunction:String = '';
+	var lastCalledFunction:String = '';
 	public static var lastCalledScript:FunkinLua = null;
 	public function call(func:String, args:Array<Dynamic>):Dynamic {
 		#if LUA_ALLOWED
@@ -3599,3 +3642,75 @@ class CustomSubstate extends MusicBeatSubstate
 		super.destroy();
 	}
 }
+
+#if hscript
+class HScript
+{
+	public static var parser:Parser = new Parser();
+	public var interp:Interp;
+
+	public var variables(get, never):Map<String, Dynamic>;
+
+	public function get_variables()
+	{
+		return interp.variables;
+	}
+
+	public function new()
+	{
+		interp = new Interp();
+		interp.variables.set('FlxG', FlxG);
+		interp.variables.set('FlxSprite', FlxSprite);
+		interp.variables.set('FlxCamera', FlxCamera);
+		interp.variables.set('FlxTimer', FlxTimer);
+		interp.variables.set('FlxTween', FlxTween);
+		interp.variables.set('FlxEase', FlxEase);
+		interp.variables.set('PlayState', PlayState);
+		interp.variables.set('game', PlayState.instance);
+		interp.variables.set('Paths', Paths);
+		interp.variables.set('Conductor', Conductor);
+		interp.variables.set('ClientPrefs.data', ClientPrefs.data);
+		interp.variables.set('ClientPrefs', ClientPrefs.data); //For 0.6.3 Mods
+		interp.variables.set('GlobalClientPrefs', ClientPrefs);
+		interp.variables.set('Character', Character);
+		interp.variables.set('Alphabet', Alphabet);
+		interp.variables.set('CustomSubstate', CustomSubstate);
+		#if (!flash && sys)
+		interp.variables.set('FlxRuntimeShader', FlxRuntimeShader);
+		#end
+		interp.variables.set('ShaderFilter', openfl.filters.ShaderFilter);
+		interp.variables.set('StringTools', StringTools);
+		interp.variables.set('CoolUtil', CoolUtil);
+		interp.variables.set('Sys', lime.system.System);
+		interp.variables.set('StorageUtil', mobile.backend.StorageUtil);
+
+		interp.variables.set('setVar', function(name:String, value:Dynamic)
+		{
+			PlayState.instance.variables.set(name, value);
+		});
+		interp.variables.set('getVar', function(name:String)
+		{
+			var result:Dynamic = null;
+			if(PlayState.instance.variables.exists(name)) result = PlayState.instance.variables.get(name);
+			return result;
+		});
+		interp.variables.set('removeVar', function(name:String)
+		{
+			if(PlayState.instance.variables.exists(name))
+			{
+				PlayState.instance.variables.remove(name);
+				return true;
+			}
+			return false;
+		});
+	}
+
+	public function execute(codeToRun:String):Dynamic
+	{
+		@:privateAccess
+		HScript.parser.line = 1;
+		HScript.parser.allowTypes = true;
+		return interp.execute(HScript.parser.parseString(codeToRun));
+	}
+}
+#end
