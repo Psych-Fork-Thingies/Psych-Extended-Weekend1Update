@@ -47,10 +47,11 @@ class HScript
 		interp.variables.set('game', PlayState.instance);
 		interp.variables.set('Paths', Paths);
 		interp.variables.set('Conductor', Conductor);
-		interp.variables.set('ClientPrefs', ClientPrefs);
+		interp.variables.set('GlobalClientPrefs', ClientPrefs);
+		interp.variables.set('ClientPrefs', ClientPrefs.data);
 		interp.variables.set('Character', Character);
 		interp.variables.set('Alphabet', Alphabet);
-		interp.variables.set('CustomSubstate', psychlua.CustomSubstate);
+		interp.variables.set('CustomSubstate', CustomSubstate);
 		#if (!flash && sys)
 		interp.variables.set('FlxRuntimeShader', flixel.addons.display.FlxRuntimeShader);
 		#end
@@ -166,7 +167,7 @@ class HScript
 			FunkinLua.luaTrace("runHaxeCode: HScript isn't supported on this platform!", false, false, FlxColor.RED);
 			#end
 
-			if(retVal != null && !LuaUtils.isOfTypes(retVal, [Bool, Int, Float, String, Array])) retVal = null;
+			if(retVal != null && !FunkinLua.isOfTypes(retVal, [Bool, Int, Float, String, Array])) retVal = null;
 			return retVal;
 		});
 		

@@ -32,7 +32,7 @@ class MusicBeatState extends FlxUIState
 
 	private var curDecStep:Float = 0;
 	private var curDecBeat:Float = 0;
-	public var controls(get, never):Controls;
+	private var controls(get, never):Controls;
 	public static var checkHitbox:Bool = false;
 
 	public static var camBeat:FlxCamera;
@@ -248,6 +248,7 @@ class MusicBeatState extends FlxUIState
 	}
 	
 	public static function switchState(nextState:FlxState = null) {
+	    FunkinLua.FPSCounterText = null;
 		if(nextState == null) nextState = FlxG.state;
 		if(nextState == FlxG.state)
 		{

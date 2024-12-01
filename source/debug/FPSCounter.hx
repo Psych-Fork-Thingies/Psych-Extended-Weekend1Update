@@ -81,11 +81,16 @@ class FPSCounter extends TextField
 	public dynamic function updateText():Void
 	{
 	    FPSThing = '$currentFPS';
-    	text = 
-    	'FPS: $currentFPS' + 
-    	'\nPsych Extended ' + MainMenuState.psychExtendedVersion +
-    	'\nMemory: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}' +
-    	os;
+	    if (FunkinLua.FPSCounterText == null) {
+    		text = 
+    		'FPS: $currentFPS' + 
+    		'\nPsych Extended ' + MainMenuState.psychExtendedVersion +
+    		'\nMemory: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}' +
+    		os;
+    	} else {
+    	    text = 
+    		FunkinLua.FPSCounterText;
+    	}
 
 		textColor = 0xFFFFFFFF;
 		if (currentFPS < FlxG.drawFramerate * 0.5)
