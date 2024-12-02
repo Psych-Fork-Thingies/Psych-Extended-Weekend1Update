@@ -94,7 +94,7 @@ class FPSCounter extends TextField
     	}
 
 		textColor = 0xFFFFFFFF;
-		if (currentFPS && currentFPSForLUA < FlxG.drawFramerate * 0.5)
+		if (currentFPS < FlxG.drawFramerate * 0.5 || currentFPSForLUA < FlxG.drawFramerate * 0.5)
 			textColor = 0xFFFF0000;
 	}
 
