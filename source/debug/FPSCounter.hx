@@ -25,13 +25,14 @@ class FPSCounter extends TextField
 		The current frame rate, expressed using frames-per-second
 	**/
 	public var currentFPS(default, null):Int;
+	public static var currentFPSForLUA(default, null):Int;
 
 	/**
 		The current memory usage (WARNING: this is NOT your total program memory usage, rather it shows the garbage collector memory)
 	**/
 	public static var memoryMegas(get, never):Float;
 	
-	public static var FPSThing:String = '$currentFPS';
+	public static var FPSThing:String = '$currentFPSForLUA';
 
 	@:noCompletion private var times:Array<Float>;
 
@@ -48,7 +49,7 @@ class FPSCounter extends TextField
 
 		positionFPS(x, y);
 
-		currentFPS = 0;
+		currentFPS = currentFPSForLUA = 0;
 		selectable = false;
 		mouseEnabled = false;
 		defaultTextFormat = new TextFormat("_sans", 14, color);
@@ -73,14 +74,14 @@ class FPSCounter extends TextField
 			return;
 		}
 
-		currentFPS = times.length < FlxG.updateFramerate ? times.length : FlxG.updateFramerate;		
+		currentFPS = currentFPSForLUA = times.length < FlxG.updateFramerate ? times.length : FlxG.updateFramerate;		
 		updateText();
 		deltaTimeout = 0.0;
 	}
 
 	public dynamic function updateText():Void
 	{
-	    FPSThing = '$currentFPS';
+	    FPSThing = '$currentFPSForLUA';
 	    if (FunkinLua.FPSCounterText == null) {
     		text = 
     		'FPS: $currentFPS' + 
@@ -93,7 +94,7 @@ class FPSCounter extends TextField
     	}
 
 		textColor = 0xFFFFFFFF;
-		if (currentFPS < FlxG.drawFramerate * 0.5)
+		if (currentFPS && currentFPSForLUA < FlxG.drawFramerate * 0.5)
 			textColor = 0xFFFF0000;
 	}
 
