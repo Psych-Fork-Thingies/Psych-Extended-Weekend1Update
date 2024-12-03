@@ -77,7 +77,6 @@ import android.os.Build.VERSION_CODES as AndroidVersionCode;
 import llua.Lua;
 import llua.LuaL;
 import llua.State;
-import FunkinLua;
 import llua.Convert;
 #end
 

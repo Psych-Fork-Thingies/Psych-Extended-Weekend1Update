@@ -1,6 +1,6 @@
 package psychlua;
 
-import FunkinLua;
+import psychlua.FunkinLua;
 import tjson.TJSON as Json;
 import debug.FPSCounter;
 
