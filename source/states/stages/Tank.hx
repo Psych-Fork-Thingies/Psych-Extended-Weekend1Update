@@ -2,6 +2,8 @@ package states.stages;
 
 import flixel.system.FlxSound;
 
+import animateatlas.*;
+
 import states.stages.objects.*;
 
 class Tank extends BaseStage

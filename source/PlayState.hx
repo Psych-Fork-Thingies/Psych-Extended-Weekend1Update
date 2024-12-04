@@ -656,7 +656,7 @@ class PlayState extends MusicBeatState
 		generateSong(SONG.song);
 
 		#if LUA_ALLOWED
-		for (notetype in noteTypeMap.keys())
+		for (notetype in noteTypes)
 		{
 			var luaToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
 			if(FileSystem.exists(luaToLoad))
@@ -672,7 +672,7 @@ class PlayState extends MusicBeatState
 				}
 			}
 		}
-		for (event in eventPushedMap.keys())
+		for (event in eventsPushed)
 		{
 			var luaToLoad:String = Paths.modFolders('custom_events/' + event + '.lua');
 			if(FileSystem.exists(luaToLoad))
@@ -1811,10 +1811,12 @@ class PlayState extends MusicBeatState
 			if (finishTimer != null && !finishTimer.finished) finishTimer.active = false;
 			if (songSpeedTween != null) songSpeedTween.active = false;
 
+            /* maybe later
             var chars:Array<Character> = [boyfriend, gf, dad];
 			for (char in chars)
 				if(char != null && char.colorTween != null)
 					char.colorTween.active = false;
+			*/
 					
 			#if LUA_ALLOWED
 			for (tween in modchartTweens) tween.active = false;
@@ -1856,10 +1858,12 @@ class PlayState extends MusicBeatState
 			if (finishTimer != null && !finishTimer.finished) finishTimer.active = true;
 			if (songSpeedTween != null) songSpeedTween.active = true;
 			
+			/* maybe later
 			var chars:Array<Character> = [boyfriend, gf, dad];
 			for (char in chars)
 				if(char != null && char.colorTween != null)
 					char.colorTween.active = true;
+			*/
 					
 			#if LUA_ALLOWED
 			for (tween in modchartTweens) tween.active = true;

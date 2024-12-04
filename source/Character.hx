@@ -11,6 +11,7 @@ import haxe.Json;
 
 import Song;
 import Section;
+import states.stages.objects.TankmenBG;
 
 typedef CharacterFile = {
 	var animations:Array<AnimArray>;
