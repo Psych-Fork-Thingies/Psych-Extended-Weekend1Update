@@ -3541,7 +3541,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-    //useless
+    //I need to learn how can i add Lily and KarimAkra's Mobile Controls Otherwise I can't add controller support :(
 	public function getControl(key:String) {
 		var pressed:Bool = Reflect.getProperty(controls, key);
 		//trace('Control result: ' + pressed);

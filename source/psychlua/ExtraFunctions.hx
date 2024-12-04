@@ -87,6 +87,28 @@ class ExtraFunctions
 		});
 		Lua_helper.add_callback(lua, "keyboardReleased", function(name:String)
 		{
+		    #if mobile
+           if (MusicBeatState.mobilec.newhbox != null && ClientPrefs.data.extraKeys != 0){
+                if (name == FunkinLua.extra1 && MusicBeatState.mobilec.newhbox.buttonExtra1.justReleased)
+    			    return true;
+			    if (name == FunkinLua.extra2 && MusicBeatState.mobilec.newhbox.buttonExtra2.justReleased)
+    			    return true;
+                if (name == FunkinLua.extra3 && MusicBeatState.mobilec.newhbox.buttonExtra3.justReleased)
+    			    return true;
+                if (name == FunkinLua.extra4 && MusicBeatState.mobilec.newhbox.buttonExtra4.justReleased)
+    			    return true;
+           }
+           if (MusicBeatState.mobilec.vpad != null && ClientPrefs.data.extraKeys != 0){
+                if (name == FunkinLua.extra1 && MusicBeatState.mobilec.vpad.buttonExtra1.justReleased)
+    			    return true;
+			    if (name == FunkinLua.extra2 && MusicBeatState.mobilec.vpad.buttonExtra2.justReleased)
+    			    return true;
+                if (name == FunkinLua.extra3 && MusicBeatState.mobilec.vpad.buttonExtra3.justReleased)
+    			    return true;
+                if (name == FunkinLua.extra4 && MusicBeatState.mobilec.vpad.buttonExtra4.justReleased)
+    			    return true;
+           }
+           #end
 			return Reflect.getProperty(FlxG.keys.justReleased, name);
 		});
 
@@ -149,65 +171,81 @@ class ExtraFunctions
 			return Reflect.getProperty(controller.justReleased, name) == true;
 		});
 
-		Lua_helper.add_callback(lua, "keyJustPressed", function(name:String = '') {
-			name = name.toLowerCase();
+		Lua_helper.add_callback(lua, "keyJustPressed", function(name:String) {
+			var key:Bool = false;
 			switch(name) {
-				case 'left': return PlayState.instance.controls.NOTE_LEFT_P;
-				case 'down': return PlayState.instance.controls.NOTE_DOWN_P;
-				case 'up': return PlayState.instance.controls.NOTE_UP_P;
-				case 'right': return PlayState.instance.controls.NOTE_RIGHT_P;
-				default: return PlayState.instance.controls.justPressed(name);
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_P');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_P');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP_P');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_P');
+				case 'accept': key = PlayState.instance.getControl('ACCEPT');
+				case 'back': key = PlayState.instance.getControl('BACK');
+				case 'pause': key = PlayState.instance.getControl('PAUSE');
+				case 'reset': key = PlayState.instance.getControl('RESET');	
+				case 'space': key = FlxG.keys.justPressed.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT_P');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN_P');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP_P');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_P');
 			}
 			//Fix Extra Controls
 			if (name == FunkinLua.extra1)
-			    key = PlayState.instance.controls.EXTRA1_P;
+			    key = PlayState.instance.getControl('EXTRA1_P');
 		    if (name == FunkinLua.extra2)
-		        key = PlayState.instance.controls.EXTRA2_P;
+		        key = PlayState.instance.getControl('EXTRA2_P');
 		    if (name == FunkinLua.extra3)
-		        key = PlayState.instance.controls.EXTRA3_P;
+		        key = PlayState.instance.getControl('EXTRA3_P');
 		    if (name == FunkinLua.extra4)
-		        key = PlayState.instance.controls.EXTRA4_P;
-			return false;
+		        key = PlayState.instance.getControl('EXTRA4_P');
+			return key;
 		});
-		Lua_helper.add_callback(lua, "keyPressed", function(name:String = '') {
-			name = name.toLowerCase();
+		Lua_helper.add_callback(lua, "keyPressed", function(name:String) {
+			var key:Bool = false;
 			switch(name) {
-				case 'left': return PlayState.instance.controls.NOTE_LEFT;
-				case 'down': return PlayState.instance.controls.NOTE_DOWN;
-				case 'up': return PlayState.instance.controls.NOTE_UP;
-				case 'right': return PlayState.instance.controls.NOTE_RIGHT;
-				default: return PlayState.instance.controls.pressed(name);
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT');
+				case 'space': key = FlxG.keys.pressed.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT');
 			}
 			//Fix Extra Controls
 			if (name == FunkinLua.extra1)
-			    key = PlayState.instance.controls.EXTRA1;
+			    key = PlayState.instance.getControl('EXTRA1');
 		    if (name == FunkinLua.extra2)
-		        key = PlayState.instance.controls.EXTRA2;
+		        key = PlayState.instance.getControl('EXTRA2');
 		    if (name == FunkinLua.extra3)
-		        key = PlayState.instance.controls.EXTRA3;
+		        key = PlayState.instance.getControl('EXTRA3');
 		    if (name == FunkinLua.extra4)
-		        key = PlayState.instance.controls.EXTRA4;
-			return false;
+		        key = PlayState.instance.getControl('EXTRA4');
+			return key;
 		});
-		Lua_helper.add_callback(lua, "keyReleased", function(name:String = '') {
-			name = name.toLowerCase();
+		Lua_helper.add_callback(lua, "keyReleased", function(name:String) {
+			var key:Bool = false;
 			switch(name) {
-				case 'left': return PlayState.instance.controls.NOTE_LEFT_R;
-				case 'down': return PlayState.instance.controls.NOTE_DOWN_R;
-				case 'up': return PlayState.instance.controls.NOTE_UP_R;
-				case 'right': return PlayState.instance.controls.NOTE_RIGHT_R;
-				default: return PlayState.instance.controls.justReleased(name);
+				case 'left': key = PlayState.instance.getControl('NOTE_LEFT_R');
+				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_R');
+				case 'up': key = PlayState.instance.getControl('NOTE_UP_R');
+				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_R');		
+				case 'space': key = FlxG.keys.justReleased.SPACE;//an extra key for convinience
+				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT_R');
+				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN_R');
+				case 'ui_up': key = PlayState.instance.getControl('UI_UP_R');
+				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_R');
 			}
 			//Fix Extra Controls
 			if (name == FunkinLua.extra1)
-			    key = PlayState.instance.controls.EXTRA1_R;
+			    key = PlayState.instance.getControl('EXTRA1_R');
 		    if (name == FunkinLua.extra2)
-		        key = PlayState.instance.controls.EXTRA2_R;
+		        key = PlayState.instance.getControl('EXTRA2_R');
 		    if (name == FunkinLua.extra3)
-		        key = PlayState.instance.controls.EXTRA3_R;
+		        key = PlayState.instance.getControl('EXTRA3_R');
 		    if (name == FunkinLua.extra4)
-		        key = PlayState.instance.controls.EXTRA4_R;
-			return false;
+		        key = PlayState.instance.getControl('EXTRA4_R');
+			return key;
 		});
 
 		// Save data management
@@ -220,7 +258,7 @@ class ExtraFunctions
 				PlayState.instance.modchartSaves.set(name, save);
 				return;
 			}
-			funk.luaTrace('initSaveData: Save file already initialized: ' + name);
+			FunkinLua.luaTrace('initSaveData: Save file already initialized: ' + name);
 		});
 		Lua_helper.add_callback(lua, "flushSaveData", function(name:String) {
 			if(PlayState.instance.modchartSaves.exists(name))
@@ -228,7 +266,7 @@ class ExtraFunctions
 				PlayState.instance.modchartSaves.get(name).flush();
 				return;
 			}
-			funk.luaTrace('flushSaveData: Save file not initialized: ' + name, false, false, FlxColor.RED);
+			FunkinLua.luaTrace('flushSaveData: Save file not initialized: ' + name, false, false, FlxColor.RED);
 		});
 		Lua_helper.add_callback(lua, "getDataFromSave", function(name:String, field:String, ?defaultValue:Dynamic = null) {
 			if(PlayState.instance.modchartSaves.exists(name))
@@ -236,7 +274,7 @@ class ExtraFunctions
 				var retVal:Dynamic = Reflect.field(PlayState.instance.modchartSaves.get(name).data, field);
 				return retVal;
 			}
-			funk.luaTrace('getDataFromSave: Save file not initialized: ' + name, false, false, FlxColor.RED);
+			FunkinLua.luaTrace('getDataFromSave: Save file not initialized: ' + name, false, false, FlxColor.RED);
 			return defaultValue;
 		});
 		Lua_helper.add_callback(lua, "setDataFromSave", function(name:String, field:String, value:Dynamic) {
@@ -245,7 +283,7 @@ class ExtraFunctions
 				Reflect.setField(PlayState.instance.modchartSaves.get(name).data, field, value);
 				return;
 			}
-			funk.luaTrace('setDataFromSave: Save file not initialized: ' + name, false, false, FlxColor.RED);
+			FunkinLua.luaTrace('setDataFromSave: Save file not initialized: ' + name, false, false, FlxColor.RED);
 		});
 
 		// File management
@@ -280,7 +318,7 @@ class ExtraFunctions
 
 				return true;
 			} catch (e:Dynamic) {
-				funk.luaTrace("saveFile: Error trying to save " + path + ": " + e, false, false, FlxColor.RED);
+				FunkinLua.luaTrace("saveFile: Error trying to save " + path + ": " + e, false, false, FlxColor.RED);
 			}
 			return false;
 		});
@@ -306,7 +344,7 @@ class ExtraFunctions
 					return true;
 				}
 			} catch (e:Dynamic) {
-				funk.luaTrace("deleteFile: Error trying to delete " + path + ": " + e, false, false, FlxColor.RED);
+				FunkinLua.luaTrace("deleteFile: Error trying to delete " + path + ": " + e, false, false, FlxColor.RED);
 			}
 			return false;
 		});
