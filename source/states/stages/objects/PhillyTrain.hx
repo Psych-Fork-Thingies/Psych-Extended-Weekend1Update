@@ -1,9 +1,6 @@
-package stages.objects;
+package states.stages.objects;
 
-import BGSprite;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.sound.FlxSound;
+import flixel.system.FlxSound;
 
 class PhillyTrain extends BGSprite
 {
@@ -29,11 +26,9 @@ class PhillyTrain extends BGSprite
 	{
 		if (moving)
 		{
-			trace('moving');
 			frameTiming += elapsed;
 			if (frameTiming >= 1 / 24)
 			{
-				trace('update position');
 				if (sound.time >= 4700)
 				{
 					startedMoving = true;

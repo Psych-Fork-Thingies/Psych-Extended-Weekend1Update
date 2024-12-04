@@ -1,7 +1,5 @@
-package stages.objects;
+package states.stages.objects;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 class TankmenBG extends FlxSprite
@@ -28,7 +26,7 @@ class TankmenBG extends FlxSprite
 		antialiasing = ClientPrefs.data.antialiasing;
 
 		updateHitbox();
-		scale.set(0.8, 0.8);
+		setGraphicSize(Std.int(0.8 * width));
 		updateHitbox();
 	}
 

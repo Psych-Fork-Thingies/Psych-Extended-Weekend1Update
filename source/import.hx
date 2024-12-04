@@ -6,6 +6,7 @@ import flixel.addons.ui.*; //Flixel-UI
 
 //Stage Objects
 import stages.objects.*;
+import stages.*;
 
 import shaders.flixel.system.FlxShader;
 

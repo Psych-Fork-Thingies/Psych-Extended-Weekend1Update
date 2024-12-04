@@ -1,9 +1,4 @@
-package stages.objects;
-
-import BGSprite;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxSpriteGroup;
+package states.stages.objects;
 
 class DadBattleFog extends FlxSpriteGroup
 {
