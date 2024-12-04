@@ -3105,13 +3105,13 @@ class FunkinLua {
 	#if (!flash && sys)
 	public function getShader(obj:String):FlxRuntimeShader
 	{
-		var killMe:Array<String> = obj.split('.');
-		var leObj:FlxSprite = getObjectDirectly(killMe[0]);
-		if(killMe.length > 1) {
-			leObj = getVarInArray(getPropertyLoopThingWhatever(killMe), killMe[killMe.length-1]);
+		var splitObj:Array<String> = obj.split('.');
+		var target:FlxSprite = LuaUtils.getObjectDirectly(splitObj[0]);
+		if(splitObj.length > 1) {
+			target = LuaUtils.getVarInArray(LuaUtils.getPropertyLoop(splitObj), splitObj[splitObj.length-1]);
 		}
-		if(leObj != null) {
-			var shader:Dynamic = leObj.shader;
+		if(target != null) {
+			var shader:Dynamic = target.shader;
 			var shader:FlxRuntimeShader = shader;
 			return shader;
 		}
