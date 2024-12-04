@@ -3541,6 +3541,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+    //useless
 	public function getControl(key:String) {
 		var pressed:Bool = Reflect.getProperty(controls, key);
 		//trace('Control result: ' + pressed);
