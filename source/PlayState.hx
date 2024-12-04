@@ -2679,7 +2679,7 @@ class PlayState extends MusicBeatState
 		}
 
 		moveCamera(SONG.notes[sec].mustHitSection != true);
-		if (SONG.notes[sec].mustHitSection != true);
+		if (SONG.notes[sec].mustHitSection != true)
 			callOnLuas('onMoveCamera', ['dad']);
 		else
 			callOnLuas('onMoveCamera', ['boyfriend']);
