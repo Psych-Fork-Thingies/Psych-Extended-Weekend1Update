@@ -656,7 +656,7 @@ class PlayState extends MusicBeatState
 		generateSong(SONG.song);
 
 		#if LUA_ALLOWED
-		for (notetype in noteTypes)
+		for (notetype in noteTypeMap.keys())
 		{
 			var luaToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
 			if(FileSystem.exists(luaToLoad))
@@ -672,7 +672,7 @@ class PlayState extends MusicBeatState
 				}
 			}
 		}
-		for (event in eventsPushed)
+		for (event in eventPushedMap.keys())
 		{
 			var luaToLoad:String = Paths.modFolders('custom_events/' + event + '.lua');
 			if(FileSystem.exists(luaToLoad))
@@ -789,17 +789,19 @@ class PlayState extends MusicBeatState
 		startingSong = true;
 		
 		#if LUA_ALLOWED
-		for (notetype in noteTypes)
+		for (notetype in noteTypeMap.keys())
 		{
 			startLuasOnFolder('custom_notetypes/' + notetype + '.lua');
 		}
-		for (event in eventsPushed)
+		for (event in eventPushedMap.keys())
 		{
 			startLuasOnFolder('custom_events/' + event + '.lua');
 		}
 		#end
-		noteTypes = null;
-		eventsPushed = null;
+		noteTypeMap.clear();
+		noteTypeMap = null;
+		eventPushedMap.clear();
+		eventPushedMap = null;
 
 		if(eventNotes.length > 1)
 		{
@@ -1518,8 +1520,8 @@ class PlayState extends MusicBeatState
 	}
 
 	var debugNum:Int = 0;
-	private var noteTypes:Array<String> = [];
-	private var eventsPushed:Array<String> = [];
+	private var noteTypeMap:Map<String, Bool> = new Map<String, Bool>();
+	private var eventPushedMap:Map<String, Bool> = new Map<String, Bool>();
 	private function generateSong(dataPath:String):Void
 	{
 		// FlxG.log.add(ChartParser.parse());
@@ -1588,8 +1590,20 @@ class PlayState extends MusicBeatState
 		#end
 			var eventsData:Array<Dynamic> = Song.loadFromJson('events', songName).events;
 			for (event in eventsData) //Event Notes
+			{
 				for (i in 0...event[1].length)
-				    makeEvent(event, i);
+				{
+					var newEventNote:Array<Dynamic> = [event[0], event[1][i][0], event[1][i][1], event[1][i][2]];
+					var subEvent:EventNote = {
+						strumTime: newEventNote[0] + ClientPrefs.data.noteOffset,
+						event: newEventNote[1],
+						value1: newEventNote[2],
+						value2: newEventNote[3]
+					};
+					eventNotes.push(subEvent);
+					eventPushed(subEvent);
+				}
+			}
 		}
 
 		for (section in noteData)
@@ -1673,15 +1687,27 @@ class PlayState extends MusicBeatState
 					}
 				}
 
-				if(!noteTypes.contains(swagNote.noteType)) {
-					noteTypes.push(swagNote.noteType);
+				if(!noteTypeMap.exists(swagNote.noteType)) {
+					noteTypeMap.set(swagNote.noteType, true);
 				}
 			}
 			daBeats += 1;
 		}
 		for (event in songData.events) //Event Notes
+		{
 			for (i in 0...event[1].length)
-			    makeEvent(event, i);
+			{
+				var newEventNote:Array<Dynamic> = [event[0], event[1][i][0], event[1][i][1], event[1][i][2]];
+				var subEvent:EventNote = {
+					strumTime: newEventNote[0] + ClientPrefs.data.noteOffset,
+					event: newEventNote[1],
+					value1: newEventNote[2],
+					value2: newEventNote[3]
+				};
+				eventNotes.push(subEvent);
+				eventPushed(subEvent);
+			}
+		}
 
 		// trace(unspawnNotes.length);
 		// playerCounter += 1;
@@ -1713,8 +1739,9 @@ class PlayState extends MusicBeatState
 				addCharacterToList(newCharacter, charType);
 		}
 
-		stagesFunc(function(stage:BaseStage) stage.eventPushed(event));
-		eventsPushed.push(event.event);
+		if(!eventPushedMap.exists(event.event)) {
+			eventPushedMap.set(event.event, true);
+		}
 	}
 
 	function eventNoteEarlyTrigger(event:EventNote):Float {
