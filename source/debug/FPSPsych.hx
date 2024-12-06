@@ -19,7 +19,7 @@ import lime.system.System as LimeSystem;
 @:headerInclude('sys/utsname.h')
 #end
 #end
-class FPSCounter extends TextField
+class FPSPsych extends TextField
 {
 	/**
 		The current frame rate, expressed using frames-per-second
