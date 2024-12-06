@@ -137,6 +137,8 @@ class OptionsState extends MusicBeatState
     			    MusicBeatState.switchState(new FreeplayStateNF());
     			else if (OptionsState.stateType == 1)
     			    MusicBeatState.switchState(new FreeplayStateNOVA());
+    			else if (OptionsState.stateType == 3)
+    			    MusicBeatState.switchState(new PlayState());
     		    OptionsState.stateType = 0;
 			}
 			else

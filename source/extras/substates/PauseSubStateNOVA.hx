@@ -14,7 +14,7 @@ import openfl.utils.Assets;
 	别骂了 -- TieGuo
 */
 
-class PauseSubState extends MusicBeatSubstate
+class PauseSubStateNOVA extends MusicBeatSubstate
 {
 	var filePath:String = 'menuExtend/PauseState/';
 	var font:String = Assets.getFont("assets/fonts/montserrat.ttf").fontName;
@@ -55,7 +55,7 @@ class PauseSubState extends MusicBeatSubstate
 	var stayinMenu:String = 'isChanging'; // base, difficulty, debug, isChanging or options
 	// isChanging = in transition animation
 
-	var options:Array<String> = ['Continue', 'Restart', 'Difficulty', 'Debug', 'Editor', 'Options', 'Exit'];
+	var options:Array<String> = ['Continue', 'Restart', 'Difficulty', 'Debug', 'Changers', 'Editor', 'Options', 'Exit']; //Changers = Change Gameplay Settings
 	var optionsAlphabet:Array<FlxText> = [];
 	var optionsBars:Array<FlxSprite> = [];
 	var curSelected:Int = 0;
@@ -227,8 +227,10 @@ class PauseSubState extends MusicBeatSubstate
 			add(optionText);
 		}
 		
-		//if (!PlayState.chartingMode)
+		/*
+		if (!PlayState.chartingMode)
 			options.remove('Debug');
+		*/
 	
 		for (i in 0...options.length) {
 			var optionText:FlxText = new FlxText(0, 0, 0, options[i], 50);
@@ -347,15 +349,14 @@ class PauseSubState extends MusicBeatSubstate
 			changeMenuColor();
 		}, 0);
 		
+		/* nope
 		if (PlayState.chartingMode)
-		{
-			addVirtualPad(PauseSubstateC, A);
-		}
+			addVirtualPad(PAUSE, A);
 		else
-		{
 			addVirtualPad(UP_DOWN, A);
-		}
-		addVirtualPadCamera(false);
+		*/
+		addVirtualPad(PAUSE, A);
+		addVirtualPadCamera();
 		
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 		
@@ -565,6 +566,11 @@ class PauseSubState extends MusicBeatSubstate
 					);
 				case 'Restart':
 					restartSong();
+				case 'Changers':
+					persistentUpdate = false;
+					removeVirtualPad();
+					GameplayChangersSubstate.inThePauseMenu = true;
+					openSubState(new GameplayChangersSubstate());
 				case 'Exit':
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
@@ -800,4 +806,11 @@ class PauseSubState extends MusicBeatSubstate
 		skipTimeText.text = FlxStringUtil.formatTime(Math.max(0, Math.floor(curTime / 1000)), false) + ' / ' + FlxStringUtil.formatTime(Math.max(0, Math.floor(FlxG.sound.music.length / 1000)), false);
 	}
 	
+	override function closeSubState() {
+		persistentUpdate = true;
+		super.closeSubState();
+		removeVirtualPad();
+		addVirtualPad(PAUSE, A);
+		addVirtualPadCamera();
+	}
 }

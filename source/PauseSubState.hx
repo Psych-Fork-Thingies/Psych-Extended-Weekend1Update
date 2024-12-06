@@ -311,7 +311,7 @@ class PauseSubState extends MusicBeatSubstate
 		            MusicBeatState.switchState(new editors.ChartingState());
 		            PlayState.chartingMode = true;
 		        case 'Options':
-					options.OptionsState.onPlayState = true;
+					options.OptionsState.stateType = 3;
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 					MusicBeatState.switchState(new options.OptionsState());
