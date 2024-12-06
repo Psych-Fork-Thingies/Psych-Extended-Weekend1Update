@@ -1,17 +1,7 @@
 package extras.substates;
 
-import Difficulty;
-import MusicBeatState;
-import WeekData;
-import Highscore;
-import Song;
-
 import editors.ChartingState;
-import FreeplayState;
-import StoryMenuState;
-
 import options.OptionsState;
-//import options.OptionsSubstate;
 
 import flixel.util.FlxStringUtil;
 import flixel.addons.transition.FlxTransitionableState;
@@ -24,7 +14,7 @@ import openfl.utils.Assets;
 	别骂了 -- TieGuo
 */
 
-class PauseSubStateNOVA extends MusicBeatSubstate
+class PauseSubState extends MusicBeatSubstate
 {
 	var filePath:String = 'menuExtend/PauseState/';
 	var font:String = Assets.getFont("assets/fonts/montserrat.ttf").fontName;
@@ -61,17 +51,11 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 	var holdTime:Float = 0;
 	var skipTimeText:FlxText;
 	var curTime:Float = Math.max(0, Conductor.songPosition);
-	
-	public static var moveType:Int = 0; 
-	//0 is close pause, 1 is open option, 2 is back to pause
-	
-	public static var curOptions:Bool = false; // curSelected fix
-	public static var curGameplayChangers:Bool = false; // curSelected fix
 
 	var stayinMenu:String = 'isChanging'; // base, difficulty, debug, isChanging or options
 	// isChanging = in transition animation
 
-	var options:Array<String> = ['Continue', 'Restart', 'Difficulty', 'Debug', 'Changers', 'Editor', 'Options', 'Exit']; //Changers = Change Gameplay Settings
+	var options:Array<String> = ['Continue', 'Restart', 'Difficulty', 'Debug', 'Editor', 'Options', 'Exit'];
 	var optionsAlphabet:Array<FlxText> = [];
 	var optionsBars:Array<FlxSprite> = [];
 	var curSelected:Int = 0;
@@ -85,11 +69,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 	var debugCurSelected:Int = 0;
 	var debugAlphabet:Array<FlxText> = [];
 	var debugBars:Array<FlxSprite> = [];
-
-	var optionsType:Array<String> = ['Instant', 'Entirety', 'Back'];
-	var optionsCurSelected:Int = 0;
-	var optionsOptionsAlphabet:Array<FlxText> = [];
-	var optionsOptionsBars:Array<FlxSprite> = [];
 
 	var menuColor:Array<Int> = [
 		0xFFFF26C0,
@@ -138,15 +117,15 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 			}
 		} catch(e:Dynamic) {}		
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
-       // pauseMusic.volume = moveType != 0 ? OptionsSubstate.pauseMusic.volume : 0;
-		//pauseMusic.time = moveType != 0 ? OptionsSubstate.pauseMusic.time : FlxG.random.int(0, Std.int(pauseMusic.length / 2));
+        pauseMusic.volume = 0;
+		pauseMusic.time = FlxG.random.int(0, Std.int(pauseMusic.length / 2));
 		
 		FlxG.sound.list.add(pauseMusic);
 	
 		blackback = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(blackback);
 		blackback.antialiasing = ClientPrefs.data.antialiasing;
-		blackback.alpha = moveType != 0 ? 0.5 : 0;
+		blackback.alpha = 0;
 		blackbackTween = FlxTween.tween(blackback, {alpha: 0.5}, 0.75, {ease: FlxEase.quartOut});	
 	    
 		backShadow = new FlxSprite(-800).loadGraphic(Paths.image(filePath + 'backShadow'));
@@ -172,7 +151,7 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 		backButton.scale.set(0.45, 0.45);
 		backButton.updateHitbox();
 		backButton.visible = false;
-		if (ClientPrefs.data.mobileC) backButton.y -= 127;
+		#if mobile backButton.y -= 127; #end
 	
 		if (Difficulty.list.length < 2) options.remove('Difficulty');
 	
@@ -247,41 +226,9 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 		
 			add(optionText);
 		}
-	
-		for (i in 0...optionsType.length) {
-			var optionText:FlxText = new FlxText(0, 0, 0, optionsType[i], 50);
 		
-			optionText.x = -1000;
-			optionText.y = (180 * (i - (optionsType.length / 2))) + 400;
-			optionText.setFormat(font, 50, FlxColor.BLACK);
-			optionsOptionsAlphabet.push(optionText);
-			optionText.antialiasing = ClientPrefs.data.antialiasing;
-		
-			var barShadow:FlxSprite = new FlxSprite().loadGraphic(Paths.image(filePath + 'barShadow'));
-			add(barShadow);
-			barShadow.scale.set(0.5, 0.5);
-			barShadow.x = -1000;
-			barShadow.y = optionText.y - 30;
-			barShadow.updateHitbox();
-			barShadow.antialiasing = ClientPrefs.data.antialiasing;
-			optionsOptionsBars.push(barShadow);
-		
-			var bar:FlxSprite = new FlxSprite().loadGraphic(Paths.image(filePath + 'bar'));
-			add(bar);
-			bar.scale.set(0.5, 0.5);
-			bar.x = -1000;
-			bar.y = optionText.y - 30;
-			bar.updateHitbox();
-			bar.antialiasing = ClientPrefs.data.antialiasing;
-			optionsOptionsBars.push(bar);
-		
-			add(optionText);
-		}
-		
-		/*
-		if (!PlayState.chartingMode)
+		//if (!PlayState.chartingMode)
 			options.remove('Debug');
-		*/
 	
 		for (i in 0...options.length) {
 			var optionText:FlxText = new FlxText(0, 0, 0, options[i], 50);
@@ -400,22 +347,17 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 			changeMenuColor();
 		}, 0);
 		
-		/* nope
 		if (PlayState.chartingMode)
 		{
-			addVirtualPad(PAUSE, A);
+			addVirtualPad(PauseSubstateC, A);
 		}
 		else
 		{
 			addVirtualPad(UP_DOWN, A);
 		}
-		*/
-		addVirtualPad(PAUSE, A);
-		addVirtualPadCamera();
+		addVirtualPadCamera(false);
 		
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
-		
-		moveType = 0;
 		
 		super.create();
 	}
@@ -524,20 +466,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 					difficultyBars[i*2+1].x = difficultyAlphabet[i].x - 300;
 					difficultyBars[i*2+1].y = difficultyAlphabet[i].y - 30;
 				}
-			/*
-			case 'options':
-				for (i in 0...optionsOptionsAlphabet.length) {
-						
-					optionsOptionsAlphabet[i].x = FlxMath.lerp(-i *45.5 + 45.5 + 100 + (i == optionsCurSelected ? 75 : 0), optionsOptionsAlphabet[i].x, FlxMath.bound(1 - (elapsed * 8.5), 0, 1));
-					optionsOptionsAlphabet[i].y = FlxMath.lerp((180 * (i - (optionsOptionsAlphabet.length / 2))) + 400, optionsOptionsAlphabet[i].y, FlxMath.bound(1 - (elapsed * 8.5), 0, 1));
-					
-					optionsOptionsBars[i*2].x = optionsOptionsAlphabet[i].x - 300;
-					optionsOptionsBars[i*2].y = optionsOptionsAlphabet[i].y - 30;
-					
-					optionsOptionsBars[i*2+1].x = optionsOptionsAlphabet[i].x - 300;
-					optionsOptionsBars[i*2+1].y = optionsOptionsAlphabet[i].y - 30;
-				}
-			*/
 		}
 			
 		if (upP)
@@ -547,9 +475,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 		
 		if (accept)
 			doEvent();
-			
-		alphaCheck();
-				
 	}
 
 	function changeOptions(num:Int) {
@@ -584,16 +509,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 				for (i in difficultyAlphabet) i.alpha = 0.5;
 				
 				difficultyAlphabet[difficultyCurSelected].alpha = 1;
-			/*
-			case 'options':
-				optionsCurSelected += num;
-				if (optionsCurSelected > optionsType.length - 1) optionsCurSelected = 0;
-				if (optionsCurSelected < 0) optionsCurSelected = optionsType.length - 1;
-				
-				for (i in optionsOptionsAlphabet) i.alpha = 0.5;
-				
-				optionsOptionsAlphabet[optionsCurSelected].alpha = 1;
-			*/
 		}
 		
 		if (num != 0)
@@ -631,51 +546,34 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 						changeOptions(0);
 						changeOptions(0);
 					});
+				
+					PlayState.chartingMode = true;
 				case 'Options':
-				    PlayState.instance.paused = true; // For lua
+					PlayState.instance.paused = true; // For lua
 					PlayState.instance.vocals.volume = 0;
-					OptionsState.onPlayState = true;
+					OptionsState.stateType = 2;
 					MusicBeatState.switchState(new OptionsState());
-					if(ClientPrefs.data.pauseMusic != 'None'){
+					if(ClientPrefs.data.pauseMusic != 'None')
+					{
 						FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic)), pauseMusic.volume);
 						FlxTween.tween(FlxG.sound.music, {volume: 1}, 0.8);
 						FlxG.sound.music.time = pauseMusic.time;
 					}
-				    /*
-					for (i in optionsBars)
-						FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
-					
-					for (i in optionsAlphabet)
-						FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
-				
-					stayinMenu = 'isChanging';
-					setBackButton(false);
-					new FlxTimer().start(0.5, function(tmr:FlxTimer) {
-						stayinMenu = 'options';
-						changeOptions(0);
-					});
-					*/
 				case 'Continue':
 					closeMenu(
 						function(tmr:FlxTimer) close()
 					);
 				case 'Restart':
 					restartSong();
-				case 'Changers':
-					persistentUpdate = false;
-					removeVirtualPad();
-					GameplayChangersSubstate.inThePauseMenu = true;
-					openSubState(new GameplayChangersSubstate());
 				case 'Exit':
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 	
 					WeekData.loadTheFirstEnabledMod();
-					if(PlayState.isStoryMode) {
-					    CustomSwitchState.switchMenus('StoryMenu');
-					} else {
+					if(PlayState.isStoryMode)
+						CustomSwitchState.switchMenus('StoryMenu');
+					else
 						CustomSwitchState.switchMenus('Freeplay');
-					}
 					//PlayState.cancelMusicFadeTween();
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					PlayState.changedDifficulty = false;
@@ -735,45 +633,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 						debugCurSelected = 0;
 						changeOptions(0);
 					});
-					FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
-			}
-		} else if (stayinMenu == 'options') {
-			switch (optionsType[optionsCurSelected]) {
-				case 'Instant':
-					PlayState.instance.paused = true; // For lua
-					PlayState.instance.vocals.volume = 0;
-					moveType = 1;
-					closeMenu(
-						function(tmr:FlxTimer) {
-						    pauseMusic.pause();
-						    close();
-						}
-					, false);
-				case 'Entirety':
-					PlayState.instance.paused = true; // For lua
-					PlayState.instance.vocals.volume = 0;
-					//OptionsState.onPlayState = true;
-					MusicBeatState.switchState(new OptionsState());
-					if(ClientPrefs.data.pauseMusic != 'None'){
-						FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic)), pauseMusic.volume);
-						FlxTween.tween(FlxG.sound.music, {volume: 1}, 0.8);
-						FlxG.sound.music.time = pauseMusic.time;
-					}
-				case 'Back':
-					for (i in optionsOptionsBars)
-						FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
-						
-					for (i in optionsOptionsAlphabet)
-						FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
-					
-					stayinMenu = 'isChanging';
-					setBackButton(true);
-					new FlxTimer().start(0.5, function(tmr:FlxTimer) {
-						stayinMenu = 'base';
-						optionsCurSelected = 0;
-						changeOptions(0);
-					});
-					
 					FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 			}
 		} else if (stayinMenu == 'difficulty') {
@@ -839,13 +698,7 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 			FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
 				
 		for (i in difficultyAlphabet)
-			FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
-		
-		for (i in optionsOptionsBars)
-			FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
-						
-		for (i in optionsOptionsAlphabet)
-			FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
+			FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});						
 						
 		var curText = 0;
 		
@@ -887,17 +740,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 			FlxTween.tween(backButton, {x: 1080}, 0.5, {ease: FlxEase.quartIn});
 		}
 	}
-	
-	function alphaCheck(){/*
-		for (i in 0...Std.int(optionsBars.length/2))
-			if (optionsBars[i*2].alpha > 0.7) optionsBars[i*2].alpha = 0.7;
-		for (i in 0...Std.int(debugBars.length/2))
-			if (debugBars[i*2].alpha > 0.7) debugBars[i*2].alpha = 0.7;
-		for (i in 0...Std.int(difficultyBars.length/2))
-			if (difficultyBars[i*2].alpha > 0.7) difficultyBars[i*2].alpha = 0.7;
-		for (i in 0...Std.int(optionsOptionsBars.length/2))
-			if (optionsOptionsBars[i*2].alpha > 0.7) optionsOptionsBars[i*2].alpha = 0.7;*/
-	}
 
 	override function destroy()
 	{
@@ -930,8 +772,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 			colorTweenShadow = FlxTween.color(debugBars[i*2], 2, debugBars[i*2].color, menuShadowColor[curColor]);
 		for (i in 0...Std.int(difficultyBars.length/2))
 			colorTweenShadow = FlxTween.color(difficultyBars[i*2], 2, difficultyBars[i*2].color, menuShadowColor[curColor]);
-		for (i in 0...Std.int(optionsOptionsBars.length/2))
-			colorTweenShadow = FlxTween.color(optionsOptionsBars[i*2], 2, optionsOptionsBars[i*2].color, menuShadowColor[curColor]);
 		
 		colorTween = FlxTween.color(back, 2, menuColor[curColorAgain], menuColor[curColor]);
 		colorTweenShadow = FlxTween.color(backShadow, 2, menuShadowColor[curColorAgain], menuShadowColor[curColor]);
@@ -958,14 +798,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 	function updateSkipTimeText()
 	{
 		skipTimeText.text = FlxStringUtil.formatTime(Math.max(0, Math.floor(curTime / 1000)), false) + ' / ' + FlxStringUtil.formatTime(Math.max(0, Math.floor(FlxG.sound.music.length / 1000)), false);
-	}
-	
-	override function closeSubState() {
-		persistentUpdate = true;
-		super.closeSubState();
-		removeVirtualPad();
-		addVirtualPad(PAUSE, A);
-		addVirtualPadCamera();
 	}
 	
 }
