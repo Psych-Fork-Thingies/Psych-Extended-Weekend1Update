@@ -116,7 +116,7 @@ class FunkinLua {
 		trace('lua file loaded succesfully:' + scriptName);
 		
 		var myFolder:Array<String> = this.scriptName.split('/');
-		if(myFolder[0] + '/' == Paths.mods() && (Paths.currentModDirectory == myFolder[1] || Paths.getGlobalMods().contains(myFolder[1]))) //is inside mods folder
+		if(myFolder[0] + '/' == Paths.mods() && (Mods.currentModDirectory == myFolder[1] || Mods.getGlobalMods().contains(myFolder[1]))) //is inside mods folder
 			this.modFolder = myFolder[1];
 
 		// Lua shit
@@ -229,7 +229,7 @@ class FunkinLua {
 		set('lowQuality', ClientPrefs.data.lowQuality);
 		set('shadersEnabled', ClientPrefs.data.shaders);
 		set('scriptName', scriptName);
-		set('currentModDirectory', Paths.currentModDirectory);
+		set('currentModDirectory', Mods.currentModDirectory);
 
 		#if windows
 		set('buildTarget', 'windows');

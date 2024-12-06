@@ -65,7 +65,7 @@ class ModsMenuState extends MusicBeatState
 		Paths.clearUnusedMemory();
 		persistentUpdate = false;
 
-		modsList = Paths.parseList();
+		modsList = Mods.parseList();
 		Mods.currentModDirectory = modsList.all[0] != null ? modsList.all[0] : '';
 
 		#if DISCORD_ALLOWED
@@ -589,8 +589,8 @@ class ModsMenuState extends MusicBeatState
 			{
 				nextAttempt = 1;
 				@:privateAccess
-				Paths.updateModList();
-				modsList = Paths.parseList();
+				Mods.updateModList();
+				modsList = Mods.parseList();
 				if(modsList.all.length > 0)
 				{
 					trace('mod(s) found! reloading');
@@ -601,7 +601,7 @@ class ModsMenuState extends MusicBeatState
 		super.update(elapsed);
 	}
 	
-	override function closeSubState() // not needed but i want to use this (idk why)
+	override function closeSubState() // not needed but i want to use this (idk why) - KralOyuncu | Nope, This is Useful for Mobile Devices - AloneDark
 	{
 		super.closeSubState();
 		#if mobile
@@ -868,7 +868,7 @@ class ModItem extends FlxSpriteGroup
 		super();
 
 		this.folder = folder;
-		pack = Paths.getPack(folder);
+		pack = Mods.getPack(folder);
 
 		var path:String = Paths.mods('$folder/data/settings.json');
 		if(FileSystem.exists(path))
