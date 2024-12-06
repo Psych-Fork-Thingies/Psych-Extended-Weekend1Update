@@ -275,7 +275,7 @@ class Paths
 		if(mods)
 		{
 			// Global mods first
-			for(mod in Paths.getGlobalMods())
+			for(mod in Mods.getGlobalMods())
 			{
 				var folder:String = Paths.mods(mod + '/' + fileToFind);
 				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
@@ -358,7 +358,7 @@ class Paths
 		}
 		
 		// Scan for folders that aren't on modsList.txt yet
-		for (folder in getModDirectories())
+		for (folder in Mods.getModDirectories())
 		{
 			if(folder.trim().length > 0 && FileSystem.exists(Paths.mods(folder)) && FileSystem.isDirectory(Paths.mods(folder)) &&
 			!ignoreModFolders.contains(folder.toLowerCase()) && !added.contains(folder))
@@ -703,7 +703,7 @@ class Paths
 		Paths.currentModDirectory = '';
 
 		#if MODS_ALLOWED
-		var list:Array<String> = Paths.getGlobalMods();
+		var list:Array<String> = Mods.getGlobalMods();
 		if(list != null && list[0] != null)
 			Paths.currentModDirectory = list[0];
 		#end

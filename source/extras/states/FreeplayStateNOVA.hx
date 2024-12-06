@@ -380,7 +380,7 @@ class FreeplayStateNOVA extends MusicBeatState
 
 	var pressCheck:Bool = false;
 	function backMenu() {
-		WeekData.loadTheFirstEnabledMod();
+		Mods.loadTheFirstEnabledMod();
 		if (!pressCheck){
 			pressCheck = true;
 			FlxG.sound.music.stop();

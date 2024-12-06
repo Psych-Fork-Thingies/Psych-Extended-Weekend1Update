@@ -131,9 +131,9 @@ class Main extends Sprite
 		#end
 
 		#if LUA_ALLOWED
-		Paths.pushGlobalMods();
+		Mods.pushGlobalMods();
 		#end
-		WeekData.loadTheFirstEnabledMod();
+		Mods.loadTheFirstEnabledMod();
 
 		FlxG.save.bind('funkin', CoolUtil.getSavePath());
 

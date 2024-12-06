@@ -82,7 +82,7 @@ class AchievementsMenuState extends MusicBeatState
 			spr.antialiasing = hasAntialias;
 			grpOptions.add(spr);
 		}
-		#if MODS_ALLOWED WeekData.loadTheFirstEnabledMod(); #end
+		#if MODS_ALLOWED Mods.loadTheFirstEnabledMod(); #end
 
 		var box:FlxSprite = new FlxSprite(0, -30).makeGraphic(1, 1, FlxColor.BLACK);
 		box.scale.set(grpOptions.width + 60, grpOptions.height + 60);
