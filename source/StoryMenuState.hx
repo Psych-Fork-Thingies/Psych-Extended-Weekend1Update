@@ -370,7 +370,7 @@ class StoryMenuState extends MusicBeatState
 		
 		if(!Paths.fileExists('images/menudifficulties/' + Paths.formatToSongPath(diff) + '.png', IMAGE)) newImage = Paths.image('menudifficulties/imagenotfound');
 		else newImage = Paths.image('menudifficulties/' + Paths.formatToSongPath(diff));
-		//trace(Paths.currentModDirectory + ', menudifficulties/' + Paths.formatToSongPath(diff));
+		//trace(Mods.currentModDirectory + ', menudifficulties/' + Paths.formatToSongPath(diff));
 
 		if(sprDifficulty.graphic != newImage)
 		{

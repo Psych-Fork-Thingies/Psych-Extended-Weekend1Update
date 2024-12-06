@@ -325,7 +325,7 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 
-					WeekData.loadTheFirstEnabledMod();
+					Mods.loadTheFirstEnabledMod();
 					if(PlayState.isStoryMode) {
 					    CustomSwitchState.switchMenus('StoryMenu');
 					} else {
@@ -335,16 +335,18 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
+					FlxG.camera.followLerp = 0;
 			    case "Exit to main menu":
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 
-					WeekData.loadTheFirstEnabledMod();
+					Mods.loadTheFirstEnabledMod();
 					CustomSwitchState.switchMenus('MainMenu');
 					PlayState.cancelMusicFadeTween();
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
+					FlxG.camera.followLerp = 0;
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package;
 
 import WeekData;
+import backend.Mods;
 
 import flixel.FlxBasic;
 import flixel.graphics.FlxGraphic;
@@ -65,7 +66,7 @@ class ModsMenuState extends MusicBeatState
 		persistentUpdate = false;
 
 		modsList = Paths.parseList();
-		Paths.currentModDirectory = modsList.all[0] != null ? modsList.all[0] : '';
+		Mods.currentModDirectory = modsList.all[0] != null ? modsList.all[0] : '';
 
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
@@ -880,7 +881,7 @@ class ModItem extends FlxSpriteGroup
 			}
 			catch(e:Dynamic)
 			{
-				var errorTitle = 'Mod name: ' + Paths.currentModDirectory;
+				var errorTitle = 'Mod name: ' + Mods.currentModDirectory;
 				var errorMsg = 'An error occurred: $e';
 				CoolUtil.showPopUp(errorMsg, errorTitle);
 			}

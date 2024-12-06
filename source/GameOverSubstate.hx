@@ -122,7 +122,7 @@ class GameOverSubstate extends MusicBeatSubstate
 				PlayState.seenCutscene = false;
 				PlayState.chartingMode = false;
 	
-				WeekData.loadTheFirstEnabledMod();
+				Mods.loadTheFirstEnabledMod();
 				if (PlayState.isStoryMode)
 					CustomSwitchState.switchMenus('StoryMenu');
 				else

@@ -25,6 +25,11 @@ import objects.Alphabet as AlphabetNew;
 import objects.AttachedText as AttachedTextNew;
 import backend.animation.PsychAnimationController; //Psych Animation Controller
 
+//New Mods System
+#if MODS_ALLOWED
+import backend.Mods;
+#end
+
 //New Lua System
 #if ACHIEVEMENTS_ALLOWED
 import Achievements;
