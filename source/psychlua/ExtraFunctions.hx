@@ -182,20 +182,20 @@ class ExtraFunctions
 				case 'back': key = PlayState.instance.getControl('BACK');
 				case 'pause': key = PlayState.instance.getControl('PAUSE');
 				case 'reset': key = PlayState.instance.getControl('RESET');	
-				case 'space': key = FlxG.keys.justPressed.SPACE;//an extra key for convinience
+				case 'space': key = FlxG.keys.justPressed.SPACE;
 				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT_P');
 				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN_P');
 				case 'ui_up': key = PlayState.instance.getControl('UI_UP_P');
 				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_P');
 			}
 			//Fix Extra Controls
-			if (name == FunkinLua.extra1)
+			if (name == FunkinLua.extra1 || FunkinLua.extra1 == 'SPACE' && name == 'space' || FunkinLua.extra1 == 'SHIFT' && name == 'shift')
 			    key = PlayState.instance.getControl('EXTRA1_P');
-		    if (name == FunkinLua.extra2)
+		    if (name == FunkinLua.extra2 || FunkinLua.extra2 == 'SPACE' && name == 'space' || FunkinLua.extra2 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA2_P');
-		    if (name == FunkinLua.extra3)
+		    if (name == FunkinLua.extra3 || FunkinLua.extra3 == 'SPACE' && name == 'space' || FunkinLua.extra3 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA3_P');
-		    if (name == FunkinLua.extra4)
+		    if (name == FunkinLua.extra4 || FunkinLua.extra4 == 'SPACE' && name == 'space' || FunkinLua.extra4 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA4_P');
 			return key;
 		});
@@ -206,20 +206,20 @@ class ExtraFunctions
 				case 'down': key = PlayState.instance.getControl('NOTE_DOWN');
 				case 'up': key = PlayState.instance.getControl('NOTE_UP');
 				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT');
-				case 'space': key = FlxG.keys.pressed.SPACE;//an extra key for convinience
+				case 'space': key = FlxG.keys.pressed.SPACE;
 				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT');
 				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN');
 				case 'ui_up': key = PlayState.instance.getControl('UI_UP');
 				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT');
 			}
 			//Fix Extra Controls
-			if (name == FunkinLua.extra1)
+			if (name == FunkinLua.extra1 || FunkinLua.extra1 == 'SPACE' && name == 'space' || FunkinLua.extra1 == 'SHIFT' && name == 'shift')
 			    key = PlayState.instance.getControl('EXTRA1');
-		    if (name == FunkinLua.extra2)
+		    if (name == FunkinLua.extra2 || FunkinLua.extra2 == 'SPACE' && name == 'space' || FunkinLua.extra2 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA2');
-		    if (name == FunkinLua.extra3)
+		    if (name == FunkinLua.extra3 || FunkinLua.extra3 == 'SPACE' && name == 'space' || FunkinLua.extra3 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA3');
-		    if (name == FunkinLua.extra4)
+		    if (name == FunkinLua.extra4 || FunkinLua.extra4 == 'SPACE' && name == 'space' || FunkinLua.extra4 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA4');
 			return key;
 		});
@@ -230,20 +230,20 @@ class ExtraFunctions
 				case 'down': key = PlayState.instance.getControl('NOTE_DOWN_R');
 				case 'up': key = PlayState.instance.getControl('NOTE_UP_R');
 				case 'right': key = PlayState.instance.getControl('NOTE_RIGHT_R');		
-				case 'space': key = FlxG.keys.justReleased.SPACE;//an extra key for convinience
+				case 'space': key = FlxG.keys.justReleased.SPACE;
 				case 'ui_left': key = PlayState.instance.getControl('UI_LEFT_R');
 				case 'ui_down': key = PlayState.instance.getControl('UI_DOWN_R');
 				case 'ui_up': key = PlayState.instance.getControl('UI_UP_R');
 				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_R');
 			}
 			//Fix Extra Controls
-			if (name == FunkinLua.extra1)
+			if (name == FunkinLua.extra1 || FunkinLua.extra1 == 'SPACE' && name == 'space' || FunkinLua.extra1 == 'SHIFT' && name == 'shift')
 			    key = PlayState.instance.getControl('EXTRA1_R');
-		    if (name == FunkinLua.extra2)
+		    if (name == FunkinLua.extra2 || FunkinLua.extra2 == 'SPACE' && name == 'space' || FunkinLua.extra2 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA2_R');
-		    if (name == FunkinLua.extra3)
+		    if (name == FunkinLua.extra3 || FunkinLua.extra3 == 'SPACE' && name == 'space' || FunkinLua.extra3 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA3_R');
-		    if (name == FunkinLua.extra4)
+		    if (name == FunkinLua.extra4 || FunkinLua.extra4 == 'SPACE' && name == 'space' || FunkinLua.extra4 == 'SHIFT' && name == 'shift')
 		        key = PlayState.instance.getControl('EXTRA4_R');
 			return key;
 		});
