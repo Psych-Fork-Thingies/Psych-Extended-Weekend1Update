@@ -1807,21 +1807,6 @@ class PlayState extends MusicBeatState
 	    stagesFunc(function(stage:BaseStage) stage.closeSubState());
 		if (paused)
 		{
-		    if (ClientPrefs.data.PauseMenuStyle == 'NovaFlare')
-		    {
-    		    if (PauseSubStateNOVA.moveType == 1){
-    		        PauseSubStateNOVA.moveType = 2; //really back to pause
-    		        super.closeSubState();
-    		        //openSubState(new OptionsSubstate());
-    		        return;
-    		    }
-    		    else if (PauseSubStateNOVA.moveType == 2){		
-    		        super.closeSubState();        
-    		        openSubState(new PauseSubStateNOVA());		        
-    		        return;
-    		    }
-		    }
-		    
 			if (FlxG.sound.music != null && !startingSong)
 			{
 				resyncVocals();
