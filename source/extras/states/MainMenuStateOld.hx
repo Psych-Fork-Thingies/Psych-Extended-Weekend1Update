@@ -217,13 +217,13 @@ class MainMenuStateOld extends MusicBeatState
 			{
 				selectedSomethin = true;
 				FlxG.sound.play(Paths.sound('cancelMenu'));
-				MusicBeatState.switchState(new TitleState());
+				CustomSwitchState.switchMenus('Title');
 			}
 			
 			if (_virtualpad.buttonM.justPressed)
 			{
 				selectedSomethin = true;
-				MusicBeatState.switchState(new ModsMenuState());
+				CustomSwitchState.switchMenus('ModsMenu');
 			}
 			
 			if (_virtualpad.buttonC.justPressed)
@@ -271,10 +271,10 @@ class MainMenuStateOld extends MusicBeatState
 										CustomSwitchState.switchMenus('Freeplay');
 									#if MODS_ALLOWED
 									case 'mods':
-										MusicBeatState.switchState(new ModsMenuState());
+										CustomSwitchState.switchMenus('ModsMenu');
 									#end
 									case 'awards':
-										LoadingState.loadAndSwitchState(new AchievementsMenuState());
+										CustomSwitchState.switchMenus('AchievementsMenu');
 									case 'credits':
 										CustomSwitchState.switchMenus('Credits');
 									case 'options':
@@ -289,7 +289,7 @@ class MainMenuStateOld extends MusicBeatState
 			else if (FlxG.keys.anyJustPressed(debugKeys) || _virtualpad.buttonE.justPressed)
 			{
 				selectedSomethin = true;
-				MusicBeatState.switchState(new MasterEditorMenu());
+				CustomSwitchState.switchMenus('MasterEditor');
 			}
 			#end
 		}

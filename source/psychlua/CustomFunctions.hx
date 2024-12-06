@@ -2,7 +2,7 @@ package psychlua;
 
 import psychlua.FunkinLua;
 import tjson.TJSON as Json;
-import debug.FPSCounter;
+import debug.FPSPsych;
 
 class CustomFunctions
 {
@@ -15,27 +15,27 @@ class CustomFunctions
 			PlayState.instance.saveScore();
 		});
 		
-		Lua_helper.add_callback(lua, "ChangeFPSCounterText", function(text1:String = '', text2:String = '', text3:String = '', text4:String = '', text5:String = '', text6:String = ''):Void
+		Lua_helper.add_callback(lua, "ChangePsychFPSCounterText", function(text1:String = '', text2:String = '', text3:String = '', text4:String = '', text5:String = '', text6:String = ''):Void
 		{
 		    //I know This is Weird But I'm just Testing
-    		if (text1 == "Memory") text1 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text2 == "Memory") text2 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text3 == "Memory") text3 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text4 == "Memory") text4 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text5 == "Memory") text5 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text6 == "Memory") text6 = flixel.util.FlxStringUtil.formatBytes(FPSCounter.memoryMegas);
-    		if (text1 == "FPS") text1 = FPSCounter.FPSThing;
-    		if (text2 == "FPS") text2 = FPSCounter.FPSThing;
-    		if (text3 == "FPS") text3 = FPSCounter.FPSThing;
-    		if (text4 == "FPS") text4 = FPSCounter.FPSThing;
-    		if (text5 == "FPS") text5 = FPSCounter.FPSThing;
-    		if (text6 == "FPS") text6 = FPSCounter.FPSThing;
-    		if (text1 == "OS") text1 = FPSCounter.os;
-    		if (text2 == "OS") text2 = FPSCounter.os;
-    		if (text3 == "OS") text3 = FPSCounter.os;
-    		if (text4 == "OS") text4 = FPSCounter.os;
-    		if (text5 == "OS") text5 = FPSCounter.os;
-    		if (text6 == "OS") text6 = FPSCounter.os;
+    		if (text1 == "Memory") text1 = flixel.util.FlxStringUtil.formatBytes(FPSPsych.memoryMegas);
+    		if (text2 == "Memory") text2 = flixel.util.FlxStringUtil.formatBytes(FPSPsych.memoryMegas);
+    		if (text3 == "Memory") text3 = flixel.util.FlxStringUtil.formatBytes(FPSPsych.memoryMegas);
+    		if (text4 == "Memory") text4 = flixel.util.FlxStringUtil.formatBytes(FPSPsych.memoryMegas);
+    		if (text5 == "Memory") text5 = flixel.util.FlxStringUtil.formatBytes(FPSPsych.memoryMegas);
+    		if (text6 == "Memory") text6 = flixel.util.FlxStringUtil.formatBytes(FPSPsych.memoryMegas);
+    		if (text1 == "FPS") text1 = FPSPsych.FPSThing;
+    		if (text2 == "FPS") text2 = FPSPsych.FPSThing;
+    		if (text3 == "FPS") text3 = FPSPsych.FPSThing;
+    		if (text4 == "FPS") text4 = FPSPsych.FPSThing;
+    		if (text5 == "FPS") text5 = FPSPsych.FPSThing;
+    		if (text6 == "FPS") text6 = FPSPsych.FPSThing;
+    		if (text1 == "OS") text1 = FPSPsych.os;
+    		if (text2 == "OS") text2 = FPSPsych.os;
+    		if (text3 == "OS") text3 = FPSPsych.os;
+    		if (text4 == "OS") text4 = FPSPsych.os;
+    		if (text5 == "OS") text5 = FPSPsych.os;
+    		if (text6 == "OS") text6 = FPSPsych.os;
 		    
 		    if (text1 == '' && text2 == '' && text3 == '' && text4 == '' && text5 == '' && text6 == '')
 		        FunkinLua.FPSCounterText = null;

@@ -360,7 +360,7 @@ class NoteOffsetState extends MusicBeatState
 			persistentUpdate = false;
 			if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
 		        CustomFadeTransitionNOVA.nextCamera = camOther;
-			MusicBeatState.switchState(new options.OptionsState());
+			CustomSwitchState.switchMenus('Options');
 			FlxG.sound.playMusic(Paths.music('freakyMenu'), 1, true);
 			#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 		}

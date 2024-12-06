@@ -532,7 +532,7 @@ class TitleState extends MusicBeatState
 								function(twn:FlxTween) {
 									FlxTransitionableState.skipNextTransIn = true;
 									FlxTransitionableState.skipNextTransOut = true;
-									MusicBeatState.switchState(new TitleState());
+									CustomSwitchState.switchMenus('Title');
 								}
 							});
 							FlxG.sound.music.fadeOut();

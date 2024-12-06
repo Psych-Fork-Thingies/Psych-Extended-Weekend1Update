@@ -356,13 +356,13 @@ class MainMenuStateNOVA extends MusicBeatState
 			{
 				endCheck = true;
 				FlxG.sound.play(Paths.sound('cancelMenu'));
-				MusicBeatState.switchState(new TitleState());
+				CustomSwitchState.switchMenus('Title');
 			}		
 				
 			else if (FlxG.keys.anyJustPressed(debugKeys) || _virtualpad.buttonE.justPressed)
 			{
 				endCheck = true;
-				MusicBeatState.switchState(new MasterEditorMenu());
+				CustomSwitchState.switchMenus('MasterEditor');
 			}		
         }
       
@@ -466,10 +466,10 @@ class MainMenuStateNOVA extends MusicBeatState
 							    CustomSwitchState.switchMenus('Freeplay');
 							#if MODS_ALLOWED
 							case 'mods':
-								MusicBeatState.switchState(new ModsMenuState());
+								CustomSwitchState.switchMenus('ModsMenu');
 							#end
 							case 'awards':
-								LoadingState.loadAndSwitchState(new AchievementsMenuState());
+								CustomSwitchState.switchMenus('AchievementsMenu');
 							case 'credits':
 								CustomSwitchState.switchMenus('Credits');
 							case 'options':

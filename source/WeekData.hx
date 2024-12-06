@@ -206,6 +206,9 @@ class WeekData {
 
 	public static function setDirectoryFromWeek(?data:WeekData = null) {
 		Mods.currentModDirectory = '';
-		Mods.currentModDirectory = data.folder;
+		Mods.currentModDirectory = '';
+		if(data != null && data.folder != null && data.folder.length > 0) {
+			Mods.currentModDirectory = data.folder;
+		}
 	}
 }

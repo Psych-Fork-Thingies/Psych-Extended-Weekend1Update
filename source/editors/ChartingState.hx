@@ -1848,7 +1848,7 @@ class ChartingState extends MusicBeatState
 				if (ClientPrefs.data.FreeplayStyle == 'NovaFlare' && isFreePlay)
                     MusicBeatState.switchState(new FreeplayStateNOVA());
         		else
-        			MusicBeatState.switchState(new editors.MasterEditorMenu());
+        			CustomSwitchState.switchMenus('MasterEditor');
         		isFreePlay = false;
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end

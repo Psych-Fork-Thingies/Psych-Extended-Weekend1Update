@@ -679,7 +679,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 			}
 
 			if(FlxG.keys.justPressed.ESCAPE  #if android || FlxG.android.justReleased.BACK #end #if ios || _virtualpad.buttonB.pressed #end) {
-				MusicBeatState.switchState(new editors.MasterEditorMenu());
+				CustomSwitchState.switchMenus('MasterEditor');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 1);
 				transitioning = true;
 			}

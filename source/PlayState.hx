@@ -2306,7 +2306,7 @@ class PlayState extends MusicBeatState
 		options.OptionsState.stateType = 3;
 		PlayState.deathCounter = 0;
 	    PlayState.seenCutscene = false;
-		MusicBeatState.switchState(new options.OptionsState());
+		CustomSwitchState.switchMenus('Options');
 		FlxG.sound.playMusic(Paths.music('freakyMenu'));
 
 		#if desktop

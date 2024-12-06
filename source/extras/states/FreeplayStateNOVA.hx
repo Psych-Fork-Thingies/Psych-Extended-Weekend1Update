@@ -460,7 +460,7 @@ class FreeplayStateNOVA extends MusicBeatState
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 1);
 				
 				ModsMenuState.isFreePlay = true;
-				MusicBeatState.switchState(new ModsMenuState());
+				CustomSwitchState.switchMenus('ModsMenu');
 			case 2:
 				if (Math.abs(lerpPosition - position) > 1) return;
 				ignoreCheck = true;

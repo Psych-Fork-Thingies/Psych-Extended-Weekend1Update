@@ -280,7 +280,7 @@ class MainMenuState extends MusicBeatState
 				selectedSomethin = true;
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 				FlxG.sound.play(Paths.sound('cancelMenu'));
-				MusicBeatState.switchState(new TitleState());
+				CustomSwitchState.switchMenus('Title');
 			}
 
 			if (controls.ACCEPT || (FlxG.mouse.overlaps(menuItems, FlxG.camera) && FlxG.mouse.justPressed))
@@ -322,12 +322,12 @@ class MainMenuState extends MusicBeatState
 
 							#if MODS_ALLOWED
 							case 'mods':
-								MusicBeatState.switchState(new ModsMenuState());
+								CustomSwitchState.switchMenus('ModsMenu');
 							#end
 
 							#if ACHIEVEMENTS_ALLOWED
 							case 'achievements':
-								MusicBeatState.switchState(new AchievementsMenuState());
+								CustomSwitchState.switchMenus('AchievementsMenu');
 							#end
 
 							case 'credits':
@@ -351,7 +351,7 @@ class MainMenuState extends MusicBeatState
 			{
 				selectedSomethin = true;
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end
-				MusicBeatState.switchState(new MasterEditorMenu());
+				CustomSwitchState.switchMenus('MasterEditor');
 			}
 		}
 

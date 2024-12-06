@@ -553,7 +553,7 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 					PlayState.instance.paused = true; // For lua
 					PlayState.instance.vocals.volume = 0;
 					OptionsState.stateType = 2;
-					MusicBeatState.switchState(new OptionsState());
+					CustomSwitchState.switchMenus('Options');
 					if(ClientPrefs.data.pauseMusic != 'None')
 					{
 						FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic)), pauseMusic.volume);

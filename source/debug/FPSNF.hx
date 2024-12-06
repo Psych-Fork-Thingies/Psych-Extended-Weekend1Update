@@ -1,4 +1,4 @@
-package extras.debug;
+package debug;
 
 import haxe.Timer;
 import openfl.events.Event;
@@ -30,7 +30,7 @@ import openfl.system.System;
 @:noDebug
 #end
 
-class FPSOld extends TextField
+class FPSNF extends TextField
 {
 	/**
 		The current frame rate, expressed using frames-per-second

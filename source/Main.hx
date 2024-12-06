@@ -1,12 +1,10 @@
 package;
 
-import extras.debug.Graphics;
-import extras.debug.FPS as FPSNova;
-import extras.debug.FPSOld as FPS_NF;
-
 import mobile.backend.CrashHandler;
 import openfl.events.UncaughtErrorEvent;
-import debug.FPSCounter;
+import extras.debug.FPS as FPSNova;
+import debug.FPSPsych;
+import debug.FPSNF;
 import Highscore;
 import flixel.FlxGame;
 import haxe.io.Path;
@@ -43,7 +41,7 @@ class Main extends Sprite
 		startFullscreen: false // if the game should start at fullscreen mode
 	};
 
-	public static var fpsVar:FPSCounter;
+	public static var fpsVar:FPSPsych;
 	public static var fpsVarNova:FPSNova;
 	public static var fpsVarNF:FPS_NF;
 
@@ -130,20 +128,13 @@ class Main extends Sprite
 			game.zoom = 1.0;
 		#end
 
-		#if LUA_ALLOWED
-		Mods.pushGlobalMods();
-		#end
-		Mods.loadTheFirstEnabledMod();
-
 		FlxG.save.bind('funkin', CoolUtil.getSavePath());
-
 		Highscore.load();
-
 		ClientPrefs.loadDefaultKeys();
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		addChild(new FlxGame(game.width, game.height, #if (mobile && MODS_ALLOWED) CopyState.checkExistingFiles() ? game.initialState : CopyState #else game.initialState #end, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
-        //NovaFlare
+        //NovaFlare Engine
         fpsVarNova = new FPSNova(5, 5);
     	addChild(fpsVarNova);
     	if(fpsVarNova != null) { fpsVarNova.scaleX = fpsVarNova.scaleY = 1;	fpsVarNova.visible = false; }
@@ -154,7 +145,7 @@ class Main extends Sprite
     	if(fpsVarNF != null) fpsVarNF.visible = false;
     	
     	//Psych Engine
-    	fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
+    	fpsVar = new FPSPsych(10, 3, 0xFFFFFF);
     	addChild(fpsVar);
     	if(fpsVar != null) fpsVar.visible = false;
     	
