@@ -43,7 +43,7 @@ class Main extends Sprite
 
 	public static var fpsVar:FPSPsych;
 	public static var fpsVarNova:FPSNova;
-	public static var fpsVarNF:FPS_NF;
+	public static var fpsVarNF:FPSNF;
 
 	public static final platform:String = #if mobile "Phones" #else "PCs" #end;
 
@@ -140,7 +140,7 @@ class Main extends Sprite
     	if(fpsVarNova != null) { fpsVarNova.scaleX = fpsVarNova.scaleY = 1;	fpsVarNova.visible = false; }
     	
     	//NF Engine V1.0.1
-		fpsVarNF = new FPS_NF(10, 3, 0xFFFFFF);
+		fpsVarNF = new FPSNF(10, 3, 0xFFFFFF);
     	addChild(fpsVarNF);
     	if(fpsVarNF != null) fpsVarNF.visible = false;
     	
