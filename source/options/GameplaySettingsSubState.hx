@@ -45,6 +45,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'Modpack',
 			'bool');
 		addOption(option);
+		option.onChange = changeModFolder;
 
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option('Downscroll', //Name
@@ -140,6 +141,14 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		super();
+	}
+	
+	function changeModFolder()
+	{
+	    #if LUA_ALLOWED
+		Mods.pushGlobalMods();
+		#end
+		Mods.loadTheFirstEnabledMod();
 	}
 
 	function onChangeHitsoundVolume()
