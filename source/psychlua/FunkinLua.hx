@@ -1618,56 +1618,98 @@ class FunkinLua {
 			}
 		});
 		Lua_helper.add_callback(lua, "addAnimationByPrefix", function(obj:String, name:String, prefix:String, framerate:Int = 24, loop:Bool = true) {
-			var obj:Dynamic = LuaUtils.getObjectDirectly(obj, false);
-			if(obj != null && obj.animation != null)
-			{
-				obj.animation.addByPrefix(name, prefix, framerate, loop);
-				if(obj.animation.curAnim == null) {
-					obj.animation.play(name, true);
+			var cock:FlxSprite = PlayState.instance.getLuaObject(obj,false);
+			if(cock != null) {
+				cock.animation.addByPrefix(name, prefix, framerate, loop);
+				if(cock.animation.curAnim == null) {
+					cock.animation.play(name, true);
 				}
-				return true;
+				return;
 			}
-			return false;
+			var cock:FlxSprite = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
+			if(cock != null) {
+				cock.animation.addByPrefix(name, prefix, framerate, loop);
+				if(cock.animation.curAnim == null) {
+					cock.animation.play(name, true);
+				}
+			}
 		});
 
 		Lua_helper.add_callback(lua, "addAnimation", function(obj:String, name:String, frames:Array<Int>, framerate:Int = 24, loop:Bool = true) {
-			var obj:Dynamic = LuaUtils.getObjectDirectly(obj, false);
-			if(obj != null && obj.animation != null)
-			{
-				obj.animation.add(name, frames, framerate, loop);
-				if(obj.animation.curAnim == null) {
-					obj.animation.play(name, true);
+			if(PlayState.instance.getLuaObject(obj,false)!=null) {
+				var cock:FlxSprite = PlayState.instance.getLuaObject(obj,false);
+				cock.animation.add(name, frames, framerate, loop);
+				if(cock.animation.curAnim == null) {
+					cock.animation.play(name, true);
 				}
-				return true;
+				return;
 			}
-			return false;
+			var cock:FlxSprite = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
+			if(cock != null) {
+				cock.animation.add(name, frames, framerate, loop);
+				if(cock.animation.curAnim == null) {
+					cock.animation.play(name, true);
+				}
+			}
 		});
 
-		Lua_helper.add_callback(lua, "addAnimationByIndices", function(obj:String, name:String, prefix:String, indices:String, framerate:Int = 24, loop:Bool = false) {
-			return LuaUtils.addAnimByIndices(obj, name, prefix, indices, framerate, loop);
+		Lua_helper.add_callback(lua, "addAnimationByIndices", function(obj:String, name:String, prefix:String, indices:String, framerate:Int = 24) {
+			return addAnimByIndices(obj, name, prefix, indices, framerate, false);
 		});
-		
+		Lua_helper.add_callback(lua, "addAnimationByIndicesLoop", function(obj:String, name:String, prefix:String, indices:String, framerate:Int = 24) {
+			return addAnimByIndices(obj, name, prefix, indices, framerate, true);
+
 
 		Lua_helper.add_callback(lua, "playAnim", function(obj:String, name:String, forced:Bool = false, ?reverse:Bool = false, ?startFrame:Int = 0)
 		{
-			var obj:Dynamic = LuaUtils.getObjectDirectly(obj, false);
-			if(obj.playAnim != null)
-			{
-				obj.playAnim(name, forced, reverse, startFrame);
-				return true;
+			if(PlayState.instance.getLuaObject(obj, false) != null) {
+				var luaObj:Dynamic = PlayState.instance.getLuaObject(obj,false);
+				if(luaObj.animation.getByName(name) != null)
+				{
+				    if(luaObj.anim != null) luaObj.anim.play(name, forced, reverse, startFrame); //FlxAnimate
+				    else luaObj.animation.play(name, forced, reverse, startFrame);
+					if(Std.isOfType(luaObj, ModchartSprite))
+					{
+						//convert luaObj to ModchartSprite
+						var obj:Dynamic = luaObj;
+						var luaObj:ModchartSprite = obj;
+						var daOffset = luaObj.animOffsets.get(name);
+						if (luaObj.animOffsets.exists(name))
+						{
+							luaObj.offset.set(daOffset[0], daOffset[1]);
+						}
+					}
+					return true;
+				}
+				return false;
 			}
-			else
-			{
-				obj.animation.play(name, forced, reverse, startFrame);
-				return true;
+			
+			var spr:FlxSprite = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
+			if(spr != null) {
+				if(spr.animation.getByName(name) != null)
+				{
+					if(Std.isOfType(spr, Character))
+					{
+						//convert spr to Character
+						var obj:Dynamic = spr;
+						var spr:Character = obj;
+						spr.playAnim(name, forced, reverse, startFrame);
+					}
+					else
+						spr.animation.play(name, forced, reverse, startFrame);
+					return true;
+				}
 			}
 			return false;
 		});
 		Lua_helper.add_callback(lua, "addOffset", function(obj:String, anim:String, x:Float, y:Float) {
-			var obj:Dynamic = LuaUtils.getObjectDirectly(obj, false);
-			if(obj != null && obj.addOffset != null)
-			{
-				obj.addOffset(anim, x, y);
+			if(PlayState.instance.modchartSprites.exists(obj)) {
+				PlayState.instance.modchartSprites.get(obj).animOffsets.set(anim, [x, y]);
+				return true;
+			}
+			var char:Character = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
+			if(char != null) {
+				char.addOffset(anim, x, y);
 				return true;
 			}
 			return false;
@@ -2304,8 +2346,12 @@ class FunkinLua {
 
 		Lua_helper.add_callback(lua, "addLuaText", function(tag:String) {
 			if(PlayState.instance.modchartTexts.exists(tag)) {
-				var shit:FlxText = PlayState.instance.modchartTexts.get(tag);
-				LuaUtils.getTargetInstance().add(shit);
+				var shit:ModchartText = PlayState.instance.modchartTexts.get(tag);
+				if(!shit.wasAdded) {
+					LuaUtils.getTargetInstance().add(shit);
+					shit.wasAdded = true;
+					//trace('added a thing: ' + tag);
+				}
 			}
 		});
 		Lua_helper.add_callback(lua, "removeLuaText", function(tag:String, destroy:Bool = true) {

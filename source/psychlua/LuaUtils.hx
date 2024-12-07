@@ -198,24 +198,26 @@ class LuaUtils
 		return PlayState.instance.isDead ? GameOverSubstate.instance : PlayState.instance;
 	}
 	
-	public static function addAnimByIndices(obj:String, name:String, prefix:String, indices:Any = null, framerate:Int = 24, loop:Bool = false)
+	static function addAnimByIndices(obj:String, name:String, prefix:String, indices:String, framerate:Int = 24, loop:Bool = false)
 	{
-		var obj:Dynamic = LuaUtils.getObjectDirectly(obj, false);
-		if(obj != null && obj.animation != null)
-		{
-			if(indices == null) indices = [];
-			if(Std.isOfType(indices, String))
-			{
-				var strIndices:Array<String> = cast (indices, String).trim().split(',');
-				var myIndices:Array<Int> = [];
-				for (i in 0...strIndices.length) {
-					myIndices.push(Std.parseInt(strIndices[i]));
-				}
-				indices = myIndices;
+		var strIndices:Array<String> = indices.trim().split(',');
+		var die:Array<Int> = [];
+		for (i in 0...strIndices.length) {
+			die.push(Std.parseInt(strIndices[i]));
+		}
+		if(PlayState.instance.getLuaObject(obj, false)!=null) {
+			var pussy:FlxSprite = PlayState.instance.getLuaObject(obj, false);
+			pussy.animation.addByIndices(name, prefix, die, '', framerate, loop);
+			if(pussy.animation.curAnim == null) {
+				pussy.animation.play(name, true);
 			}
-			obj.animation.addByIndices(name, prefix, indices, '', framerate, loop);
-			if(obj.animation.curAnim == null) {
-				obj.animation.play(name, true);
+			return true;
+		}
+		var pussy:FlxSprite = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
+		if(pussy != null) {
+			pussy.animation.addByIndices(name, prefix, die, '', framerate, loop);
+			if(pussy.animation.curAnim == null) {
+				pussy.animation.play(name, true);
 			}
 			return true;
 		}
