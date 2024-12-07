@@ -100,6 +100,8 @@ class TitleState extends MusicBeatState
 
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
+		
+		ClientPrefs.loadPrefs(); //fix modpack folder
 
 		#if LUA_ALLOWED
 		Mods.pushGlobalMods();
@@ -140,8 +142,6 @@ class TitleState extends MusicBeatState
 		super.create();
 
 		FlxG.save.bind('funkin' , CoolUtil.getSavePath());
-
-		ClientPrefs.loadPrefs();
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
