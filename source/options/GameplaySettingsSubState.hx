@@ -29,6 +29,7 @@ using StringTools;
 
 class GameplaySettingsSubState extends BaseOptionsMenu
 {
+    public var waitingToRestart:Bool = false;
 	public function new()
 	{
 		title = 'Gameplay Settings';
@@ -149,6 +150,28 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		Mods.pushGlobalMods();
 		#end
 		Mods.loadTheFirstEnabledMod();
+		
+		var curMod = ModsMenuState.modsGroup.members[ModsMenuState.curSelectedMod];
+	    if (curMod.mustRestart) waitingToRestart = true;
+	}
+	
+	override public function destroy() {
+		super.destroy();
+		if(waitingToRestart)
+		{
+			//MusicBeatState.switchState(new TitleState());
+			TitleState.initialized = false;
+			TitleState.closedState = false;
+			FlxG.sound.music.fadeOut(0.3);
+			if(FreeplayState.vocals != null)
+			{
+				FreeplayState.vocals.fadeOut(0.3);
+				FreeplayState.vocals = null;
+			}
+			ClientPrefs.saveSettings();
+			FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
+			isFreePlay = false;
+		}
 	}
 
 	function onChangeHitsoundVolume()
