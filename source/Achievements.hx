@@ -3,7 +3,7 @@ package;
 #if ACHIEVEMENTS_ALLOWED
 import objects.AchievementPopup;
 import haxe.Exception;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 #if LUA_ALLOWED
 import psychlua.FunkinLua;

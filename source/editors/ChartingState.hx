@@ -4,7 +4,7 @@ package editors;
 import Discord.DiscordClient;
 #end
 import openfl.geom.Rectangle;
-import haxe.Json;
+import tjson.TJSON as Json;
 import haxe.format.JsonParser;
 import haxe.io.Bytes;
 import Conductor.BPMChangeEvent;
@@ -3084,7 +3084,7 @@ class ChartingState extends MusicBeatState
 
 	function autosaveSong():Void
 	{
-		FlxG.save.data.autosave = Json.stringify({
+		FlxG.save.data.autosave = haxe.Json.stringify({
 			"song": _song
 		});
 		FlxG.save.flush();
@@ -3102,7 +3102,7 @@ class ChartingState extends MusicBeatState
 			"song": _song
 		};
 
-		var data:String = Json.stringify(json, "\t");
+		var data:String = haxe.Json.stringify(json, "\t");
 
 		if ((data != null) && (data.length > 0))
 		{
@@ -3133,7 +3133,7 @@ class ChartingState extends MusicBeatState
 			"song": eventsSong
 		}
 
-		var data:String = Json.stringify(json, "\t");
+		var data:String = haxe.Json.stringify(json, "\t");
 
 		if ((data != null) && (data.length > 0))
 		{

@@ -137,13 +137,13 @@ class Note extends FlxSprite
 					colorSwap.hue = 0;
 					colorSwap.saturation = 0;
 					colorSwap.brightness = 0;
+					
+					// gameplay data
 					lowPriority = true;
-
-					if(isSustainNote) {
+					if(isSustainNote)
 						missHealth = 0.1;
-					} else {
+					else
 						missHealth = 0.3;
-					}
 					hitCausesMiss = true;
 				case 'Alt Animation':
 					animSuffix = '-alt';

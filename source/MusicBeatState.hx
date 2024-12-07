@@ -15,7 +15,6 @@ import flixel.FlxState;
 import flixel.FlxCamera;
 import flixel.FlxBasic;
 import backend.PsychCamera;
-import states.stages.BaseStage;
 
 import flixel.input.actions.FlxActionInput;
 import mobile.flixel.FlxVirtualPad;

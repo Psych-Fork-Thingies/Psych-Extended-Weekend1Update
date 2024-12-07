@@ -10,7 +10,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import flixel.FlxSubState;
-import haxe.Json;
+import tjson.TJSON as Json;
 import haxe.format.JsonParser;
 import Alphabet;
 #if sys

@@ -16,7 +16,7 @@ import flixel.FlxSubState;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxSave;
-import haxe.Json;
+import tjson.TJSON as Json;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;

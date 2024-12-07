@@ -7,7 +7,7 @@ import flixel.util.FlxDestroyUtil;
 
 import openfl.utils.AssetType;
 import openfl.utils.Assets;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 import Song;
 import Section;

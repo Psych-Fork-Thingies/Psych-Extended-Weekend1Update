@@ -17,14 +17,13 @@ import openfl.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxSave;
-import haxe.Json;
+import tjson.TJSON as Json;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
 import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
-import haxe.Json;
 import haxe.format.JsonParser;
 
 using StringTools;

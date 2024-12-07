@@ -23,7 +23,7 @@ import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.net.FileFilter;
-import haxe.Json;
+import tjson.TJSON as Json;
 import DialogueBoxPsych;
 import lime.system.Clipboard;
 import Alphabet;
@@ -523,7 +523,7 @@ class DialogueEditorState extends MusicBeatState
 	}
 
 	function saveDialogue() {
-		var data:String = Json.stringify(dialogueFile, "\t");
+		var data:String = haxe.Json.stringify(dialogueFile, "\t");
 		if (data.length > 0)
 		{
 			#if mobile

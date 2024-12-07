@@ -1,5 +1,13 @@
 package;
 
+// If you want to add your stage to the game, copy states/stages/Template.hx,
+// and put your stage code there, then, on PlayState, search for
+// "switch (curStage)", and add your stage to that list.
+// If you want to code Events, you can either code it on a Stage file or on PlayState, if you're doing the latter, search for:
+// "function eventPushed" - Only called *one time* when the game loads, use it for precaching
+// "function eventEarlyTrigger" - Used for making your event start a few MILLISECONDS earlier
+// "function triggerEvent" - Called when the song hits your event's timestamp, this is probably what you were looking for
+
 import flixel.FlxBasic;
 import flixel.graphics.FlxGraphic;
 #if desktop
@@ -35,7 +43,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
-import haxe.Json;
+import tjson.TJSON as Json;
 import lime.utils.Assets;
 import openfl.Lib;
 import openfl.display.BlendMode;
@@ -63,7 +71,6 @@ import flixel.system.FlxAssets.FlxShader;
 // stages
 import states.stages.*;
 import states.*;
-import states.stages.BaseStage;
 
 #if !flash 
 import flixel.addons.display.FlxRuntimeShader;
@@ -112,7 +119,7 @@ class PlayState extends MusicBeatState
 	public var modchartSprites:Map<String, ModchartSprite> = new Map<String, ModchartSprite>();
 	public var modchartTimers:Map<String, FlxTimer> = new Map<String, FlxTimer>();
 	public var modchartSounds:Map<String, FlxSound> = new Map<String, FlxSound>();
-	public var modchartTexts:Map<String, ModchartText> = new Map<String, ModchartText>();
+	public var modchartTexts:Map<String, FlxText> = new Map<String, FlxText>();
 	public var modchartSaves:Map<String, FlxSave> = new Map<String, FlxSave>();
 	#end
 
@@ -519,32 +526,12 @@ class PlayState extends MusicBeatState
 
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
-		var filesPushed:Array<String> = [];
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('scripts/')];
-
-		#if MODS_ALLOWED
-		foldersToCheck.insert(0, Paths.mods('scripts/'));
-		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
-			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/scripts/'));
-
-		for(mod in Mods.getGlobalMods())
-			foldersToCheck.insert(0, Paths.mods(mod + '/scripts/'));
-		#end
+		var foldersToCheck:Array<String> = Mods.getFoldersList(Paths.getPreloadPath(), 'scripts/');
 
 		for (folder in foldersToCheck)
-		{
-			if(FileSystem.exists(folder))
-			{
-				for (file in FileSystem.readDirectory(folder))
-				{
-					if(file.endsWith('.lua') && !filesPushed.contains(file))
-					{
-						luaArray.push(new FunkinLua(folder + file));
-						filesPushed.push(file);
-					}
-				}
-			}
-		}
+		    for (file in FileSystem.readDirectory(folder))
+				if(file.toLowerCase().endsWith('.lua'))
+					luaArray.push(new FunkinLua(folder + file));
 		#end
 
 
@@ -763,51 +750,27 @@ class PlayState extends MusicBeatState
 		
 		#if LUA_ALLOWED
 		for (notetype in noteTypes)
-		{
 			startLuasOnFolder('custom_notetypes/' + notetype + '.lua');
-		}
+			
 		for (event in eventsPushed)
-		{
 			startLuasOnFolder('custom_events/' + event + '.lua');
-		}
 		#end
 		noteTypes = null;
 		eventsPushed = null;
 
 		if(eventNotes.length > 1)
 		{
-			for (event in eventNotes) event.strumTime -= eventNoteEarlyTrigger(event);
+			for (event in eventNotes) event.strumTime -= eventEarlyTrigger(event);
 			eventNotes.sort(sortByTime);
 		}
 
 		// SONG SPECIFIC SCRIPTS
 		#if LUA_ALLOWED
-		var filesPushed:Array<String> = [];
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('data/' + Paths.formatToSongPath(SONG.song) + '/')];
-
-		#if MODS_ALLOWED
-		foldersToCheck.insert(0, Paths.mods('data/' + Paths.formatToSongPath(SONG.song) + '/'));
-		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
-			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/data/' + Paths.formatToSongPath(SONG.song) + '/'));
-
-		for(mod in Mods.getGlobalMods())
-			foldersToCheck.insert(0, Paths.mods(mod + '/data/' + Paths.formatToSongPath(SONG.song) + '/' ));// using push instead of insert because these should run after everything else
-		#end
-
+		var foldersToCheck:Array<String> = Mods.getFoldersList(Paths.getPreloadPath(), 'data/' + songName + '/');
 		for (folder in foldersToCheck)
-		{
-			if(FileSystem.exists(folder))
-			{
-				for (file in FileSystem.readDirectory(folder))
-				{
-					if(file.endsWith('.lua') && !filesPushed.contains(file))
-					{
-						luaArray.push(new FunkinLua(folder + file));
-						filesPushed.push(file);
-					}
-				}
-			}
-		}
+		    for (file in FileSystem.readDirectory(folder))
+				if(file.toLowerCase().endsWith('.lua'))
+					luaArray.push(new FunkinLua(folder + file));
 		#end
 
 		startCallback();
@@ -1275,7 +1238,7 @@ class PlayState extends MusicBeatState
 					antialias = false;
 				}
 
-				var tick:states.stages.BaseStage.Countdown = THREE;
+				var tick:Countdown = THREE;
 				switch (swagCounter)
 				{
 					case 0:
@@ -1687,7 +1650,7 @@ class PlayState extends MusicBeatState
 		eventsPushed.push(event.event);
 	}
 
-	function eventNoteEarlyTrigger(event:EventNote):Float {
+	function eventEarlyTrigger(event:EventNote):Float {
 		var returnedValue:Null<Float> = callOnLuas('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], true, [], [0]);
 		if(returnedValue != null && returnedValue != 0 && returnedValue != FunkinLua.Function_Continue) {
 			return returnedValue;
@@ -2382,7 +2345,7 @@ class PlayState extends MusicBeatState
 			if(eventNotes[0].value2 != null)
 				value2 = eventNotes[0].value2;
 
-			triggerEventNote(eventNotes[0].event, value1, value2, leStrumTime);
+			triggerEvent(eventNotes[0].event, value1, value2, leStrumTime);
 			eventNotes.shift();
 		}
 	}
@@ -2394,7 +2357,7 @@ class PlayState extends MusicBeatState
 		return pressed;
 	}
 
-	public function triggerEventNote(eventName:String, value1:String, value2:String, strumTime:Float) {
+	public function triggerEvent(eventName:String, value1:String, value2:String, strumTime:Float) {
 		var flValue1:Null<Float> = Std.parseFloat(value1);
 		var flValue2:Null<Float> = Std.parseFloat(value2);
 		if(Math.isNaN(flValue1)) flValue1 = null;
@@ -2772,7 +2735,7 @@ class PlayState extends MusicBeatState
 
 				if (storyPlaylist.length <= 0)
 				{
-					Mods.loadTheFirstEnabledMod();
+					Mods.loadTopMod();
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 
 					if(FlxTransitionableState.skipNextTransIn && ClientPrefs.data.TransitionStyle == 'NovaFlare') {
@@ -2813,7 +2776,7 @@ class PlayState extends MusicBeatState
 			else
 			{
 				trace('WENT BACK TO FREEPLAY??');
-				Mods.loadTheFirstEnabledMod();
+				Mods.loadTopMod();
 				if(FlxTransitionableState.skipNextTransIn && ClientPrefs.data.TransitionStyle == 'NovaFlare')
 					CustomFadeTransitionNOVA.nextCamera = null;
 				CustomSwitchState.switchMenus('Freeplay');
@@ -3553,10 +3516,6 @@ class PlayState extends MusicBeatState
 		}
 		luaArray = [];
 
-		#if hscript
-		if(FunkinLua.hscript != null) FunkinLua.hscript = null;
-		#end
-
 		if(!ClientPrefs.data.controllerMode)
 		{
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
@@ -3672,11 +3631,6 @@ class PlayState extends MusicBeatState
 	#if LUA_ALLOWED
 	public function startLuasOnFolder(luaFile:String)
 	{
-		for (script in luaArray)
-		{
-			if(script.scriptName == luaFile) return false;
-		}
-
 		#if MODS_ALLOWED
 		var luaToLoad:String = Paths.modFolders(luaFile);
 		if(!FileSystem.exists(luaToLoad))
@@ -3687,6 +3641,9 @@ class PlayState extends MusicBeatState
 		if(OpenFlAssets.exists(luaToLoad))
 		#end
 		{
+		    for (script in luaArray)
+				if(script.scriptName == luaToLoad) return false;
+				
 			luaArray.push(new FunkinLua(luaToLoad));
 			return true;
 		}

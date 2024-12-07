@@ -3,7 +3,7 @@ package extras.states;
 import flixel.util.FlxSpriteUtil;
 import flixel.addons.transition.FlxTransitionableState;
 
-import haxe.Json;
+import tjson.TJSON as Json;
 import haxe.ds.ArraySort;
 
 import sys.thread.Thread;
@@ -142,7 +142,7 @@ class FreeplayStateNOVA extends MusicBeatState
 			return Reflect.compare(a.songName.toLowerCase(), b.songName.toLowerCase());
 		});
 
-		Mods.loadTheFirstEnabledMod();
+		Mods.loadTopMod();
 		
 		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
 		magenta.scale.x = FlxG.width * 1.05 / magenta.width;
@@ -380,7 +380,7 @@ class FreeplayStateNOVA extends MusicBeatState
 
 	var pressCheck:Bool = false;
 	function backMenu() {
-		Mods.loadTheFirstEnabledMod();
+		Mods.loadTopMod();
 		if (!pressCheck){
 			pressCheck = true;
 			FlxG.sound.music.stop();

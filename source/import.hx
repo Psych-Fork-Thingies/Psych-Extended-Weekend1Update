@@ -24,6 +24,7 @@ import mobile.psychlua.Functions;
 import objects.Alphabet as AlphabetNew;
 import objects.AttachedText as AttachedTextNew;
 import backend.animation.PsychAnimationController; //Psych Animation Controller
+import backend.BaseStage;
 
 //New Mods System
 #if MODS_ALLOWED

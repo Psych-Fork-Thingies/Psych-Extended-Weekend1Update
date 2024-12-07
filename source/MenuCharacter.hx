@@ -7,7 +7,7 @@ import sys.io.File;
 import sys.FileSystem;
 #end
 import openfl.utils.Assets;
-import haxe.Json;
+import tjson.TJSON as Json;
 import haxe.format.JsonParser;
 
 typedef MenuCharacterFile = {

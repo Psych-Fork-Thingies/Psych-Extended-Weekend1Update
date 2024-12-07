@@ -13,7 +13,7 @@ import ResetScoreSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.math.FlxMath;
 import flixel.util.FlxDestroyUtil;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 class FreeplayState extends MusicBeatState
 {
@@ -89,7 +89,7 @@ class FreeplayState extends MusicBeatState
 				addSong(song[0], i, song[1], FlxColor.fromRGB(colors[0], colors[1], colors[2]));
 			}
 		}
-		Mods.loadTheFirstEnabledMod();
+		Mods.loadTopMod();
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.antialiasing = ClientPrefs.data.antialiasing;

@@ -1,4 +1,4 @@
-package states.stages;
+package backend;
 
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -126,17 +126,14 @@ class BaseStage extends FlxBasic
 	{
 		if(onPlayState)
 			PlayState.instance.precacheList.set(key, type);
-		else
+		switch(type)
 		{
-			switch(type)
-			{
-				case 'image':
-					Paths.image(key);
-				case 'sound':
-					Paths.sound(key);
-				case 'music':
-					Paths.music(key);
-			}
+			case 'image':
+				Paths.image(key);
+			case 'sound':
+				Paths.sound(key);
+			case 'music':
+				Paths.music(key);
 		}
 	}
 
