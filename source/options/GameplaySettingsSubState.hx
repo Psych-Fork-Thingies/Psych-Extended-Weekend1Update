@@ -170,7 +170,6 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			}
 			ClientPrefs.saveSettings();
 			FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
-			isFreePlay = false;
 		}
 	}
 
