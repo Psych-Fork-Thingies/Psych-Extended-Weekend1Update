@@ -3668,6 +3668,11 @@ class PlayState extends MusicBeatState
 	#if LUA_ALLOWED
 	public function startLuasOnFolder(luaFile:String)
 	{
+	    for (script in luaArray)
+		{
+			if(script.scriptName == luaFile) return false;
+		}
+		
 		#if MODS_ALLOWED
 		var luaToLoad:String = Paths.modFolders(luaFile);
 		if(!FileSystem.exists(luaToLoad))
@@ -3678,9 +3683,6 @@ class PlayState extends MusicBeatState
 		if(OpenFlAssets.exists(luaToLoad))
 		#end
 		{
-		    for (script in luaArray)
-				if(script.scriptName == luaToLoad) return false;
-				
 			luaArray.push(new FunkinLua(luaToLoad));
 			return true;
 		}

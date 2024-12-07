@@ -126,14 +126,17 @@ class BaseStage extends FlxBasic
 	{
 		if(onPlayState)
 			PlayState.instance.precacheList.set(key, type);
-		switch(type)
+		else
 		{
-			case 'image':
-				Paths.image(key);
-			case 'sound':
-				Paths.sound(key);
-			case 'music':
-				Paths.music(key);
+    		switch(type)
+    		{
+    			case 'image':
+    				Paths.image(key);
+    			case 'sound':
+    				Paths.sound(key);
+    			case 'music':
+    				Paths.music(key);
+    		}
 		}
 	}
 
