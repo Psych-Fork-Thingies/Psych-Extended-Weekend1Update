@@ -198,7 +198,7 @@ class LuaUtils
 		return PlayState.instance.isDead ? GameOverSubstate.instance : PlayState.instance;
 	}
 	
-	static function addAnimByIndices(obj:String, name:String, prefix:String, indices:String, framerate:Int = 24, loop:Bool = false)
+	public static function addAnimByIndices(obj:String, name:String, prefix:String, indices:String, framerate:Int = 24, loop:Bool = false)
 	{
 		var strIndices:Array<String> = indices.trim().split(',');
 		var die:Array<Int> = [];
