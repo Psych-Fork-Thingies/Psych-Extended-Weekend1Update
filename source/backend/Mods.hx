@@ -123,6 +123,7 @@ class Mods
 		var added:Array<String> = [];
 		try {
 		    if (ClientPrefs.data.Modpack)
+		    {
     			for (mod in CoolUtil.coolTextFile('modpackList.txt'))
     			{
     				var dat:Array<String> = mod.split("|");
