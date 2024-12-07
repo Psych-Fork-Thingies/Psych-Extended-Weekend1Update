@@ -13,7 +13,7 @@ import ResetScoreSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.math.FlxMath;
 import flixel.util.FlxDestroyUtil;
-import tjson.TJSON as Json;
+import haxe.Json;
 
 class FreeplayState extends MusicBeatState
 {

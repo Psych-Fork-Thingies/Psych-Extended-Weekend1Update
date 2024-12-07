@@ -2,7 +2,7 @@ package backend;
 
 import sys.FileSystem;
 import sys.io.File;
-import tjson.TJSON as Json;
+import haxe.Json;
 
 typedef ModsList = {
 	enabled:Array<String>,

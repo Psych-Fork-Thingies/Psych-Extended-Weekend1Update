@@ -24,7 +24,7 @@ import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.net.FileFilter;
-import tjson.TJSON as Json;
+import haxe.Json;
 #if sys
 import sys.io.File;
 #end
@@ -405,7 +405,7 @@ class MenuCharacterEditorState extends MusicBeatState
 	}
 
 	function saveCharacter() {
-		var data:String = haxe.Json.stringify(characterFile, "\t");
+		var data:String = Json.stringify(characterFile, "\t");
 		if (data.length > 0)
 		{
 			var splittedImage:Array<String> = imageInputText.text.trim().split('_');

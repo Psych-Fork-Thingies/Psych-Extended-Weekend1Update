@@ -3,7 +3,7 @@ package extras.states;
 import flixel.util.FlxSpriteUtil;
 import flixel.addons.transition.FlxTransitionableState;
 
-import tjson.TJSON as Json;
+import haxe.Json;
 import haxe.ds.ArraySort;
 
 import sys.thread.Thread;

@@ -24,7 +24,7 @@ import flixel.ui.FlxSpriteButton;
 import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import tjson.TJSON as Json;
+import haxe.Json;
 import Character;
 import flixel.system.debug.interaction.tools.Pointer.GraphicCursorCross;
 import lime.system.Clipboard;
@@ -1303,7 +1303,7 @@ class CharacterEditorState extends MusicBeatState
 			"vocals_file": char.vocalsFile
 		};
 
-		var data:String = haxe.Json.stringify(json, "\t");
+		var data:String = Json.stringify(json, "\t");
 
 		if (data.length > 0)
 		{

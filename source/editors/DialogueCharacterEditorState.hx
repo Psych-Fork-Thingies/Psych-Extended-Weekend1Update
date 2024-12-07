@@ -23,7 +23,7 @@ import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.net.FileFilter;
-import tjson.TJSON as Json;
+import haxe.Json;
 import DialogueBoxPsych;
 import flixel.FlxCamera;
 import flixel.group.FlxSpriteGroup;
@@ -767,7 +767,7 @@ class DialogueCharacterEditorState extends MusicBeatState
 	}
 
 	function saveCharacter() {
-		var data:String = haxe.Json.stringify(character.jsonFile, "\t");
+		var data:String = Json.stringify(character.jsonFile, "\t");
 		if (data.length > 0)
 		{
 			var splittedImage:Array<String> = imageInputText.text.trim().split('_');

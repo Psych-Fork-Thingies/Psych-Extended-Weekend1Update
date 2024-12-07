@@ -6,7 +6,7 @@ import backend.Mods;
 import flixel.FlxBasic;
 import flixel.graphics.FlxGraphic;
 import openfl.geom.Rectangle;
-import tjson.TJSON as Json;
+import haxe.Json;
 
 import flixel.util.FlxSpriteUtil;
 import AttachedSprite;

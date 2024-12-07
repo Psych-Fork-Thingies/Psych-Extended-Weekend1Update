@@ -25,7 +25,7 @@ import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.net.FileFilter;
 import lime.system.Clipboard;
-import tjson.TJSON as Json;
+import haxe.Json;
 #if sys
 import sys.io.File;
 import sys.FileSystem;
@@ -543,7 +543,7 @@ class WeekEditorState extends MusicBeatState
 	}
 
 	public static function saveWeek(weekFile:WeekFile) {
-		var data:String = haxe.Json.stringify(weekFile, "\t");
+		var data:String = Json.stringify(weekFile, "\t");
 		if (data.length > 0)
 		{
 			#if mobile

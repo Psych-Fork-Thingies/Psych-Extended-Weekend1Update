@@ -6,7 +6,7 @@ import sys.FileSystem;
 #else
 import openfl.utils.Assets;
 #end
-import tjson.TJSON as Json;
+import haxe.Json;
 import haxe.format.JsonParser;
 import Song;
 

@@ -30,7 +30,7 @@ import openfl.Lib;
 import openfl.utils.Assets;
 import flixel.addons.transition.FlxTransitionableState;
 import Type.ValueType;
-import tjson.TJSON as Json;
+import haxe.Json;
 import haxe.format.JsonParser;
 
 #if (!flash && sys)
@@ -49,6 +49,7 @@ import psychlua.LuaUtils.LuaTweenOptions;
 import psychlua.HScript;
 import psychlua.DebugLuaText;
 import psychlua.ModchartSprite;
+import psychlua.ModchartText;
 
 #if desktop
 import Discord;
@@ -1379,7 +1380,7 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, "triggerEvent", function(name:String, arg1:Dynamic, arg2:Dynamic) {
 			var value1:String = arg1;
 			var value2:String = arg2;
-			PlayState.instance.triggerEvent(name, value1, value2, Conductor.songPosition);
+			PlayState.instance.triggerEventNote(name, value1, value2, Conductor.songPosition);
 			//trace('Triggered event: ' + name + ', ' + value1 + ', ' + value2);
 			return true;
 		});
@@ -1729,22 +1730,30 @@ class FunkinLua {
 		});
 		Lua_helper.add_callback(lua, "addLuaSprite", function(tag:String, front:Bool = false) {
 			if(PlayState.instance.modchartSprites.exists(tag)) {
-				var shit:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
-				if(front)
-					LuaUtils.getTargetInstance().add(shit);
+				if(!shit.wasAdded) {
+					if(front)
+					{
+						LuaUtils.getTargetInstance().add(shit);
+					}
 				else
 				{
 					if(PlayState.instance.isDead)
-						GameOverSubstate.instance.insert(GameOverSubstate.instance.members.indexOf(GameOverSubstate.instance.boyfriend), shit);
-					else
-					{
-						var position:Int = PlayState.instance.members.indexOf(PlayState.instance.gfGroup);
-						if(PlayState.instance.members.indexOf(PlayState.instance.boyfriendGroup) < position)
-							position = PlayState.instance.members.indexOf(PlayState.instance.boyfriendGroup);
-						else if(PlayState.instance.members.indexOf(PlayState.instance.dadGroup) < position)
-							position = PlayState.instance.members.indexOf(PlayState.instance.dadGroup);
-						PlayState.instance.insert(position, shit);
+						{
+							GameOverSubstate.instance.insert(GameOverSubstate.instance.members.indexOf(GameOverSubstate.instance.boyfriend), shit);
+						}
+						else
+						{
+							var position:Int = PlayState.instance.members.indexOf(PlayState.instance.gfGroup);
+							if(PlayState.instance.members.indexOf(PlayState.instance.boyfriendGroup) < position) {
+								position = PlayState.instance.members.indexOf(PlayState.instance.boyfriendGroup);
+							} else if(PlayState.instance.members.indexOf(PlayState.instance.dadGroup) < position) {
+								position = PlayState.instance.members.indexOf(PlayState.instance.dadGroup);
+							}
+							PlayState.instance.insert(position, shit);
+						}
 					}
+					shit.wasAdded = true;
+					//trace('added a thing: ' + tag);
 				}
 			}
 		});
@@ -1822,7 +1831,11 @@ class FunkinLua {
 				pee.kill();
 			}
 
-			LuaUtils.getTargetInstance().remove(pee, true);
+			if(pee.wasAdded) {
+				LuaUtils.getTargetInstance().remove(pee, true);
+				pee.wasAdded = false;
+			}
+			
 			if(destroy) {
 				pee.destroy();
 				PlayState.instance.modchartSprites.remove(tag);
@@ -2347,8 +2360,12 @@ class FunkinLua {
 
 		Lua_helper.add_callback(lua, "addLuaText", function(tag:String) {
 			if(PlayState.instance.modchartTexts.exists(tag)) {
-			    var shit:FlxText = PlayState.instance.modchartTexts.get(tag);
-				LuaUtils.getTargetInstance().add(shit);
+			    var shit:ModchartText = PlayState.instance.modchartTexts.get(tag);
+				if(!shit.wasAdded) {
+					LuaUtils.getTargetInstance().add(shit);
+					shit.wasAdded = true;
+					//trace('added a thing: ' + tag);
+				}
 			}
 		});
 		Lua_helper.add_callback(lua, "removeLuaText", function(tag:String, destroy:Bool = true) {
@@ -2356,12 +2373,16 @@ class FunkinLua {
 				return;
 			}
 
-			var pee:FlxText = PlayState.instance.modchartTexts.get(tag);
+			var pee:ModchartText = PlayState.instance.modchartTexts.get(tag);
 			if(destroy) {
 				pee.kill();
 			}
 
-			LuaUtils.getTargetInstance().remove(pee, true);
+			if(pee.wasAdded) {
+				LuaUtils.getTargetInstance().remove(pee, true);
+				pee.wasAdded = false;
+			}
+
 			if(destroy) {
 				pee.destroy();
 				PlayState.instance.modchartTexts.remove(tag);
