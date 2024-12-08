@@ -212,8 +212,9 @@ class HScript extends SScript
 	}
 	#end
 }
+#end
 
-
+#if hscript
 class HScriptBase
 {
 	#if hscript
@@ -402,3 +403,4 @@ class HScriptBase
 	}
 	#end
 }
+#end
