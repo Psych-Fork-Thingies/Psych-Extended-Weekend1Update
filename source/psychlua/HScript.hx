@@ -56,17 +56,17 @@ class HScript extends SScript
 		set('ShaderFilter', openfl.filters.ShaderFilter);
 		set('StringTools', StringTools);
 
-		set('setVarNew', function(name:String, value:Dynamic)
+		set('setVar-SScript', function(name:String, value:Dynamic)
 		{
 			PlayState.instance.variables.set(name, value);
 		});
-		set('getVarNew', function(name:String)
+		set('getVar-SScript', function(name:String)
 		{
 			var result:Dynamic = null;
 			if(PlayState.instance.variables.exists(name)) result = PlayState.instance.variables.get(name);
 			return result;
 		});
-		set('removeVarNew', function(name:String)
+		set('removeVar-SScript', function(name:String)
 		{
 			if(PlayState.instance.variables.exists(name))
 			{
@@ -75,14 +75,14 @@ class HScript extends SScript
 			}
 			return false;
 		});
-		set('debugPrintNew', function(text:String, ?color:FlxColor = null) {
+		set('debugPrint-SScript', function(text:String, ?color:FlxColor = null) {
 			if(color == null) color = FlxColor.WHITE;
 			FunkinLua.luaTrace(text, true, false, color);
 		});
 		// For adding your own callbacks
 		
 		// not very tested but should work
-		set('createGlobalCallbackNew', function(name:String, func:Dynamic)
+		set('createGlobalCallback-SScript', function(name:String, func:Dynamic)
 		{
 			#if LUA_ALLOWED
 			for (script in PlayState.instance.luaArray)
@@ -93,13 +93,13 @@ class HScript extends SScript
 		});
 		
 		// tested
-		set('createCallbackNew', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
+		set('createCallback-SScript', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
 		{
 			if(funk == null) funk = parentLua;
 			funk.addLocalCallback(name, func);
 		});
 		
-		set('addHaxeLibraryNew', function(libName:String, ?libPackage:String = '') {
+		set('addHaxeLibrary-SScript', function(libName:String, ?libPackage:String = '') {
 			try {
 				var str:String = '';
 				if(libPackage.length > 0)
@@ -146,7 +146,7 @@ class HScript extends SScript
 	public static function implement(funk:FunkinLua)
 	{
 	    #if LUA_ALLOWED
-		funk.addLocalCallback("runHaxeCodeNew", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null) {
+		funk.addLocalCallback("runHaxeCode-SScript", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null) {
 			var retVal:SCall = null;
 			#if (SScript >= "3.0.0")
 			initHaxeModule(funk);
@@ -173,7 +173,7 @@ class HScript extends SScript
 			return retVal;
 		});
 		
-		funk.addLocalCallback("runHaxeFunctionNew", function(funcToRun:String, ?funcArgs:Array<Dynamic> = null) {
+		funk.addLocalCallback("runHaxeFunction-SScript", function(funcToRun:String, ?funcArgs:Array<Dynamic> = null) {
 			#if (SScript >= "3.0.0")
 			var callValue = funk.hscript.executeFunction(funcToRun, funcArgs);
 			if (!callValue.succeeded)
@@ -191,7 +191,7 @@ class HScript extends SScript
 		});
 		
 		// This function is unnecessary because import already exists in SScript as a native feature
-		funk.addLocalCallback("addHaxeLibraryNew", function(libName:String, ?libPackage:String = '') {
+		funk.addLocalCallback("addHaxeLibrary-SScript", function(libName:String, ?libPackage:String = '') {
 			#if (SScript >= "3.0.0")
 			initHaxeModule(funk);
 			try {
