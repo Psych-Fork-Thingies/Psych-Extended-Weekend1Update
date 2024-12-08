@@ -62,6 +62,33 @@ class Mods
 		return list;
 	}
 	
+	inline public static function getFoldersList(path:String, fileToFind:String, mods:Bool = true)
+	{
+		var foldersToCheck:Array<String> = [];
+		if(FileSystem.exists(path + fileToFind)) foldersToCheck.push(path + fileToFind);
+		#if MODS_ALLOWED
+		if(mods)
+		{
+			// Global mods first
+			for(mod in Mods.getGlobalMods())
+			{
+				var folder:String = Paths.mods(mod + '/' + fileToFind);
+				if(FileSystem.exists(folder)) foldersToCheck.insert(0, folder);
+			}
+			// Then "PsychEngine/mods/" main folder
+			var folder:String = Paths.mods(fileToFind);
+			if(FileSystem.exists(folder)) foldersToCheck.insert(0, Paths.mods(fileToFind));
+			// And lastly, the loaded mod's folder
+			if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
+			{
+				var folder:String = Paths.mods(Mods.currentModDirectory + '/' + fileToFind);
+				if(FileSystem.exists(folder)) foldersToCheck.insert(0, folder);
+			}
+		}
+		#end
+		return foldersToCheck;
+	}
+	
 	public static function getPack(?folder:String = null):Dynamic
 	{
 		if(folder == null) folder = Mods.currentModDirectory;
