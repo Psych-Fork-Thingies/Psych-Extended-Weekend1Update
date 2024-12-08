@@ -32,19 +32,14 @@ class ReflectionFunctions
 		});
 		Lua_helper.add_callback(lua, "getPropertyFromGroup", function(obj:String, index:Int, variable:Dynamic) {
 			var shitMyPants:Array<String> = obj.split('.');
-			var realObject:Dynamic = null;
-			if(shitMyPants.length > 1)
+			var realObject:Dynamic = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
+			if(shitMyPants.length>1)
 				realObject = LuaUtils.getPropertyLoop(shitMyPants, true, false);
-			else
-				realObject = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
-
 			if(Std.isOfType(realObject, FlxTypedGroup))
 			{
 				var result:Dynamic = LuaUtils.getGroupStuff(realObject.members[index], variable);
 				return result;
 			}
-
-
 			var leArray:Dynamic = realObject[index];
 			if(leArray != null) {
 				var result:Dynamic = null;
@@ -54,22 +49,18 @@ class ReflectionFunctions
 					result = LuaUtils.getGroupStuff(leArray, variable);
 				return result;
 			}
-			FunkinLua.luaTrace("getPropertyFromGroup: Object #" + index + " from group: " + obj + " doesn't exist!", false, false, FlxColor.RED);
+			luaTrace("getPropertyFromGroup: Object #" + index + " from group: " + obj + " doesn't exist!", false, false, FlxColor.RED);
 			return null;
 		});
 		Lua_helper.add_callback(lua, "setPropertyFromGroup", function(obj:String, index:Int, variable:Dynamic, value:Dynamic) {
 			var shitMyPants:Array<String> = obj.split('.');
-			var realObject:Dynamic = null;
-			if(shitMyPants.length > 1)
+			var realObject:Dynamic = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
+			if(shitMyPants.length>1)
 				realObject = LuaUtils.getPropertyLoop(shitMyPants, true, false);
-			else
-				realObject = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
-
 			if(Std.isOfType(realObject, FlxTypedGroup)) {
 				LuaUtils.setGroupStuff(realObject.members[index], variable, value);
 				return;
 			}
-
 			var leArray:Dynamic = realObject[index];
 			if(leArray != null) {
 				if(Type.typeof(variable) == ValueType.TInt) {

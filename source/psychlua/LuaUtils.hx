@@ -65,18 +65,17 @@ class LuaUtils
 			}
 			return target;
 		}
-		if(/*Std.isOfType(instance, Map)*/ instance.set != null) //cheaper way to get a map but less safe
+		/*if(Std.isOfType(instance, Map))
 			instance.set(variable,value);
-		else
+		else*/
+			
+		if(PlayState.instance.variables.exists(variable))
 		{
-			if(PlayState.instance.variables.exists(variable))
-			{
-				PlayState.instance.variables.set(variable, value);
-				return true;
-			}
-
-		    Reflect.setProperty(instance, variable, value);
+			PlayState.instance.variables.set(variable, value);
+			return true;
 		}
+
+		Reflect.setProperty(instance, variable, value);
 		return true;
 	}
 	public static function getVarInArray(instance:Dynamic, variable:String):Any

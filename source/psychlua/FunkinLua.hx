@@ -729,7 +729,21 @@ class FunkinLua {
 				LuaUtils.loadFrames(spr, image, spriteType);
 			}
 		});
-
+		
+        //shitass stuff for epic coders like me B)  *image of obama giving himself a medal*
+		Lua_helper.add_callback(lua, "getObjectOrder", function(obj:String) {
+			var killMe:Array<String> = obj.split('.');
+			var leObj:FlxBasic = LuaUtils.getObjectDirectly(killMe[0]);
+			if(killMe.length > 1) {
+				leObj = LuaUtils.getVarInArray(LuaUtils.getPropertyLoop(killMe), killMe[killMe.length-1]);
+			}
+			if(leObj != null)
+			{
+				return LuaUtils.getTargetInstance().members.indexOf(leObj);
+			}
+			luaTrace("getObjectOrder: Object " + obj + " doesn't exist!", false, false, FlxColor.RED);
+			return -1;
+		});
 		Lua_helper.add_callback(lua, "setObjectOrder", function(obj:String, position:Int) {
 			var killMe:Array<String> = obj.split('.');
 			var leObj:FlxBasic = LuaUtils.getObjectDirectly(killMe[0]);
