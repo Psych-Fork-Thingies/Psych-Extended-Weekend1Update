@@ -135,6 +135,8 @@
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="SScript" />
+	<haxelib name="hscript" />
+	
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
 	

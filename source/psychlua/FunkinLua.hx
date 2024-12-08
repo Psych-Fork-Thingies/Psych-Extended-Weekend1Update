@@ -73,6 +73,7 @@ class FunkinLua {
 
 	#if (SScript >= "3.0.0")
 	public var hscript:HScript = null;
+	public var hscriptBase:HScriptBase = null;
 	#end
 	
 	public var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
@@ -1989,6 +1990,7 @@ class FunkinLua {
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
 		#if android AndroidFunctions.implement(this); #end
 		#if (SScript >= "3.0.0") HScript.implement(this); #end
+		HScriptBase.implement(this);
 		DeprecatedFunctions.implement(this);
 		ReflectionFunctions.implement(this);
 		CustomFunctions.implement(this);
@@ -2088,6 +2090,9 @@ class FunkinLua {
 			hscript = null;
 		}
 		#end
+		
+		if(hscriptBase != null) hscriptBase.interp = null;
+		hscriptBase = null;
 		#end
 	}
 	//clone functions

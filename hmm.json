@@ -33,6 +33,11 @@
       "url": "https://github.com/28AloneDark53/SScript-for-Psych-Extended"
     },
     {
+      "name": "hscript",
+      "type": "haxelib",
+      "version": "2.5.0"
+    },
+    {
       "name": "hxCodec",
       "type": "git",
       "ref": "main",
