@@ -9,8 +9,8 @@
     {
       "name": "linc_luajit",
       "type": "git",
-      "ref": "master",
-      "url": "https://github.com/Sirox228/linc_luajit"
+      "ref": "fa3701887c11da420fa5b437eaeb0d98b482ca4d",
+      "url": "https://github.com/superpowers04/linc_luajit"
     },
     {
       "name": "tjson",
