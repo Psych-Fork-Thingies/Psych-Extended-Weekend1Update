@@ -527,7 +527,6 @@ class PlayState extends MusicBeatState
 		#end
 
 		// "GLOBAL" SCRIPTS
-		#if LUA_ALLOWED
 		var foldersToCheck:Array<String> = Mods.getFoldersList(Paths.getPreloadPath(), 'scripts/');
 
 		for (folder in foldersToCheck)
@@ -538,7 +537,6 @@ class PlayState extends MusicBeatState
 				if(file.toLowerCase().endsWith('.hx'))
 					initHScript(folder + file);
 			}
-		#end
 
 
 		// STAGE SCRIPTS
@@ -796,7 +794,6 @@ class PlayState extends MusicBeatState
 				if(file.toLowerCase().endsWith('.hx'))
 					initHScript(folder + file);
 			}
-		#end
 
 		startCallback();
 		RecalculateRating();
