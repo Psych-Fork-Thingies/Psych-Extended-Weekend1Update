@@ -2,6 +2,11 @@ package psychlua;
 
 import tea.SScript;
 
+import hscript.Parser;
+import hscript.Interp;
+import hscript.Expr;
+import haxe.Exception;
+
 #if (SScript >= "3.0.0")
 class HScript extends SScript
 {
