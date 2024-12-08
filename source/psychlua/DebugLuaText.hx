@@ -10,6 +10,9 @@ class DebugLuaText extends FlxText
 	public function new() {
 		super(10, 10, 0, '', 16);
 		setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scrollFactor.set();
+		borderSize = 1;
+	}
 
 	override function update(elapsed:Float) {
 		super.update(elapsed);
