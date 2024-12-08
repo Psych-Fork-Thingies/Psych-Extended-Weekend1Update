@@ -135,10 +135,10 @@
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="SScript" />
-	<haxelib name="hscript" />
-	
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
+	<haxelib name="hscript" />
+	<define name="hscriptPos" />
 	
 	<!-- Extra packages-->
 	<haxelib name="grig.audio" />
