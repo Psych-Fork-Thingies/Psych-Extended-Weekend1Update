@@ -406,13 +406,9 @@ class PlayState extends MusicBeatState
 
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
 		if (isStoryMode)
-		{
 			detailsText = "Story Mode: " + WeekData.getCurrentWeek().weekName;
-		}
 		else
-		{
 			detailsText = "Freeplay";
-		}
 
 		// String for when the game is paused
 		detailsPausedText = "Paused - " + detailsText;
@@ -544,7 +540,7 @@ class PlayState extends MusicBeatState
 				{
 					if(file.endsWith('.lua') && !filesPushed.contains(file))
 					{
-						luaArray.push(new FunkinLua(folder + file));
+						new FunkinLua(folder + file);
 						filesPushed.push(file);
 					}
 				}
@@ -555,7 +551,7 @@ class PlayState extends MusicBeatState
 
 		// STAGE SCRIPTS
 		#if (MODS_ALLOWED && LUA_ALLOWED)
-		startLuasOnFolder('stages/' + curStage + '.lua');
+		startLuasNamed('stages/' + curStage + '.lua');
 		#end
 
 		if (!stageData.hide_girlfriend)
@@ -663,9 +659,9 @@ class PlayState extends MusicBeatState
         //not needed but why not :)
 		#if LUA_ALLOWED
 		for (notetype in noteTypes)
-			startLuasOnFolder('custom_notetypes/' + notetype + '.lua');
+			startLuasNamed('custom_notetypes/' + notetype + '.lua');
 		for (event in eventsPushed)
-			startLuasOnFolder('custom_events/' + event + '.lua');
+			startLuasNamed('custom_events/' + event + '.lua');
 		#end
 
 		// After all characters being loaded, it makes then invisible 0.01s later so that the player won't freeze when you change characters
@@ -768,10 +764,10 @@ class PlayState extends MusicBeatState
 		
 		#if LUA_ALLOWED
 		for (notetype in noteTypes)
-			startLuasOnFolder('custom_notetypes/' + notetype + '.lua');
+			startLuasNamed('custom_notetypes/' + notetype + '.lua');
 			
 		for (event in eventsPushed)
-			startLuasOnFolder('custom_events/' + event + '.lua');
+			startLuasNamed('custom_events/' + event + '.lua');
 		#end
 		noteTypes = null;
 		eventsPushed = null;
@@ -802,7 +798,7 @@ class PlayState extends MusicBeatState
 				{
 					if(file.endsWith('.lua') && !filesPushed.contains(file))
 					{
-						luaArray.push(new FunkinLua(folder + file));
+						new FunkinLua(folder + file);
 						filesPushed.push(file);
 					}
 				}
@@ -1058,7 +1054,7 @@ class PlayState extends MusicBeatState
 		if(doPush)
 		{
 			for (script in luaArray) if(script.scriptName == luaFile) return;
-			luaArray.push(new FunkinLua(luaFile));
+			new FunkinLua(luaFile);
 		}
 		#end
 	}
@@ -3666,7 +3662,7 @@ class PlayState extends MusicBeatState
 	}
 
 	#if LUA_ALLOWED
-	public function startLuasOnFolder(luaFile:String)
+	public function startLuasNamed(luaFile:String)
 	{
 	    for (script in luaArray)
 		{
@@ -3683,7 +3679,7 @@ class PlayState extends MusicBeatState
 		if(OpenFlAssets.exists(luaToLoad))
 		#end
 		{
-			luaArray.push(new FunkinLua(luaToLoad));
+			new FunkinLua(luaToLoad);
 			return true;
 		}
 		return false;
@@ -3696,16 +3692,17 @@ class PlayState extends MusicBeatState
 		if(args == null) args = [];
 		if(exclusions == null) exclusions = [];
 		if(excludeValues == null) excludeValues = [];
+		excludeValues.push(FunkinLua.Function_Continue);
 
 		for (script in luaArray) {
 			if(exclusions.contains(script.scriptName))
 				continue;
 
-			var myValue = script.call(event, args);
+			var myValue:Dynamic = script.call(event, args);
 			if(myValue == FunkinLua.Function_StopLua && !ignoreStops)
 				break;
 			
-			if(myValue != null && myValue != FunkinLua.Function_Continue)
+			if(myValue != null && !excludeValues.contains(myValue))
 				returnVal = myValue;
 		}
 		#end
