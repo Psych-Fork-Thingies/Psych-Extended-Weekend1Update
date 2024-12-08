@@ -177,7 +177,7 @@ class FunkinLua {
 		set('healthGainMult', game.healthGain);
 		set('healthLossMult', game.healthLoss);
 		#if FLX_PITCH set('playbackRate', game.playbackRate); #end
-		set('instakillOnMiss', instakillOnMiss);
+		set('instakillOnMiss', game.instakillOnMiss);
 		set('OpponentMode', game.cpuControlled_opponent);
 		
 		if (PlayState.opponentChart)
@@ -2098,10 +2098,10 @@ class FunkinLua {
 	{
 		var target:Dynamic = LuaUtils.tweenPrepare(tag, vars);
 		if(target != null) {
-			game.modchartTweens.set(tag, FlxTween.tween(target, tweenValue, duration, {ease: LuaUtils.getTweenEaseByString(ease),
+			PlayState.instance.modchartTweens.set(tag, FlxTween.tween(target, tweenValue, duration, {ease: LuaUtils.getTweenEaseByString(ease),
 				onComplete: function(twn:FlxTween) {
-					game.callOnLuas('onTweenCompleted', [tag, vars]);
-					game.modchartTweens.remove(tag);
+					PlayState.instance.callOnLuas('onTweenCompleted', [tag, vars]);
+					PlayState.instance.modchartTweens.remove(tag);
 				}
 			}));
 		} else {
@@ -2115,7 +2115,7 @@ class FunkinLua {
 			if(deprecated && !getBool('luaDeprecatedWarnings')) {
 				return;
 			}
-			game.addTextToDebug(text, color);
+			PlayState.instance.addTextToDebug(text, color);
 			trace(text);
 		}
 		#end
@@ -2216,7 +2216,7 @@ class FunkinLua {
 	{
 		if(!ClientPrefs.data.shaders) return false;
 		#if (!flash && sys)
-		if(game.runtimeShaders.exists(name))
+		if(PlayState.instance.runtimeShaders.exists(name))
 		{
 			luaTrace('Shader $name was already initialized!');
 			return true;
@@ -2248,7 +2248,7 @@ class FunkinLua {
 				else vert = null;
 				if(found)
 				{
-					game.runtimeShaders.set(name, [frag, vert]);
+					PlayState.instance.runtimeShaders.set(name, [frag, vert]);
 					//trace('Found shader $name!');
 					return true;
 				}
