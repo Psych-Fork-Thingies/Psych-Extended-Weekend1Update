@@ -972,16 +972,18 @@ class PlayState extends MusicBeatState
 
 	public function addTextToDebug(text:String, color:FlxColor) {
 		#if LUA_ALLOWED
+		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
+		newText.text = text;
+		newText.color = color;
+		newText.disableTime = 6;
+		newText.alpha = 1;
+		newText.setPosition(10, 8 - newText.height);
+		
 		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
-			spr.y += 20;
+			spr.y += newText.height + 2;
 		});
 
-		if(luaDebugGroup.members.length > 34) {
-			var blah = luaDebugGroup.members[34];
-			blah.destroy();
-			luaDebugGroup.remove(blah);
-		}
-		luaDebugGroup.insert(0, new DebugLuaText(text, luaDebugGroup, color));
+		luaDebugGroup.add(newText);
 		#end
 	}
 
@@ -3548,6 +3550,7 @@ class PlayState extends MusicBeatState
 			lua.stop();
 		}
 		luaArray = [];
+		FunkinLua.customFunctions.clear();
 
 		if(!ClientPrefs.data.controllerMode)
 		{
