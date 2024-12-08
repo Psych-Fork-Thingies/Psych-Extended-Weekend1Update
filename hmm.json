@@ -35,7 +35,7 @@
     {
       "name": "hxCodec",
       "type": "git",
-      "ref": "0d710a29760082dc2192319517145e61829b1452",
+      "ref": "main",
       "url": "https://github.com/Prohack101010/hxCodec-2.6.0-with-MP4Handler"
     },
     {
