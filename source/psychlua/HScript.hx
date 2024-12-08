@@ -8,6 +8,8 @@ import hscript.Interp;
 import hscript.Expr;
 #end
 
+import haxe.Exception;
+
 #if (SScript >= "3.0.0")
 class HScript extends SScript
 {
@@ -316,11 +318,11 @@ class HScriptBase
 	public function execute(codeToRun:String, ?funcToRun:String = null, ?funcArgs:Array<Dynamic>):Dynamic
 	{
 		@:privateAccess
-		parser.line = 1;
-		parser.allowTypes = true;
-		var expr:Expr = parser.parseString(codeToRun);
+		HScriptBase.parser.line = 1;
+		HScriptBase.parser.allowTypes = true;
+		var expr:Expr = HScriptBase.parser.parseString(codeToRun);
 		try {
-			var value:Dynamic = interp.execute(parser.parseString(codeToRun));
+			var value:Dynamic = interp.execute(HScriptBase.parser.parseString(codeToRun));
 			return (funcToRun != null) ? executeFunction(funcToRun, funcArgs) : value;
 		}
 		catch(e:Exception)
