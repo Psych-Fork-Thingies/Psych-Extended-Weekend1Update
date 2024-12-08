@@ -1,7 +1,7 @@
 package psychlua;
 
 import Type.ValueType;
-import haxe.Constraints;;
+import haxe.Constraints;
 
 //
 // Functions that use a high amount of Reflections, which are somewhat CPU intensive
