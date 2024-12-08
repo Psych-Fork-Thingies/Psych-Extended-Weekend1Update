@@ -1992,7 +1992,6 @@ class FunkinLua {
 		DeprecatedFunctions.implement(this);
 		ReflectionFunctions.implement(this);
 		CustomFunctions.implement(this);
-		CustomSubstate.implement(this);
 		MobileFunctions.implement(this);
 		ExtraFunctions.implement(this);
 		
