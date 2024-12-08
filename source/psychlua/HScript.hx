@@ -76,9 +76,11 @@ class HScript extends SScript
 		// not very tested but should work
 		set('createGlobalCallback', function(name:String, func:Dynamic)
 		{
+			#if LUA_ALLOWED
 			for (script in PlayState.instance.luaArray)
 				if(script != null && script.lua != null && !script.closed)
 					Lua_helper.add_callback(script.lua, name, func);
+			#end
 			FunkinLua.customFunctions.set(name, func);
 		});
 		
@@ -133,9 +135,9 @@ class HScript extends SScript
 		return call(funcToRun, funcArgs);
 	}
 	
-	#if LUA_ALLOWED
 	public static function implement(funk:FunkinLua)
 	{
+	    #if LUA_ALLOWED
 		funk.addLocalCallback("runHaxeCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null) {
 			var retVal:SCall = null;
 			#if (SScript >= "3.0.0")
@@ -175,6 +177,9 @@ class HScript extends SScript
 			}
 			else
 				return callValue.returnValue;
+			#else
+			FunkinLua.luaTrace("runHaxeFunction: HScript isn't supported on this platform!", false, false, FlxColor.RED);
+			#end
 		});
 		
 		// This function is unnecessary because import already exists in SScript as a native feature
@@ -193,6 +198,8 @@ class HScript extends SScript
 			catch (e:Dynamic) {
 				FunkinLua.luaTrace(funk.scriptName + ":" + funk.lastCalledFunction + " - " + e, false, false, FlxColor.RED);
 			}
+			#else
+			FunkinLua.luaTrace("addHaxeLibrary: HScript isn't supported on this platform!", false, false, FlxColor.RED);
 			#end
 		});
 		#end
