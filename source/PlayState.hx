@@ -786,7 +786,6 @@ class PlayState extends MusicBeatState
 		var foldersToCheck:Array<String> = Mods.getFoldersList(Paths.getPreloadPath(), 'data/' + songName + '/');
 		
 		for (folder in foldersToCheck)
-		{
 			for (file in FileSystem.readDirectory(folder))
 			{
 				if(file.toLowerCase().endsWith('.lua'))
