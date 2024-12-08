@@ -1,11 +1,4 @@
 package psychlua;
-
-#if LUA_ALLOWED
-import llua.Lua;
-import llua.LuaL;
-import llua.State;
-import llua.Convert;
-#end
 import haxe.Exception;
 
 #if hscript

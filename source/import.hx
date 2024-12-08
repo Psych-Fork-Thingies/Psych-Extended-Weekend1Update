@@ -81,10 +81,8 @@ import android.os.Build.VERSION_CODES as AndroidVersionCode;
 
 // Lua
 #if LUA_ALLOWED
+import llua.*;
 import llua.Lua;
-import llua.LuaL;
-import llua.State;
-import llua.Convert;
 #end
 
 //Flixel
