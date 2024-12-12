@@ -1915,15 +1915,11 @@ class PlayState extends MusicBeatState
 		iconP2.scale.set(mult, mult);
 		iconP2.updateHitbox();
 
-		var iconOffset:Int = 26;
-
         if (health > 2) health = 2;
-		iconP1.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
-		iconP2.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
-
-		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent < 20) ? 1 : 0;
-		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent > 80) ? 1 : 0;
-
+		
+        updateIconsScale(elapsed);
+		updateIconsPosition();
+		
 		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene) {
 			persistentUpdate = false;
 			paused = true;
@@ -2194,6 +2190,19 @@ class PlayState extends MusicBeatState
 		    setOnScripts('botPlay', cpuControlled);
 		    
 		callOnScripts('onUpdatePost', [elapsed]);
+	}
+	
+	// Health icon updaters
+	public dynamic function updateIconsScale(elapsed:Float)
+	{
+	    iconP1.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
+		iconP2.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
+	}
+	
+    public dynamic function updateIconsPosition()
+	{
+		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent < 20) ? 1 : 0;
+		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent > 80) ? 1 : 0;
 	}
 
 	function openPauseMenu()

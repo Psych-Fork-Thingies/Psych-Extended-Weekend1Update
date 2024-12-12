@@ -73,10 +73,10 @@ class CreditsState extends MusicBeatState
 
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Psych Extended'],
-			['AloneDark',	 'AloneDark',	'Owner of the Psych Extended',					                        'https://youtube.com/@28alonedark53',	    '444444'],
-			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Porter of Psych Engine 0.6.3 Mobile',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
+			['AloneDark',	 'AloneDark',	'Owner of Psych Extended',					                        'https://youtube.com/@28alonedark53',	    '444444'],
+			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Porter of Psych Engine 0.6.3 Mobile\n(Thanks For Experimental SScript Support & 0.6.3 Libs)',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
 			[''],
-			['Psych Engine Mobile'],
+			['Needed Credits'],
 			['MobilePorting',			 'MobilePorting',               'KralOyuncu using their Codes',                           'https://github.com/MobilePorting',		'FFE7C0'],
 			['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(KralOyuncu used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
 			[''],
