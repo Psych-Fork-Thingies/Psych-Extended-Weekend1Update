@@ -56,7 +56,7 @@ class CreditsState extends MusicBeatState
 		for (mod in Mods.parseList().enabled) pushModCreditsToList(mod);
 		#end
 		
-		/* maybe later
+		/* this is useless
 			['Psych Engine Android Team'],
 			['MaysLastPlay',		'MaysLastPlay',		'Android Porter',							'https://www.youtube.com/channel/UCx0LxtFR8ROd9sFAq-UxDfw',	'5DE7FF'],
 			['Nuno Filipe Studios',	'nuno',				'Android Porter',							'https://www.youtube.com/channel/UCq7G3p4msVN5SX2CpJ86tTw',	'989c99'],
@@ -74,11 +74,11 @@ class CreditsState extends MusicBeatState
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Psych Extended'],
 			['AloneDark',	 'AloneDark',	'Owner of Psych Extended',					                        'https://youtube.com/@28alonedark53',	    '444444'],
-			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Porter of Psych Engine 0.6.3 Mobile\n(Thanks For Experimental SScript Support & 0.6.3 Libs)',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
+			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Porter of Psych Engine 0.6.3 Mobile\n(0.6.3 Libs and Thanks For Experimental SScript Support)',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
 			[''],
 			['Needed Credits'],
 			['MobilePorting',			 'MobilePorting',               'KralOyuncu using their Codes',                           'https://github.com/MobilePorting',		'FFE7C0'],
-			['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(KralOyuncu used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
+			['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(We used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
 			[''],
 			['Psych Engine Team'],
 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],

@@ -1873,17 +1873,16 @@ class PlayState extends MusicBeatState
 		}*/
 		callOnScripts('onUpdate', [elapsed]);
 
-		if(!inCutscene) {
+		if(!inCutscene && !paused) {
 			var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed * playbackRate, 0, 1);
 			camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
 			if(!startingSong && !endingSong && boyfriend.getAnimationName().startsWith('idle')) {
 				boyfriendIdleTime += elapsed;
-				if(boyfriendIdleTime >= 0.15) { // Kind of a mercy thing for making the achievement easier to get as it's apparently frustrating to some playerss
+				if(boyfriendIdleTime >= 0.15) // Kind of a mercy thing for making the achievement easier to get as it's apparently frustrating to some playerss
 					boyfriendIdled = true;
-				}
-			} else {
-				boyfriendIdleTime = 0;
 			}
+			else
+				boyfriendIdleTime = 0;
 		}
 
 		super.update(elapsed);
@@ -1915,11 +1914,15 @@ class PlayState extends MusicBeatState
 		iconP2.scale.set(mult, mult);
 		iconP2.updateHitbox();
 
+		var iconOffset:Int = 26;
+
         if (health > 2) health = 2;
-		
-        updateIconsScale(elapsed);
-		updateIconsPosition();
-		
+		iconP1.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
+		iconP2.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
+
+		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent < 20) ? 1 : 0;
+		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent > 80) ? 1 : 0;
+
 		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene) {
 			persistentUpdate = false;
 			paused = true;
@@ -2190,21 +2193,6 @@ class PlayState extends MusicBeatState
 		    setOnScripts('botPlay', cpuControlled);
 		    
 		callOnScripts('onUpdatePost', [elapsed]);
-	}
-	
-	// Health icon updaters
-	public dynamic function updateIconsScale(elapsed:Float)
-	{
-	    var iconOffset:Int = 26;
-	    
-	    iconP1.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
-		iconP2.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
-	}
-	
-    public dynamic function updateIconsPosition()
-	{
-		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent < 20) ? 1 : 0;
-		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent > 80) ? 1 : 0;
 	}
 
 	function openPauseMenu()

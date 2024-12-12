@@ -123,11 +123,10 @@ class MobileControls extends FlxSpriteGroup {
 			case DUO:
 				initControler(3);
 			case HITBOX:
-		    if(ClientPrefs.data.hitboxmode != 'New'){
+		    if(ClientPrefs.data.hitboxmode != 'New')
 				initControler(4);
-		    }else{
-		    initControler(5);
-		    }
+		    else
+		        initControler(5);
 			case KEYBOARD:// nothing
 		}
 	}
