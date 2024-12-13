@@ -47,6 +47,12 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 		option.onChange = changeModFolder;
+		
+		var option:Option = new Option('Use Experimental Cameras',
+			'If checked, game uses camFollowNew instead of camFollow.',
+			'UseNewCamSystem',
+			'bool');
+		addOption(option);
 
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option('Downscroll', //Name
