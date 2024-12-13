@@ -2863,7 +2863,7 @@ class PlayState extends MusicBeatState
 
 					FlxTransitionableState.skipNextTransIn = true;
 					FlxTransitionableState.skipNextTransOut = true;
-					if (ClientPrefs.data.UseNewCamSystem) prevCamFollow = camFollowNew;
+					if (ClientPrefs.data.UseNewCamSystem) prevCamFollowNew = camFollowNew;
 					else prevCamFollow = camFollow;
 					if (!ClientPrefs.data.UseNewCamSystem)
 					    prevCamFollowPos = camFollowPos;
