@@ -202,7 +202,7 @@ class ClientPrefs {
 		// controls on a separate save file
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', CoolUtil.getSavePath());
-		if(save != null && save.data.customControls != null) {
+		if(save != null && save.data.keyboard != null) {
 			var loadedControls:Map<String, Array<FlxKey>> = save.data.keyboard;
 			for (control => keys in loadedControls) {
 				keyBinds.set(control, keys);
