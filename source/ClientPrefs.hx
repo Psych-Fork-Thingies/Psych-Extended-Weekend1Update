@@ -146,9 +146,10 @@ class ClientPrefs {
 		#if ACHIEVEMENTS_ALLOWED Achievements.save(); #end
 		FlxG.save.flush();
 
+		//Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
 		var save:FlxSave = new FlxSave();
-		save.bind('controls_v2', 'ninjamuffin99'); //Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
-		save.data.customControls = keyBinds;
+		save.bind('controls_v2', CoolUtil.getSavePath());
+		save.data.keyboard = keyBinds;
 		save.flush();
 		FlxG.log.add("Settings saved!");
 	}
@@ -200,9 +201,9 @@ class ClientPrefs {
 
 		// controls on a separate save file
 		var save:FlxSave = new FlxSave();
-		save.bind('controls_v2', 'ninjamuffin99');
+		save.bind('controls_v2', CoolUtil.getSavePath());
 		if(save != null && save.data.customControls != null) {
-			var loadedControls:Map<String, Array<FlxKey>> = save.data.customControls;
+			var loadedControls:Map<String, Array<FlxKey>> = save.data.keyboard;
 			for (control => keys in loadedControls) {
 				keyBinds.set(control, keys);
 			}
