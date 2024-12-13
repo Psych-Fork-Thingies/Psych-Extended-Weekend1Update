@@ -682,6 +682,11 @@ class PlayState extends MusicBeatState
 		{
 		    camFollowNew = new FlxObject(0, 0, 1, 1);
 		    camFollowNew.setPosition(camPos.x, camPos.y);
+		    if (prevCamFollowNew != null)
+    		{
+    			camFollowNew = prevCamFollowNew;
+    			prevCamFollowNew = null;
+    		}
 		}
 		else
 		{
@@ -689,20 +694,17 @@ class PlayState extends MusicBeatState
     		camFollowPos = new FlxObject(0, 0, 1, 1);
     
     		snapCamFollowToPos(camPos.x, camPos.y);
+    		if (prevCamFollow != null)
+    		{
+    			camFollow = prevCamFollow;
+    			prevCamFollow = null;
+    		}
     	}
 		
-		if (prevCamFollow != null && !ClientPrefs.data.UseNewCamSystem)
-		{
-			camFollow = prevCamFollow;
-			prevCamFollow = null;
-		}
-		if (prevCamFollowNew != null && ClientPrefs.data.UseNewCamSystem)
-		{
-			camFollowNew = prevCamFollowNew;
-			prevCamFollowNew = null;
-		}
 		if (ClientPrefs.data.UseNewCamSystem)
+		{
 		    add(camFollowNew);
+		}
 		else
 		{
     		if (prevCamFollowPos != null)
@@ -2231,11 +2233,6 @@ class PlayState extends MusicBeatState
 		#end
 		
 		if (ClientPrefs.data.UseNewCamSystem)
-		{
-		    setOnScripts('cameraX', camFollowNew.x);
-		    setOnScripts('cameraY', camFollow.y);
-		}
-		else
 		{
     		setOnScripts('cameraX', camFollowPos.x);
     		setOnScripts('cameraY', camFollowPos.y);
