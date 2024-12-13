@@ -1920,8 +1920,15 @@ class PlayState extends MusicBeatState
 		iconP1.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 		iconP2.x = (opponentChart ? -593 : 0) + healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, (opponentChart ? -100 : 100), 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 
-		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent < 20) ? 1 : 0;
-		(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = (healthBar.percent > 80) ? 1 : 0;
+		if (healthBar.percent < 20)
+			(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = 1;
+		else
+			(opponentChart ? iconP2 : iconP1).animation.curAnim.curFrame = 0;
+
+		if (healthBar.percent > 80)
+			(opponentChart ? iconP1 : iconP2).animation.curAnim.curFrame = 1;
+		else
+			(opponentChart ? iconP1 : iconP2).animation.curAnim.curFrame = 0;
 
 		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene) {
 			persistentUpdate = false;
