@@ -273,14 +273,14 @@ class MobileControlSelectSubState extends MusicBeatSubstate
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad(RIGHT_FULL, NONE, 0.75, ClientPrefs.data.antialiasing);
+                vpad = new FlxVirtualPad(RIGHT_FULL, controlExtend, 0.75, ClientPrefs.data.antialiasing);
                 add(vpad);
                 loadcustom(false);
             case 'Pad-Left':
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad(FULL, NONE, 0.75, ClientPrefs.data.antialiasing);
+                vpad = new FlxVirtualPad(FULL, controlExtend, 0.75, ClientPrefs.data.antialiasing);
                 add(vpad);
                 loadcustom(false);
             case 'Pad-Custom':
@@ -294,7 +294,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad(DUO, NONE, 0.75, ClientPrefs.data.antialiasing);
+                vpad = new FlxVirtualPad(DUO, controlExtend, 0.75, ClientPrefs.data.antialiasing);
                 add(vpad);
                 loadcustom(false);
             case 'Hitbox':

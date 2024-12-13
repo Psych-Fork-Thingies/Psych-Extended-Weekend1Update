@@ -1871,7 +1871,6 @@ class PlayState extends MusicBeatState
 		{
 			iconP1.swapOldIcon();
 		}*/
-		callOnScripts('onUpdate', [elapsed]);
 
 		if(!inCutscene && !paused) {
 			var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed * playbackRate, 0, 1);
@@ -1884,7 +1883,9 @@ class PlayState extends MusicBeatState
 			else
 				boyfriendIdleTime = 0;
 		}
-
+		else FlxG.camera.followLerp = 0;
+        callOnScripts('onUpdate', [elapsed]);
+        
 		super.update(elapsed);
 
 		setOnScripts('curDecStep', curDecStep);
