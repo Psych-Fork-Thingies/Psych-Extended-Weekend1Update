@@ -2232,7 +2232,7 @@ class PlayState extends MusicBeatState
 		
 		if (ClientPrefs.data.UseNewCamSystem)
 		{
-		    setOnScripts('cameraX', camFollow.x);
+		    setOnScripts('cameraX', camFollowNew.x);
 		    setOnScripts('cameraY', camFollow.y);
 		}
 		else
