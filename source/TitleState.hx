@@ -100,13 +100,6 @@ class TitleState extends MusicBeatState
 
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		
-		ClientPrefs.loadPrefs(); //fix modpack folder
-
-		#if LUA_ALLOWED
-		Mods.pushGlobalMods();
-		#end
-		Mods.loadTopMod();
 
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.sound.muteKeys = muteKeys;
@@ -123,7 +116,14 @@ class TitleState extends MusicBeatState
 		swagShader = new ColorSwap();
 		super.create();
 
-		FlxG.save.bind('funkin' , CoolUtil.getSavePath());
+		FlxG.save.bind('funkin', CoolUtil.getSavePath());
+		
+		ClientPrefs.loadPrefs();
+
+		#if LUA_ALLOWED
+		Mods.pushGlobalMods();
+		#end
+		Mods.loadTopMod();
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {

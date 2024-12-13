@@ -33,6 +33,7 @@ class OptionsState extends MusicBeatState
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var stateType:Int = 0;
+	public static var onPlayState:Bool = false;
 	public static var menuBG:FlxSprite;
 
 	function openSelectedSubstate(label:String) {
@@ -132,18 +133,17 @@ class OptionsState extends MusicBeatState
 		}
 		
 		if (controls.BACK) {
-			if (OptionsState.stateType == 2 || OptionsState.stateType == 1) {
-    			if (OptionsState.stateType == 2)
-    			    MusicBeatState.switchState(new FreeplayStateNF());
-    			else if (OptionsState.stateType == 1)
-    			    MusicBeatState.switchState(new FreeplayStateNOVA());
-    			else if (OptionsState.stateType == 3)
-    			    MusicBeatState.switchState(new PlayState());
-    		    OptionsState.stateType = 0;
-			}
+    		if (OptionsState.stateType == 2)
+    		    MusicBeatState.switchState(new FreeplayStateNF());
+    		else if (OptionsState.stateType == 1)
+    		    MusicBeatState.switchState(new FreeplayStateNOVA());
+    		else if (OptionsState.stateType == 3 || onPlayState)
+    		    MusicBeatState.switchState(new PlayState());
 			else
     			CustomSwitchState.switchMenus('MainMenu');
-			FlxG.sound.play(Paths.sound('cancelMenu'));
+    		FlxG.sound.play(Paths.sound('cancelMenu'));
+    		onPlayState = false;
+    	    stateType = 0;
 		}
 		
 		if (_virtualpad.buttonE.justPressed) {
