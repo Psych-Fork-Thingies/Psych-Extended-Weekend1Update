@@ -91,17 +91,17 @@ class HScript extends SScript
 		#end
 
 		// Functions & Variables
-		set('setVar-SScript', function(name:String, value:Dynamic)
+		set('setSScriptVar', function(name:String, value:Dynamic)
 		{
 			PlayState.instance.variables.set(name, value);
 		});
-		set('getVar-SScript', function(name:String)
+		set('getSScriptVar', function(name:String)
 		{
 			var result:Dynamic = null;
 			if(PlayState.instance.variables.exists(name)) result = PlayState.instance.variables.get(name);
 			return result;
 		});
-		set('removeVar-SScript', function(name:String)
+		set('removeSScriptVar', function(name:String)
 		{
 			if(PlayState.instance.variables.exists(name))
 			{
@@ -110,7 +110,7 @@ class HScript extends SScript
 			}
 			return false;
 		});
-		set('debugPrint-SScript', function(text:String, ?color:FlxColor = null) {
+		set('debugSScriptPrint', function(text:String, ?color:FlxColor = null) {
 			if(color == null) color = FlxColor.WHITE;
 			PlayState.instance.addTextToDebug(text, color);
 		});
@@ -118,7 +118,7 @@ class HScript extends SScript
 		// For adding your own callbacks
 
 		// not very tested but should work
-		set('createGlobalCallback-SScript', function(name:String, func:Dynamic)
+		set('createGlobalSScriptCallback', function(name:String, func:Dynamic)
 		{
 			#if LUA_ALLOWED
 			for (script in PlayState.instance.luaArray)
@@ -129,7 +129,7 @@ class HScript extends SScript
 		});
 
 		// tested
-		set('createCallback-SScript', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
+		set('createSScriptCallback', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
 		{
 			if(funk == null) funk = parentLua;
 			
@@ -137,7 +137,7 @@ class HScript extends SScript
 			else FunkinLua.luaTrace('createCallback ($name): 3rd argument is null', false, false, FlxColor.RED);
 		});
 
-		set('addHaxeLibrary-SScript', function(libName:String, ?libPackage:String = '') {
+		set('addHaxeSScriptLibrary', function(libName:String, ?libPackage:String = '') {
 			try {
 				var str:String = '';
 				if(libPackage.length > 0)
@@ -225,7 +225,7 @@ class HScript extends SScript
 	{
 	    var lua:State = funk.lua;
 		#if LUA_ALLOWED
-		Lua_helper.add_callback(lua, "runHaxeCode-SScript", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):Dynamic {
+		Lua_helper.add_callback(lua, "runHaxeSScriptCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):Dynamic {
 			var retVal:SCall = null;
 			#if (SScript >= "3.0.0")
 			initHaxeModuleCode(funk, codeToRun);
@@ -256,7 +256,7 @@ class HScript extends SScript
 			return null;
 		});
 		
-		Lua_helper.add_callback(lua, "runHaxeFunction-SScript", function(funcToRun:String, ?funcArgs:Array<Dynamic> = null) {
+		Lua_helper.add_callback(lua, "runHaxeSScriptFunction", function(funcToRun:String, ?funcArgs:Array<Dynamic> = null) {
 			#if (SScript >= "3.0.0")
 			var callValue = funk.hscript.executeFunction(funcToRun, funcArgs);
 			if (!callValue.succeeded)
@@ -273,7 +273,7 @@ class HScript extends SScript
 			#end
 		});
 		// This function is unnecessary because import already exists in SScript as a native feature
-		Lua_helper.add_callback(lua, "addHaxeLibrary-SScript", function(libName:String, ?libPackage:String = '') {
+		Lua_helper.add_callback(lua, "addHaxeSScriptLibrary", function(libName:String, ?libPackage:String = '') {
 			var str:String = '';
 			if(libPackage.length > 0)
 				str = libPackage + '.';
