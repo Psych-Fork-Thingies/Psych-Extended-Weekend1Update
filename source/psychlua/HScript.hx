@@ -4,7 +4,7 @@ import flixel.FlxBasic;
 import psychlua.FunkinLua;
 import psychlua.CustomSubstate;
 
-#if HSCRIPT_NEW_ALLOWED
+#if hscript
 import hscript.Parser;
 import hscript.Interp;
 import hscript.Expr;
@@ -331,10 +331,10 @@ class HScript extends SScript
 }
 #end
 
-#if HSCRIPT_NEW_ALLOWED
+#if hscript
 class HScript_New
 {
-	#if HSCRIPT_NEW_ALLOWED
+	#if hscript
 	public static var parser:Parser = new Parser();
 	public var interp:Interp;
 
@@ -348,7 +348,7 @@ class HScript_New
 	
 	public static function initHaxeModule(parent:FunkinLua)
 	{
-		#if HSCRIPT_NEW_ALLOWED
+		#if hscript
 		if(parent.HScript_New == null)
 		{
 			trace('initializing haxe interp for: ${parent.scriptName}');
@@ -473,7 +473,7 @@ class HScript_New
 	    {
 		Lua_helper.add_callback(lua, "runHaxeCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null) {
 			var retVal:Dynamic = null;
-			#if HSCRIPT_NEW_ALLOWED
+			#if hscript
 			initHaxeModule(funk);
 			try {
 				if(varsToBring != null)
@@ -507,7 +507,7 @@ class HScript_New
 			}
 		});
 		Lua_helper.add_callback(lua, "addHaxeLibrary", function(libName:String, ?libPackage:String = '') {
-			#if HSCRIPT_NEW_ALLOWED
+			#if hscript
 			initHaxeModule(funk);
 			try {
 				var str:String = '';
