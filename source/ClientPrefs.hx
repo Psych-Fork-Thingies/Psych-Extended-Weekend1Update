@@ -37,6 +37,7 @@ import TitleState;
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
 	public var DisableIntroVideo:Bool = false;
 	public var UseNewCamSystem:Bool = false;
+	public var hscriptversion:String = 'HScript_Old';
 	
 	//FPSCounter things
 	public var FPSCounter:String = 'Psych';

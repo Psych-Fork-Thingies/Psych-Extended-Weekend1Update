@@ -53,6 +53,13 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'UseNewCamSystem',
 			'bool');
 		addOption(option);
+		
+		var option:Option = new Option('HScript Version:',
+			"This Option Is Experimental",
+			'hscriptversion',
+			'string',
+			['HScript_Old', 'HScript_New', 'SScript']);
+		addOption(option);
 
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option('Downscroll', //Name

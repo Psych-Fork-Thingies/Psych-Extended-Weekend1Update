@@ -53,6 +53,7 @@ class CustomFunctions
 			CoolUtil.showPopUp(message, title);
 		});
 		
+		/* Not Needed Anymore Becuase You can add this with HScript
 		Lua_helper.add_callback(lua, "parseJson", function(directory:String, ?ignoreMods:Bool = false):Dynamic //For Vs Steve Bedrock Edition Psych Port
 		{
             final funnyPath:String = directory + '.json';
@@ -63,6 +64,7 @@ class CustomFunctions
             else if (!jsonExists && PlayState.chartingMode) debugPrintFunction('parseJson: "' + realPath + '" doesn\'t exist!', 0xff0000);
             return null;
 		});
+		*/
 		
 		Lua_helper.add_callback(lua, "CloseGame", function():Void
 		{
@@ -70,6 +72,7 @@ class CustomFunctions
 		});
 	}
 	
+	/* Not Needed Anymore Becuase You can add this with HScript
 	public static function debugPrintFunction(text1:Dynamic = '', text2:Dynamic = '', text3:Dynamic = '', text4:Dynamic = '', text5:Dynamic = '')
 	{
 	    if (text1 == null) text1 = '';
@@ -79,4 +82,5 @@ class CustomFunctions
 		if (text5 == null) text5 = '';
 		FunkinLua.luaTrace('' + text1 + text2 + text3 + text4 + text5, true, false);
 	}
+	*/
 }
