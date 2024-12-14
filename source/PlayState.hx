@@ -176,14 +176,14 @@ class PlayState extends MusicBeatState
 	private var strumLine:FlxSprite;
 
 	//Handles the new epic mega sexy cam code that i've done
-	public var camFollow:FlxPoint;
-	public var camFollowPos:FlxObject;
-	private static var prevCamFollow:FlxPoint;
-	private static var prevCamFollowPos:FlxObject;
+	public var camFollowOld:FlxPoint;
+	public var camFollowPosOld:FlxObject;
+	private static var prevCamFollowOld:FlxPoint;
+	private static var prevCamFollowPosOld:FlxObject;
 	
 	//0.7 Cameras
-	public var camFollowNew:FlxObject;
-	private static var prevCamFollowNew:FlxObject;
+	public var camFollow:FlxObject;
+	private static var prevCamFollow:FlxObject;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
 	public var opponentStrums:FlxTypedGroup<StrumNote>;
@@ -681,52 +681,52 @@ class PlayState extends MusicBeatState
 
         if (ClientPrefs.data.UseNewCamSystem)
 		{
-		    camFollowNew = new FlxObject(0, 0, 1, 1);
-		    camFollowNew.setPosition(camPos.x, camPos.y);
-		    if (prevCamFollowNew != null)
+		    camFollow = new FlxObject(0, 0, 1, 1);
+		    camFollow.setPosition(camPos.x, camPos.y);
+		    if (prevCamFollow != null)
     		{
-    			camFollowNew = prevCamFollowNew;
-    			prevCamFollowNew = null;
+    			camFollow = prevCamFollow;
+    			prevCamFollow = null;
     		}
 		}
 		else
 		{
-    		camFollow = new FlxPoint();
-    		camFollowPos = new FlxObject(0, 0, 1, 1);
+    		camFollowOld = new FlxPoint();
+    		camFollowPosOld = new FlxObject(0, 0, 1, 1);
     
     		snapCamFollowToPos(camPos.x, camPos.y);
-    		if (prevCamFollow != null)
+    		if (prevCamFollowOld != null)
     		{
-    			camFollow = prevCamFollow;
-    			prevCamFollow = null;
+    			camFollowOld = prevCamFollowOld;
+    			prevCamFollowOld = null;
     		}
     	}
 		
 		if (ClientPrefs.data.UseNewCamSystem)
 		{
-		    add(camFollowNew);
+		    add(camFollow);
 		}
 		else
 		{
-    		if (prevCamFollowPos != null)
+    		if (prevCamFollowPosOld != null)
     		{
-    			camFollowPos = prevCamFollowPos;
-    			prevCamFollowPos = null;
+    			camFollowPosOld = prevCamFollowPosOld;
+    			prevCamFollowPosOld = null;
     		}
-    		add(camFollowPos);
+    		add(camFollowPosOld);
     	}
 
         if (ClientPrefs.data.UseNewCamSystem)
-            FlxG.camera.follow(camFollowNew, LOCKON, 0);
+            FlxG.camera.follow(camFollow, LOCKON, 0);
         else
-		    FlxG.camera.follow(camFollowPos, LOCKON, 1);
+		    FlxG.camera.follow(camFollowPosOld, LOCKON, 1);
 		    
 		FlxG.camera.zoom = defaultCamZoom;
 		
 		if (ClientPrefs.data.UseNewCamSystem)
 		    FlxG.camera.snapToTarget();
 		else
-		    FlxG.camera.focusOn(camFollow);
+		    FlxG.camera.focusOn(camFollowOld);
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
@@ -1304,7 +1304,7 @@ class PlayState extends MusicBeatState
 				
 				stagesFunc(function(stage:BaseStage) stage.countdownTick(tick, swagCounter));
 				callOnLuas('onCountdownTick', [swagCounter]);
-				if (ClientPrefs.data.hscriptversion != 'HScript_Old') callOnHScript('onCountdownTick', [tick, swagCounter]);
+				callOnHScript('onCountdownTick', [tick, swagCounter]);
 
 				swagCounter += 1;
 			}, 5);
@@ -1915,7 +1915,7 @@ class PlayState extends MusicBeatState
 		    else
 		    {
     			var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed * playbackRate, 0, 1);
-    			camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
+    			camFollowPosOld.setPosition(FlxMath.lerp(camFollowPosOld.x, camFollowOld.x, lerpVal), FlxMath.lerp(camFollowPosOld.y, camFollowOld.y, lerpVal));
 			}
 			if(!startingSong && !endingSong && boyfriend.getAnimationName().startsWith('idle')) {
 				boyfriendIdleTime += elapsed;
@@ -2062,7 +2062,7 @@ class PlayState extends MusicBeatState
 				notes.insert(0, dunceNote);
 				dunceNote.spawned=true;
 				callOnLuas('onSpawnNote', [notes.members.indexOf(dunceNote), dunceNote.noteData, dunceNote.noteType, dunceNote.isSustainNote, dunceNote.strumTime]);
-				if (ClientPrefs.data.hscriptversion != 'HScript_Old') callOnHScript('onSpawnNote', [dunceNote]);
+				callOnHScript('onSpawnNote', [dunceNote]);
 
 				var index:Int = unspawnNotes.indexOf(dunceNote);
 				unspawnNotes.splice(index, 1);
@@ -2235,15 +2235,13 @@ class PlayState extends MusicBeatState
 		
 		if (ClientPrefs.data.UseNewCamSystem)
 		{
-    		setOnScripts('cameraX', camFollowNew.x);
-    		setOnScripts('cameraY', camFollowNew.y);
-    		setOnScripts('camFollow', camFollowNew);
+    		setOnScripts('cameraX', camFollow.x);
+    		setOnScripts('cameraY', camFollow.y);
     	}
     	else
 		{
-    		setOnScripts('cameraX', camFollowPos.x);
-    		setOnScripts('cameraY', camFollowPos.y);
-    		setOnScripts('camFollow', camFollow);
+    		setOnScripts('cameraX', camFollowPosOld.x);
+    		setOnScripts('cameraY', camFollowPosOld.y);
     	}
     	
 		setOnScripts('OpponentMode', cpuControlled_opponent);
@@ -2491,19 +2489,7 @@ class PlayState extends MusicBeatState
 				}
 
 			case 'Camera Follow Pos':
-				if(camFollowNew != null && ClientPrefs.data.UseNewCamSystem)
-				{
-					isCameraOnForcedPos = false;
-					if(flValue1 != null || flValue2 != null)
-					{
-						isCameraOnForcedPos = true;
-						if(flValue1 == null) flValue1 = 0;
-						if(flValue2 == null) flValue2 = 0;
-						camFollowNew.x = flValue1;
-						camFollowNew.y = flValue2;
-					}
-				}
-				if(camFollow != null && !ClientPrefs.data.UseNewCamSystem)
+				if(camFollow != null && ClientPrefs.data.UseNewCamSystem)
 				{
 					isCameraOnForcedPos = false;
 					if(flValue1 != null || flValue2 != null)
@@ -2513,6 +2499,18 @@ class PlayState extends MusicBeatState
 						if(flValue2 == null) flValue2 = 0;
 						camFollow.x = flValue1;
 						camFollow.y = flValue2;
+					}
+				}
+				if(camFollowOld != null && !ClientPrefs.data.UseNewCamSystem)
+				{
+					isCameraOnForcedPos = false;
+					if(flValue1 != null || flValue2 != null)
+					{
+						isCameraOnForcedPos = true;
+						if(flValue1 == null) flValue1 = 0;
+						if(flValue2 == null) flValue2 = 0;
+						camFollowOld.x = flValue1;
+						camFollowOld.y = flValue2;
 					}
 				}
 
@@ -2668,15 +2666,15 @@ class PlayState extends MusicBeatState
 		{
 		    if (ClientPrefs.data.UseNewCamSystem)
 		    {
-			    camFollowNew.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
-			    camFollowNew.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
-    			camFollowNew.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
+			    camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
+			    camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
+    			camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
     		}
 			else
 			{
-			    camFollow.set(gf.getMidpoint().x, gf.getMidpoint().y);
-			    camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
-			    camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
+			    camFollowOld.set(gf.getMidpoint().x, gf.getMidpoint().y);
+			    camFollowOld.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
+			    camFollowOld.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
 			}
 			tweenCamIn();
 			callOnScripts('onMoveCamera', ['gf']);
@@ -2695,15 +2693,15 @@ class PlayState extends MusicBeatState
 		{
 		    if (ClientPrefs.data.UseNewCamSystem)
 		    {
-    			camFollowNew.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
-    			camFollowNew.x += dad.cameraPosition[0] + opponentCameraOffset[0];
-    			camFollowNew.y += dad.cameraPosition[1] + opponentCameraOffset[1];
+    			camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+    			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0];
+    			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1];
     		}
     	    else
     	    {
-    			camFollow.set(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
-    			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0];
-    			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1];
+    			camFollowOld.set(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+    			camFollowOld.x += dad.cameraPosition[0] + opponentCameraOffset[0];
+    			camFollowOld.y += dad.cameraPosition[1] + opponentCameraOffset[1];
     		}
 			tweenCamIn();
 		}
@@ -2711,15 +2709,15 @@ class PlayState extends MusicBeatState
 		{
 		    if (ClientPrefs.data.UseNewCamSystem)
 		    {
-    			camFollowNew.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
-    			camFollowNew.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
-    			camFollowNew.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
+    			camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
+    			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
+    			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
     		}
     		else
     		{
-    			camFollow.set(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
-    			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
-    			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
+    			camFollowOld.set(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
+    			camFollowOld.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
+    			camFollowOld.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
     		}
 
 			if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
@@ -2747,8 +2745,8 @@ class PlayState extends MusicBeatState
 	public function snapCamFollowToPos(x:Float, y:Float) {
 	    if (!ClientPrefs.data.UseNewCamSystem)
 	    {
-    		camFollow.set(x, y);
-    		camFollowPos.setPosition(x, y);
+    		camFollowOld.set(x, y);
+    		camFollowPosOld.setPosition(x, y);
     	}
 	}
 
@@ -2868,14 +2866,11 @@ class PlayState extends MusicBeatState
 
 					FlxTransitionableState.skipNextTransIn = true;
 					FlxTransitionableState.skipNextTransOut = true;
-					if (ClientPrefs.data.UseNewCamSystem)
-					{
-					    prevCamFollowNew = camFollowNew;
-					}
+					if (ClientPrefs.data.UseNewCamSystem) prevCamFollow = camFollow;
 					else
 					{
-					    prevCamFollow = camFollow;
-					    prevCamFollowPos = camFollowPos;
+					    prevCamFollowOld = camFollowOld;
+					    prevCamFollowPosOld = camFollowPosOld;
 					}
 
 					PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0] + difficulty, PlayState.storyPlaylist[0]);
@@ -3371,10 +3366,7 @@ class PlayState extends MusicBeatState
 		}
 
 		var result:Dynamic = callOnLuas('noteMiss', [notes.members.indexOf(daNote), daNote.noteData, daNote.noteType, daNote.isSustainNote]);
-		if (ClientPrefs.data.hscriptversion != 'HScript_Old')
-		{
-		    if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('noteMiss', [daNote]);
-		}
+		if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('noteMiss', [daNote]);
 	}
 
 	function noteMissPress(direction:Int = 1):Void //You pressed a key when there was no notes to press for this key
@@ -3461,10 +3453,7 @@ class PlayState extends MusicBeatState
 		note.hitByOpponent = true;
 
 		var result:Dynamic = callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
-		if (ClientPrefs.data.hscriptversion != 'HScript_Old')
-		{
-		    if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('opponentNoteHit', [note]);
-		}
+		if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('opponentNoteHit', [note]);
 		if (opponentChart)
 		    callOnLuas((opponentChart ? 'goodNoteHitFix' : 'opponentNoteHitFix'), [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
 
@@ -3573,10 +3562,7 @@ class PlayState extends MusicBeatState
 			var leType:String = note.noteType;
 			
 			var result:Dynamic = callOnLuas('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus]);
-			if (ClientPrefs.data.hscriptversion != 'HScript_Old')
-			{
-			    if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('goodNoteHit', [note]);
-			}
+			if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('goodNoteHit', [note]);
 			callOnLuas((opponentChart ? 'opponentNoteHitFix' : 'goodNoteHitFix'), [notes.members.indexOf(note), leData, leType, isSus]);
 
 			if (!note.isSustainNote)
@@ -3841,10 +3827,7 @@ class PlayState extends MusicBeatState
 		if(exclusions == null) exclusions = [];
 		if(excludeValues == null) excludeValues = [psychlua.FunkinLua.Function_Continue];
 		var result:Dynamic = callOnLuas(funcToCall, args, ignoreStops, exclusions, excludeValues);
-		if (ClientPrefs.data.hscriptversion != 'HScript_Old')
-		{
-    		if(result == null || excludeValues.contains(result)) result = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
-		}
+		if(result == null || excludeValues.contains(result)) result = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
 		return result;
 	}
 
