@@ -132,6 +132,16 @@ class HScript extends SScript
 			#end
 			FunkinLua.customFunctions.set(name, func);
 		});
+		
+		set('addHScriptVirtualPad', function(?DPad:FlxDPadMode, ?Action:FlxActionMode):Void
+		{
+		    MusicBeatState.instance.addVirtualPad(DPad, Action);
+		});
+		
+		set('addHScriptVirtualPadCamera', function():Void
+		{
+			MusicBeatState.instance.addVirtualPadCamera();
+		});
 
 		// tested
 		set('createCallback', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
@@ -460,7 +470,7 @@ class HScript_New
 	public static function implement(funk:FunkinLua)
 	{
 	    var lua:State = funk.lua;
-	    if (ClientPrefs.data.hscriptversion == 'HScript_New')
+	    if (ClientPrefs.data.hscriptversion == 'HScript New')
 	    {
 		Lua_helper.add_callback(lua, "runHaxeCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null) {
 			var retVal:Dynamic = null;
@@ -620,7 +630,7 @@ class HScript_Old
 	
 	public static function implement(funk:FunkinLua)
 	{
-	    if (ClientPrefs.data.hscriptversion == 'HScript_Old')
+	    if (ClientPrefs.data.hscriptversion == 'HScript Old')
 	    {
 	    var lua:State = funk.lua;
 	    Lua_helper.add_callback(lua, "runHaxeCode", function(codeToRun:String) {

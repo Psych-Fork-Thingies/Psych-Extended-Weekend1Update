@@ -58,7 +58,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			"This Option Is Experimental",
 			'hscriptversion',
 			'string',
-			['HScript_Old', 'HScript_New', 'SScript']);
+			['HScript New', 'HScript Old', 'SScript']);
 		addOption(option);
 
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
