@@ -45,6 +45,9 @@ class MusicBeatState extends FlxUIState
 	
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
+	
+	public static var dpadMode:Map<String, FlxDPadMode>;
+	public static var actionMode:Map<String, FlxActionMode>;
 
 	public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode) {		
 		if (_virtualpad != null)
@@ -149,6 +152,27 @@ class MusicBeatState extends FlxUIState
 	}
 
 	override function create() {
+	    #if mobile
+		// FlxDPadModes
+		dpadMode = new Map<String, FlxDPadMode>();
+		dpadMode.set("UP_DOWN", UP_DOWN);
+		dpadMode.set("LEFT_RIGHT", LEFT_RIGHT);
+		dpadMode.set("LEFT_RIGHT", LEFT_RIGHT);
+		dpadMode.set("LEFT_FULL", LEFT_FULL);
+		dpadMode.set("RIGHT_FULL", RIGHT_FULL);
+		dpadMode.set("BOTH", BOTH);
+		dpadMode.set("NONE", NONE);
+		
+		actionMode = new Map<String, FlxActionMode>();
+		actionMode.set('A', A);
+		actionMode.set('A_B', A_B);
+		actionMode.set('A_B_C', A_B_C);
+		actionMode.set('A_B_E', A_B_E);
+		actionMode.set('A_B_E', A_B_E);
+		actionMode.set('A_B_C_X_Y', A_B_C_X_Y);
+		actionMode.set('A_B_C_X_Y_Z', A_B_C_X_Y_Z);
+		#end
+		
 		camBeat = FlxG.camera;
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
 		#if MODS_ALLOWED Mods.updatedOnState = false; #end

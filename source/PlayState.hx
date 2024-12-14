@@ -97,6 +97,10 @@ using StringTools;
 
 class PlayState extends MusicBeatState
 {
+    #if mobile
+	public var luaVirtualPad:FlxVirtualPad;
+	#end
+	
 	public static var STRUM_X = 48.5;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 	
@@ -4110,4 +4114,17 @@ class PlayState extends MusicBeatState
 		return false;
 	}
 	#end
+	
+	public function addLuaVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
+	{
+		luaVirtualPad = new FlxVirtualPad(DPad, Action);
+		luaVirtualPad.alpha = ClientPrefs.data.VirtualPadAlpha;
+		add(luaVirtualPad);
+	}
+	
+	public function removeLuaVirtualPad()
+	{
+		if (luaVirtualPad != null)
+			remove(luaVirtualPad);
+	}
 }

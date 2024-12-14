@@ -71,6 +71,28 @@ class FlxVirtualPad extends FlxSpriteGroup {
 
 	public function new(DPad:FlxDPadMode, Action:FlxActionMode, ?alphaAlt:Float = 0.75, ?antialiasingAlt:Bool = true) {
 		super();
+		
+		// DPad Buttons
+		buttonsString = new Map<String, FlxButton>();
+		buttonsString.set("buttonUp", buttonUp);
+		buttonsString.set("buttonUp2", buttonUp2);
+		buttonsString.set("buttonDown", buttonDown);
+		buttonsString.set("buttonDown2", buttonDown2);
+		buttonsString.set("buttonLeft", buttonLeft);
+		buttonsString.set("buttonLeft2", buttonLeft2);
+		buttonsString.set("buttonRight", buttonRight);
+		buttonsString.set("buttonRight2", buttonRight2);
+		// Actions buttons
+		buttonsString.set("buttonA", buttonA);
+		buttonsString.set("buttonB", buttonB);
+		buttonsString.set("buttonC", buttonC);
+		buttonsString.set("buttonD", buttonD);
+		buttonsString.set("buttonE", buttonE);
+		buttonsString.set("buttonV", buttonV);
+		buttonsString.set("buttonX", buttonX);
+		buttonsString.set("buttonY", buttonY);
+		buttonsString.set("buttonZ", buttonZ);
+		buttonsString.set("buttonP", buttonP);
 
 		orgAntialiasing = antialiasingAlt;
 		orgAlpha = ClientPrefs.data.VirtualPadAlpha;

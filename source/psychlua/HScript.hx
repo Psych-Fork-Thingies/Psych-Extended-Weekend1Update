@@ -133,14 +133,9 @@ class HScript extends SScript
 			FunkinLua.customFunctions.set(name, func);
 		});
 		
-		set('addHScriptVirtualPad', function(?DPad:FlxDPadMode, ?Action:FlxActionMode):Void
+		set('addHScriptVirtualPad', function(DPad:String, Action:String):Void
 		{
-		    MusicBeatState.instance.addVirtualPad(DPad, Action);
-		});
-		
-		set('addHScriptVirtualPadCamera', function():Void
-		{
-			MusicBeatState.instance.addVirtualPadCamera();
+		    PlayState.instance.addLuaVirtualPad(MusicBeatState.dpadMode.get(DPad), MusicBeatState.actionMode.get(Action));
 		});
 
 		// tested
