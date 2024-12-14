@@ -15,8 +15,6 @@ import hscript.Expr;
 import haxe.Exception;
 #end
 
-using StringTools;
-
 #if (HSCRIPT_ALLOWED && SScript >= "3.0.0")
 import tea.SScript;
 class HScript extends SScript
@@ -120,19 +118,6 @@ class HScript extends SScript
 		set('debugPrint', function(text:String, ?color:FlxColor = null) {
 			if(color == null) color = FlxColor.WHITE;
 			PlayState.instance.addTextToDebug(text, color);
-		});
-		
-		set('getModSetting', function(saveTag:String, ?modName:String = null) {
-			if(modName == null)
-			{
-				if(this.modFolder == null)
-				{
-					PlayState.instance.addTextToDebug('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', FlxColor.RED);
-					return null;
-				}
-				modName = this.modFolder;
-			}
-			return ModFunctions.getModSetting(saveTag, modName);
 		});
 
 		// For adding your own callbacks
@@ -355,10 +340,10 @@ class HScript_New
 	public static function initHaxeModule(parent:FunkinLua)
 	{
 		#if hscript
-		if(parent.HScript_New == null)
+		if(parent.hscript_new == null)
 		{
 			trace('initializing haxe interp for: ${parent.scriptName}');
-			parent.HScript_New = new HScript_New(parent);
+			parent.hscript_new = new HScript_New(parent);
 		}
 		#end
 	}
@@ -487,7 +472,7 @@ class HScript_New
 					for (key in Reflect.fields(varsToBring))
 					{
 						//trace('Key $key: ' + Reflect.field(varsToBring, key));
-						funk.HScript_New.interp.variables.set(key, Reflect.field(varsToBring, key));
+						funk.hscript_new.interp.variables.set(key, Reflect.field(varsToBring, key));
 					}
 				}
 				retVal = funk.hscript_new.execute(codeToRun, funcToRun, funcArgs);
@@ -547,7 +532,7 @@ class HScript_Old
 	}
 	
 	#if hscript
-	public function initHaxeModule(parent:FunkinLua)
+	public static function initHaxeModule(parent:FunkinLua)
 	{
 		if(FunkinLua.hscript_old == null)
 		{
@@ -611,7 +596,7 @@ class HScript_Old
 	
 	public static function implement(funk:FunkinLua)
 	{
-	    if (ClientPrefs.data.hscriptversion == 'HScript_New')
+	    if (ClientPrefs.data.hscriptversion == 'HScript_Old')
 	    {
 	    var lua:State = funk.lua;
 	    Lua_helper.add_callback(lua, "runHaxeCode", function(codeToRun:String) {
@@ -629,7 +614,7 @@ class HScript_Old
 			FunkinLua.luaTrace("runHaxeCode: HScript isn't supported on this platform!", false, false, FlxColor.RED);
 			#end
 
-			if(retVal != null && !isOfTypes(retVal, [Bool, Int, Float, String, Array])) retVal = null;
+			if(retVal != null && !LuaUtils.isOfTypes(retVal, [Bool, Int, Float, String, Array])) retVal = null;
 			if(retVal == null) Lua.pushnil(lua);
 			return retVal;
 		});
