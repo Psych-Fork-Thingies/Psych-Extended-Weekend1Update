@@ -687,7 +687,6 @@ class PlayState extends MusicBeatState
     		{
     			camFollowNew = prevCamFollowNew;
     			prevCamFollowNew = null;
-    			camFollow = camFollowNew;
     		}
 		}
 		else
@@ -2239,7 +2238,6 @@ class PlayState extends MusicBeatState
     		setOnScripts('cameraX', camFollowNew.x);
     		setOnScripts('cameraY', camFollowNew.y);
     		setOnScripts('camFollow', camFollowNew);
-    		camFollow = camFollowNew;
     	}
     	else
 		{
