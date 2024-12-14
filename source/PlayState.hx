@@ -682,9 +682,9 @@ class PlayState extends MusicBeatState
 		{
 		    camFollow = new FlxObject(0, 0, 1, 1);
 		    camFollow.setPosition(camPos.x, camPos.y);
-		    if (prevCamFollowNew != null)
+		    if (prevCamFollow != null)
     		{
-    			camFollow = prevCamFollowNew;
+    			camFollow = prevCamFollow;
     			prevCamFollow = null;
     		}
 		}
