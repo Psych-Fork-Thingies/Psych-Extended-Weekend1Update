@@ -158,9 +158,9 @@ class MusicBeatState extends FlxUIState
 		dpadMode.set("UP_DOWN", UP_DOWN);
 		dpadMode.set("LEFT_RIGHT", LEFT_RIGHT);
 		dpadMode.set("LEFT_RIGHT", LEFT_RIGHT);
-		dpadMode.set("LEFT_FULL", LEFT_FULL);
+		dpadMode.set("LEFT_FULL", FULL); //1.0 Support
+		dpadMode.set("FULL", FULL);
 		dpadMode.set("RIGHT_FULL", RIGHT_FULL);
-		dpadMode.set("BOTH", BOTH);
 		dpadMode.set("NONE", NONE);
 		
 		actionMode = new Map<String, FlxActionMode>();
