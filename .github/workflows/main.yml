@@ -28,6 +28,7 @@ jobs:
       - name: Install Libraries
         run: |
           haxelib setup ~/haxelib
+          haxelib remove SScript
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
 
