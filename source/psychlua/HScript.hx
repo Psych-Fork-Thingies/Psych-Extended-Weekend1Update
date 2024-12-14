@@ -221,7 +221,7 @@ class HScript extends SScript
 		set('addBehindBF', function(obj:FlxBasic) PlayState.instance.addBehindBF(obj));
 		#end
 		if(varsToBring != null) {
-			for (key in Reflect.fields(varsToBring)) {
+			for (key in Reflect.fields(varsToBring))
 			{
 				key = key.trim();
 				var value = Reflect.field(varsToBring, key);
