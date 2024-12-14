@@ -525,6 +525,7 @@ class HScript_Old
 	public var interp:Interp;
 
 	public var variables(get, never):Map<String, Dynamic>;
+	public var parentLua:FunkinLua;
 
 	public function get_variables()
 	{
