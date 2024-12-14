@@ -1760,16 +1760,11 @@ class FunkinLua {
 		}
 		#end
 		
-		if (ClientPrefs.data.hscriptversion == 'HScript_New')
-	    {
-    		if(hscript_new != null) hscript_new.interp = null;
-    		hscript_new = null;
-    	}
-    	else if (ClientPrefs.data.hscriptversion == 'HScript_Old')
-	    {
-    		if(hscript_old != null) hscript_old.interp = null;
-    		hscript_old = null;
-    	}
+    	if(hscript_new != null) hscript_new.interp = null;
+    	hscript_new = null;
+    	
+    	if(hscript_old != null) hscript_old.interp = null;
+    	hscript_old = null;
 		
 		#end
 	}
