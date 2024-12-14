@@ -220,6 +220,7 @@ class FunkinLua {
 
 		set('buildTarget', getBuildTarget());
 		
+		#if LUAVIRTUALPAD_ALLOWED
 		set("addVirtualPad", function(directionButton:String, actionButton:String){
 			if(game.luaVirtualPad == null)
 				game.addLuaVirtualPad(MusicBeatState.dpadMode.get(directionButton), MusicBeatState.actionMode.get(actionButton));
@@ -227,9 +228,14 @@ class FunkinLua {
 				luaTrace('virtual pad already exists!!');
 		});
 		
+		set("addVirtualPadCamera", function(){
+			game.addLuaVirtualPadCamera();
+		});
+		
 		set("removeVirtualPad", function(){
 			game.removeLuaVirtualPad();
 		});
+		#end
 		
 		for (name => func in customFunctions)
 		{
@@ -1763,10 +1769,7 @@ class FunkinLua {
 		#if (SScript >= "3.0.0")
 		if(hscript != null)
 		{
-			hscript.active = false;
-			#if (SScript >= "3.0.3")
 			hscript.destroy();
-			#end
 			hscript = null;
 		}
 		#end

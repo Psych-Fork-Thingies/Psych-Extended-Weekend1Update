@@ -96,11 +96,7 @@ import vlc.MP4Handler;
 using StringTools;
 
 class PlayState extends MusicBeatState
-{
-    #if mobile
-	public var luaVirtualPad:FlxVirtualPad;
-	#end
-	
+{	
 	public static var STRUM_X = 48.5;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 	
@@ -127,6 +123,7 @@ class PlayState extends MusicBeatState
 	
 	#if HSCRIPT_ALLOWED
 	public var hscriptArray:Array<HScript> = [];
+	public var instancesExclude:Array<String> = [];
 	#end
 	
 	#if LUA_ALLOWED
@@ -957,6 +954,8 @@ class PlayState extends MusicBeatState
 		});
 
 		luaDebugGroup.add(newText);
+		
+		Sys.println(text);
 		#end
 	}
 
@@ -3634,10 +3633,7 @@ class PlayState extends MusicBeatState
 			if(script != null)
 			{
 				script.call('onDestroy');
-				script.active = false;
-				#if (SScript >= "3.0.3")
 				script.destroy();
-				#end
 			}
 		while (hscriptArray.length > 0)
 			hscriptArray.pop();
@@ -3796,10 +3792,19 @@ class PlayState extends MusicBeatState
 	}
 	public function initHScript(file:String)
 	{
-	    var newScript:HScript = null;
 		try
 		{
-			newScript = new HScript(null, file);
+			var newScript:HScript = new HScript(null, file);
+			@:privateAccess
+			if(newScript.parsingExceptions != null && newScript.parsingExceptions.length > 0)
+			{
+				@:privateAccess
+				for (e in newScript.parsingExceptions)
+					if(e != null)
+						addTextToDebug('ERROR ON LOADING: ${newScript.parsingException.message}', FlxColor.RED);
+				newScript.destroy();
+				return;
+			}
 			hscriptArray.push(newScript);
 			if(newScript.exists('onCreate'))
 			{
@@ -3809,7 +3814,7 @@ class PlayState extends MusicBeatState
 					for (e in callValue.exceptions)
 						if (e != null)
 							addTextToDebug('ERROR ($file: onCreate) - ${e.message.substr(0, e.message.indexOf('\n'))}', FlxColor.RED);
-					newScript.active = false;
+					newScript.destroy();
 					hscriptArray.remove(newScript);
 					trace('failed to initialize sscript interp!!! ($file)');
 				}
@@ -3822,7 +3827,7 @@ class PlayState extends MusicBeatState
 			addTextToDebug('ERROR ($file) - ' + e.message.substr(0, e.message.indexOf('\n')), FlxColor.RED);
 			if(newScript != null)
 			{
-				newScript.active = false;
+				newScript.destroy();
 				hscriptArray.remove(newScript);
 			}
 		}
@@ -3884,7 +3889,7 @@ class PlayState extends MusicBeatState
 				{
 					var e = callValue.exceptions[0];
 					if(e != null)
-						FunkinLua.luaTrace('ERROR (${script.origin}: ${callValue.calledFunction}) - ' + e.message.substr(0, e.message.indexOf('\n')), true, false, FlxColor.RED);
+						addTextToDebug('ERROR (${callValue.calledFunction}) - ' + e.message.substr(0, len), true, false, FlxColor.RED);
 				}
 				else
 				{
@@ -3927,6 +3932,9 @@ class PlayState extends MusicBeatState
 		for (script in hscriptArray) {
 			if(exclusions.contains(script.origin))
 				continue;
+			
+			if(!instancesExclude.contains(variable))
+				instancesExclude.push(variable);
 			script.set(variable, arg);
 		}
 		#end
@@ -4115,16 +4123,20 @@ class PlayState extends MusicBeatState
 	}
 	#end
 	
+	#if LUAVIRTUALPAD_ALLOWED
 	public function addLuaVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
 	{
-		luaVirtualPad = new FlxVirtualPad(DPad, Action);
-		luaVirtualPad.alpha = ClientPrefs.data.VirtualPadAlpha;
-		add(luaVirtualPad);
+		addVirtualPad(DPad, Action);
+	}
+	
+	public function addLuaVirtualPadCamera()
+	{
+		addLuaVirtualPadCamera();
 	}
 	
 	public function removeLuaVirtualPad()
 	{
-		if (luaVirtualPad != null)
-			remove(luaVirtualPad);
+		removeVirtualPad();
 	}
+	#end
 }
