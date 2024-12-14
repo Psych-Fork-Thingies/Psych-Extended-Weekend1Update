@@ -603,7 +603,7 @@ class HScript_Old
 			var retVal:Dynamic = null;
 
 			#if hscript
-			HScript_Old.initHaxeModule();
+			HScript_Old.initHaxeModule(funk);
 			try {
 				retVal = FunkinLua.hscript_old.execute(codeToRun);
 			}
@@ -621,7 +621,7 @@ class HScript_Old
 
 		Lua_helper.add_callback(lua, "addHaxeLibrary", function(libName:String, ?libPackage:String = '') {
 			#if hscript
-			HScript_Old.initHaxeModule();
+			HScript_Old.initHaxeModule(funk);
 			try {
 				var str:String = '';
 				if(libPackage.length > 0)
