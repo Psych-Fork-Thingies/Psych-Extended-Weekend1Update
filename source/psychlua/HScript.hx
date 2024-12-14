@@ -30,6 +30,18 @@ class HScript extends SScript
 			trace('initializing haxe interp for: ${parent.scriptName}');
 			parent.hscript = new HScript(parent);
 		}
+		#end
+	}
+
+	public static function initHaxeModuleCode(parent:FunkinLua, code:String, ?varsToBring:Any = null)
+	{
+	    var hs:HScript = try parent.hscript catch (e) null;
+		#if (SScript >= "3.0.0")
+		if(parent.hscript == null)
+		{
+			trace('initializing haxe interp for: ${parent.scriptName}');
+			parent.hscript = new HScript(parent, code, varsToBring);
+		}
 		else
 		{
 			hs.doString(code);
@@ -41,17 +53,6 @@ class HScript extends SScript
 					if(e != null)
 						PlayState.instance.addTextToDebug('ERROR ON LOADING (${hs.origin}): ${e.message.substr(0, e.message.indexOf('\n'))}', FlxColor.RED);
 			}
-		}
-		#end
-	}
-
-	public static function initHaxeModuleCode(parent:FunkinLua, code:String, ?varsToBring:Any = null)
-	{
-		#if (SScript >= "3.0.0")
-		if(parent.hscript == null)
-		{
-			trace('initializing haxe interp for: ${parent.scriptName}');
-			parent.hscript = new HScript(parent, code, varsToBring);
 		}
 		#end
 	}

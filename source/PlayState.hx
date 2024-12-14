@@ -3792,9 +3792,9 @@ class PlayState extends MusicBeatState
 	}
 	public function initHScript(file:String)
 	{
+	    var newScript:HScript = new HScript(null, file);
 		try
 		{
-			var newScript:HScript = new HScript(null, file);
 			@:privateAccess
 			if(newScript.parsingExceptions != null && newScript.parsingExceptions.length > 0)
 			{
@@ -3889,7 +3889,7 @@ class PlayState extends MusicBeatState
 				{
 					var e = callValue.exceptions[0];
 					if(e != null)
-						addTextToDebug('ERROR (${callValue.calledFunction}) - ' + e.message.substr(0, len), true, false, FlxColor.RED);
+						FunkinLua.luaTrace('ERROR (${script.origin}: ${callValue.calledFunction}) - ' + e.message.substr(0, e.message.indexOf('\n') + 1), true, false, FlxColor.RED);
 				}
 				else
 				{
