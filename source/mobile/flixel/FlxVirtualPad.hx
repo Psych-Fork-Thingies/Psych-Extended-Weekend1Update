@@ -380,7 +380,9 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	    try
 		    return Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
 		catch(e:Dynamic)
+		{
 		    return Paths.getPackerAtlas('mobilecontrols/virtualpad/original');
+		}
 	}
 	
 	override public function destroy():Void
