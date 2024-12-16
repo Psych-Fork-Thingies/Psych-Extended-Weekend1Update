@@ -54,7 +54,7 @@
     	<define name="BASE_GAME_ASSETS" />
 	</section>
 	<define name="MODS_ALLOWED" if="desktop || mobile" />
-	<define name="LUAVIRTUALPAD_ALLOWED" if="desktop | mobile" /> <!-- only desktop builds because it's not optimized -->
+	<define name="LUAVIRTUALPAD_ALLOWED" if="desktop" /> <!-- only desktop builds because it's not optimized -->
 	<define name="HSCRIPT_ALLOWED" if="desktop || mobile" />
 	<define name="LUA_ALLOWED" if="desktop || mobile"/>
 	<define name="ACHIEVEMENTS_ALLOWED" />

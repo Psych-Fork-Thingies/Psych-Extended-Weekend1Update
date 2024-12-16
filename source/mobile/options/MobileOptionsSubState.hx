@@ -44,7 +44,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	var externalPaths:Array<String> = StorageUtil.checkExternalPaths(true);
 	final lastStorageType:String = ClientPrefs.data.storageType;
 	#end
-	public static var lastVirtualPadType:String = ClientPrefs.data.virtualpadType;
+	final lastVirtualPadType:String = ClientPrefs.data.virtualpadType;
 	
 	var virtualpadTypes:Array<String> = ["New", "Old"];
 	var virtualpadSkinList:Array<String> = CoolUtil.coolTextFile(Paths.getPreloadPath('images/mobilecontrols/virtualpad/virtualpadSkinList.txt'));
@@ -198,7 +198,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	override public function destroy() {
 		super.destroy();
 		
-		if (ClientPrefs.data.virtualpadType != MobileOptionsSubState.lastVirtualPadType) //Better Way -AloneDark
+		if (ClientPrefs.data.virtualpadType != lastVirtualPadType) //Better Way -AloneDark
 		{
         	ClientPrefs.data.VirtualPadSkin = 'original';
         	ClientPrefs.saveSettings();
