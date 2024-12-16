@@ -37,7 +37,11 @@ class MobileControlSelectSubState extends MusicBeatSubstate
     public static var tipText:FlxText;
     public static var titleText:Alphabet;
     public static var daChoice:String;
+    #if desktop
+    public static var options:Array<String> = ['Pad-Right','Pad-Left','Pad-Custom','Duo','Keyboard']; //I removed Hitbox Option for Desktop Builds Because Hitbox is very buggy for now
+    #else
     public static var options:Array<String> = ['Pad-Right','Pad-Left','Pad-Custom','Duo','Hitbox','Keyboard'];
+    #end
     var curSelected:Int = 0;
     var buttonistouched:Bool = false;
     var bindbutton:FlxButton;

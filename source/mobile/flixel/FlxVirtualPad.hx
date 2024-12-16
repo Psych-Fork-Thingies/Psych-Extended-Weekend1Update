@@ -73,55 +73,50 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	public function new(DPad:FlxDPadMode, Action:FlxActionMode, ?alphaAlt:Float = 0.75, ?antialiasingAlt:Bool = true) {
 		super();
 		
-		if (Data.Setuping)
-		{
-    		#if LUAVIRTUALPAD_ALLOWED
-    		// DPad Buttons
-    		buttonsString = new Map<String, FlxButton>();
-    		buttonsString.set("buttonLeft", buttonLeft);
-    		buttonsString.set("buttonUp", buttonUp);
-    		buttonsString.set("buttonRight", buttonRight);
-    		buttonsString.set("buttonDown", buttonDown);
+    	#if LUAVIRTUALPAD_ALLOWED
+    	// DPad Buttons
+    	buttonsString = new Map<String, FlxButton>();
+    	buttonsString.set("buttonLeft", buttonLeft);
+    	buttonsString.set("buttonUp", buttonUp);
+    	buttonsString.set("buttonRight", buttonRight);
+    	buttonsString.set("buttonDown", buttonDown);
     		
-    		// Actions buttons
-    		buttonsString.set("buttonA", buttonA);
-    		buttonsString.set("buttonB", buttonB);
-    		buttonsString.set("buttonC", buttonC);
-    		buttonsString.set("buttonD", buttonD);
-    		buttonsString.set("buttonE", buttonE);
-    		buttonsString.set("buttonM", buttonM);
-    		buttonsString.set("buttonP", buttonP);
-    		buttonsString.set("buttonV", buttonV);
-    		buttonsString.set("buttonX", buttonX);
-    		buttonsString.set("buttonY", buttonY);
-    		buttonsString.set("buttonZ", buttonZ);
-    		buttonsString.set("buttonF", buttonF);
-    		buttonsString.set("buttonG", buttonG);
+    	// Actions buttons
+    	buttonsString.set("buttonA", buttonA);
+    	buttonsString.set("buttonB", buttonB);
+    	buttonsString.set("buttonC", buttonC);
+    	buttonsString.set("buttonD", buttonD);
+    	buttonsString.set("buttonE", buttonE);
+    	buttonsString.set("buttonM", buttonM);
+    	buttonsString.set("buttonP", buttonP);
+    	buttonsString.set("buttonV", buttonV);
+    	buttonsString.set("buttonX", buttonX);
+    	buttonsString.set("buttonY", buttonY);
+    	buttonsString.set("buttonZ", buttonZ);
+    	buttonsString.set("buttonF", buttonF);
+    	buttonsString.set("buttonG", buttonG);
     		
-    		//Extras
-    		buttonsString.set("buttonExtra1", buttonExtra1);
-    		buttonsString.set("buttonExtra2", buttonExtra2);
-    		buttonsString.set("buttonExtra3", buttonExtra3);
-    		buttonsString.set("buttonExtra4", buttonExtra4);
+    	//Extras
+    	buttonsString.set("buttonExtra1", buttonExtra1);
+    	buttonsString.set("buttonExtra2", buttonExtra2);
+    	buttonsString.set("buttonExtra3", buttonExtra3);
+    	buttonsString.set("buttonExtra4", buttonExtra4);
     		
-    		//PAD DUO MODE
-    		buttonsString.set("buttonLeft2", buttonLeft2);
-    		buttonsString.set("buttonUp2", buttonUp2);
-    		buttonsString.set("buttonRight2", buttonRight2);
-    		buttonsString.set("buttonDown2", buttonDown2);
+    	//PAD DUO MODE
+    	buttonsString.set("buttonLeft2", buttonLeft2);
+    	buttonsString.set("buttonUp2", buttonUp2);
+    	buttonsString.set("buttonRight2", buttonRight2);
+    	buttonsString.set("buttonDown2", buttonDown2);
     		
-    		buttonsString.set("buttonCELeft", buttonCELeft);
-    		buttonsString.set("buttonCEUp", buttonCEUp);
-    		buttonsString.set("buttonCERight", buttonCERight);
-    		buttonsString.set("buttonCEDown", buttonCEDown);
-    		buttonsString.set("buttonCEG", buttonCEG);
+    	buttonsString.set("buttonCELeft", buttonCELeft);
+    	buttonsString.set("buttonCEUp", buttonCEUp);
+    	buttonsString.set("buttonCERight", buttonCERight);
+    	buttonsString.set("buttonCEDown", buttonCEDown);
+    	buttonsString.set("buttonCEG", buttonCEG);
     		
-    		buttonsString.set("buttonCEUp_M", buttonCEUp_M);
-    		buttonsString.set("buttonCEDown_M", buttonCEDown_M);
-    		#end
-    		
-    		Data.Setuping = false;
-		}
+    	buttonsString.set("buttonCEUp_M", buttonCEUp_M);
+    	buttonsString.set("buttonCEDown_M", buttonCEDown_M);
+    	#end
 
 		orgAntialiasing = antialiasingAlt;
 		orgAlpha = ClientPrefs.data.VirtualPadAlpha;
@@ -383,13 +378,9 @@ class FlxVirtualPad extends FlxSpriteGroup {
 
 	public static function getFrames():FlxAtlasFrames {
 	    try
-	    {
 		    return Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
-		}
 		catch(e:Dynamic)
-		{
 		    return Paths.getPackerAtlas('mobilecontrols/virtualpad/original');
-		}
 	}
 	
 	override public function destroy():Void
