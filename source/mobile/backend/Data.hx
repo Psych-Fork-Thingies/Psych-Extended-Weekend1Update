@@ -6,7 +6,7 @@ class Data
 {
     public static var instance:Data;
     
-    public static var VPadDone:Bool = false;
+    public static var Setuping:Bool = false;
     
 	public static var dpadMode:Map<String, FlxDPadMode>;
 	public static var actionMode:Map<String, FlxActionMode>;
@@ -24,6 +24,7 @@ class Data
 	
 	public static function setup()
 	{
+	    Setuping = true;
 	    #if LUAVIRTUALPAD_ALLOWED
 		// FlxDPadModes
 		dpadMode = new Map<String, FlxDPadMode>();
@@ -64,8 +65,6 @@ class Data
 		actionMode.set('B_E', B_E);
 		actionMode.set('NONE', NONE);
 		#end
-		
-		VPadDone = true;
 	}
 }
 

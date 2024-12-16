@@ -73,7 +73,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	public function new(DPad:FlxDPadMode, Action:FlxActionMode, ?alphaAlt:Float = 0.75, ?antialiasingAlt:Bool = true) {
 		super();
 		
-		if (Data.VPadDone)
+		if (Data.Setuping)
 		{
     		#if LUAVIRTUALPAD_ALLOWED
     		// DPad Buttons
@@ -119,6 +119,8 @@ class FlxVirtualPad extends FlxSpriteGroup {
     		buttonsString.set("buttonCEUp_M", buttonCEUp_M);
     		buttonsString.set("buttonCEDown_M", buttonCEDown_M);
     		#end
+    		
+    		Data.Setuping = false;
 		}
 
 		orgAntialiasing = antialiasingAlt;
