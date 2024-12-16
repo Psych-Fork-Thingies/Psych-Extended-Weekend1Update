@@ -378,7 +378,9 @@ class FlxVirtualPad extends FlxSpriteGroup {
 
 	public static function getFrames():FlxAtlasFrames {
 	    try
+	    {
 		    return Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
+		}
 		catch(e:Dynamic)
 		{
 		    return Paths.getPackerAtlas('mobilecontrols/virtualpad/original');
