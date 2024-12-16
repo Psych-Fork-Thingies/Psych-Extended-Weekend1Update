@@ -109,7 +109,8 @@ class OptionsState extends MusicBeatState
 		changeSelection();
 		ClientPrefs.saveSettings();
 
-		addVirtualPad(UP_DOWN, A_B_E);
+		if (ClientPrefs.data.virtualpadType == MobileOptionsSubState.lastVirtualPadType)
+		    addVirtualPad(UP_DOWN, A_B_E);
 
 		super.create();
 	}
@@ -118,19 +119,22 @@ class OptionsState extends MusicBeatState
 		super.closeSubState();
 		ClientPrefs.saveSettings();
 		removeVirtualPad();
-		addVirtualPad(UP_DOWN, A_B_E);
+		if (ClientPrefs.data.virtualpadType == MobileOptionsSubState.lastVirtualPadType)
+		    addVirtualPad(UP_DOWN, A_B_E);
+		if (ClientPrefs.data.VirtualPadAlpha != 0) //pls work
+		    options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
+		else
+		    options = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 		persistentUpdate = true;
 	}
 
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 
-		if (controls.UI_UP_P) {
+		if (controls.UI_UP_P)
 			changeSelection(-1);
-		}
-		if (controls.UI_DOWN_P) {
+		if (controls.UI_DOWN_P)
 			changeSelection(1);
-		}
 		
 		if (controls.BACK) {
     		if (OptionsState.stateType == 2)
@@ -152,9 +156,8 @@ class OptionsState extends MusicBeatState
 			openSubState(new MobileExtraControl());
 		}
 
-		if (controls.ACCEPT) {
+		if (controls.ACCEPT)
 			openSelectedSubstate(options[curSelected]);
-		}
 	}
 	
 	function changeSelection(change:Int = 0) {

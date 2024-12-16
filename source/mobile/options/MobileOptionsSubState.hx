@@ -44,6 +44,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	var externalPaths:Array<String> = StorageUtil.checkExternalPaths(true);
 	final lastStorageType:String = ClientPrefs.data.storageType;
 	#end
+	public static var lastVirtualPadType:String = ClientPrefs.data.virtualpadType;
 	
 	var virtualpadTypes:Array<String> = ["New", "Old"];
 	var virtualpadSkinList:Array<String> = CoolUtil.coolTextFile(Paths.getPreloadPath('images/mobilecontrols/virtualpad/virtualpadSkinList.txt'));
@@ -196,6 +197,25 @@ class MobileOptionsSubState extends BaseOptionsMenu
 
 	override public function destroy() {
 		super.destroy();
+		
+		if (ClientPrefs.data.virtualpadType != MobileOptionsSubState.lastVirtualPadType) //Better Way -AloneDark
+		{
+        	ClientPrefs.data.VirtualPadSkin = 'original';
+        	ClientPrefs.saveSettings();
+        	ClientPrefs.data.VirtualPadSkin = 'original';
+        	
+        	//Restart Game
+        	TitleState.initialized = false;
+    		TitleState.closedState = false;
+    		FlxG.sound.music.fadeOut(0.3);
+    		if(FreeplayState.vocals != null)
+    		{
+    			FreeplayState.vocals.fadeOut(0.3);
+    			FreeplayState.vocals = null;
+    		}
+    		FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
+        }
+        	
 		#if android
 		if (ClientPrefs.data.storageType != lastStorageType) {
 			onStorageChange();
