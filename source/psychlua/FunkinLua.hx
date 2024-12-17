@@ -467,17 +467,47 @@ class FunkinLua {
 			#end
 		});
 		Lua_helper.add_callback(lua, "removeLuaScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false) {
-			var foundScript:String = findScript(luaFile);
-			if(foundScript != null)
+			var cervix = luaFile + ".lua";
+			if(luaFile.endsWith(".lua"))cervix=luaFile;
+			var doPush = false;
+			#if MODS_ALLOWED
+			if(FileSystem.exists(Paths.modFolders(cervix)))
+			{
+				cervix = Paths.modFolders(cervix);
+				doPush = true;
+			}
+			else if(FileSystem.exists(cervix))
+			{
+				doPush = true;
+			}
+			else {
+				cervix = Paths.getPreloadPath(cervix);
+				if(FileSystem.exists(cervix)) {
+					doPush = true;
+				}
+			}
+			#else
+			cervix = Paths.getPreloadPath(cervix);
+			if(Assets.exists(cervix)) {
+				doPush = true;
+			}
+			#end
+
+			if(doPush)
 			{
 				if(!ignoreAlreadyRunning)
-					for (luaInstance in game.luaArray)
-					    if(luaInstance.scriptName == foundScript)
+				{
+					for (luaInstance in PlayState.instance.luaArray)
+					{
+						if(luaInstance.scriptName == cervix)
 						{
-							luaInstance.stop();
-							game.luaArray.remove(luaInstance);
+							//luaTrace('The script "' + cervix + '" is already running!');
+
+								PlayState.instance.luaArray.remove(luaInstance);
 							return;
 						}
+					}
+				}
 				return;
 			}
 			luaTrace("removeLuaScript: Script doesn't exist!", false, false, FlxColor.RED);
@@ -1279,23 +1309,23 @@ class FunkinLua {
 		});
 
 		Lua_helper.add_callback(lua, "removeLuaSprite", function(tag:String, destroy:Bool = true) {
-			if(!game.modchartSprites.exists(tag)) {
+			if(!PlayState.instance.modchartSprites.exists(tag)) {
 				return;
 			}
 
-			var pee:ModchartSprite = game.modchartSprites.get(tag);
+			var pee:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
 			if(destroy) {
 				pee.kill();
 			}
 
 			if(pee.wasAdded) {
-				LuaUtils.getTargetInstance().remove(pee, true);
+				getInstance().remove(pee, true);
 				pee.wasAdded = false;
 			}
-			
+
 			if(destroy) {
 				pee.destroy();
-				game.modchartSprites.remove(tag);
+				PlayState.instance.modchartSprites.remove(tag);
 			}
 		});
 

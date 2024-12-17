@@ -164,20 +164,23 @@ class TextFunctions
 			}
 		});
 		Lua_helper.add_callback(lua, "removeLuaText", function(tag:String, destroy:Bool = true) {
-			if(!game.modchartTexts.exists(tag)) {
+			if(!PlayState.instance.modchartTexts.exists(tag)) {
 				return;
 			}
-			var pee:ModchartText = game.modchartTexts.get(tag);
+
+			var pee:ModchartText = PlayState.instance.modchartTexts.get(tag);
 			if(destroy) {
 				pee.kill();
 			}
+
 			if(pee.wasAdded) {
-				LuaUtils.getTargetInstance().remove(pee, true);
+				getInstance().remove(pee, true);
 				pee.wasAdded = false;
 			}
+
 			if(destroy) {
 				pee.destroy();
-				game.modchartTexts.remove(tag);
+				PlayState.instance.modchartTexts.remove(tag);
 			}
 		});
 	}
