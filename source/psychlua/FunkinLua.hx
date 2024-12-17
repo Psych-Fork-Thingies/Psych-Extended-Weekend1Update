@@ -1319,7 +1319,7 @@ class FunkinLua {
 			}
 
 			if(pee.wasAdded) {
-				getInstance().remove(pee, true);
+				LuaUtils.getTargetInstance().remove(pee, true);
 				pee.wasAdded = false;
 			}
 
