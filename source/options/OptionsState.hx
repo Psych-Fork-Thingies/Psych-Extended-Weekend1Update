@@ -62,6 +62,7 @@ class OptionsState extends MusicBeatState
 
 	var selectorLeft:Alphabet;
 	var selectorRight:Alphabet;
+	public var optionText:Alphabet;
 
 	override function create() {
 		Paths.clearStoredMemory();
@@ -84,8 +85,6 @@ class OptionsState extends MusicBeatState
 
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
-		
-		public var optionText:Alphabet;
 
 		for (i in 0...options.length)
 		{
