@@ -84,10 +84,12 @@ class OptionsState extends MusicBeatState
 
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
+		
+		public var optionText:Alphabet;
 
 		for (i in 0...options.length)
 		{
-			public var optionText:Alphabet = new Alphabet(0, 0, options[i], true);
+			optionText = new Alphabet(0, 0, options[i], true);
 			optionText.screenCenter();
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
 			grpOptions.add(optionText);
@@ -137,6 +139,7 @@ class OptionsState extends MusicBeatState
 		    grpOptions.remove(optionText);
 		    for (i in 0...options.length)
     		{
+    		    optionText = new Alphabet(0, 0, options[i], true);
     			optionText.screenCenter();
     			optionText.y += (100 * (i - (options.length / 2))) + 50;
     			grpOptions.add(optionText);
