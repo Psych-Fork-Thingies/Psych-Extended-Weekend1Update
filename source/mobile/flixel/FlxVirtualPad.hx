@@ -335,11 +335,11 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		#if MODS_ALLOWED
 		final modsPath:String = Paths.modsImages('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
 		if(sys.FileSystem.exists(modsPath))
-			frames = Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
+			return Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
 		else #end if(Assets.exists(path))
-			frames = Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
+			return Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
 		else
-			frames = Paths.getPackerAtlas('mobilecontrols/virtualpad/original');
+			return Paths.getPackerAtlas('mobilecontrols/virtualpad/original');
 	}
 	
 	override public function destroy():Void
