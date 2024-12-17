@@ -1203,10 +1203,10 @@ class PlayState extends MusicBeatState
 		for (asset in introAlts)
 			Paths.image(asset);
 		
-		Paths.sound('intro3' + introSoundsSuffix);
-		Paths.sound('intro2' + introSoundsSuffix);
-		Paths.sound('intro1' + introSoundsSuffix);
-		Paths.sound('introGo' + introSoundsSuffix);
+		try { Paths.sound('intro3' + introSoundsSuffix); } catch(e:Dynamic) {}
+		try { Paths.sound('intro2' + introSoundsSuffix); } catch(e:Dynamic) {}
+		try { Paths.sound('intro1' + introSoundsSuffix); } catch(e:Dynamic) {}
+		try { Paths.sound('introGo' + introSoundsSuffix); } catch(e:Dynamic) {}
 	}
 
 	public function startCountdown()
@@ -1277,19 +1277,19 @@ class PlayState extends MusicBeatState
 				switch (swagCounter)
 				{
 					case 0:
-						try FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
+						try { FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6); } catch(e:Dynamic) {}
 						tick = THREE;
 					case 1:
 						countdownReady = createCountdownSprite(introAlts[0], antialias);
-						try FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
+						try { FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6); } catch(e:Dynamic) {}
 						tick = TWO;
 					case 2:
 						countdownSet = createCountdownSprite(introAlts[1], antialias);
-						try FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6);
+						try { FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6); } catch(e:Dynamic) {}
 						tick = ONE;
 					case 3:
 						countdownGo = createCountdownSprite(introAlts[2], antialias);
-						try FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), 0.6);
+						try { FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), 0.6); } catch(e:Dynamic) {}
 						tick = GO;
 					case 4:
 					    tick = START;

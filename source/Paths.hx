@@ -212,7 +212,7 @@ class Paths
 	static public function sound(key:String, ?library:String):Sound
 	{
 		var sound:Sound = returnSound('sounds', key, library);
-		try return sound;
+		try { return sound; } catch(e:Dynamic) {}
 	}
 
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?library:String)
@@ -512,11 +512,12 @@ class Paths
 			try {
 			retKey = ((path == 'songs') ? 'songs:' : '') + getPath('$retKey.$SOUND_EXT', SOUND, library);
 			if(OpenFlAssets.exists(retKey, SOUND))
-				try currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(retKey));
+				try { currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(retKey)); } catch(e:Dynamic) {}
 			}
+			catch(e:Dynamic) {}
 		}
-		try localTrackedAssets.push(gottenPath);
-		try return currentTrackedSounds.get(gottenPath);
+		try { localTrackedAssets.push(gottenPath); } catch(e:Dynamic) {}
+		try { return currentTrackedSounds.get(gottenPath); } catch(e:Dynamic) {}
 	}
 	
 	public static function readDirectory(directory:String):Array<String>
