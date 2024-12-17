@@ -35,7 +35,6 @@ class OptionsState extends MusicBeatState
 	public static var stateType:Int = 0;
 	public static var onPlayState:Bool = false;
 	public static var menuBG:FlxSprite;
-	public var changetext:Bool = false;
 
 	function openSelectedSubstate(label:String) {
 	    persistentUpdate = false;
@@ -62,7 +61,6 @@ class OptionsState extends MusicBeatState
 
 	var selectorLeft:Alphabet;
 	var selectorRight:Alphabet;
-	public var optionText:Alphabet;
 
 	override function create() {
 		Paths.clearStoredMemory();
@@ -88,7 +86,7 @@ class OptionsState extends MusicBeatState
 
 		for (i in 0...options.length)
 		{
-			optionText = new Alphabet(0, 0, options[i], true);
+			var optionText:Alphabet = new Alphabet(0, 0, options[i], true);
 			optionText.screenCenter();
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
 			grpOptions.add(optionText);
@@ -121,30 +119,10 @@ class OptionsState extends MusicBeatState
 		ClientPrefs.saveSettings();
 		removeVirtualPad();
 		addVirtualPad(UP_DOWN, A_B_E);
-		
-		if (ClientPrefs.data.VirtualPadAlpha != 0)
-		{
+		if (ClientPrefs.data.VirtualPadAlpha != 0) //pls work
 		    options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
-		    changetext = true;
-		}
 		else
-		{
 		    options = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
-		    changetext = true;
-		}
-		
-		if (changetext)
-		{
-		    grpOptions.remove(optionText);
-		    for (i in 0...options.length)
-    		{
-    		    optionText = new Alphabet(0, 0, options[i], true);
-    			optionText.screenCenter();
-    			optionText.y += (100 * (i - (options.length / 2))) + 50;
-    			grpOptions.add(optionText);
-    		}
-    		changetext = false;
-    	}
 		persistentUpdate = true;
 	}
 
@@ -156,7 +134,7 @@ class OptionsState extends MusicBeatState
 		if (controls.UI_DOWN_P)
 			changeSelection(1);
 		
-		if (controls.BACK && !changetext) {
+		if (controls.BACK) {
     		if (OptionsState.stateType == 2)
     		    MusicBeatState.switchState(new FreeplayStateNF());
     		else if (OptionsState.stateType == 1)
