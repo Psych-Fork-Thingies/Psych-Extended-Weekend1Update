@@ -49,16 +49,16 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.onChange = changeModFolder;
 		
 		var option:Option = new Option('Use Experimental Cameras',
-			'If checked, game uses camFollowNew instead of camFollow.',
+			'If checked, game uses camFollowNew instead of camFollow.\n(If you have a any camera issue, enable or disable this)',
 			'UseNewCamSystem',
 			'bool');
 		addOption(option);
 		
 		var option:Option = new Option('HScript Version:',
-			"This Option Is Experimental",
+			"This Option Is Experimental\n(If You Have A Any Problem With Mods Change This)",
 			'hscriptversion',
 			'string',
-			['HScript New', 'HScript Old', 'SScript']);
+			['HScript Old', 'HScript New', 'SScript']);
 		addOption(option);
 
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
