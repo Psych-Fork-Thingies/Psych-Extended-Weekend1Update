@@ -548,11 +548,11 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 						changeOptions(0);
 					});
 				
-					PlayState.chartingMode = true;
+					// PlayState.chartingMode = true;
 				case 'Options':
 					PlayState.instance.paused = true; // For lua
 					PlayState.instance.vocals.volume = 0;
-					OptionsState.stateType = 2;
+					OptionsState.stateType = 3;
 					CustomSwitchState.switchMenus('Options');
 					if(ClientPrefs.data.pauseMusic != 'None')
 					{
