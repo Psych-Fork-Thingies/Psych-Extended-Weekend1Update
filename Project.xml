@@ -147,7 +147,7 @@
 	<haxelib name="funkin.vis"/>
 
 	<!-- Enables a terminal log prompt on debug builds -->
-	<haxelib name="hxcpp-debug-server"/>
+	<!-- <haxelib name="hxcpp-debug-server"/> -->
 
 	<!-- <haxelib name="markdown" /> -->
 	<!-- <haxelib name="HtmlParser" /> -->
