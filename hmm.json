@@ -58,7 +58,7 @@
     {
       "name": "hxcpp",
       "type": "git",
-      "ref": "develop",
+      "ref": "master",
       "url": "https://github.com/mcagabe19-stuff/hxcpp"
     },
     {
