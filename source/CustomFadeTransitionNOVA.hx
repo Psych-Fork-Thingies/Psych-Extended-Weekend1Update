@@ -19,6 +19,7 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 	var loadLeft:FlxSprite;
 	var loadRight:FlxSprite;
 	var loadAlpha:FlxSprite;
+	var WaterMark:FlxText;
 	var EventText:FlxText;
 	
 	var loadLeftTween:FlxTween;
@@ -57,7 +58,7 @@ class CustomFadeTransitionNOVA extends FlxSubState {
 		loadLeft.setGraphicSize(FlxG.width, FlxG.height);
 		loadLeft.updateHitbox();
 		
-		var WaterMark:FlxText = new FlxText(isTransIn ? 50 : -1230, 720 - 50 - 50 * 2, 0, 'PSYCH EXTENDED V1.0.1 Pre  ', 50);
+		WaterMark = new FlxText(isTransIn ? 50 : -1230, 720 - 50 - 50 * 2, 0, 'PSYCH EXTENDED V1.0.1', 50);
 		WaterMark.scrollFactor.set();
 		WaterMark.setFormat(Assets.getFont("assets/fonts/loadText.ttf").fontName, 50, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		WaterMark.antialiasing = ClientPrefs.data.antialiasing;

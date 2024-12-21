@@ -20,11 +20,8 @@ import openfl.Lib;
 
 class MainMenuStateNOVA extends MusicBeatState
 {
-	public static var psychEngineVersion:String = '0.6.3'; //This is also used for Discord RPC
-	public static var realPsychEngineVersion:String = '0.6.4b';
 	public static var novaFlareEngineDataVersion:Float = 1.8;
 	public static var novaFlareEngineVersion:String = '1.1.5 HOTFIX 2'; //1.1.5 -HOTFIX -2 looks too bad
-	public static var PsychExtendedVersion:String = '1.0.1 Pre';
 	public static var curSelected:Int = 0;
     public static var saveCurSelected:Int = 0;
     
@@ -200,7 +197,7 @@ class MainMenuStateNOVA extends MusicBeatState
 
 		//FlxG.camera.follow(camFollow, null, 0);
 
-		var versionShit:FlxText = new FlxText(12, FlxG.height - 64, 0,  "Psych Extended" + " v " + PsychExtendedVersion, 12);
+		var versionShit:FlxText = new FlxText(12, FlxG.height - 64, 0,  "Psych Extended" + " v " + MainMenuState.PsychExtendedVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		versionShit.antialiasing = ClientPrefs.data.antialiasing;

@@ -39,6 +39,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		rpcTitle = 'Visuals and UI Settings Menu'; //for Discord Rich Presence
 		noteSkinList.unshift('original');
 		
+		#if PsychExtended_Extras
 		var option:Option = new Option('Freeplay Menu Style:',
 			"Choose your Freeplay Menu Style",
 			'FreeplayStyle',
@@ -66,6 +67,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'string',
 			['Psych', 'NovaFlare', 'Extended']);
 		addOption(option);
+		#end
 		
 		var option:Option = new Option('Note Skin:',
 			"Choose Note Skin",
@@ -76,6 +78,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = onChangeNoteSkin;
 		
+		#if PsychExtended_Extras
 		var option:Option = new Option('FPSCounter:',
 			"Choose your FPSCounter",
 			'FPSCounter',
@@ -95,6 +98,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'DisableIntroVideo',
 			'bool');
 		addOption(option);
+		#end
 
 		var option:Option = new Option('Note Splashes',
 			"If unchecked, hitting \"Sick!\" notes won't show particles.",
@@ -159,6 +163,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = onChangePauseMusic;
 		
+		#if PsychExtended_Extras
 		var option:Option = new Option('Main Menu Song:',
 			"What song do you prefer for the Main Menu?",
 			'FreakyMenu',
@@ -166,6 +171,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			['Extended', 'Psych']);
 		addOption(option);
 		option.onChange = onChangeMenuMusic;
+		#end
 		
 		#if CHECK_FOR_UPDATES
 		var option:Option = new Option('Check for Updates',

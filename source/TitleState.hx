@@ -188,6 +188,10 @@ class TitleState extends MusicBeatState
 		{
 			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 		}
+		
+		#if !PsychExtended_Extras
+		ResetPsychExtendedExtras();
+		#end
 
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 		#if FREEPLAY
@@ -825,5 +829,22 @@ class TitleState extends MusicBeatState
 	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
 	    else if (ClientPrefs.data.FPSCounter == 'Psych')
 	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
+	}
+	
+	function ResetPsychExtendedExtras()
+	{
+	    //Use `if` for Fix TitleState Lag
+	    if (ClientPrefs.data.FreeplayStyle != 'Psych')
+	        ClientPrefs.data.FreeplayStyle = 'Psych';
+	    if (ClientPrefs.data.MainMenuStyle != '1.0')
+    	    ClientPrefs.data.MainMenuStyle = '1.0';
+    	if (ClientPrefs.data.PauseMenuStyle != 'Psych')
+    	    ClientPrefs.data.PauseMenuStyle = 'Psych';
+    	if (ClientPrefs.data.TransitionStyle != 'Psych')
+    	    ClientPrefs.data.TransitionStyle = 'Psych';
+    	if (ClientPrefs.data.FPSCounter != 'Psych')
+    	    ClientPrefs.data.FPSCounter = 'Psych';
+    	if (ClientPrefs.data.DisableIntroVideo != true)
+    	    ClientPrefs.data.DisableIntroVideo = true;
 	}
 }

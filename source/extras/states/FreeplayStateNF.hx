@@ -43,7 +43,7 @@ import options.OptionsState;
     Note: This backport only supports Psych Extended & DaffyToons's NF Engine 1.0.1 Build
     Backported by KralOyuncu 2010x
     
-	create by TieGuo
+	created by TieGuo
 	artists, bug fix by Beihu & 487
 	
 	比暂停界面更屎的state出现了XD
