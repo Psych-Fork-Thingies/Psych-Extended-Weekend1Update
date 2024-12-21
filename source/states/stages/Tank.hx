@@ -1,8 +1,9 @@
 package states.stages;
 
-import flixel.system.FlxSound;
-
 import states.stages.objects.*;
+import cutscenes.CutsceneHandler;
+import substates.GameOverSubstate;
+import objects.Character;
 
 class Tank extends BaseStage
 {
@@ -162,7 +163,7 @@ class Tank extends BaseStage
 			gf.animation.finishCallback = null;
 			gf.dance();
 		};
-		camFollow.set(dad.x + 280, dad.y + 170);
+		camFollow.setPosition(dad.x + 280, dad.y + 170);
 	}
 
 	function ughIntro()
@@ -170,9 +171,9 @@ class Tank extends BaseStage
 		prepareCutscene();
 		cutsceneHandler.endTime = 12;
 		cutsceneHandler.music = 'DISTORTO';
-		precacheSound('wellWellWell');
-		precacheSound('killYou');
-		precacheSound('bfBeep');
+		Paths.sound('wellWellWell');
+		Paths.sound('killYou');
+		Paths.sound('bfBeep');
 
 		var wellWellWell:FlxSound = new FlxSound().loadEmbedded(Paths.sound('wellWellWell'));
 		FlxG.sound.list.add(wellWellWell);
@@ -219,7 +220,7 @@ class Tank extends BaseStage
 		prepareCutscene();
 		cutsceneHandler.endTime = 11.5;
 		cutsceneHandler.music = 'DISTORTO';
-		precacheSound('tankSong2');
+		Paths.sound('tankSong2');
 
 		var tightBars:FlxSound = new FlxSound().loadEmbedded(Paths.sound('tankSong2'));
 		FlxG.sound.list.add(tightBars);
@@ -253,13 +254,13 @@ class Tank extends BaseStage
 		cutsceneHandler.endTime = 35.5;
 		gfGroup.alpha = 0.00001;
 		boyfriendGroup.alpha = 0.00001;
-		camFollow.set(dad.x + 400, dad.y + 170);
+		camFollow.setPosition(dad.x + 400, dad.y + 170);
 		FlxTween.tween(FlxG.camera, {zoom: 0.9 * 1.2}, 1, {ease: FlxEase.quadInOut});
 		foregroundSprites.forEach(function(spr:BGSprite)
 		{
 			spr.y += 100;
 		});
-		precacheSound('stressCutscene');
+		Paths.sound('stressCutscene');
 
 		pico = new FlxAnimate(gf.x + 150, gf.y + 450);
 		pico.showPivot = false;
@@ -272,6 +273,33 @@ class Tank extends BaseStage
 		pico.anim.play('dance', true);
 		addBehindGF(pico);
 		cutsceneHandler.push(pico);
+
+		// prepare pico animation cycle
+		function picoStressCycle() {
+			switch (pico.anim.curInstance.symbol.name) {
+				case "dieBitch", "GF Time to Die sequence":
+					pico.anim.play('picoAppears', true);
+					boyfriendGroup.alpha = 1;
+					boyfriendCutscene.visible = false;
+					boyfriend.playAnim('bfCatch', true);
+					boyfriend.animation.finishCallback = function(name:String)
+					{
+						if(name != 'idle')
+						{
+							boyfriend.playAnim('idle', true);
+							boyfriend.animation.curAnim.finish(); //Instantly goes to last frame
+						}
+					};
+				case "picoAppears", "Pico Saves them sequence":
+					pico.anim.play('picoEnd', true);
+				case "picoEnd", "Pico Dual Wield on Speaker idle":
+					gfGroup.alpha = 1;
+					pico.visible = false;
+					if (pico.anim.onComplete.has(picoStressCycle)) // for safety
+						pico.anim.onComplete.remove(picoStressCycle);
+			}
+		}
+		pico.anim.onComplete.add(picoStressCycle);
 
 		boyfriendCutscene = new FlxSprite(boyfriend.x + 5, boyfriend.y + 20);
 		boyfriendCutscene.antialiasing = ClientPrefs.data.antialiasing;
@@ -298,35 +326,7 @@ class Tank extends BaseStage
 		{
 			FlxTween.tween(camFollow, {x: 650, y: 300}, 1, {ease: FlxEase.sineOut});
 			FlxTween.tween(FlxG.camera, {zoom: 0.9 * 1.2 * 1.2}, 2.25, {ease: FlxEase.quadInOut});
-
 			pico.anim.play('dieBitch', true);
-			pico.anim.onComplete = function()
-			{
-				pico.anim.play('picoAppears', true);
-				pico.anim.onComplete = function()
-				{
-					pico.anim.play('picoEnd', true);
-					pico.anim.onComplete = function()
-					{
-						gfGroup.alpha = 1;
-						pico.visible = false;
-						pico.anim.onComplete = null;
-					}
-				};
-
-				boyfriendGroup.alpha = 1;
-				boyfriendCutscene.visible = false;
-				boyfriend.playAnim('bfCatch', true);
-
-				boyfriend.animation.finishCallback = function(name:String)
-				{
-					if(name != 'idle')
-					{
-						boyfriend.playAnim('idle', true);
-						boyfriend.animation.curAnim.finish(); //Instantly goes to last frame
-					}
-				};
-			};
 		});
 
 		cutsceneHandler.timer(17.5, function()
@@ -341,7 +341,7 @@ class Tank extends BaseStage
 
 		cutsceneHandler.timer(20, function()
 		{
-			camFollow.set(dad.x + 500, dad.y + 170);
+			camFollow.setPosition(dad.x + 500, dad.y + 170);
 		});
 
 		cutsceneHandler.timer(31.2, function()
@@ -356,7 +356,7 @@ class Tank extends BaseStage
 				}
 			};
 
-			camFollow.set(boyfriend.x + 280, boyfriend.y + 200);
+			camFollow.setPosition(boyfriend.x + 280, boyfriend.y + 200);
 			FlxG.camera.snapToTarget();
 			game.cameraSpeed = 12;
 			FlxTween.tween(FlxG.camera, {zoom: 0.9 * 1.2 * 1.2}, 0.25, {ease: FlxEase.elasticOut});
@@ -371,7 +371,7 @@ class Tank extends BaseStage
 	function zoomBack()
 	{
 		var calledTimes:Int = 0;
-		camFollow.set(630, 425);
+		camFollow.setPosition(630, 425);
 		FlxG.camera.snapToTarget();
 		FlxG.camera.zoom = 0.8;
 		game.cameraSpeed = 1;
