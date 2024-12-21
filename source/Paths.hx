@@ -407,30 +407,10 @@ class Paths
 		}
 		return getPackerAtlas(key, library);
 	}
-	
-	static public function getMultiAtlas(keys:Array<String>, ?library:String = null):FlxAtlasFrames
-	{
-		
-		var parentFrames:FlxAtlasFrames = Paths.getAtlas(keys[0].trim());
-		if(keys.length > 1)
-		{
-			var original:FlxAtlasFrames = parentFrames;
-			parentFrames = new FlxAtlasFrames(parentFrames.parent);
-			parentFrames.addAtlas(original, true);
-			for (i in 1...keys.length)
-			{
-				var extraFrames:FlxAtlasFrames = Paths.getAtlas(keys[i].trim(), library);
-				if(extraFrames != null)
-					parentFrames.addAtlas(extraFrames, true);
-			}
-		}
-		return parentFrames;
-	}
 
 	inline static public function getSparrowAtlas(key:String, ?library:String):FlxAtlasFrames
 	{
 		#if MODS_ALLOWED
-		if(key.contains('psychic')) trace(key, library);
 		var imageLoaded:FlxGraphic = returnGraphic(key);
 		var xmlExists:Bool = false;
 		
