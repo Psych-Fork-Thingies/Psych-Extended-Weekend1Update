@@ -820,7 +820,7 @@ class CharacterEditorState extends MusicBeatState
 	function reloadCharacterImage() {
 	    var lastAnim:String = char.getAnimationName();
 		var anims:Array<AnimArray> = char.animationsArray.copy();
-		char.destroyAtlas();
+		char.atlas = FlxDestroyUtil.destroy(char.atlas);
 		char.isAnimateAtlas = false;
 		char.color = FlxColor.WHITE;
 		char.alpha = 1;
@@ -839,8 +839,25 @@ class CharacterEditorState extends MusicBeatState
 			}
 			char.isAnimateAtlas = true;
 		}
-		else if(Paths.fileExists('images/' + char.imageFile + '.txt', TEXT)) char.frames = Paths.getPackerAtlas(char.imageFile);
-		else char.frames = Paths.getSparrowAtlas(char.imageFile);
+		else
+		{
+			var split:Array<String> = char.imageFile.split(',');
+			var charFrames:FlxAtlasFrames = Paths.getAtlas(split[0].trim());
+			
+			if(split.length > 1)
+			{
+				var original:FlxAtlasFrames = charFrames;
+				charFrames = new FlxAtlasFrames(charFrames.parent);
+				charFrames.addAtlas(original, true);
+				for (i in 1...split.length)
+				{
+					var extraFrames:FlxAtlasFrames = Paths.getAtlas(split[i].trim());
+					if(extraFrames != null)
+						charFrames.addAtlas(extraFrames, true);
+				}
+			}
+			char.frames = charFrames;
+		}
 
 		if(char.animationsArray != null && char.animationsArray.length > 0) {
 			for (anim in char.animationsArray) {
