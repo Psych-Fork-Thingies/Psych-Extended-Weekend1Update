@@ -846,5 +846,7 @@ class TitleState extends MusicBeatState
     	    ClientPrefs.data.FPSCounter = 'Psych';
     	if (ClientPrefs.data.DisableIntroVideo != true)
     	    ClientPrefs.data.DisableIntroVideo = true;
+    	if (ClientPrefs.data.FreakyMenu != 'Psych')
+    	    ClientPrefs.data.FreakyMenu = 'Psych';
 	}
 }
