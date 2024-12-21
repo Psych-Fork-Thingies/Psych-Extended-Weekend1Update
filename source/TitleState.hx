@@ -848,5 +848,7 @@ class TitleState extends MusicBeatState
     	    ClientPrefs.data.DisableIntroVideo = true;
     	if (ClientPrefs.data.FreakyMenu != 'Psych')
     	    ClientPrefs.data.FreakyMenu = 'Psych';
+    	if (ClientPrefs.data.NoteSkin != 'original')
+    	    ClientPrefs.data.NoteSkin = 'original';
 	}
 }

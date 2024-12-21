@@ -67,7 +67,6 @@ class VisualsUISubState extends BaseOptionsMenu
 			'string',
 			['Psych', 'NovaFlare', 'Extended']);
 		addOption(option);
-		#end
 		
 		var option:Option = new Option('Note Skin:',
 			"Choose Note Skin",
@@ -78,7 +77,6 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = onChangeNoteSkin;
 		
-		#if PsychExtended_Extras
 		var option:Option = new Option('FPSCounter:',
 			"Choose your FPSCounter",
 			'FPSCounter',
