@@ -96,8 +96,8 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: "1.0.0-hotfix1"
-          title: "1.0.0 - Hotfix 1"
+          automatic_release_tag: "1.0.1"
+          title: "1.0.1 - HScript Beta"
           files: |
             /home/runner/*.apk
             /home/runner/*.zip

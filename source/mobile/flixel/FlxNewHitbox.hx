@@ -45,7 +45,7 @@ class FlxNewHitbox extends FlxSpriteGroup
 		    add(buttonUp = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 1), 0xFF12FA05));
 		    add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 1), 0xFFF9393F));
 		    if (ClientPrefs.data.hitboxhint){
-    		hitbox_hint = new FlxSprite(0, -150).loadGraphic(Paths.image('mobilecontrols/hitbox/hitbox_hint'));
+    		hitbox_hint = new FlxSprite(0, 0).loadGraphic(Paths.image('mobilecontrols/hitbox/hitbox_hint'));
     		add(hitbox_hint);
     		}
         }else {
@@ -55,16 +55,14 @@ class FlxNewHitbox extends FlxSpriteGroup
 		        add(buttonUp = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 0.8), 0xFF12FA05));
 		        add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 0.8), 0xFFF9393F));
 		        if (ClientPrefs.data.hitboxhint){
-        		hitbox_hint = new FlxSprite(0, 0).loadGraphic(Paths.image('mobilecontrols/hitbox/hitbox_hint'));
+        		hitbox_hint = new FlxSprite(0, -150).loadGraphic(Paths.image('mobilecontrols/hitbox/hitbox_hint'));
         		add(hitbox_hint);
         		}
         		
-        		if (PlayState.MobileCType == 'SPACE') {
+        		if (PlayState.MobileCType == 'SPACE')
         		    add(buttonExtra2 = createHint(0, (FlxG.height / 5) * 4, FlxG.width, Std.int(FlxG.height / 5), 0xFFFF00));
-        		}
-        		else if (PlayState.MobileCType == 'SHIFT') {
+        		else if (PlayState.MobileCType == 'SHIFT')
         		    add(buttonExtra1 = createHint(0, (FlxG.height / 5) * 4, FlxG.width, Std.int(FlxG.height / 5), 0xFF0000));
-        		}
         		else if (PlayState.MobileCType == 'BOTH') {
         		    add(buttonExtra1 = createHint(0, (FlxG.height / 5) * 4, Std.int(FlxG.width / 2), Std.int(FlxG.height / 5), 0xFF0000));
                     add(buttonExtra2 = createHint(FlxG.width / 2, (FlxG.height / 5) * 4, Std.int(FlxG.width / 2), Std.int(FlxG.height / 5), 0xFFFF00));
@@ -97,12 +95,10 @@ class FlxNewHitbox extends FlxSpriteGroup
         		add(hitbox_hint);
         		}
  
-                if (PlayState.MobileCType == 'SPACE') {
+                if (PlayState.MobileCType == 'SPACE')
         		    add(buttonExtra2 = createHint(0, 0, FlxG.width, Std.int(FlxG.height / 5), 0xFFFF00));
-        		}
-        		else if (PlayState.MobileCType == 'SHIFT') {
+        		else if (PlayState.MobileCType == 'SHIFT')
         		    add(buttonExtra1 = createHint(0, 0, FlxG.width, Std.int(FlxG.height / 5), 0xFF0000));
-        		}
         		else if (PlayState.MobileCType == 'BOTH') {
         		    add(buttonExtra1 = createHint(0, 0, Std.int(FlxG.width / 2), Std.int(FlxG.height / 5), 0xFF0000));
                     add(buttonExtra2 = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 2), Std.int(FlxG.height / 5), 0xFFFF00));
@@ -135,12 +131,10 @@ class FlxNewHitbox extends FlxSpriteGroup
         		add(hitbox_hint);
         		}
 		        
-		        if (PlayState.MobileCType == 'SPACE') {
+		        if (PlayState.MobileCType == 'SPACE')
         		    add(buttonExtra2 = createHint(FlxG.width / 5 * 2, 0, Std.int(FlxG.width / 5), Std.int(FlxG.height * 1), 0xFFFF00));
-        		}
-        		else if (PlayState.MobileCType == 'SHIFT') {
+        		else if (PlayState.MobileCType == 'SHIFT')
         		    add(buttonExtra1 = createHint(FlxG.width / 5 * 2, 0, Std.int(FlxG.width / 5), Std.int(FlxG.height * 1), 0xFF0000));
-        		}
         		else if (PlayState.MobileCType == 'BOTH') {
         		    add(buttonExtra1 = createHint(FlxG.width / 5 * 2, 0, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFF0000));
                     add(buttonExtra2 = createHint(FlxG.width / 5 * 2, FlxG.height / 2, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
@@ -156,9 +150,12 @@ class FlxNewHitbox extends FlxSpriteGroup
                         case 3:		        
                             add(buttonExtra1 = createHint(FlxG.width / 5 * 2, 0, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFF0000));
                             add(buttonExtra2 = createHint(FlxG.width / 5 * 2, FlxG.height / 2, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
+                        //Im just testing this
     		            case 4:                                  
     		                add(buttonExtra1 = createHint(FlxG.width / 5 * 2, 0, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFF0000));
                             add(buttonExtra2 = createHint(FlxG.width / 5 * 2, FlxG.height / 2, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
+                            add(buttonExtra3 = createHint(FlxG.width / 5 * 2, FlxG.height / 2 * 2, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
+                            add(buttonExtra4 = createHint(FlxG.width / 5 * 2, FlxG.height / 2 * 3, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
                     }
                 }
             }
