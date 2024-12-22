@@ -150,12 +150,9 @@ class FlxNewHitbox extends FlxSpriteGroup
                         case 3:		        
                             add(buttonExtra1 = createHint(FlxG.width / 5 * 2, 0, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFF0000));
                             add(buttonExtra2 = createHint(FlxG.width / 5 * 2, FlxG.height / 2, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
-                        //Im just testing this
     		            case 4:                                  
     		                add(buttonExtra1 = createHint(FlxG.width / 5 * 2, 0, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFF0000));
                             add(buttonExtra2 = createHint(FlxG.width / 5 * 2, FlxG.height / 2, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
-                            add(buttonExtra3 = createHint(FlxG.width / 5 * 2, FlxG.height / 2 * 2, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
-                            add(buttonExtra4 = createHint(FlxG.width / 5 * 2, FlxG.height / 2 * 3, Std.int(FlxG.width / 5), Std.int(FlxG.height * 0.5), 0xFFFF00));
                     }
                 }
             }
