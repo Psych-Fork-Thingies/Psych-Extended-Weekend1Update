@@ -44,6 +44,9 @@ import TitleState;
 	public var rainbowFPS:Bool = false;
 	public var memoryType:Int = 0;
 	
+	//New Psych Features
+	public var loadingScreen:Bool = true;
+	
 	//PsychEngine
 	public var downScroll:Bool = false;
 	public var marvelousRating:Bool = true;	

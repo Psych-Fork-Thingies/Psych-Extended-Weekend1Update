@@ -187,7 +187,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		
     	try
     	{
-    		if (lastStorageType != 'EXTERNAL')
+    		if (lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE')
     		Sys.command('rm', ['-rf', lastStoragePath]);
     	}
     	catch (e:haxe.Exception)

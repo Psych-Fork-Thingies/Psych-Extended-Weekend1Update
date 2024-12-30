@@ -1237,6 +1237,7 @@ class FreeplayStateNF extends MusicBeatState {
 				}
 				destroyFreeplayVocals();
 				FlxG.sound.music.stop();
+				LoadingState.prepareToSong();
 				LoadingState.loadAndSwitchState(new PlayState());
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 		
