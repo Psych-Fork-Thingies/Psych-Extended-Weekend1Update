@@ -110,6 +110,13 @@ class Song
 			}
 		}
 	}
+	
+	public function new(?song, ?notes, ?bpm)
+	{
+		this.song = song;
+		this.notes = notes;
+		this.bpm = bpm;
+	}
 
     public static var chartPath:String;
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
