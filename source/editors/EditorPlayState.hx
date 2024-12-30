@@ -2,7 +2,7 @@ package editors;
 
 import Song;
 import Section;
-import Rating;
+import backend.Rating;
 
 import Note;
 import NoteSplash;

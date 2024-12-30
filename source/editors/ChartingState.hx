@@ -16,7 +16,7 @@ import Section;
 import StageData;
 import Highscore;
 import Difficulty;
-import FileDialogHandler;
+import backend.FileDialogHandler;
 
 import Character;
 import HealthIcon;
