@@ -3,7 +3,7 @@ package backend.ui;
 import flixel.FlxObject;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxDestroyUtil;
-import flash.events.KeyboardEvent;
+import openfl.events.KeyboardEvent;
 import lime.system.Clipboard;
 
 enum abstract AccentCode(Int) from Int from UInt to Int to UInt
@@ -389,9 +389,11 @@ class PsychUIInputText extends FlxSpriteGroup
 		return (focusOn = v);
 	}
 
+	public var ignoreCheck = false;
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		if (ignoreCheck) return;
 
 		if(FlxG.mouse.justPressed)
 		{
@@ -400,6 +402,7 @@ class PsychUIInputText extends FlxSpriteGroup
 				if(!FlxG.keys.pressed.SHIFT) selectIndex = -1;
 				else if(selectIndex == -1) selectIndex = caretIndex;
 				focusOn = this;
+				FlxG.stage.window.textInputEnabled = true;
 				caretIndex = 0;
 				var lastBound:Float = 0;
 				var txtX:Float = textObj.x - textObj.textField.scrollH;
@@ -727,7 +730,7 @@ class PsychUIInputText extends FlxSpriteGroup
 				case CUSTOM_FILTER:
 					pattern = customFilterPattern;
 				default:
-					throw new flash.errors.Error("FlxInputText: Unknown filterMode (" + filterMode + ")");
+					throw new openfl.errors.Error("FlxInputText: Unknown filterMode (" + filterMode + ")");
 			}
 			text = pattern.replace(text, "");
 		}

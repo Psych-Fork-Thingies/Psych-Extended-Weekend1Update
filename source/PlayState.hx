@@ -1514,6 +1514,14 @@ class PlayState extends MusicBeatState
 
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
+		
+		var noteData:Array<SwagSection>;
+		
+		// NEW SHIT
+		noteData = songData.notes;
+		
+		var playerCounter:Int = 0;
+		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
 
 		var file:String = Paths.getPath('data/$songName/events.json', TEXT);
 		if (#if MODS_ALLOWED FileSystem.exists(file) || #end OpenFlAssets.exists(file))

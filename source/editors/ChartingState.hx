@@ -228,7 +228,9 @@ class ChartingState extends MusicBeatState
 				player2: 'dad',
 				gfVersion: 'gf',
 				speed: 1,
+				offset: 1,
 				stage: 'stage',
+				format: 'psych_v1',
 				validScore: false
 			};
 			addSection();

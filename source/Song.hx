@@ -146,7 +146,6 @@ class Song
 	public static function parseJSON(rawData:String, ?nameForError:String = null, ?convertTo:String = 'psych_v1'):SwagSong
 	{
 		var songJson:SwagSong = cast Json.parse(rawData).song;
-		swagShit.validScore = true;
 		if(convertTo != null && convertTo.length > 0)
 		{
 			var fmt:String = songJson.format;
