@@ -1597,7 +1597,6 @@ class PlayState extends MusicBeatState
 					
 				oldNote = swagNote;
 			}
-			daBeats += 1;
 		}
 		for (event in songData.events) //Event Notes
 			for (i in 0...event[1].length)
