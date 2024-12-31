@@ -125,9 +125,9 @@ class Song
 		
 		var formattedFolder:String = Paths.formatToSongPath(folder);
 		var formattedSong:String = Paths.formatToSongPath(jsonInput);
-		var path:String = Paths.json('$formattedFolder/$formattedSong');
 		
 		#if MODS_ALLOWED
+		var path:String = Paths.modsJson('$formattedFolder/$formattedSong');
 		if(FileSystem.exists(path))
 			rawData = File.getContent(path);
 		else
