@@ -7,7 +7,7 @@ class Difficulty
 		'Normal',
 		'Hard'
 	];
-	private static final defaultDifficulty:String = 'Normal'; //The chart that has no postfix and starting difficulty on Freeplay/Story Mode
+	private static final defaultDifficulty:String = 'Normal'; //The chart that has no suffix and starting difficulty on Freeplay/Story Mode
 	
 	public static var list:Array<String> = [];
 
@@ -17,7 +17,7 @@ class Difficulty
             
 		var fileSuffix:String = list[num];
 		 
-        if(filePostfix != null && Paths.formatToSongPath(filePostfix) != Paths.formatToSongPath(defaultDifficulty))
+        if(fileSuffix != null && Paths.formatToSongPath(fileSuffix) != Paths.formatToSongPath(defaultDifficulty))
     		fileSuffix = '-' + fileSuffix;
     	else
     		fileSuffix = '';
