@@ -26,6 +26,7 @@ import objects.AttachedText as AttachedTextNew;
 import backend.animation.PsychAnimationController; //Psych Animation Controller
 import backend.BaseStage;
 import Song;
+import Song.SwagSection;
 
 //New Mods System
 #if MODS_ALLOWED

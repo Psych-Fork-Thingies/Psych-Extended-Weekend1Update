@@ -14,7 +14,7 @@ import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
 #end
-import Section.SwagSection;
+import Song.SwagSection;
 import Song.SwagSong;
 import flixel.FlxBasic;
 import flixel.FlxCamera;

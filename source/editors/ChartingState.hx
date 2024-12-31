@@ -8,7 +8,7 @@ import haxe.Json;
 import haxe.format.JsonParser;
 import haxe.io.Bytes;
 import Conductor.BPMChangeEvent;
-import Section.SwagSection;
+import Song.SwagSection;
 import Song.SwagSong;
 import flixel.FlxG;
 import flixel.FlxObject;
