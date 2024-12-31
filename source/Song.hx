@@ -156,15 +156,15 @@ class Song
 		#end
 		    
 		//Base Songs
-		if(rawJson == null)
+		if(rawData == null)
 		{
 		    _lastPath = Paths.json('$formattedFolder/$formattedSong');
 			#if sys
 			if(FileSystem.exists(_lastPath))
-				rawJson = File.getContent(_lastPath);
+				rawData = File.getContent(_lastPath);
 			else
 			#end
-				rawJson = Assets.getText(_lastPath);
+				rawData = Assets.getText(_lastPath);
 		}
 
 		return rawData != null ? parseJSON(rawData, jsonInput) : null;
