@@ -129,7 +129,7 @@ class EditorPlayState extends MusicBeatState
 		FlxG.sound.list.add(vocals);
 		FlxG.sound.list.add(opponentVocals);
 
-		generateSong(PlayState.SONG.song);
+		generateSong();
 		#if (LUA_ALLOWED && MODS_ALLOWED)
 		for (notetype in noteTypeMap.keys()) {
 			var luaToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
@@ -214,7 +214,7 @@ class EditorPlayState extends MusicBeatState
 	var songHits:Int = 0;
 	var songMisses:Int = 0;
 	var startingSong:Bool = true;
-	private function generateSong(dataPath:String):Void
+	private function generateSong()
 	{
 		FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 0, false);
 		FlxG.sound.music.pause();

@@ -411,9 +411,6 @@ class PlayState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		if (SONG == null)
-			SONG = Song.loadFromJson('tutorial');
-
 		Conductor.mapBPMChanges(SONG);
 		Conductor.bpm = SONG.bpm;
 
@@ -433,7 +430,7 @@ class PlayState extends MusicBeatState
 		GameOverSubstate.resetVariables();
 
 		if(SONG.stage == null || SONG.stage.length < 1)
-			SONG.stage = StageData.vanillaSongStage(songName);
+			SONG.stage = StageData.vanillaSongStage(Paths.formatToSongPath(Song.loadedSongName));
 		curStage = SONG.stage;
 
 		var stageData:StageFile = StageData.getStageFile(curStage);
@@ -636,7 +633,7 @@ class PlayState extends MusicBeatState
 
 		// startCallback();
 
-		generateSong(SONG.song);
+		generateSong();
 
         //not needed but why not :)
 		#if LUA_ALLOWED
@@ -1465,7 +1462,7 @@ class PlayState extends MusicBeatState
 	var debugNum:Int = 0;
 	private var noteTypes:Array<String> = [];
 	private var eventsPushed:Array<String> = [];
-	private function generateSong(dataPath:String):Void
+	private function generateSong():Void
 	{
 		// FlxG.log.add(ChartParser.parse());
 		songSpeedType = ClientPrefs.getGameplaySetting('scrolltype','multiplicative');
@@ -1515,22 +1512,18 @@ class PlayState extends MusicBeatState
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
 		
-		var noteData:Array<SwagSection>;
-		
-		// NEW SHIT
-		noteData = songData.notes;
-		
 		var playerCounter:Int = 0;
 		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
 
-		var file:String = Paths.getPath('data/$songName/events.json', TEXT);
-		if (#if MODS_ALLOWED FileSystem.exists(file) || #end OpenFlAssets.exists(file))
+		try
 		{
-			var eventsData:Array<Dynamic> = Song.loadFromJson('events', songName).events;
-			for (event in eventsData) //Event Notes
-				for (i in 0...event[1].length)
-				    makeEvent(event, i);
+			var eventsChart:SwagSong = Song.getChart('events', songName);
+			if(eventsChart != null)
+				for (event in eventsChart.events) //Event Notes
+					for (i in 0...event[1].length)
+						makeEvent(event, i);
 		}
+		catch(e:Dynamic) {}
 
 		var oldNote:Note = null;
 		var sectionsData:Array<SwagSection> = PlayState.SONG.notes;
@@ -2797,7 +2790,7 @@ class PlayState extends MusicBeatState
 				#if !switch
 				var percent:Float = ratingPercent;
 				if(Math.isNaN(percent)) percent = 0;
-				Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent, NoteMs, NoteTime);
+				Highscore.saveScore(Song.loadedSongName, songScore, storyDifficulty, percent, NoteMs, NoteTime);
 				#end
 			}
 			playbackRate = 1;
@@ -2856,7 +2849,7 @@ class PlayState extends MusicBeatState
 					    prevCamFollowPos = camFollowPos;
 					}
 
-					PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0] + difficulty, PlayState.storyPlaylist[0]);
+					Song.loadFromJson(PlayState.storyPlaylist[0] + difficulty, PlayState.storyPlaylist[0]);
 					FlxG.sound.music.stop();
 
 					LoadingState.prepareToSong();
@@ -3887,6 +3880,7 @@ class PlayState extends MusicBeatState
 						returnVal = myValue;
 				}
 			}
+			catch (e:Dynamic) {}
 		}
 		#end
 		

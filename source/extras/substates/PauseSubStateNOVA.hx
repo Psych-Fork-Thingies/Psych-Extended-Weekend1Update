@@ -667,7 +667,7 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 				try{
 					var name:String = PlayState.SONG.song;
 					var poop = Highscore.formatSong(name, difficultyCurSelected);
-					PlayState.SONG = Song.loadFromJson(poop, name);
+					Song.loadFromJson(poop, name);
 			   		PlayState.storyDifficulty = difficultyCurSelected;
 					MusicBeatState.resetState();
 					FlxG.sound.music.volume = 0;

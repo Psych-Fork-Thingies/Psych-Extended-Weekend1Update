@@ -401,7 +401,7 @@ class FreeplayStateNOVA extends MusicBeatState
 		{
 			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
 			var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
-			PlayState.SONG = Song.loadFromJson(poop, songLowercase);
+			Song.loadFromJson(poop, songLowercase);
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 		}
@@ -770,7 +770,7 @@ class FreeplayStateNOVA extends MusicBeatState
 				try
 				{
 					var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-					PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+					Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 
 					if (PlayState.SONG.needsVoices)
 					{

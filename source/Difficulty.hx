@@ -2,13 +2,14 @@ package;
 
 class Difficulty
 {
-	public static var defaultList(default, never):Array<String> = [
+	public static final defaultList:Array<String> = [
 		'Easy',
 		'Normal',
 		'Hard'
 	];
+	private static final defaultDifficulty:String = 'Normal'; //The chart that has no postfix and starting difficulty on Freeplay/Story Mode
+	
 	public static var list:Array<String> = [];
-	private static var defaultDifficulty(default, never):String = 'Normal'; //The chart that has no suffix and starting difficulty on Freeplay/Story Mode
 
 	inline public static function getFilePath(num:Null<Int> = null)
 	{
@@ -16,14 +17,10 @@ class Difficulty
             
 		var fileSuffix:String = list[num];
 		 
-        if(fileSuffix != defaultDifficulty)
-    	{
+        if(filePostfix != null && Paths.formatToSongPath(filePostfix) != Paths.formatToSongPath(defaultDifficulty))
     		fileSuffix = '-' + fileSuffix;
-    	}
     	else
-    	{
     		fileSuffix = '';
-    	}
 		return Paths.formatToSongPath(fileSuffix);
 	}
 	
@@ -64,7 +61,9 @@ class Difficulty
 
 	inline public static function getString(num:Null<Int> = null):String
 	{
-	    return list[num == null ? PlayState.storyDifficulty : num];
+	    var diffName:String = list[num == null ? PlayState.storyDifficulty : num];
+		if(diffName == null) diffName = defaultDifficulty;
+	    return diffName;
 	}
 
 	inline public static function getDefault():String

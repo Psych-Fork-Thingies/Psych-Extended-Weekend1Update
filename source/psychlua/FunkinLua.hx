@@ -122,6 +122,9 @@ class FunkinLua {
 		set('songLength', FlxG.sound.music.length);
 		set('songName', PlayState.SONG.song);
 		set('songPath', Paths.formatToSongPath(PlayState.SONG.song));
+		set('loadedSongName', Song.loadedSongName);
+		set('loadedSongPath', Paths.formatToSongPath(Song.loadedSongName));
+		set('chartPath', Song.chartPath);
 		set('startedCountdown', false);
 		set('curStage', PlayState.SONG.stage);
 
@@ -515,12 +518,12 @@ class FunkinLua {
 
 		Lua_helper.add_callback(lua, "loadSong", function(?name:String = null, ?difficultyNum:Int = -1) {
 			if(name == null || name.length < 1)
-				name = PlayState.SONG.song;
+				name = Song.loadedSongName;
 			if (difficultyNum == -1)
 				difficultyNum = PlayState.storyDifficulty;
 
 			var poop = Highscore.formatSong(name, difficultyNum);
-			PlayState.SONG = Song.loadFromJson(poop, name);
+			Song.loadFromJson(poop, name);
 			PlayState.storyDifficulty = difficultyNum;
 			game.persistentUpdate = false;
 			LoadingState.loadAndSwitchState(new PlayState());
@@ -1476,10 +1479,10 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, "startDialogue", function(dialogueFile:String, music:String = null) {
 			var path:String;
 			#if MODS_ALLOWED
-			path = Paths.modsJson(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
+			path = Paths.modsJson(Paths.formatToSongPath(Song.loadedSongName) + '/' + dialogueFile);
 			if(!FileSystem.exists(path))
 			#end
-				path = Paths.json(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
+				path = Paths.json(Paths.formatToSongPath(Song.loadedSongName) + '/' + dialogueFile);
 
 			luaTrace('startDialogue: Trying to load dialogue: ' + path);
 
