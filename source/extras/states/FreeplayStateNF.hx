@@ -135,6 +135,16 @@ class FreeplayStateNF extends MusicBeatState {
 		PlayState.isStoryMode = false;
 		WeekData.reloadWeekFiles(false);
 		
+		if(WeekData.weeksList.length < 1)
+		{
+			FlxTransitionableState.skipNextTransIn = true;
+			persistentUpdate = false;
+			MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
+				function() MusicBeatState.switchState(new states.editors.WeekEditorState()),
+				function() CustomSwitchState.switchMenus('MainMenu')));
+			return;
+		}
+		
 		loadSong();
 		
 		camGame = new FlxCamera();

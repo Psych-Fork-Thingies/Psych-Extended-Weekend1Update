@@ -15,7 +15,7 @@ import extras.*; //For CustomSwitchState
 import extras.states.*; //Extra States
 import extras.substates.*; //Extra Substates
 
-// 0.7x Support
+// 0.7x & 1.0 Support
 import objects.AudioDisplay;
 import objects.shape.ShapeEX;
 import psychlua.*; //Psych-LUA
@@ -27,6 +27,7 @@ import backend.animation.PsychAnimationController; //Psych Animation Controller
 import backend.BaseStage;
 import Song;
 import Song.SwagSection;
+import states.*;
 
 //New Mods System
 #if MODS_ALLOWED

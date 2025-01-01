@@ -57,6 +57,17 @@ class StoryMenuState extends MusicBeatState
 
 		PlayState.isStoryMode = true;
 		WeekData.reloadWeekFiles(true);
+		
+		if(WeekData.weeksList.length < 1)
+		{
+			FlxTransitionableState.skipNextTransIn = true;
+			persistentUpdate = false;
+			MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED FOR STORY MODE\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
+				function() MusicBeatState.switchState(new states.editors.WeekEditorState()),
+				function() CustomSwitchState.switchMenus('MainMenu')));
+			return;
+		}
+		
 		if(curWeek >= WeekData.weeksList.length) curWeek = 0;
 		persistentUpdate = persistentDraw = true;
 
@@ -201,6 +212,9 @@ class StoryMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+	    if(WeekData.weeksList.length < 1)
+			return;
+			
 		// scoreText.setFormat('VCR OSD Mono', 32);
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, CoolUtil.boundTo(elapsed * 30, 0, 1)));
 		if(Math.abs(intendedScore - lerpScore) < 10) lerpScore = intendedScore;
@@ -341,7 +355,7 @@ class StoryMenuState extends MusicBeatState
             LoadingState.prepareToSong();
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
-			    #if !LOADING_SCREEN_ALLOWED FlxG.sound.music.stop(); #end
+			    #if !SHOW_LOADING_SCREEN FlxG.sound.music.stop(); #end
 				LoadingState.loadAndSwitchState(new PlayState(), true);
 				if (ClientPrefs.data.FreeplayStyle == 'NF')
     				FreeplayStateNF.destroyFreeplayVocals();
