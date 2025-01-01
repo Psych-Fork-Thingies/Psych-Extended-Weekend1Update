@@ -116,7 +116,7 @@ class FreeplayStateNOVA extends MusicBeatState
 			FlxTransitionableState.skipNextTransIn = true;
 			persistentUpdate = false;
 			MusicBeatState.switchState(new states.ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
-				function() MusicBeatState.switchState(new states.editors.WeekEditorState()),
+				function() MusicBeatState.switchState(new editors.WeekEditorState()),
 				function() CustomSwitchState.switchMenus('MainMenu')));
 			return;
 		}
