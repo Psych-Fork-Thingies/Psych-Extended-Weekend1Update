@@ -1,4 +1,4 @@
-package states;
+package;
 
 import haxe.Json;
 import lime.utils.Assets;
@@ -8,15 +8,12 @@ import openfl.utils.Assets as OpenFlAssets;
 import flixel.graphics.FlxGraphic;
 import flixel.FlxState;
 
-import backend.Song;
-import backend.StageData;
-import objects.Character;
+import Song;
+import StageData;
+import Character;
 
 import sys.thread.Thread;
 import sys.thread.Mutex;
-
-import objects.Note;
-import objects.NoteSplash;
 
 class LoadingState extends MusicBeatState
 {
