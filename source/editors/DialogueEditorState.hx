@@ -19,7 +19,11 @@ import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.ui.FlxButton;
+#if FILE_DIALOG_FOR_MOBILE
+import mobile.filesystem.FileReference;
+#else
 import openfl.net.FileReference;
+#end
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.net.FileFilter;
@@ -526,7 +530,7 @@ class DialogueEditorState extends MusicBeatState
 		var data:String = Json.stringify(dialogueFile, "\t");
 		if (data.length > 0)
 		{
-			#if mobile
+			#if !FILE_DIALOG_FOR_MOBILE
 			StorageUtil.saveContent("$dialogue.json", data);
 			#else
 			_file = new FileReference();

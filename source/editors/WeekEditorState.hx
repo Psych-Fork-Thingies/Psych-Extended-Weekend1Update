@@ -20,7 +20,11 @@ import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.ui.FlxButton;
+#if FILE_DIALOG_FOR_MOBILE
+import mobile.filesystem.FileReference;
+#else
 import openfl.net.FileReference;
+#end
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.net.FileFilter;
@@ -546,7 +550,7 @@ class WeekEditorState extends MusicBeatState
 		var data:String = Json.stringify(weekFile, "\t");
 		if (data.length > 0)
 		{
-			#if mobile
+			#if !FILE_DIALOG_FOR_MOBILE
 			StorageUtil.saveContent("$weekFileName.json", data);
 			#else
 			_file = new FileReference();

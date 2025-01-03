@@ -21,7 +21,11 @@ import flixel.util.FlxColor;
 import flixel.addons.ui.*;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSpriteButton;
+#if FILE_DIALOG_FOR_MOBILE
+import mobile.filesystem.FileReference;
+#else
 import openfl.net.FileReference;
+#end
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import haxe.Json;
@@ -1326,7 +1330,7 @@ class CharacterEditorState extends MusicBeatState
 
 		if (data.length > 0)
 		{
-			#if mobile
+			#if !FILE_DIALOG_FOR_MOBILE
 			StorageUtil.saveContent(daAnim + ".json", data);
 			#else
 			_file = new FileReference();

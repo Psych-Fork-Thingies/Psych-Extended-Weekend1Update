@@ -355,7 +355,7 @@ class StoryMenuState extends MusicBeatState
             LoadingState.prepareToSong();
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
-			    #if !SHOW_LOADING_SCREEN FlxG.sound.music.stop(); #end
+			    if (!ClientPrefs.data.loadingScreen) FlxG.sound.music.stop();
 				LoadingState.loadAndSwitchState(new PlayState(), true);
 				if (ClientPrefs.data.FreeplayStyle == 'NF')
     				FreeplayStateNF.destroyFreeplayVocals();

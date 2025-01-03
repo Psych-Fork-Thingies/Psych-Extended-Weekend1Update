@@ -20,7 +20,11 @@ import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.ui.FlxButton;
 import MenuCharacter;
+#if FILE_DIALOG_FOR_MOBILE
+import mobile.filesystem.FileReference;
+#else
 import openfl.net.FileReference;
+#end
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.net.FileFilter;
@@ -411,7 +415,7 @@ class MenuCharacterEditorState extends MusicBeatState
 			var splittedImage:Array<String> = imageInputText.text.trim().split('_');
 			var characterName:String = splittedImage[splittedImage.length-1].toLowerCase().replace(' ', '');
 
-			#if mobile
+			#if !FILE_DIALOG_FOR_MOBILE
 			StorageUtil.saveContent("$characterName.json", data);
 			#else
 			_file = new FileReference();

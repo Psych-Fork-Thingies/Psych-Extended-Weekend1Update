@@ -63,20 +63,20 @@ class LoadingState extends MusicBeatState
 
 	override function create()
 	{
-		#if !SHOW_LOADING_SCREEN
-		while(true)
-		#end
+		if (!ClientPrefs.data.loadingScreen)
 		{
-			if (checkLoaded())
-			{
-				dontUpdate = true;
-				super.create();
-				onLoad();
-				return;
-			}
-			#if !SHOW_LOADING_SCREEN
-			Sys.sleep(0.01);
-			#end
+    		while(true)
+    		{
+    			if (checkLoaded())
+    			{
+    				dontUpdate = true;
+    				super.create();
+    				onLoad();
+    				return;
+    			}
+    			if (!ClientPrefs.data.loadingScreen)
+    			    Sys.sleep(0.01);
+    		}
 		}
 
 		#if PSYCH_WATERMARKS // PSYCH LOADING SCREEN

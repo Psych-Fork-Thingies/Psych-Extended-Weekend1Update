@@ -44,7 +44,11 @@ import lime.utils.Assets;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
+#if FILE_DIALOG_FOR_MOBILE
+import mobile.filesystem.FileReference;
+#else
 import openfl.net.FileReference;
+#end
 import openfl.utils.Assets as OpenFlAssets;
 import openfl.utils.ByteArray;
 
@@ -3136,7 +3140,7 @@ class ChartingState extends MusicBeatState
 
 		if ((data != null) && (data.length > 0))
 		{
-			#if mobile
+			#if !FILE_DIALOG_FOR_MOBILE
 			StorageUtil.saveContent(Paths.formatToSongPath(_song.song) + postfix + ".json", data.trim());
 			#else
 			_file = new FileReference();
@@ -3167,7 +3171,7 @@ class ChartingState extends MusicBeatState
 
 		if ((data != null) && (data.length > 0))
 		{
-			#if mobile
+			#if !FILE_DIALOG_FOR_MOBILE
 			StorageUtil.saveContent("events.json", data.trim());
 			#else
 			_file = new FileReference();

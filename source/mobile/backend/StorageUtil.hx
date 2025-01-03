@@ -74,6 +74,7 @@ class StorageUtil
 		}
 	}
 
+    #if !FILE_DIALOG_FOR_MOBILE
 	public static function saveContent(fileName:String, fileData:String, ?alert:Bool = true):Void
 	{
 		try
@@ -91,6 +92,7 @@ class StorageUtil
 			else
 				trace('$fileName couldn\'t be saved. (${e.message})');
 	}
+	#end
 
 	#if android
 	public static function requestPermissions():Void
