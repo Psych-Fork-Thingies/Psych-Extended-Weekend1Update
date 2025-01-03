@@ -1,10 +1,6 @@
 package backend;
 
-#if FILE_DIALOG_FOR_MOBILE
-import mobile.filesystem.FileReference;
-#else
 import openfl.net.FileReference;
-#end
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import flash.net.FileFilter;

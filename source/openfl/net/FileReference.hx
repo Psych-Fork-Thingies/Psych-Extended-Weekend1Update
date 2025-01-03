@@ -1,9 +1,8 @@
-package mobile.filesystem;
+package openfl.net;
 
 #if !flash
 import haxe.io.Path;
 import haxe.Timer;
-import openfl.net.*;
 import openfl.events.DataEvent;
 import openfl.events.Event;
 import openfl.events.EventDispatcher;

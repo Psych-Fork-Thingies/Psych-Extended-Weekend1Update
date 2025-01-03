@@ -44,11 +44,7 @@ import lime.utils.Assets;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
-#if FILE_DIALOG_FOR_MOBILE
-import mobile.filesystem.FileReference;
-#else
 import openfl.net.FileReference;
-#end
 import openfl.utils.Assets as OpenFlAssets;
 import openfl.utils.ByteArray;
 

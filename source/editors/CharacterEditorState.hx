@@ -21,11 +21,7 @@ import flixel.util.FlxColor;
 import flixel.addons.ui.*;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSpriteButton;
-#if FILE_DIALOG_FOR_MOBILE
-import mobile.filesystem.FileReference;
-#else
 import openfl.net.FileReference;
-#end
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import haxe.Json;
