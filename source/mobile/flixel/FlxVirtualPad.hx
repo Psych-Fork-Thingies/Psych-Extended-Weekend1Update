@@ -192,11 +192,11 @@ class FlxVirtualPad extends FlxSpriteGroup {
 				addActions(buttonB, FlxG.width - 86 * 3, FlxG.height - 45 * 3, "b", 0xFFCB00);								
 				addActions(buttonA, FlxG.width - 44 * 3, FlxG.height - 45 * 3, "a", 0xFF0000);
 		    case OptionsC:
-			    addActions(buttonLeft, FlxG.width - 258, FlxG.height - 85 * 3, "left", 0xFF00FF));
-				addActions(buttonRight, FlxG.width - 132, FlxG.height - 85 * 3, "right", 0xFF0000));
-			    addActions(buttonC, FlxG.width - 384, FlxG.height - 135, 'c', 0x44FF00));
-			    addActions(buttonB, FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00));
-				addActions(buttonA, FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
+			    addActions(buttonLeft, FlxG.width - 258, FlxG.height - 85 * 3, "left", 0xFF00FF);
+				addActions(buttonRight, FlxG.width - 132, FlxG.height - 85 * 3, "right", 0xFF0000);
+			    addActions(buttonC, FlxG.width - 384, FlxG.height - 135, 'c', 0x44FF00);
+			    addActions(buttonB, FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00);
+				addActions(buttonA, FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000);
 			case ALL:
 				addActions(buttonV, FlxG.width - 170 * 3, FlxG.height - 85 * 3, "v", 0x49A9B2);            
 				addActions(buttonX, FlxG.width - 128 * 3, FlxG.height - 85 * 3, "x", 0x99062D);
