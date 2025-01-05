@@ -50,7 +50,7 @@ class MusicBeatState extends FlxUIState
 		if (_virtualpad != null)
 			removeVirtualPad();
 
-		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75, ClientPrefs.data.antialiasing);
+		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75);
 		add(_virtualpad);
 
 		controls.setVirtualPadUI(_virtualpad, DPad, Action);
@@ -105,11 +105,8 @@ class MusicBeatState extends FlxUIState
 				controls.setVirtualPadNOTES(mobilec.vpad, DUO, NONE);
 				MusicBeatState.checkHitbox = false;
 			case HITBOX:
-			   if(ClientPrefs.data.hitboxmode != 'New'){
-				controls.setHitBox(mobilec.hbox);
-				}else{
-				controls.setNewHitBox(mobilec.newhbox);
-				}
+			    if(ClientPrefs.data.hitboxmode != 'New') controls.setHitBox(mobilec.hbox);
+				else controls.setNewHitBox(mobilec.newhbox);
 				MusicBeatState.checkHitbox = true;
 			default:
 		}
