@@ -114,7 +114,6 @@ class MusicBeatState extends FlxUIState
 
 		trackedinputsNOTES = controls.trackedInputsNOTES;
 		controls.trackedInputsNOTES = [];
-		_virtualpad.alpha = ClientPrefs.VirtualPadAlpha;
 
 		var camcontrol = new flixel.FlxCamera();
 		FlxG.cameras.add(camcontrol, false);

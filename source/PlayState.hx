@@ -774,7 +774,7 @@ class PlayState extends MusicBeatState
 		if (MobileCType == 'DEFAULT') {
     		addMobileControls();
     		MusicBeatState.mobilec.visible = false;
-    	    if (ClientPrefs.data.hitboxmode == 'New' && !ClientPrefs.data.hitboxhint) { MusicBeatState.mobilec.alpha = 0.000001; }
+    	    if (ClientPrefs.data.hitboxmode == 'New' && !ClientPrefs.data.hitboxhint) MusicBeatState.mobilec.alpha = 0.000001;
 		}
 		startingSong = true;
 		
