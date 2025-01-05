@@ -230,8 +230,6 @@ class FlxVirtualPad extends FlxSpriteGroup {
 				addButton(buttonB, FlxG.width - 86 * 3, FlxG.height - 45 * 3, "b", 0xFFCB00);
 			case NONE:
 		}
-		
-		alpha = ClientPrefs.controlsAlpha;
 	}
 	
 	public function addButton(buttonName:FlxButton, x:Float, y:Float, Frames:String, ColorS:Int)
