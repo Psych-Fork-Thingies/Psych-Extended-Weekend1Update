@@ -23,7 +23,7 @@ import TitleState;
 	#if android public var storageType:String = "EXTERNAL_DATA"; #end
 	public var virtualpadType:String = "New";
 	public var VirtualPadSkin:String = 'original';
-	public var VirtualPadAlpha:Float = #if mobile 0.75 #else 0 #end;
+	public var VirtualPadAlpha:Float = #if mobile 0.6 #else 0 #end;
 	public var coloredvpad:Bool = true;
 	public var extraKeyReturn1:String = 'SHIFT';
     public var extraKeyReturn2:String = 'SPACE';

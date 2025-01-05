@@ -54,7 +54,6 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	public var dPad:FlxSpriteGroup;
 	public var actions:FlxSpriteGroup;
 
-	public var orgAlpha:Float = 0.75;
 	public var addDPad:Bool = false;
 	
 	/**
@@ -64,10 +63,8 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	 * @param   ActionMode   The action buttons mode. `A_B_C` for example.
 	 */
 
-	public function new(DPad:FlxDPadMode, Action:FlxActionMode, ?alphaAlt:Float = 0.75) {
+	public function new(DPad:FlxDPadMode, Action:FlxActionMode) {
 		super();
-
-		orgAlpha = ClientPrefs.data.VirtualPadAlpha;
 
 		dPad = new FlxSpriteGroup();
 		dPad.scrollFactor.set();
@@ -233,6 +230,8 @@ class FlxVirtualPad extends FlxSpriteGroup {
 				addButton(buttonB, FlxG.width - 86 * 3, FlxG.height - 45 * 3, "b", 0xFFCB00);
 			case NONE:
 		}
+		
+		alpha = ClientPrefs.controlsAlpha;
 	}
 	
 	public function addButton(buttonName:FlxButton, x:Float, y:Float, Frames:String, ColorS:Int)
@@ -265,7 +264,6 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		button.scrollFactor.set();
 		if (ColorS != -1 && ClientPrefs.data.coloredvpad) button.color = ColorS;
 		button.antialiasing = ClientPrefs.data.antialiasing;
-		button.alpha = orgAlpha;
 		#if FLX_DEBUG
 		button.ignoreDrawDebug = true;
 		#end
@@ -279,7 +277,6 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		button.solid = false;
 		button.immovable = true;
 		button.scrollFactor.set();
-		button.alpha = orgAlpha;
 		if (ColorS != -1 && ClientPrefs.data.coloredvpad) button.color = ColorS;
 		button.antialiasing = ClientPrefs.data.antialiasing;
 		#if FLX_DEBUG

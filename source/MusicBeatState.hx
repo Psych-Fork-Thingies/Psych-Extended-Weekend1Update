@@ -50,12 +50,13 @@ class MusicBeatState extends FlxUIState
 		if (_virtualpad != null)
 			removeVirtualPad();
 
-		_virtualpad = new FlxVirtualPad(DPad, Action, 0.75);
+		_virtualpad = new FlxVirtualPad(DPad, Action);
 		add(_virtualpad);
 
 		controls.setVirtualPadUI(_virtualpad, DPad, Action);
 		trackedinputsUI = controls.trackedInputsUI;
 		controls.trackedInputsUI = [];
+		_virtualpad.alpha = ClientPrefs.VirtualPadAlpha;
 	}
 	
 	public function removeVirtualPad() {
@@ -113,6 +114,7 @@ class MusicBeatState extends FlxUIState
 
 		trackedinputsNOTES = controls.trackedInputsNOTES;
 		controls.trackedInputsNOTES = [];
+		_virtualpad.alpha = ClientPrefs.VirtualPadAlpha;
 
 		var camcontrol = new flixel.FlxCamera();
 		FlxG.cameras.add(camcontrol, false);

@@ -79,17 +79,20 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		option.onChange = resetVirtualPad;
 	}
 		
-		var option:Option = new Option('VirtualPad Alpha:', //mariomaster was here again
+		var option:Option = new Option('VirtualPad Alpha:',
 			'Changes VirtualPad Alpha -cool feature',
 			'VirtualPadAlpha',
-			'float');
-		option.scrollSpeed = 1.6;
-		option.minValue = 0;
+			'percent');
+		option.scrollSpeed = 1;
+		option.minValue = 0.001;
 		option.maxValue = 1;
-		option.changeValue = 0.01;
-		option.decimals = 2;
+		option.changeValue = 0.1;
+		option.decimals = 1;
+		option.onChange = () ->
+		{
+			_virtualpad.alpha = curOption.getValue();
+		};
 		addOption(option);
-        option.onChange = onChangePadAlpha;
 		super();
 		
 	if (ClientPrefs.data.VirtualPadAlpha != 0) {
@@ -224,12 +227,6 @@ class MobileOptionsSubState extends BaseOptionsMenu
 			lime.system.System.exit(0);
 		}
 		#end
-	}
-	
-	function onChangePadAlpha()
-	{
-    	ClientPrefs.saveSettings();
-    	_virtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
 	
 	function resetVirtualPad()
