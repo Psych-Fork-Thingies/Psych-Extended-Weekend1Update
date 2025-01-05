@@ -56,7 +56,7 @@ class MusicBeatState extends FlxUIState
 		controls.setVirtualPadUI(_virtualpad, DPad, Action);
 		trackedinputsUI = controls.trackedInputsUI;
 		controls.trackedInputsUI = [];
-		_virtualpad.alpha = ClientPrefs.VirtualPadAlpha;
+		_virtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
 	
 	public function removeVirtualPad() {

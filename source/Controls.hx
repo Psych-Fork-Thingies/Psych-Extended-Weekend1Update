@@ -529,7 +529,7 @@ class Controls extends FlxActionSet
 
 		switch (Action)
 		{
-			case A | A_C | ALL:
+			case A | ALL:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addButtonUI(action, VirtualPad.buttonA, state));
 			case B | B_X_Y | B_E:
 				inline forEachBound(Control.BACK, (action, state) -> addButtonUI(action, VirtualPad.buttonB, state));
@@ -581,7 +581,7 @@ class Controls extends FlxActionSet
 
 		switch (Action)
 		{
-			case A | A_C | ALL:
+			case A | ALL:
 				inline forEachBound(Control.ACCEPT, (action, state) -> addButtonNOTES(action, VirtualPad.buttonA, state));
 			case B | B_X_Y | B_E:
 				inline forEachBound(Control.BACK, (action, state) -> addButtonNOTES(action, VirtualPad.buttonB, state));
