@@ -46,7 +46,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	#end
 	final lastVirtualPadType:String = ClientPrefs.data.virtualpadType;
 	
-	var virtualpadTypes:Array<String> = ["New", "Old"];
+	var virtualpadTypes:Array<String> = ["New", "Old", "Newest"];
 	var virtualpadSkinList:Array<String> = CoolUtil.coolTextFile(Paths.getPreloadPath('images/mobilecontrols/virtualpad/virtualpadSkinList.txt'));
 	var virtualpadSkinListModsFolder:Array<String> = CoolUtil.coolTextFile(Paths.modsImages('virtualpad/virtualpadSkinList.txt'));
 	
@@ -86,7 +86,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		option.scrollSpeed = 1;
 		option.minValue = 0.001;
 		option.maxValue = 1;
-		option.changeValue = 0.1;
+		option.changeValue = 0.05;
 		option.decimals = 1;
 		option.onChange = () ->
 		{
