@@ -223,6 +223,32 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		}
 	}
 
+	public function createTouchButton(x:Float, y:Float, Frames:String, ColorS:Int):TouchButton
+	{
+	    var button = new TouchButton(x, y);
+		button.label = new FlxSprite();
+		button.loadGraphic(Paths.image('touchpad/bg'));
+		button.label.loadGraphic(Paths.image('touchpad/${Frames.toUpperCase()}'));
+
+		button.scale.set(0.243, 0.243);
+		button.updateHitbox();
+		button.updateLabelPosition();
+
+		button.statusBrightness = [1, 0.8, 0.4];
+		button.statusIndicatorType = BRIGHTNESS;
+		button.indicateStatus();
+
+		button.bounds.makeGraphic(Std.int(button.width - 50), Std.int(button.height - 50), FlxColor.TRANSPARENT);
+		button.centerBounds();
+
+		button.immovable = true;
+		button.solid = button.moves = false;
+		button.label.antialiasing = button.antialiasing = ClientPrefs.globalAntialiasing;
+		button.tag = Frames.toUpperCase();
+		button.color = ColorS;
+		return button;
+	}
+	
 	public function createButton(x:Float, y:Float, Frames:String, ColorS:Int):FlxButton {
 	if (ClientPrefs.data.virtualpadType == 'New')
 	{
@@ -253,28 +279,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	}
 	else if (ClientPrefs.data.virtualpadType == 'Newest')
 	{
-	    var button = new TouchButton(x, y);
-		button.label = new FlxSprite();
-		button.loadGraphic(Paths.image('touchpad/bg'));
-		button.label.loadGraphic(Paths.image('touchpad/${Frames.toUpperCase()}'));
-
-		button.scale.set(0.243, 0.243);
-		button.updateHitbox();
-		button.updateLabelPosition();
-
-		button.statusBrightness = [1, 0.8, 0.4];
-		button.statusIndicatorType = BRIGHTNESS;
-		button.indicateStatus();
-
-		button.bounds.makeGraphic(Std.int(button.width - 50), Std.int(button.height - 50), FlxColor.TRANSPARENT);
-		button.centerBounds();
-
-		button.immovable = true;
-		button.solid = button.moves = false;
-		button.label.antialiasing = button.antialiasing = ClientPrefs.globalAntialiasing;
-		button.tag = Frames.toUpperCase();
-		button.color = Color;
-		return button;
+	    createTouchButton(x, y, Frames, ColorS);
 	}
 	else // you can still use the old controls if you want
 	{
