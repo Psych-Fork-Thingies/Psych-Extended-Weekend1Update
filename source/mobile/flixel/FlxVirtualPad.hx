@@ -259,18 +259,18 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	//Thanks Cagatay but You Suck because that's doesn't have a VirtualTouchPad Support -_-
 	public function addActions(buttonName:FlxButton, x:Float, y:Float, Frames:String, ColorS:Int):Dynamic
 	{
-	    buttonName = createButton(x, y, Frames, ColorS);
-	    add(buttonName);
-	    actions.add(buttonName);
-	    return buttonName;
+	    buttonsString.set(buttonName, createButton(x, y, Frames, ColorS));
+        add(buttonsString.get(buttonName));
+        actions.add(buttonsString.get(buttonName));
+	    return buttonsString.get(buttonName);
 	}
 	
 	public function addDPad(buttonName:FlxButton, x:Float, y:Float, Frames:String, ColorS:Int):Dynamic
 	{
-	    buttonName = createButton(x, y, Frames, ColorS);
-	    add(buttonName);
-	    dPad.add(buttonName);
-	    return buttonName;
+        buttonsString.set(buttonName, createButton(x, y, Frames, ColorS));
+        add(buttonsString.get(buttonName));
+        dPad.add(buttonsString.get(buttonName));
+	    return buttonsString.get(buttonName);
 	}
 	
 	/* you can use this for VirtualTouchPad Support but I'm using VirtualPad because I'm lazy, so that's useless
