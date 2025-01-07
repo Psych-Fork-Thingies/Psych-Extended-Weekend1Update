@@ -53,6 +53,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	
 	public var dPad:FlxSpriteGroup;
 	public var actions:FlxSpriteGroup;
+	public var buttonsString:Map<String, FlxButton>;
 	
 	/**
 	 * Create a gamepad.
@@ -63,6 +64,38 @@ class FlxVirtualPad extends FlxSpriteGroup {
 
 	public function new(DPad:FlxDPadMode, Action:FlxActionMode) {
 		super();
+		
+		// DPad Buttons
+    	buttonsString = new Map<String, FlxButton>();
+    	buttonsString.set("buttonLeft", buttonLeft);
+    	buttonsString.set("buttonUp", buttonUp);
+    	buttonsString.set("buttonRight", buttonRight);
+    	buttonsString.set("buttonDown", buttonDown);
+    		
+    	// Actions buttons
+    	buttonsString.set("buttonA", buttonA);
+    	buttonsString.set("buttonB", buttonB);
+    	buttonsString.set("buttonC", buttonC);
+    	buttonsString.set("buttonD", buttonD);
+    	buttonsString.set("buttonE", buttonE);
+    	buttonsString.set("buttonM", buttonM);
+    	buttonsString.set("buttonP", buttonP);
+    	buttonsString.set("buttonV", buttonV);
+    	buttonsString.set("buttonX", buttonX);
+    	buttonsString.set("buttonY", buttonY);
+    	buttonsString.set("buttonZ", buttonZ);
+    	buttonsString.set("buttonF", buttonF);
+    	buttonsString.set("buttonG", buttonG);
+    		
+    	//PAD DUO MODE
+    	buttonsString.set("buttonLeft2", buttonLeft2);
+    	buttonsString.set("buttonUp2", buttonUp2);
+    	buttonsString.set("buttonRight2", buttonRight2);
+    	buttonsString.set("buttonDown2", buttonDown2);
+    	
+    	buttonsString.set("buttonCEUp", buttonCEUp);
+    	buttonsString.set("buttonCEDown", buttonCEDown);
+    	buttonsString.set("buttonCEG", buttonCEG);
 
 		dPad = new FlxSpriteGroup();
 		dPad.scrollFactor.set();
@@ -225,10 +258,20 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	
 	//Thanks Cagatay but You Suck because that's doesn't have a VirtualTouchPad Support -_-
 	public function addActions(buttonName:FlxButton, x:Float, y:Float, Frames:String, ColorS:Int):Dynamic
-	    return actions.add(add(buttonName = createButton(x, y, Frames, ColorS)));
+	{
+	    buttonName = createButton(x, y, Frames, ColorS);
+	    add(buttonName);
+	    actions.add(buttonName);
+	    return buttonName;
+	}
 	
 	public function addDPad(buttonName:FlxButton, x:Float, y:Float, Frames:String, ColorS:Int):Dynamic
-	    return dPad.add(add(buttonName = createButton(x, y, Frames, ColorS)));
+	{
+	    buttonName = createButton(x, y, Frames, ColorS);
+	    add(buttonName);
+	    dPad.add(buttonName);
+	    return buttonName;
+	}
 	
 	/* you can use this for VirtualTouchPad Support but I'm using VirtualPad because I'm lazy, so that's useless
 	public function createMobileButton(x:Float, y:Float, Frames:String, ColorS:Int):Dynamic
