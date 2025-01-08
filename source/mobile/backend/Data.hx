@@ -23,7 +23,7 @@ enum FlxDPadMode {
 	LEFT_RIGHT;
 	UP_LEFT_RIGHT;
 	FULL;
-	ALL;
+	ChartingStateC;
 	OptionsC;
 	RIGHT_FULL;
 	DUO;
@@ -44,7 +44,7 @@ enum FlxActionMode {
 	A_B_C_X_Y_Z;
 	FULL;
 	OptionsC;
-	ALL;
+	ChartingStateC;
 	controlExtend;
 	B_E;
 	NONE;
