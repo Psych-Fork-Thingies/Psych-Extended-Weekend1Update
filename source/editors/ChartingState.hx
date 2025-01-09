@@ -1948,7 +1948,7 @@ class ChartingState extends MusicBeatState
 
 				var holdingShift:Float = 1;
 				if (FlxG.keys.pressed.CONTROL) holdingShift = 0.25;
-				else if (virtualpad.buttonY.pressed || FlxG.keys.pressed.SHIFT) holdingShift = 4;
+				else if (_virtualpad.buttonY.pressed || FlxG.keys.pressed.SHIFT) holdingShift = 4;
 				var daTime:Float = 700 * FlxG.elapsed * holdingShift;
 
 				if (_virtualpad.buttonUp.pressed || FlxG.keys.pressed.W)
@@ -1983,7 +1983,7 @@ class ChartingState extends MusicBeatState
 
 			var style = currentType;
 
-			if (virtualpad.buttonY.pressed || FlxG.keys.pressed.SHIFT) {
+			if (_virtualpad.buttonY.pressed || FlxG.keys.pressed.SHIFT) {
 				style = 3;
 			}
 
