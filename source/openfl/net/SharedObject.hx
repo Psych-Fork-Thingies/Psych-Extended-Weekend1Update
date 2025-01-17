@@ -149,7 +149,7 @@ class SharedObject extends EventDispatcher
 
 	// @:noCompletion @:dox(hide) public static function getDiskUsage (url:String):Int;
 
-	public static function getLocal(name:String, localPath:String = null, secure:Bool = false):SharedObject
+	public static function getLocal(name:String, localPath:String = null, secure:Bool = false /* note: unsupported**/):SharedObject
 	{
 		var illegalValues = [" ", "~", "%", "&", "\\", ";", ":", "\"", "'", ",", "<", ">", "?", "#"];
 		var allowed = true;
@@ -257,9 +257,7 @@ class SharedObject extends EventDispatcher
 
 		return null;
 	}
-	#end
 
-	#if !openfl_strict
 	public function send(args:Array<Dynamic>):Void
 	{
 		openfl.utils._internal.Lib.notImplemented();
