@@ -34,7 +34,6 @@ import haxe.Exception;
 #end
 class SharedObject extends EventDispatcher
 {
-    #if PUBLIC_SAVE_DIRECTORY
 	public static var defaultObjectEncoding:ObjectEncoding = ObjectEncoding.DEFAULT;
 
 	// @:noCompletion @:dox(hide) @:require(flash11_7) public static var preventBackup:Bool;
@@ -150,7 +149,7 @@ class SharedObject extends EventDispatcher
 
 	// @:noCompletion @:dox(hide) public static function getDiskUsage (url:String):Int;
 
-	public static function getLocal(name:String, localPath:String = null, secure:Bool = false /* note: unsupported**/):SharedObject
+	public static function getLocal(name:String, localPath:String = null, secure:Bool = false):SharedObject
 	{
 		var illegalValues = [" ", "~", "%", "&", "\\", ";", ":", "\"", "'", ",", "<", ">", "?", "#"];
 		var allowed = true;
@@ -258,7 +257,9 @@ class SharedObject extends EventDispatcher
 
 		return null;
 	}
+	#end
 
+	#if !openfl_strict
 	public function send(args:Array<Dynamic>):Void
 	{
 		openfl.utils._internal.Lib.notImplemented();
@@ -278,7 +279,8 @@ class SharedObject extends EventDispatcher
 	@:noCompletion private static function __getPath(localPath:String, name:String):String
 	{
 		#if lime
-		var path = #if mobile SaveUtil.getSaveDirectory() + "__sol/" #else System.applicationStorageDirectory + '/' #end + localPath + "/";
+		
+		var path = #if (mobile && PUBLIC_SAVE_DIRECTORY) SaveUtil.getSaveDirectory() + "__sol/" #else System.applicationStorageDirectory + '/' #end + localPath + "/";
 
 		name = StringTools.replace(name, "//", "/");
 		name = StringTools.replace(name, "//", "/");
@@ -417,7 +419,6 @@ class SharedObject extends EventDispatcher
 			return 0;
 		}
 	}
-	#end
 }
 #else
 typedef SharedObject = flash.net.SharedObject;
