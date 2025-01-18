@@ -58,7 +58,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		addOption(option);
 		
 		var option:Option = new Option('Loading Screens', //Name
-			"EXPERIMENTAL: Allows Loading Screen, speeds up loading times,\nbut might be incompatible with older $Main.platform" + ".", //Description
+			"EXPERIMENTAL: Allows Loading Screen, speeds up loading times,\nbut might be incompatible with older" + Main.platform + ".", //Description
 			'loadingScreen',
 			'bool');
 		addOption(option);
