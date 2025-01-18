@@ -6,7 +6,6 @@ import Discord.DiscordClient;
 // import animateatlas.AtlasFrameMaker;
 #if flxanimate
 import flxanimate.*;
-import flxanimate.FlxAnimate as OriginalFlxAnimate;
 #end
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -847,7 +846,7 @@ class CharacterEditorState extends MusicBeatState
 
 		if(Paths.fileExists('images/' + char.imageFile + '/Animation.json', TEXT))
 		{
-			char.atlas = new OriginalFlxAnimate();
+			char.atlas = new FlxAnimate();
 			char.atlas.showPivot = false;
 			try
 			{
