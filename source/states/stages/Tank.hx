@@ -300,19 +300,19 @@ class Tank extends BaseStage
 			FlxTween.tween(FlxG.camera, {zoom: 0.9 * 1.2 * 1.2}, 2.25, {ease: FlxEase.quadInOut});
 
 			pico.anim.play('dieBitch', true);
-			pico.anim.onComplete.add(function()
+			pico.anim.onComplete = function()
 			{
 				pico.anim.play('picoAppears', true);
-				pico.anim.onComplete.add(function()
+				pico.anim.onComplete = function()
 				{
 					pico.anim.play('picoEnd', true);
-					pico.anim.onComplete.add(function()
+					pico.anim.onComplete = function()
 					{
 						gfGroup.alpha = 1;
 						pico.visible = false;
 						pico.anim.onComplete = null;
-					});
-				});
+					}
+				};
 
 				boyfriendGroup.alpha = 1;
 				boyfriendCutscene.visible = false;
@@ -326,7 +326,7 @@ class Tank extends BaseStage
 						boyfriend.animation.curAnim.finish(); //Instantly goes to last frame
 					}
 				};
-			});
+			};
 		});
 
 		cutsceneHandler.timer(17.5, function()
