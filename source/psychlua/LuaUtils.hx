@@ -39,6 +39,84 @@ class LuaUtils
 			ease: getTweenEaseByString(options.ease)
 		};
 	}
+	
+	public static function setVarInArrayAlter(instance:Dynamic, variable:String, value:Dynamic, allowMaps:Bool = false):Any
+	{
+		var splitProps:Array<String> = variable.split('[');
+		if(splitProps.length > 1)
+		{
+			var target:Dynamic = null;
+			if(PlayState.instance.variables.exists(splitProps[0]))
+			{
+				var retVal:Dynamic = PlayState.instance.variables.get(splitProps[0]);
+				if(retVal != null)
+					target = retVal;
+			}
+			else target = Reflect.getProperty(instance, splitProps[0]);
+
+			for (i in 1...splitProps.length)
+			{
+				var j:Dynamic = splitProps[i].substr(0, splitProps[i].length - 1);
+				if(i >= splitProps.length-1) //Last array
+					target[j] = value;
+				else //Anything else
+					target = target[j];
+			}
+			return target;
+		}
+
+		if(allowMaps && isMap(instance))
+		{
+			//trace(instance);
+			instance.set(variable, value);
+			return value;
+		}
+
+		if(PlayState.instance.variables.exists(variable))
+		{
+			PlayState.instance.variables.set(variable, value);
+			return value;
+		}
+		Reflect.setProperty(instance, variable, value);
+		return value;
+	}
+	public static function getVarInArrayAlter(instance:Dynamic, variable:String, allowMaps:Bool = false):Any
+	{
+		var splitProps:Array<String> = variable.split('[');
+		if(splitProps.length > 1)
+		{
+			var target:Dynamic = null;
+			if(PlayState.instance.variables.exists(splitProps[0]))
+			{
+				var retVal:Dynamic = PlayState.instance.variables.get(splitProps[0]);
+				if(retVal != null)
+					target = retVal;
+			}
+			else
+				target = Reflect.getProperty(instance, splitProps[0]);
+
+			for (i in 1...splitProps.length)
+			{
+				var j:Dynamic = splitProps[i].substr(0, splitProps[i].length - 1);
+				target = target[j];
+			}
+			return target;
+		}
+		
+		if(allowMaps && isMap(instance))
+		{
+			//trace(instance);
+			return instance.get(variable);
+		}
+
+		if(PlayState.instance.variables.exists(variable))
+		{
+			var retVal:Dynamic = PlayState.instance.variables.get(variable);
+			if(retVal != null)
+				return retVal;
+		}
+		return Reflect.getProperty(instance, variable);
+	}
 
 	public static function setVarInArray(instance:Dynamic, variable:String, value:Dynamic):Any
 	{
@@ -154,6 +232,16 @@ class LuaUtils
 		for (i in 1...end) {
 			obj = getVarInArray(obj, killMe[i]);
 		}
+		return obj;
+	}
+	
+	public static function getPropertyLoopAlter(split:Array<String>, ?checkForTextsToo:Bool = true, ?getProperty:Bool=true, ?allowMaps:Bool = false):Dynamic
+	{
+		var obj:Dynamic = getObjectDirectly(split[0], checkForTextsToo);
+		var end = split.length;
+		if(getProperty) end = split.length-1;
+
+		for (i in 1...end) obj = getVarInArrayAlter(obj, split[i], allowMaps);
 		return obj;
 	}
 
@@ -418,5 +506,11 @@ class LuaUtils
 			case 'camother' | 'other': return PlayState.instance.camOther;
 		}
 		return PlayState.instance.camGame;
+	}
+	
+	public static function isMap(variable:Dynamic)
+	{
+		if(variable.exists != null && variable.keyValueIterator != null) return true;
+		return false;
 	}
 }

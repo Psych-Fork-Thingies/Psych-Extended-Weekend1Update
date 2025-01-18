@@ -841,22 +841,7 @@ class CharacterEditorState extends MusicBeatState
 		}
 		else
 		{
-			var split:Array<String> = char.imageFile.split(',');
-			var charFrames:FlxAtlasFrames = Paths.getAtlas(split[0].trim());
-			
-			if(split.length > 1)
-			{
-				var original:FlxAtlasFrames = charFrames;
-				charFrames = new FlxAtlasFrames(charFrames.parent);
-				charFrames.addAtlas(original, true);
-				for (i in 1...split.length)
-				{
-					var extraFrames:FlxAtlasFrames = Paths.getAtlas(split[i].trim());
-					if(extraFrames != null)
-						charFrames.addAtlas(extraFrames, true);
-				}
-			}
-			char.frames = charFrames;
+			char.frames = Paths.getMultiAtlas(char.imageFile.split(','));
 		}
 
 		if(char.animationsArray != null && char.animationsArray.length > 0) {

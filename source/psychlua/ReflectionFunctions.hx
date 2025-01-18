@@ -30,6 +30,22 @@ class ReflectionFunctions
 			LuaUtils.setVarInArray(LuaUtils.getTargetInstance(), variable, value);
 			return true;
 		});
+		//Alternative Property Callbacks for Lua
+		Lua_helper.add_callback(lua, "getPropertyAlternative", function(variable:String) {
+			var split:Array<String> = variable.split('.');
+			if(split.length > 1)
+				return LuaUtils.getVarInArrayAlter(LuaUtils.getPropertyLoopAlter(split, true, true, allowMaps), split[split.length-1], allowMaps);
+			return LuaUtils.getVarInArrayAlter(LuaUtils.getTargetInstance(), variable, allowMaps);
+		});
+		Lua_helper.add_callback(lua, "setPropertyAlternative", function(variable:String, value:Dynamic) {			
+			var split:Array<String> = variable.split('.');
+			if(split.length > 1) {
+				LuaUtils.setVarInArrayAlter(LuaUtils.getPropertyLoopAlter(split, true, true, allowMaps), split[split.length-1], value, allowMaps);
+				return true;
+			}
+			LuaUtils.setVarInArrayAlter(LuaUtils.getTargetInstance(), variable, value, allowMaps);
+			return true;
+		});
 		Lua_helper.add_callback(lua, "getPropertyFromGroup", function(obj:String, index:Int, variable:Dynamic) {
 			var shitMyPants:Array<String> = obj.split('.');
 			var realObject:Dynamic = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);

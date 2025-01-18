@@ -410,6 +410,24 @@ class Paths
 		}
 		return getPackerAtlas(key, library);
 	}
+	
+	static public function getMultiAtlas(keys:Array<String>, ?parentFolder:String = null):FlxAtlasFrames
+	{
+		var parentFrames:FlxAtlasFrames = Paths.getAtlas(keys[0].trim());
+		if(keys.length > 1)
+		{
+			var original:FlxAtlasFrames = parentFrames;
+			parentFrames = new FlxAtlasFrames(parentFrames.parent);
+			parentFrames.addAtlas(original, true);
+			for (i in 1...keys.length)
+			{
+				var extraFrames:FlxAtlasFrames = Paths.getAtlas(keys[i].trim(), parentFolder);
+				if(extraFrames != null)
+					parentFrames.addAtlas(extraFrames, true);
+			}
+		}
+		return parentFrames;
+	}
 
 	inline static public function getSparrowAtlas(key:String, ?library:String):FlxAtlasFrames
 	{
@@ -640,19 +658,17 @@ class Paths
 		var changedAnimJson = false;
 		var changedAtlasJson = false;
 		var changedImage = false;
-
+		
 		if(spriteJson != null)
 		{
 			changedAtlasJson = true;
 			spriteJson = File.getContent(spriteJson);
 		}
-
 		if(animationJson != null) 
 		{
 			changedAnimJson = true;
 			animationJson = File.getContent(animationJson);
 		}
-
 		// is folder or image path
 		if(Std.isOfType(folderOrImg, String))
 		{
@@ -661,35 +677,32 @@ class Paths
 			{
 				var st:String = '$i';
 				if(i == 0) st = '';
-
 				if(!changedAtlasJson)
 				{
-					spriteJson = getTextFromFile('images/$originalPath/spritemap1.json'); //I used spritemap1 because spritemap$st doesn't work.
+					spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json');
 					if(spriteJson != null)
 					{
 						//trace('found Sprite Json');
 						changedImage = true;
 						changedAtlasJson = true;
-						folderOrImg = Paths.image('$originalPath/spritemap1');
+						folderOrImg = Paths.image('$originalPath/spritemap$st');
 						break;
 					}
 				}
-				else if(Paths.fileExists('images/$originalPath/spritemap1.png', IMAGE))
+				else if(Paths.fileExists('images/$originalPath/spritemap$st.png', IMAGE))
 				{
 					//trace('found Sprite PNG');
 					changedImage = true;
-					folderOrImg = Paths.image('$originalPath/spritemap1');
+					folderOrImg = Paths.image('$originalPath/spritemap$st');
 					break;
 				}
 			}
-
 			if(!changedImage)
 			{
 				//trace('Changing folderOrImg to FlxGraphic');
 				changedImage = true;
 				folderOrImg = Paths.image(originalPath);
 			}
-
 			if(!changedAnimJson)
 			{
 				//trace('found Animation Json');
@@ -697,12 +710,22 @@ class Paths
 				animationJson = getTextFromFile('images/$originalPath/Animation.json');
 			}
 		}
-
 		//trace(folderOrImg);
 		//trace(spriteJson);
 		//trace(animationJson);
 		spr.loadAtlasEx(folderOrImg, spriteJson, animationJson);
 	}
+	/*private static function getContentFromFile(path:String):String
+	{
+		var onAssets:Bool = false;
+		var path:String = Paths.getPath(path, TEXT, true);
+		if(FileSystem.exists(path) || (onAssets = true && Assets.exists(path, TEXT)))
+		{
+			//trace('Found text: $path');
+			return !onAssets ? File.getContent(path) : Assets.getText(path);
+		}
+		return null;
+	}*/
 	#end
 	#end
 }
