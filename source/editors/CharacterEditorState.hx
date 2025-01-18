@@ -547,7 +547,7 @@ class CharacterEditorState extends MusicBeatState
 		vocalsInputText = new FlxUIInputText(15, healthIconInputText.y + 35, 75, char.vocalsFile ?? '', 8);
 		singDurationStepper = new FlxUINumericStepper(15, vocalsInputText.y + 45, 0.1, 4, 0, 999, 1);
 
-		scaleStepper = new FlxUINumericStepper(15, singDurationStepper.y + 40, 0.1, 1, 0.05, 10, 2);
+		scaleStepper = new FlxUINumericStepper(15, singDurationStepper.y + 40, 0.1, 1, 0.05, 10, 1);
 
 		flipXCheckBox = new FlxUICheckBox(singDurationStepper.x + 80, singDurationStepper.y, null, null, "Flip X", 50);
 		flipXCheckBox.checked = char.flipX;
@@ -657,33 +657,13 @@ class CharacterEditorState extends MusicBeatState
 		});
 
 		var addUpdateButton:FlxButton = new FlxButton(70, animationIndicesInputText.y + 60, "Add/Update", function() {
-		    var indicesText:String = animationIndicesInputText.text.trim();
 			var indices:Array<Int> = [];
-			if(indicesText.length > 0)
-			{
-				var indicesStr:Array<String> = animationIndicesInputText.text.trim().split(',');
-				if(indicesStr.length > 0)
-				{
-					for (ind in indicesStr)
-					{
-						if(ind.contains('-'))
-						{
-							var splitIndices:Array<String> = ind.split('-');
-							var indexStart:Int = Std.parseInt(splitIndices[0]);
-							if(Math.isNaN(indexStart) || indexStart < 0) indexStart = 0;
-	
-							var indexEnd:Int = Std.parseInt(splitIndices[1]);
-							if(Math.isNaN(indexEnd) || indexEnd < indexStart) indexEnd = indexStart;
-	
-							for (index in indexStart...indexEnd+1)
-								indices.push(index);
-						}
-						else
-						{
-							var index:Int = Std.parseInt(ind);
-							if(!Math.isNaN(index) && index > -1)
-								indices.push(index);
-						}
+			var indicesStr:Array<String> = animationIndicesInputText.text.trim().split(',');
+			if(indicesStr.length > 1) {
+				for (i in 0...indicesStr.length) {
+					var index:Int = Std.parseInt(indicesStr[i]);
+					if(indicesStr[i] != null && indicesStr[i] != '' && !Math.isNaN(index) && index > -1) {
+						indices.push(index);
 					}
 				}
 			}
@@ -840,7 +820,6 @@ class CharacterEditorState extends MusicBeatState
 	function reloadCharacterImage() {
 	    var lastAnim:String = char.getAnimationName();
 		var anims:Array<AnimArray> = char.animationsArray.copy();
-		
 		char.atlas = FlxDestroyUtil.destroy(char.atlas);
 		char.isAnimateAtlas = false;
 		char.color = FlxColor.WHITE;
