@@ -168,6 +168,14 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	option.onChange = () -> FlxG.scaleMode = new MobileScaleMode();
 	addOption(option);
 	#end
+	
+	#if debugBuild
+	var option:Option = new Option('Keep My Files',
+		'If checked, your files won't remove when you changed StorageType (only debug build)',
+		'KeepMyFiles',
+		'bool');
+	addOption(option);
+	#end
 		
 	#if android
 	var option:Option = new Option('Storage Type',
@@ -190,7 +198,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		
     	try
     	{
-    		if (lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE')
+    		if ((lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE') #if debugBuild && !ClientPrefs.data.KeepMyFiles #end)
     		Sys.command('rm', ['-rf', lastStoragePath]);
     	}
     	catch (e:haxe.Exception)
