@@ -142,7 +142,9 @@ class MobileExtraControl extends MusicBeatSubstate
 		if (back){
 		    if (isMain){
 		        ClientPrefs.saveSettings();
-                close();
+                FlxTransitionableState.skipNextTransIn = true;
+    			FlxTransitionableState.skipNextTransOut = true;
+    			CustomSwitchState.switchMenus('Options');
 		    } else {
 		        isMain = true;
 		        percent = chooseNum = typeNum = 0;
