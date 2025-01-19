@@ -171,7 +171,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	
 	#if debugBuild
 	var option:Option = new Option('Keep My Files',
-		'If checked, your files won't remove when you changed StorageType (only debug build)',
+		"If checked, your files won't remove when you changed StorageType (only debug build)",
 		'KeepMyFiles',
 		'bool');
 	addOption(option);
