@@ -2221,9 +2221,15 @@ class PlayState extends MusicBeatState
 		}
 		
 		if (ClientPrefs.data.PauseMenuStyle == 'NovaFlare')
-		    openSubState(new PauseSubStateNOVA());
+		{
+		    if (FileSystem.exists(Paths.getScriptPath('substates/PauseSubStateNOVA.hx'))) openSubState(new ScriptSubstate('PauseSubStateNOVA'));
+		    else openSubState(new PauseSubStateNOVA());
+		}
 		else
-		    openSubState(new PauseSubState());
+		{
+		    if (FileSystem.exists(Paths.getScriptPath('substates/PauseSubState.hx'))) openSubState(new ScriptSubstate('PauseSubState'));
+		    else openSubState(new PauseSubState());
+		}
 
 		#if desktop
 		DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());

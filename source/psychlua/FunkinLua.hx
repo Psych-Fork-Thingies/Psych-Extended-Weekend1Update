@@ -79,6 +79,7 @@ class FunkinLua {
 	
 	#if hscript
 	public var hscript_new:HScript_New = null;
+	public var statehscript:StateHScript = null;
 	public static var hscript_old:HScript_Old = null;
 	#end
 	
@@ -1804,6 +1805,11 @@ class FunkinLua {
 		{
 			hscript.destroy();
 			hscript = null;
+		}
+		if(statehscript != null)
+		{
+			statehscript.destroy();
+			statehscript = null;
 		}
 		#end
 		

@@ -38,9 +38,14 @@
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
-	<set name="BUILD_DIR" value="export/debug" if="debug" />
-	<set name="BUILD_DIR" value="export/release" unless="debug" />
+	<set name="BUILD_DIR" value="/export/debug" if="debug" />
+	<set name="BUILD_DIR" value="export/release" unless="debug || termux" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
+	
+	<!-- For Termux -->
+	<set name="BUILD_DIR" value="/root/PsychExtended/export/release" if='termux' unless="debug" />
+	<!-- Alternative -->
+	<!-- <set name="BUILD_DIR" value="/storage/emulated/0/.PsychEngine/export/release" if='termux' unless="debug" /> -->
 
 	<classpath name="source" />
 	
@@ -120,8 +125,8 @@
 	</section>
 	
 	<section if="MODS_ALLOWED">
-		<assets path='example_mods' rename='mods' embed='false' type='template'/>
-		<assets path='example_modpack' rename='modpack' embed='false' type='template'/>
+		<assets path='example_mods' rename='mods' embed='false'/>
+		<assets path='example_modpack' rename='modpack' embed='false'/>
 	</section>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 	<!-- <template path='mods' /> -->
@@ -214,6 +219,7 @@
 	
 	<!-- Do whatever you want I'm tired uninstall and install everytime -->
 	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
+	<android target-sdk-version="34" if="termux"/>
 	
 	<!--Macro fixes-->
 	<haxeflag name="--macro" value="allowPackage('flash')" />

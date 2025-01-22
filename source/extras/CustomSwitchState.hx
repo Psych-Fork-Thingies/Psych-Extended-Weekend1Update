@@ -7,7 +7,12 @@ class CustomSwitchState //Now You Can Add and Remove Custom Menus More Easier Th
 	    FunkinLua.FPSCounterText = null;
 	    if (skipTransCustom == 'TransIn' || skipTrans) FlxTransitionableState.skipNextTransIn = true;
         if (skipTransCustom == 'TransOut' || skipTrans) FlxTransitionableState.skipNextTransOut = true;
-    	
+        
+        var FileName:String = Type + 'State';
+      //Check
+      if (FileSystem.exists(Paths.getScriptPath('states/' + FileName + '.hx'))) MusicBeatState.switchState(new ScriptState(FileName));
+	  else
+	  {
     	//OMG 😱 Rewrited?
     	switch (Type)
 		{
@@ -36,5 +41,6 @@ class CustomSwitchState //Now You Can Add and Remove Custom Menus More Easier Th
             case 'AchievementsMenu':
                 LoadingState.loadAndSwitchState(new AchievementsMenuState());
         }
+      }
 	}
 }

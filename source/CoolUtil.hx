@@ -15,6 +15,7 @@ import sys.FileSystem;
 #else
 import openfl.utils.Assets;
 #end
+import haxe.Json;
 
 class CoolUtil
 {
@@ -363,6 +364,44 @@ class CoolUtil
 		}
 
 		return daReturn;
+	}
+	
+	public static function fpsLerp(v1:Float, v2:Float, ratio:Float)
+	{
+		return FlxMath.lerp(v1, v2, getFPSRatio(ratio));
+	}
+
+	public static function getFPSRatio(ratio:Float)
+	{
+		return FlxMath.bound(ratio * FlxG.elapsed * 60, 0, 1);
+	}
+	
+	public static function askToGemini(key:String, input:String):String
+	{
+		var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + key;
+
+		var jsonData = '{ "contents": [ { "parts": [ { "text": "' + input + '" } ] } ] }';
+	
+		var command = [
+			"curl",
+			"-X", "POST",
+			"-H", "Content-Type: application/json",
+			"-d", jsonData,
+			url
+		];
+	
+		var process = new Process(command[0], command.slice(1));
+		var output = process.stdout.readAll().toString();
+		process.close();
+
+		try
+		{
+			var response = Json.parse(output);
+	
+			return response.candidates[0].content.parts[0].text;
+		} catch(e:Dynamic) {
+			return 'Error: ' + e;
+		}
 	}
 	
 	public static function showPopUp(message:String, title:String):Void

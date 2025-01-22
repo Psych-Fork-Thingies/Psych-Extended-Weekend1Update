@@ -32,6 +32,19 @@ class MusicBeatState extends FlxUIState
 
 	private var curDecStep:Float = 0;
 	private var curDecBeat:Float = 0;
+	
+	public function resetMusicVars()
+	{
+		curSection = 0;
+		stepsToDo = 0;
+	
+		curStep = 0;
+		curBeat = 0;
+	
+		curDecStep = 0;
+		curDecBeat = 0;
+	}
+	
 	public var controls(get, never):Controls;
 	public static var checkHitbox:Bool = false;
 

@@ -10,6 +10,9 @@ import stages.*;
 
 import shaders.flixel.system.FlxShader;
 
+//scripting
+import scripting.*;
+
 // Extra
 import extras.*; //For CustomSwitchState
 import extras.states.*; //Extra States
