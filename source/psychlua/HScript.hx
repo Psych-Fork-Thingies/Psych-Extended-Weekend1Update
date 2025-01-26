@@ -84,6 +84,8 @@ class HScript extends SScript
 		set('FlxG', flixel.FlxG);
 		set('FlxMath', flixel.math.FlxMath);
 		set('FlxSprite', flixel.FlxSprite);
+		set('FlxSound', flixel.system.FlxSound);
+		set('SwipeUtil', mobile.backend.SwipeUtil);
 		set('FlxText', flixel.text.FlxText);
 		set('FlxCamera', flixel.FlxCamera);
 		set('PsychCamera', backend.PsychCamera);
@@ -148,23 +150,6 @@ class HScript extends SScript
 			#end
 			FunkinLua.customFunctions.set(name, func);
 		});
-		
-		#if LUAVIRTUALPAD_ALLOWED
-		set('addVirtualPad', function(DPad:String, Action:String):Void
-		{
-		    PlayState.instance.addLuaVirtualPad(MusicBeatState.dpadMode.get(DPad), MusicBeatState.actionMode.get(Action));
-		});
-		
-		set('addVirtualPadCamera', function():Void
-		{
-		    PlayState.instance.addLuaVirtualPadCamera();
-		});
-		
-		set('removeVirtualPad', function():Void
-		{
-		    PlayState.instance.removeLuaVirtualPad();
-		});
-		#end
 
 		// tested
 		set('createCallback', function(name:String, func:Dynamic, ?funk:FunkinLua = null)

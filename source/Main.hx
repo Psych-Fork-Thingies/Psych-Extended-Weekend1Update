@@ -127,13 +127,17 @@ class Main extends Sprite
 		if (game.zoom == -1.0)
 			game.zoom = 1.0;
 		#end
+		
+		var SelectedState:Dynamic = game.initialState;
+		if (FileSystem.exists(Paths.getScriptPath('states/TitleState.hx')) || FileSystem.exists(Paths.modFolders('scripts/states/TitleState.hx')) || FileSystem.exists(Paths.modpackFolders('scripts/states/TitleState.hx'))) SelectedState = MainState;
+		else SelectedState = game.initialState;
 
 		FlxG.save.bind('funkin', CoolUtil.getSavePath());
 		
 		Highscore.load();
 		ClientPrefs.loadDefaultKeys();
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
-		addChild(new FlxGame(game.width, game.height, #if (mobile && MODS_ALLOWED) CopyState.checkExistingFiles() ? game.initialState : CopyState #else game.initialState #end, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
+		addChild(new FlxGame(game.width, game.height, #if (mobile && MODS_ALLOWED) CopyState.checkExistingFiles() ? SelectedState : CopyState #else SelectedState #end, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
         // NovaFlare Engine FPS Counter
         fpsVarNova = new FPSNova(5, 5);

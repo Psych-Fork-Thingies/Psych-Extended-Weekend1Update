@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="FNF': Psych Extended" file="PsychExtended" packageName="com.kraloyuncu.psychextended.debug" package="com.kraloyuncu.psychextended.debug" main="Main" version="0.2.8" company="KralOyuncu" if="debugBuild"/>
+	<app title="FNF': Psych Extended Debug" file="PsychExtended" packageName="com.kraloyuncu.psychextended.debug" package="com.kraloyuncu.psychextended.debug" main="Main" version="0.2.8" company="KralOyuncu" if="debugBuild"/>
 	<app title="FNF': Psych Extended" file="PsychExtended" packageName="com.kraloyuncu.psychextended" package="com.kraloyuncu.psychextended" main="Main" version="0.2.8" company="KralOyuncu" unless="debugBuild"/>
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
@@ -38,7 +38,7 @@
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
-	<set name="BUILD_DIR" value="/export/debug" if="debug" />
+	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug || termux" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
 	
@@ -51,6 +51,7 @@
 	
 	<!-- PSYCH EXTENDED CUSTOMIZATION -->
 	<define name="BASE_GAME_ASSETS" if="finalBuild" />
+	<define name="LUAVIRTUALPAD_ALLOWED" if="desktop || mobile" />
 	<!-- <define name="FILE_DIALOG_FOR_MOBILE" /> -->
 	<define name="PsychExtended_Extras" unless="extras_disabled"/> <!-- Delete this if you want to remove Extra Features (if you are making source mod, this will be usefull) -->
 	<define name="HIDE_CURSOR" if="mobile" /> <!-- DELETE THIS IF YOU WANT TO SEE CURSOR IN MOBILE BUILDS -->

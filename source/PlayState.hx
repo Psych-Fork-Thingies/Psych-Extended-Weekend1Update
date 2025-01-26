@@ -4114,7 +4114,7 @@ class PlayState extends MusicBeatState
 	
 	public function addLuaVirtualPadCamera()
 	{
-		addLuaVirtualPadCamera();
+		addVirtualPadCamera();
 	}
 	
 	public function removeLuaVirtualPad()

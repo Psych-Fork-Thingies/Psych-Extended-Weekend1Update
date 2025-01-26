@@ -26,6 +26,11 @@ import tea.SScript;
 class ScriptSubstate extends MusicBeatSubstate
 {
     public static var targetFileName:String; 
+    
+    public static var _luavirtualpad:FlxVirtualPad;
+    
+    public static var dpadMode:Map<String, FlxDPadMode>;
+	public static var actionMode:Map<String, FlxActionMode>;
 
     public function new(scriptName:String) 
     {
@@ -33,6 +38,34 @@ class ScriptSubstate extends MusicBeatSubstate
 
         targetFileName = scriptName;
     }
+    
+    public function addLuaVirtualPadBase(?DPad:FlxDPadMode, ?Action:FlxActionMode) {		
+		if (_luavirtualpad != null)
+			removeLuaVirtualPad();
+
+		_luavirtualpad = new FlxVirtualPad(DPad, Action);
+		add(_luavirtualpad);
+
+		controls.setVirtualPadUI(_luavirtualpad, DPad, Action);
+		trackedinputsUI = controls.trackedInputsUI;
+		controls.trackedInputsUI = [];
+		_luavirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
+	}
+	
+	public function removeLuaVirtualPadBase() {
+		if (trackedinputsUI.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsUI);
+
+		if (_luavirtualpad != null)
+			remove(_luavirtualpad);
+	}
+	
+	public function addLuaVirtualPadCameraBase() {
+		var camcontrol = new flixel.FlxCamera();
+		camcontrol.bgColor.alpha = 0;
+		FlxG.cameras.add(camcontrol, false);
+		_luavirtualpad.cameras = [camcontrol];
+	}
 
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
 
@@ -54,7 +87,7 @@ class ScriptSubstate extends MusicBeatSubstate
 	#end
 
 	#if HSCRIPT_ALLOWED
-	public var hscriptArray:Array<HScript> = [];
+	public var hscriptArray:Array<StateHScript> = [];
 	public var instancesExclude:Array<String> = [];
 	#end
 
@@ -67,6 +100,34 @@ class ScriptSubstate extends MusicBeatSubstate
     {
         instance = this;
 		
+		#if LUAVIRTUALPAD_ALLOWED
+		// FlxDPadModes
+		dpadMode = new Map<String, FlxDPadMode>();
+		dpadMode.set("UP_DOWN", UP_DOWN);
+		dpadMode.set("LEFT_RIGHT", LEFT_RIGHT);
+		dpadMode.set("UP_LEFT_RIGHT", UP_LEFT_RIGHT);
+		dpadMode.set("LEFT_FULL", FULL); //1.0 Support
+		dpadMode.set("FULL", FULL);
+		dpadMode.set("RIGHT_FULL", RIGHT_FULL);
+		dpadMode.set("DUO", DUO);
+		dpadMode.set("NONE", NONE);
+			
+		actionMode = new Map<String, FlxActionMode>();
+		actionMode.set('E', E);
+		actionMode.set('A', A);
+		actionMode.set('B', B);
+		actionMode.set('A_B', A_B);
+		actionMode.set('A_B_C', A_B_C);
+		actionMode.set('A_B_E', A_B_E);
+		actionMode.set('A_B_E_C_M', A_B_E_C_M);
+		actionMode.set('A_B_X_Y', A_B_X_Y);
+		actionMode.set('B_X_Y', B_X_Y);
+		actionMode.set('A_B_C_X_Y_Z', A_B_C_X_Y_Z);
+		actionMode.set('FULL', FULL);
+		actionMode.set('controlExtend', controlExtend);
+		actionMode.set('NONE', NONE);
+		#end
+		
 		Paths.clearUnusedMemory();
 
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
@@ -74,7 +135,7 @@ class ScriptSubstate extends MusicBeatSubstate
 		add(luaDebugGroup);
 		#end
 		
-		#if LUA_ALLOWED startLuasNamed('substates/' + targetFileName + '.lua'); #end
+		// #if LUA_ALLOWED startLuasNamed('substates/' + targetFileName + '.lua'); #end
 		#if HSCRIPT_ALLOWED startHScriptsNamed('substates/' + targetFileName + '.hx'); #end
 
 		callOnScripts('onCreatePost');
@@ -307,13 +368,9 @@ class ScriptSubstate extends MusicBeatSubstate
 	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
-		#if MODS_ALLOWED
-		var scriptToLoad:String = Paths.modFolders('scripts/' + scriptFile);
+	    var scriptToLoad:String = Paths.modFolders('scripts/' + scriptFile);
 		if(!FileSystem.exists(scriptToLoad))
 			scriptToLoad = Paths.getScriptPath(scriptFile);
-		#else
-		var scriptToLoad:String = Paths.getScriptPath(scriptFile);
-		#end
 
 		if(FileSystem.exists(scriptToLoad))
 		{
@@ -327,16 +384,19 @@ class ScriptSubstate extends MusicBeatSubstate
 
 	public function initHScript(file:String)
 	{
+		var newScript:StateHScript = new StateHScript(null, file);
 		try
 		{
-			var newScript:HScript = new HScript(null, file);
-			if(newScript.parsingException != null)
+			@:privateAccess
+			if(newScript.parsingExceptions != null && newScript.parsingExceptions.length > 0)
 			{
-				addTextToDebug('ERROR ON LOADING: ${newScript.parsingException.message}', FlxColor.RED);
+				@:privateAccess
+				for (e in newScript.parsingExceptions)
+					if(e != null)
+						addTextToDebug('ERROR ON LOADING: ${newScript.parsingException.message}', FlxColor.RED);
 				newScript.destroy();
 				return;
 			}
-
 			hscriptArray.push(newScript);
 			if(newScript.exists('onCreate'))
 			{
@@ -344,29 +404,19 @@ class ScriptSubstate extends MusicBeatSubstate
 				if(!callValue.succeeded)
 				{
 					for (e in callValue.exceptions)
-					{
 						if (e != null)
-						{
-							var len:Int = e.message.indexOf('\n') + 1;
-							if(len <= 0) len = e.message.length;
-								addTextToDebug('ERROR ($file: onCreate) - ${e.message.substr(0, len)}', FlxColor.RED);
-						}
-					}
-
+							addTextToDebug('ERROR ($file: onCreate) - ${e.message.substr(0, e.message.indexOf('\n'))}', FlxColor.RED);
 					newScript.destroy();
 					hscriptArray.remove(newScript);
-					trace('failed to initialize tea interp!!! ($file)');
+					trace('failed to initialize sscript interp!!! ($file)');
 				}
-				else trace('initialized tea interp successfully: $file');
+				else trace('initialized sscript interp successfully: $file');
 			}
 
 		}
 		catch(e)
 		{
-			var len:Int = e.message.indexOf('\n') + 1;
-			if(len <= 0) len = e.message.length;
-			addTextToDebug('ERROR - ' + e.message.substr(0, len), FlxColor.RED);
-			var newScript:HScript = cast (SScript.global.get(file), HScript);
+			addTextToDebug('ERROR ($file) - ' + e.message.substr(0, e.message.indexOf('\n')), FlxColor.RED);
 			if(newScript != null)
 			{
 				newScript.destroy();
@@ -438,7 +488,7 @@ class ScriptSubstate extends MusicBeatSubstate
 		if (len < 1)
 			return returnVal;
 		for(i in 0...len) {
-			var script:HScript = hscriptArray[i];
+			var script:StateHScript = hscriptArray[i];
 			if(script == null || !script.exists(funcToCall) || exclusions.contains(script.origin))
 				continue;
 
@@ -584,4 +634,21 @@ class ScriptSubstate extends MusicBeatSubstate
 		FlxTransitionableState.skipNextTransOut = !doTransition;
 		MusicBeatState.switchState(new ScriptState(targetFileName));
 	}
+	
+	#if LUAVIRTUALPAD_ALLOWED
+	public function addLuaVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
+	{
+		addLuaVirtualPadBase(DPad, Action);
+	}
+	
+	public function addLuaVirtualPadCamera()
+	{
+		addLuaVirtualPadCameraBase();
+	}
+	
+	public function removeLuaVirtualPad()
+	{
+		removeLuaVirtualPadBase();
+	}
+	#end
 }

@@ -656,6 +656,28 @@ class Paths
 		}
 		return if (ClientPrefs.data.Modpack) Sys.getCwd() + 'modpack/' + key; else Sys.getCwd() + 'mods/' + key;
 	}
+	
+	//for HScript TitleState
+	inline static public function modpack(key:String = '') {
+	    return Sys.getCwd() + 'modpack/' + key;
+	}
+	
+	static public function modpackFolders(key:String) {
+		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0) {
+			var fileToCheck:String = modpack(Mods.currentModDirectory + '/' + key);
+			if(FileSystem.exists(fileToCheck)) {
+				return fileToCheck;
+			}
+		}
+
+		for(mod in Mods.getGlobalMods()){
+			var fileToCheck:String = modpack(mod + '/' + key);
+			if(FileSystem.exists(fileToCheck))
+				return fileToCheck;
+
+		}
+		return Sys.getCwd() + 'modpack/' + key;
+	}
 		
 	#if flxanimate
 	public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null)

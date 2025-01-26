@@ -124,6 +124,8 @@ class StateHScript extends SScript
 		set('FlxG', flixel.FlxG);
 		set('FlxMath', flixel.math.FlxMath);
 		set('FlxSprite', flixel.FlxSprite);
+		set('FlxSound', flixel.system.FlxSound);
+		set('SwipeUtil', mobile.backend.SwipeUtil);
 		set('FlxText', flixel.text.FlxText);
 		set('FlxCamera', flixel.FlxCamera);
 		set('PsychCamera', backend.PsychCamera);
@@ -487,6 +489,26 @@ class StateHScript extends SScript
 		});
 
 		// For adding your own callbacks
+		#if LUAVIRTUALPAD_ALLOWED
+		set('addVirtualPad', function(DPad:String, Action:String, ?Substate:Bool = false):Void
+		{
+		    if (Substate) ScriptSubstate.instance.addLuaVirtualPad(ScriptSubstate.dpadMode.get(DPad), ScriptSubstate.actionMode.get(Action));
+		    else ScriptState.instance.addLuaVirtualPad(ScriptState.dpadMode.get(DPad), ScriptState.actionMode.get(Action));
+		});
+		
+		set('addVirtualPadCamera', function(?Substate:Bool = false):Void
+		{
+		    if (Substate) ScriptSubstate.instance.addLuaVirtualPadCamera();
+		    else ScriptState.instance.addLuaVirtualPadCamera();
+		});
+		
+		set('removeVirtualPad', function(?Substate:Bool = false):Void
+		{
+		    if (Substate) ScriptSubstate.instance.removeLuaVirtualPad();
+		    else ScriptState.instance.removeLuaVirtualPad();
+		});
+		#end
+		
 		// not very tested but should work
 		#if LUA_ALLOWED
 		set('createGlobalCallback', function(name:String, func:Dynamic)

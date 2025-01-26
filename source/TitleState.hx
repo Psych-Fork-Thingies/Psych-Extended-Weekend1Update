@@ -623,36 +623,33 @@ class TitleState extends MusicBeatState
 					FlxG.sound.music.fadeIn(4, 0, 0.7);
 				case 2:
 					#if PSYCH_WATERMARKS
-					createCoolText(['Psych Extended by'], 15);
+					createCoolText(['\nPsych Extended by'], 15);
 					#else
 					createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
 					#end
 				case 4:
 					#if PSYCH_WATERMARKS
-					addMoreText('AloneDark', 15);
-					addMoreText('and', 15);
-					addMoreText('KralOyuncu', 15);
+					addMoreText('\nAloneDark & KralOyuncu', 15);
 					#else
 					addMoreText('present');
 					#end
-				case 7:
+				case 5:
 					deleteCoolText();
-				case 8:
+				case 6:
 					#if PSYCH_WATERMARKS
-					createCoolText(['Not associated', 'with'], -40);
+					createCoolText(['\nA MODIFIED PSYCH ENGINE'], 15);
 					#else
 					createCoolText(['In association', 'with'], -40);
 					#end
+				case 7:
+					addMoreText('\nFOR 0.6.3 PLAYERS', 15);
+					//ngSpr.visible = true;
 				case 9:
-					addMoreText('newgrounds', -40);
-					ngSpr.visible = true;
+				    deleteCoolText();
 				case 10:
-					deleteCoolText();
-					ngSpr.visible = false;
+				    createCoolText(['\nPOWERED BY'], 15);
 				case 11:
-					createCoolText([curWacky[0]]);
-				case 13:
-					addMoreText(curWacky[1]);
+					addMoreText('\nPSYCH ENGINE', 15);
 				case 14:
 					deleteCoolText();
 				case 15:
@@ -660,9 +657,11 @@ class TitleState extends MusicBeatState
 				case 16:
 					addMoreText('Night');
 				case 17:
-					addMoreText('Funkin');
-
+					addMoreText("Funkin'");
 				case 18:
+				    addMoreText('Psych Extended');
+
+				case 19:
 					skipIntro();
 			}
 		}
