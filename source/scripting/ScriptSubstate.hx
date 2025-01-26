@@ -27,7 +27,7 @@ class ScriptSubstate extends MusicBeatSubstate
 {
     public static var targetFileName:String; 
     
-    public static var _luavirtualpad:FlxVirtualPad;
+    public static var _hxvirtualpad:FlxVirtualPad;
     
     public static var dpadMode:Map<String, FlxDPadMode>;
 	public static var actionMode:Map<String, FlxActionMode>;
@@ -39,32 +39,32 @@ class ScriptSubstate extends MusicBeatSubstate
         targetFileName = scriptName;
     }
     
-    public function addLuaVirtualPadBase(?DPad:FlxDPadMode, ?Action:FlxActionMode) {		
-		if (_luavirtualpad != null)
-			removeLuaVirtualPad();
+    public function addHxVirtualPadBase(?DPad:FlxDPadMode, ?Action:FlxActionMode) {		
+		if (_hxvirtualpad != null)
+			removeHxVirtualPad();
 
-		_luavirtualpad = new FlxVirtualPad(DPad, Action);
-		add(_luavirtualpad);
+		_hxvirtualpad = new FlxVirtualPad(DPad, Action);
+		add(_hxvirtualpad);
 
-		controls.setVirtualPadUI(_luavirtualpad, DPad, Action);
+		controls.setVirtualPadUI(_hxvirtualpad, DPad, Action);
 		trackedinputsUI = controls.trackedInputsUI;
 		controls.trackedInputsUI = [];
-		_luavirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
+		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
 	
-	public function removeLuaVirtualPadBase() {
+	public function removeHxVirtualPadBase() {
 		if (trackedinputsUI.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsUI);
 
-		if (_luavirtualpad != null)
-			remove(_luavirtualpad);
+		if (_hxvirtualpad != null)
+			remove(_hxvirtualpad);
 	}
 	
-	public function addLuaVirtualPadCameraBase() {
+	public function addHxVirtualPadCameraBase() {
 		var camcontrol = new flixel.FlxCamera();
 		camcontrol.bgColor.alpha = 0;
 		FlxG.cameras.add(camcontrol, false);
-		_luavirtualpad.cameras = [camcontrol];
+		_hxvirtualpad.cameras = [camcontrol];
 	}
 
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
@@ -100,7 +100,7 @@ class ScriptSubstate extends MusicBeatSubstate
     {
         instance = this;
 		
-		#if LUAVIRTUALPAD_ALLOWED
+		#if HXVIRTUALPAD_ALLOWED
 		// FlxDPadModes
 		dpadMode = new Map<String, FlxDPadMode>();
 		dpadMode.set("UP_DOWN", UP_DOWN);
@@ -635,20 +635,20 @@ class ScriptSubstate extends MusicBeatSubstate
 		MusicBeatState.switchState(new ScriptState(targetFileName));
 	}
 	
-	#if LUAVIRTUALPAD_ALLOWED
-	public function addLuaVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
+	#if HXVIRTUALPAD_ALLOWED
+	public function addHxVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
 	{
-		addLuaVirtualPadBase(DPad, Action);
+		addHxVirtualPadBase(DPad, Action);
 	}
 	
-	public function addLuaVirtualPadCamera()
+	public function addHxVirtualPadCamera()
 	{
-		addLuaVirtualPadCameraBase();
+		addHxVirtualPadCameraBase();
 	}
 	
-	public function removeLuaVirtualPad()
+	public function removeHxVirtualPad()
 	{
-		removeLuaVirtualPadBase();
+		removeHxVirtualPadBase();
 	}
 	#end
 }

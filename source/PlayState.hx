@@ -4105,21 +4105,4 @@ class PlayState extends MusicBeatState
 		return false;
 	}
 	#end
-	
-	#if LUAVIRTUALPAD_ALLOWED
-	public function addLuaVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
-	{
-		addVirtualPad(DPad, Action);
-	}
-	
-	public function addLuaVirtualPadCamera()
-	{
-		addVirtualPadCamera();
-	}
-	
-	public function removeLuaVirtualPad()
-	{
-		removeVirtualPad();
-	}
-	#end
 }

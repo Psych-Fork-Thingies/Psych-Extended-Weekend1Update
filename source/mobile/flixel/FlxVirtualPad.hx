@@ -65,7 +65,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	public function new(DPad:FlxDPadMode, Action:FlxActionMode) {
 		super();
 		
-		#if LUAVIRTUALPAD_ALLOWED
+		#if HXVIRTUALPAD_ALLOWED
     	// DPad Buttons
     	buttonsString = new Map<String, FlxButton>();
     	buttonsString.set("buttonLeft", buttonLeft);

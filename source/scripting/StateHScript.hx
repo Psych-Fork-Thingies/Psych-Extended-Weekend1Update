@@ -489,23 +489,23 @@ class StateHScript extends SScript
 		});
 
 		// For adding your own callbacks
-		#if LUAVIRTUALPAD_ALLOWED
+		#if HXVIRTUALPAD_ALLOWED
 		set('addVirtualPad', function(DPad:String, Action:String, ?Substate:Bool = false):Void
 		{
-		    if (Substate) ScriptSubstate.instance.addLuaVirtualPad(ScriptSubstate.dpadMode.get(DPad), ScriptSubstate.actionMode.get(Action));
-		    else ScriptState.instance.addLuaVirtualPad(ScriptState.dpadMode.get(DPad), ScriptState.actionMode.get(Action));
+		    if (Substate) ScriptSubstate.instance.addHxVirtualPad(ScriptSubstate.dpadMode.get(DPad), ScriptSubstate.actionMode.get(Action));
+		    else ScriptState.instance.addHxVirtualPad(ScriptState.dpadMode.get(DPad), ScriptState.actionMode.get(Action));
 		});
 		
 		set('addVirtualPadCamera', function(?Substate:Bool = false):Void
 		{
-		    if (Substate) ScriptSubstate.instance.addLuaVirtualPadCamera();
-		    else ScriptState.instance.addLuaVirtualPadCamera();
+		    if (Substate) ScriptSubstate.instance.addHxVirtualPadCamera();
+		    else ScriptState.instance.addHxVirtualPadCamera();
 		});
 		
 		set('removeVirtualPad', function(?Substate:Bool = false):Void
 		{
-		    if (Substate) ScriptSubstate.instance.removeLuaVirtualPad();
-		    else ScriptState.instance.removeLuaVirtualPad();
+		    if (Substate) ScriptSubstate.instance.removeHxVirtualPad();
+		    else ScriptState.instance.removeHxVirtualPad();
 		});
 		#end
 		
