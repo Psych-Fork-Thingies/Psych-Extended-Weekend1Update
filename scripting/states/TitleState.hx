@@ -4,6 +4,7 @@ import flixel.text.FlxTextFormatMarkerPair;
 import extras.CustomSwitchState;
 import tjson.TJSON as Json;
 import Main;
+import TitleState;
 
 var skippedIntro:Bool = false;
 
@@ -16,11 +17,13 @@ var titleText:FlxSprite;
 function onCreate()
 {
     //fix
+    /* use global.hx for fix crashes
     var jsonToLoad:String = Paths.modFolders('data.json');
     if(!FileSystem.exists(jsonToLoad))
         jsonToLoad = Paths.getSharedPath('data.json');
     var jsonData = Json.parse(File.getContent(jsonToLoad));
     Conductor.bpm = Reflect.hasField(jsonData, 'bpm') ? jsonData.bpm : 102;
+    */
     
     //main code
     epicTexts = new FlxText(0, 0, FlxG.width, '');
@@ -66,9 +69,9 @@ function onCreate()
 
 function onCreatePost()
 {
-    if (FlxG.sound.music == null)
+    if (!TitleState.initialized)
     {
-        FlxG.sound.playMusic(Paths.music('freakyMenu'), 0.7);
+        FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
         FlxG.sound.music.fadeIn(4, 0, 0.7);
 
         FlxTween.num(255, 32, 60 / Conductor.bpm, {ease: FlxEase.cubeOut}, windowColorTween);
@@ -92,17 +95,21 @@ var curTime:Float = 0;
 var changingState:Bool = false;
 
 //fix
+/* use global.hx for fix crashes
 var ignoreReset = ['editors/chartEditorList', 'geminiState'];
+*/
 
 function onUpdate(elapsed:Float)
 {
     curTime += elapsed;
     
     //fix
+    /* use global.hx for fix crashes
    if ((ignoreReset.contains(ScriptState.targetFileName) ? FlxG.keys.justPressed.F5 : controls.RESET) && CoolVars.developerMode) resetScriptState();
     if (FlxG.sound.music != null)
         Conductor.songPosition = FlxG.sound.music.time;
     FlxG.camera.zoom = fpsLerp(FlxG.camera.zoom, 1, 0.1);
+    */
     
     //main code
     var pressedEnter:Bool = controls.ACCEPT;
@@ -130,6 +137,8 @@ function onUpdate(elapsed:Float)
             else FlxTween.tween(titleText, {y: FlxG.height}, 60 / Conductor.bpm, {ease: FlxEase.cubeIn});
 
             FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
+            
+            if (!TitleState.initialized) TitleState.initialized = true;
 
             new FlxTimer().start(1.2, function(tmr:FlxTimer)
             {
@@ -176,7 +185,9 @@ var phrases:Array<String> = [
 function onBeatHit()
 {
     //fix
+    /* use global.hx for fix crashes
     if (ClientPrefs.data.camZooms) FlxG.camera.zoom += 0.01;
+    */
     
     //main code
     if(logo != null)

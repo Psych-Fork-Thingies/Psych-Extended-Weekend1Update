@@ -87,7 +87,7 @@ class ScriptSubstate extends MusicBeatSubstate
 	#end
 
 	#if HSCRIPT_ALLOWED
-	public var hscriptArray:Array<StateHScript> = [];
+	public var hscriptArray:Array<SubstateHScript> = [];
 	public var instancesExclude:Array<String> = [];
 	#end
 
@@ -384,7 +384,7 @@ class ScriptSubstate extends MusicBeatSubstate
 
 	public function initHScript(file:String)
 	{
-		var newScript:StateHScript = new StateHScript(null, file);
+		var newScript:SubstateHScript = new SubstateHScript(null, file);
 		try
 		{
 			@:privateAccess
@@ -488,7 +488,7 @@ class ScriptSubstate extends MusicBeatSubstate
 		if (len < 1)
 			return returnVal;
 		for(i in 0...len) {
-			var script:StateHScript = hscriptArray[i];
+			var script:SubstateHScript = hscriptArray[i];
 			if(script == null || !script.exists(funcToCall) || exclusions.contains(script.origin))
 				continue;
 
@@ -649,6 +649,23 @@ class ScriptSubstate extends MusicBeatSubstate
 	public function removeHxVirtualPad()
 	{
 		removeHxVirtualPadBase();
+	}
+	
+	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
+	    switch(buttonPostfix) {
+	        case 'A': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonA, type);
+			case 'B': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonB, type);
+			case 'E': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonE, type);
+			case 'C': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonC, type);
+			case 'M': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonM, type);
+			case 'X': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonX, type);
+			case 'Y': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonY, type);
+			case 'Z': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonZ, type);
+			case 'D': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonD, type);
+			case 'V': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonV, type);
+			default: return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonA, type);
+		}
+		return false;
 	}
 	#end
 }

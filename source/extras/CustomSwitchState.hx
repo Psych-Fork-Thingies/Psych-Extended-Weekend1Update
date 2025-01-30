@@ -9,8 +9,12 @@ class CustomSwitchState //Now You Can Add and Remove Custom Menus More Easier Th
         if (skipTransCustom == 'TransOut' || skipTrans) FlxTransitionableState.skipNextTransOut = true;
         
         var FileName:String = Type + 'State';
+        if (Type.startsWith('MasterEditor')) FileName = Type + 'Menu';
       //Check
-      if (FileSystem.exists(Paths.getScriptPath('states/' + FileName + '.hx'))) MusicBeatState.switchState(new ScriptState(FileName));
+      var fileFound:Bool = false;
+      if (FileSystem.exists(Paths.getScriptPath('states/' + FileName + '.hx')) || FileSystem.exists(Paths.modFolders('scripts/states/' + FileName + '.hx')) || FileSystem.exists(Paths.modpackFolders('scripts/states/' + FileName + '.hx'))) fileFound = true;
+      
+      if (fileFound) MusicBeatState.switchState(new ScriptState(FileName));
 	  else
 	  {
     	//OMG 😱 Rewrited?

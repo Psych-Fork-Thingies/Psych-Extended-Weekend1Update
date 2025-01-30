@@ -140,7 +140,7 @@ class OptionsState extends MusicBeatState
     		else if (OptionsState.stateType == 1)
     		    MusicBeatState.switchState(new FreeplayStateNOVA());
     		else if (OptionsState.stateType == 3 || onPlayState)
-    		    MusicBeatState.switchState(new PlayState());
+    		    LoadingState.loadAndSwitchState(new PlayState());
 			else
     			CustomSwitchState.switchMenus('MainMenu');
     		FlxG.sound.play(Paths.sound('cancelMenu'));

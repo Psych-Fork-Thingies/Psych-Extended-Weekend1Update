@@ -169,7 +169,8 @@ function onUpdate(elapsed:Float)
             });
         }
         
-        if (FlxG.keys.anyJustPressed(ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'))) || ScriptState._hxvirtualpad.buttonE.justPressed) CustomSwitchState.switchMenus('MasterEditor');
+        var debugKeys = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
+        if (FlxG.keys.anyJustPressed(debugKeys) || virtualPadJustPressed("E")) CustomSwitchState.switchMenus('MasterEditor');
     }
 
     FlxG.camera.scroll.y = fpsLerp(FlxG.camera.scroll.y, (selInt + (options.length - 1) / 2) * 25, 0.1);

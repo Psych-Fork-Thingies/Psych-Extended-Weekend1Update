@@ -31,6 +31,13 @@ class ScriptState extends MusicBeatState
     
     public static var _hxvirtualpad:FlxVirtualPad;
     
+    //I tried to add in HScript but didn't work, so I don't have a another solution
+    /*
+    public var virtualPad = ScriptState._hxvirtualpad;
+    //public var _virtualpad = ScriptState._hxvirtualpad;
+    public var hxVirtualPad = ScriptState._hxvirtualpad;
+    */
+    
     public static var dpadMode:Map<String, FlxDPadMode>;
 	public static var actionMode:Map<String, FlxActionMode>;
 
@@ -155,7 +162,9 @@ class ScriptState extends MusicBeatState
     {
 		callOnScripts('onUpdate', [elapsed]);
 
+		/* This shit doesn't fix Music, it breaks the game instead.
 		if (FlxG.sound.music != null && FlxG.sound.music.looped) FlxG.sound.music.onComplete = fixMusic.bind();
+		*/
 
 		callOnScripts('onUpdatePost', [elapsed]);
 
@@ -220,6 +229,7 @@ class ScriptState extends MusicBeatState
     #if (LUA_ALLOWED || HSCRIPT_ALLOWED)
     public function addTextToDebug(text:String, color:FlxColor) 
     {
+        //fox
         var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
         newText.text = text;
         newText.color = color;
@@ -670,5 +680,30 @@ class ScriptState extends MusicBeatState
 	{
 		removeHxVirtualPadBase();
 	}
+	
+	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
+	    switch(buttonPostfix) {
+	        case 'A': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonA, type);
+			case 'B': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonB, type);
+			case 'E': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonE, type);
+			case 'C': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonC, type);
+			case 'M': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonM, type);
+			case 'X': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonX, type);
+			case 'Y': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonY, type);
+			case 'Z': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonZ, type);
+			case 'D': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonD, type);
+			case 'V': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonV, type);
+			default: return Reflect.getProperty(ScriptState._hxvirtualpad.buttonA, type);
+		}
+		return false;
+	}
+	
+	/*
+	public static function checkVPadPress(buttonPostfix:String, type:String):Bool {
+		var buttonName = "button" + buttonPostfix;
+		var virtualPad = Reflect.getProperty(scripting.ScriptState, "_hxvirtualpad");
+		return Reflect.getProperty(virtualPad, buttonName).justPressed;
+	}
+	*/
 	#end
 }

@@ -1534,6 +1534,7 @@ class PlayState extends MusicBeatState
 				var daStrumTime:Float = songNotes[0];
 				var daNoteData:Int = Std.int(songNotes[1] % 4);
 				var gottaHitNote:Bool = (songNotes[1] < 4);
+				if (opponentChart) gottaHitNote = (songNotes[1] >= 4);
 
 				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
 				swagNote.mustPress = gottaHitNote;
@@ -2049,6 +2050,12 @@ class PlayState extends MusicBeatState
 					{
 						var strumGroup:FlxTypedGroup<StrumNote> = playerStrums;
 						if(!daNote.mustPress) strumGroup = opponentStrums;
+						
+						//I forgot to add this, I'm a idiot :|
+						/*
+						if(!daNote.mustPress && !opponentChart) strumGroup = opponentStrums;
+						else if(!daNote.mustPress && opponentChart) strumGroup = playerStrums;
+						*/
 
 						var myStrum:StrumNote = strumGroup.members[daNote.noteData];
 						var strumX:Float = myStrum.x;

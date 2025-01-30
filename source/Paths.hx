@@ -228,8 +228,8 @@ class Paths
 	inline static public function music(key:String, ?library:String):Sound
 	{
 		var file:Sound = returnSound('music', key, library);
-		if (ClientPrefs.data.FreakyMenu == 'Extended' && key == 'freakyMenu')
-		    file = returnSound('music', 'freakyMenuExtended', library);
+		if (ClientPrefs.data.FreakyMenu == 'Extended' && key == 'freakyMenu' && (Paths.fileExistsInMods('music/ExtendedMenu.ogg', SOUND) || !Paths.fileExistsInMods('music/freakyMenu.ogg', SOUND)))
+		    file = returnSound('music', 'ExtendedMenu', library);
 		return file;
 	}
 
@@ -399,6 +399,24 @@ class Paths
 			return true;
 		}
 				
+		return false;
+	}
+	
+	public static function fileExistsInMods(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String = null)
+	{
+		#if MODS_ALLOWED
+		if(!ignoreMods)
+		{
+		    var modKey:String = key;
+			if(library == 'songs') modKey = 'songs/$key';
+			
+			for(mod in Mods.getGlobalMods())
+				if (FileSystem.exists(mods('$mod/$modKey')))
+					return true;
+			if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + modKey)) || FileSystem.exists(mods(modKey)))
+				return true;
+		}
+		#end		
 		return false;
 	}
 	

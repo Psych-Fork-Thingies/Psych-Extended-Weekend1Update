@@ -3,6 +3,7 @@ package scripting;
 import flixel.FlxBasic;
 import Character;
 import psychlua.LuaUtils;
+import scripting.StateHScript;
 
 import Song;
 import WeekData;
@@ -19,8 +20,9 @@ import Highscore;
 
 #if HSCRIPT_ALLOWED
 import tea.SScript;
+typedef Tea = TeaCall;
 
-class StateHScript extends SScript
+class SubstateHScript extends SScript
 {
 	public var modFolder:String;
 
@@ -28,20 +30,20 @@ class StateHScript extends SScript
 	public var parentLua:FunkinLua;
 	public static function initHaxeModule(parent:FunkinLua)
 	{
-		if(parent.statehscript == null)
+		if(parent.substatehscript == null)
 		{
 			trace('initializing haxe interp for: ${parent.scriptName}');
-			parent.statehscript = new StateHScript(parent);
+			parent.substatehscript = new SubstateHScript(parent);
 		}
 	}
 
 	public static function initHaxeModuleCode(parent:FunkinLua, code:String, ?varsToBring:Any = null)
 	{
-		var hs:StateHScript = try parent.statehscript catch (e) null;
+		var hs:SubstateHScript = try parent.substatehscript catch (e) null;
 		if(hs == null)
 		{
 			trace('initializing haxe interp for: ${parent.scriptName}');
-			parent.statehscript = new StateHScript(parent, code, varsToBring);
+			parent.substatehscript = new SubstateHScript(parent, code, varsToBring);
 		}
 		else
 		{
@@ -49,13 +51,14 @@ class StateHScript extends SScript
 			@:privateAccess
 			if(hs.parsingException != null)
 			{
-				ScriptState.instance.addTextToDebug('ERROR ON LOADING (${hs.origin}): ${hs.parsingException.message}', FlxColor.RED);
+				ScriptSubstate.instance.addTextToDebug('ERROR ON LOADING (${hs.origin}): ${hs.parsingException.message}', FlxColor.RED);
 			}
 		}
 	}
 	#end
 
-	//Window Shit
+	//ALE Shit INIT
+
 	static function windowTweenUpdateX(value:Float)
 	{
 		Lib.application.window.x = Math.floor(value);
@@ -81,7 +84,7 @@ class StateHScript extends SScript
 		#if windows WindowsCPP.setWindowAlpha(value); #end
 	}
 
-	//Window Shit end
+	//ALE Shit END
 
 	public var origin:String;
 	override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null)
@@ -124,8 +127,6 @@ class StateHScript extends SScript
 		set('FlxG', flixel.FlxG);
 		set('FlxMath', flixel.math.FlxMath);
 		set('FlxSprite', flixel.FlxSprite);
-		set('FlxSound', flixel.system.FlxSound);
-		set('SwipeUtil', mobile.backend.SwipeUtil);
 		set('FlxText', flixel.text.FlxText);
 		set('FlxCamera', flixel.FlxCamera);
 		set('PsychCamera', backend.PsychCamera);
@@ -133,7 +134,7 @@ class StateHScript extends SScript
 		set('FlxTween', flixel.tweens.FlxTween);
 		set('FlxEase', flixel.tweens.FlxEase);
 		set('FlxColor', CustomFlxColor);
-		set('ScriptState', scripting.ScriptState);
+		set('ScriptSubstate', ScriptSubstate);
 		set('Paths', Paths);
 		set('Conductor', Conductor);
 		set('ClientPrefs', ClientPrefs);
@@ -154,6 +155,8 @@ class StateHScript extends SScript
 		set('CustomSwitchState', extras.CustomSwitchState);
 		set('CoolUtil', CoolUtil);
 		set('MusicBeatState', MusicBeatState);
+		//set('DiscordClient', core.config.DiscordClient);
+		
 		set('AttachedText', AttachedText);
 		set('MenuCharacter', MenuCharacter);
 		set('DialogueCharacterEditorState', editors.DialogueCharacterEditorState);
@@ -165,23 +168,26 @@ class StateHScript extends SScript
 		set('NoteOffsetState', options.NoteOffsetState);
 		set('NotesSubState', options.NotesSubState);
 
-		//For Scriptable States
+		//For Scriptable SubStates
 
 		set('FlxFlicker', flixel.effects.FlxFlicker);
 		set('FlxBackdrop', flixel.addons.display.FlxBackdrop);
 		set('FlxOgmo3Loader', flixel.addons.editors.ogmo.FlxOgmo3Loader);
 		set('FlxTilemap', flixel.tile.FlxTilemap);
 		set('Process', sys.io.Process);
+		/*
+		set('FlxView3D', flx3d.FlxView3D);
+		set('Flx3DView', flx3d.Flx3DView);
+		set('Flx3DUtil', flx3d.Flx3DUtil);
+		set('Flx3DCamera', flx3d.Flx3DCamera);
+		*/
+		set('FlxGradient', flixel.util.FlxGradient);
 
-        set("switchToScriptState", function(name:String, ?doTransition:Bool = true)
+        set("switchToScriptSubstate", function(name:String, ?doTransition:Bool = true)
 		{
 			FlxTransitionableState.skipNextTransIn = !doTransition;
 			FlxTransitionableState.skipNextTransOut = !doTransition;
-			MusicBeatState.switchState(new ScriptState(name));
-		});
-		set("resetScriptState", function(?doTransition:Bool = false)
-		{
-			ScriptState.instance.resetScriptState(doTransition);
+			MusicBeatState.switchState(new ScriptSubstate(name));
 		});
 		set("switchState", function(fullClassPath:String, params:Array<Dynamic>, ?doTransition:Bool = true)
 		{
@@ -191,12 +197,12 @@ class StateHScript extends SScript
 		});
 		set('openSubState', function(fullClassPath:String, params:Array<Dynamic>)
 		{
-			FlxG.state.openSubState(Type.createInstance(Type.resolveClass(fullClassPath), params));
+			FlxG.state.subState.openSubState(Type.createInstance(Type.resolveClass(fullClassPath), params));
 		});
-		set('openScriptSubState', function(substate:String)
-		{
-			FlxG.state.openSubState(new ScriptSubstate(substate));
-		});
+        set('openScriptSubState', function(substate:String)
+        {
+            FlxG.state.openSubState(new ScriptSubstate(substate));
+        });
 
 		set('loadSong', function(?name:String = null, ?difficultyNum:Int = -1)
 		{
@@ -214,6 +220,21 @@ class StateHScript extends SScript
 			FlxG.sound.music.pause();
 			FlxG.sound.music.volume = 0;
 			FlxG.camera.followLerp = 0;
+		});
+		set('loadWeek', function (songs:Array<String>, diffInt:Int)
+		{
+			PlayState.storyPlaylist = songs;
+		
+			Difficulty.loadFromWeek();
+		
+			var diffic = Difficulty.getFilePath(diffInt);
+			if (diffic == null) diffic = '';
+		
+			PlayState.storyDifficulty = diffInt;
+		
+			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + diffic, PlayState.storyPlaylist[0].toLowerCase());
+			PlayState.campaignScore = 0;
+			PlayState.campaignMisses = 0;
 		});
 		set('doWindowTweenX', function(pos:Int, time:Float, theEase:Dynamic)
 		{
@@ -412,37 +433,37 @@ class StateHScript extends SScript
 			return CoolUtil.askToGemini(key, input);
 		});
 		
-		//Scriptable States END
+		//Scriptable SubStates END
 
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic) {
-			ScriptState.instance.variables.set(name, value);
+			ScriptSubstate.instance.variables.set(name, value);
 			return value;
 		});
 		set('getVar', function(name:String) {
 			var result:Dynamic = null;
-			if(ScriptState.instance.variables.exists(name)) result = ScriptState.instance.variables.get(name);
+			if(ScriptSubstate.instance.variables.exists(name)) result = ScriptSubstate.instance.variables.get(name);
 			return result;
 		});
 		set('removeVar', function(name:String)
 		{
-			if(ScriptState.instance.variables.exists(name))
+			if(ScriptSubstate.instance.variables.exists(name))
 			{
-				ScriptState.instance.variables.remove(name);
+				ScriptSubstate.instance.variables.remove(name);
 				return true;
 			}
 			return false;
 		});
 		set('debugPrint', function(text:String, ?color:FlxColor = null) {
 			if(color == null) color = FlxColor.WHITE;
-			ScriptState.instance.addTextToDebug(text, color);
+			ScriptSubstate.instance.addTextToDebug(text, color);
 		});
 		set('getModSetting', function(saveTag:String, ?modName:String = null) {
 			if(modName == null)
 			{
 				if(this.modFolder == null)
 				{
-					ScriptState.instance.addTextToDebug('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', FlxColor.RED);
+					ScriptSubstate.instance.addTextToDebug('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', FlxColor.RED);
 					return null;
 				}
 				modName = this.modFolder;
@@ -494,45 +515,46 @@ class StateHScript extends SScript
 		//OMG
 		set('virtualPadPressed', function(buttonPostfix:String):Bool
 		{
-		    return ScriptState.checkVPadPress(buttonPostfix, 'pressed');
+		    return ScriptSubstate.checkVPadPress(buttonPostfix, 'pressed');
 		});
 		
 		set('virtualPadJustPressed', function(buttonPostfix:String):Bool
 		{
-		    return ScriptState.checkVPadPress(buttonPostfix, 'justPressed');
+		    return ScriptSubstate.checkVPadPress(buttonPostfix, 'justPressed');
 		});
 		
 		set('virtualPadReleased', function(buttonPostfix:String):Bool
 		{
-		    return ScriptState.checkVPadPress(buttonPostfix, 'released');
+		    return ScriptSubstate.checkVPadPress(buttonPostfix, 'released');
 		});
 		
 		set('virtualPadJustReleased', function(buttonPostfix:String):Bool
 		{
-		    return ScriptState.checkVPadPress(buttonPostfix, 'justReleased');
+		    return ScriptSubstate.checkVPadPress(buttonPostfix, 'justReleased');
 		});
 		
 		set('addVirtualPad', function(DPad:String, Action:String):Void
 		{
-		    ScriptState.instance.addHxVirtualPad(ScriptState.dpadMode.get(DPad), ScriptState.actionMode.get(Action));
+		    ScriptSubstate.instance.addHxVirtualPad(ScriptSubstate.dpadMode.get(DPad), ScriptSubstate.actionMode.get(Action));
 		});
 		
-		set('addVirtualPadCamera', function():Void
+		set('addVirtualPadCamera', function(?Substate:Bool = false):Void
 		{
-		    ScriptState.instance.addHxVirtualPadCamera();
+		    ScriptSubstate.instance.addHxVirtualPadCamera();
 		});
 		
-		set('removeVirtualPad', function():Void
+		set('removeVirtualPad', function(?Substate:Bool = false):Void
 		{
-		    ScriptState.instance.removeHxVirtualPad();
+		    ScriptSubstate.instance.removeHxVirtualPad();
 		});
 		#end
-		
+
+		// For adding your own callbacks
 		// not very tested but should work
 		#if LUA_ALLOWED
 		set('createGlobalCallback', function(name:String, func:Dynamic)
 		{
-			for (script in ScriptState.instance.luaArray)
+			for (script in ScriptSubstate.instance.luaArray)
 				if(script != null && script.lua != null && !script.closed)
 					Lua_helper.add_callback(script.lua, name, func);
 
@@ -567,7 +589,7 @@ class StateHScript extends SScript
 					return;
 				}
 				#end
-				if(ScriptState.instance != null) ScriptState.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
+				if(ScriptSubstate.instance != null) ScriptSubstate.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
 				else trace('$origin - $msg');
 			}
 		});
@@ -577,7 +599,7 @@ class StateHScript extends SScript
 		set('parentLua', null);
 		#end
 		set('this', this);
-		set('game', FlxG.state);
+		set('game', FlxG.state.subState);
 
 		set('buildTarget', FunkinLua.getBuildTarget());
 
@@ -587,13 +609,14 @@ class StateHScript extends SScript
 		set('Function_StopHScript', FunkinLua.Function_StopHScript);
 		set('Function_StopAll', FunkinLua.Function_StopAll);
 		
-		set('add', FlxG.state.add);
-		set('insert', FlxG.state.insert);
-		set('remove', FlxG.state.remove);
+		set('add', FlxG.state.subState.add);
+		set('insert', FlxG.state.subState.insert);
+		set('remove', FlxG.state.subState.remove);
+		set('close', FlxG.state.subState.close);
 
-		if(ScriptState.instance == FlxG.state)
+		if (ScriptSubstate.instance == FlxG.state.subState)
 		{
-			setSpecialObject(ScriptState.instance, false, ScriptState.instance.instancesExclude);
+			setSpecialObject(ScriptSubstate.instance, false, ScriptSubstate.instance.instancesExclude);
 		}
 
 		if(varsToBring != null) {
@@ -607,14 +630,14 @@ class StateHScript extends SScript
 		}
 	}
 
-	public function executeCode(?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):TeaCall {
+	public function executeCode(?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):Tea {
 		if (funcToRun == null) return null;
 
 		if(!exists(funcToRun)) {
 			#if LUA_ALLOWED
 			FunkinLua.luaTrace(origin + ' - No HScript function named: $funcToRun', false, false, FlxColor.RED);
 			#else
-			ScriptState.instance.addTextToDebug(origin + ' - No HScript function named: $funcToRun', FlxColor.RED);
+			ScriptSubstate.instance.addTextToDebug(origin + ' - No HScript function named: $funcToRun', FlxColor.RED);
 			#end
 			return null;
 		}
@@ -624,7 +647,7 @@ class StateHScript extends SScript
 		{
 			final e = callValue.exceptions[0];
 			if (e != null) {
-				var msg:String = e.toString();
+				var msg:String = e.details();
 				#if LUA_ALLOWED
 				if(parentLua != null)
 				{
@@ -632,14 +655,14 @@ class StateHScript extends SScript
 					return null;
 				}
 				#end
-				ScriptState.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
+				ScriptSubstate.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
 			}
 			return null;
 		}
 		return callValue;
 	}
 
-	public function executeFunction(funcToRun:String = null, funcArgs:Array<Dynamic>):TeaCall {
+	public function executeFunction(funcToRun:String = null, funcArgs:Array<Dynamic>):Tea {
 		if (funcToRun == null) return null;
 		return call(funcToRun, funcArgs);
 	}
@@ -650,57 +673,6 @@ class StateHScript extends SScript
 		#if LUA_ALLOWED parentLua = null; #end
 
 		super.destroy();
-	}
-}
-
-class CustomFlxColor {
-	public static var TRANSPARENT(default, null):Int = FlxColor.TRANSPARENT;
-	public static var BLACK(default, null):Int = FlxColor.BLACK;
-	public static var WHITE(default, null):Int = FlxColor.WHITE;
-	public static var GRAY(default, null):Int = FlxColor.GRAY;
-
-	public static var GREEN(default, null):Int = FlxColor.GREEN;
-	public static var LIME(default, null):Int = FlxColor.LIME;
-	public static var YELLOW(default, null):Int = FlxColor.YELLOW;
-	public static var ORANGE(default, null):Int = FlxColor.ORANGE;
-	public static var RED(default, null):Int = FlxColor.RED;
-	public static var PURPLE(default, null):Int = FlxColor.PURPLE;
-	public static var BLUE(default, null):Int = FlxColor.BLUE;
-	public static var BROWN(default, null):Int = FlxColor.BROWN;
-	public static var PINK(default, null):Int = FlxColor.PINK;
-	public static var MAGENTA(default, null):Int = FlxColor.MAGENTA;
-	public static var CYAN(default, null):Int = FlxColor.CYAN;
-
-	public static function fromInt(Value:Int):Int 
-	{
-		return cast FlxColor.fromInt(Value);
-	}
-
-	public static function fromRGB(Red:Int, Green:Int, Blue:Int, Alpha:Int = 255):Int
-	{
-		return cast FlxColor.fromRGB(Red, Green, Blue, Alpha);
-	}
-	public static function fromRGBFloat(Red:Float, Green:Float, Blue:Float, Alpha:Float = 1):Int
-	{	
-		return cast FlxColor.fromRGBFloat(Red, Green, Blue, Alpha);
-	}
-
-	public static inline function fromCMYK(Cyan:Float, Magenta:Float, Yellow:Float, Black:Float, Alpha:Float = 1):Int
-	{
-		return cast FlxColor.fromCMYK(Cyan, Magenta, Yellow, Black, Alpha);
-	}
-
-	public static function fromHSB(Hue:Float, Sat:Float, Brt:Float, Alpha:Float = 1):Int
-	{	
-		return cast FlxColor.fromHSB(Hue, Sat, Brt, Alpha);
-	}
-	public static function fromHSL(Hue:Float, Sat:Float, Light:Float, Alpha:Float = 1):Int
-	{	
-		return cast FlxColor.fromHSL(Hue, Sat, Light, Alpha);
-	}
-	public static function fromString(str:String):Int
-	{
-		return cast FlxColor.fromString(str);
 	}
 }
 #end
