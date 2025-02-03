@@ -27,10 +27,12 @@ class ScriptSubstate extends MusicBeatSubstate
 {
     public static var targetFileName:String; 
     
+    #if HXVIRTUALPAD_ALLOWED
     public static var _hxvirtualpad:FlxVirtualPad;
     
     public static var dpadMode:Map<String, FlxDPadMode>;
 	public static var actionMode:Map<String, FlxActionMode>;
+	#end
 
     public function new(scriptName:String) 
     {
@@ -38,34 +40,6 @@ class ScriptSubstate extends MusicBeatSubstate
 
         targetFileName = scriptName;
     }
-    
-    public function addHxVirtualPadBase(?DPad:FlxDPadMode, ?Action:FlxActionMode) {		
-		if (_hxvirtualpad != null)
-			removeHxVirtualPad();
-
-		_hxvirtualpad = new FlxVirtualPad(DPad, Action);
-		add(_hxvirtualpad);
-
-		controls.setVirtualPadUI(_hxvirtualpad, DPad, Action);
-		trackedinputsUI = controls.trackedInputsUI;
-		controls.trackedInputsUI = [];
-		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
-	}
-	
-	public function removeHxVirtualPadBase() {
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
-		if (_hxvirtualpad != null)
-			remove(_hxvirtualpad);
-	}
-	
-	public function addHxVirtualPadCameraBase() {
-		var camcontrol = new flixel.FlxCamera();
-		camcontrol.bgColor.alpha = 0;
-		FlxG.cameras.add(camcontrol, false);
-		_hxvirtualpad.cameras = [camcontrol];
-	}
 
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
 
@@ -638,33 +612,39 @@ class ScriptSubstate extends MusicBeatSubstate
 	#if HXVIRTUALPAD_ALLOWED
 	public function addHxVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
 	{
-		addHxVirtualPadBase(DPad, Action);
+		if (_hxvirtualpad != null)
+			removeHxVirtualPad();
+
+		_hxvirtualpad = new FlxVirtualPad(DPad, Action);
+		add(_hxvirtualpad);
+
+		controls.setVirtualPadUI(_hxvirtualpad, DPad, Action);
+		trackedinputsUI = controls.trackedInputsUI;
+		controls.trackedInputsUI = [];
+		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
 	
 	public function addHxVirtualPadCamera()
 	{
-		addHxVirtualPadCameraBase();
+		var camcontrol = new flixel.FlxCamera();
+		camcontrol.bgColor.alpha = 0;
+		FlxG.cameras.add(camcontrol, false);
+		_hxvirtualpad.cameras = [camcontrol];
 	}
 	
 	public function removeHxVirtualPad()
 	{
-		removeHxVirtualPadBase();
+		if (trackedinputsUI.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsUI);
+
+		if (_hxvirtualpad != null)
+			remove(_hxvirtualpad);
 	}
 	
 	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
-	    switch(buttonPostfix) {
-	        case 'A': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonA, type);
-			case 'B': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonB, type);
-			case 'E': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonE, type);
-			case 'C': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonC, type);
-			case 'M': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonM, type);
-			case 'X': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonX, type);
-			case 'Y': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonY, type);
-			case 'Z': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonZ, type);
-			case 'D': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonD, type);
-			case 'V': return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonV, type);
-			default: return Reflect.getProperty(ScriptSubstate._hxvirtualpad.buttonA, type);
-		}
+		var buttonName = "button" + buttonPostfix;
+		var button = Reflect.getProperty(ScriptSubstate._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
+		return Reflect.getProperty(button, type);
 		return false;
 	}
 	#end

@@ -139,6 +139,43 @@ class HScript extends SScript
 		});
 
 		// For adding your own callbacks
+		#if PLAYSTATE_VIRTUALPAD_ALLOWED
+		//OMG
+		set('virtualPadPressed', function(buttonPostfix:String):Bool
+		{
+		    return PlayState.checkVPadPress(buttonPostfix, 'pressed');
+		});
+		
+		set('virtualPadJustPressed', function(buttonPostfix:String):Bool
+		{
+		    return PlayState.checkVPadPress(buttonPostfix, 'justPressed');
+		});
+		
+		set('virtualPadReleased', function(buttonPostfix:String):Bool
+		{
+		    return PlayState.checkVPadPress(buttonPostfix, 'released');
+		});
+		
+		set('virtualPadJustReleased', function(buttonPostfix:String):Bool
+		{
+		    return PlayState.checkVPadPress(buttonPostfix, 'justReleased');
+		});
+		
+		set('addVirtualPad', function(DPad:String, Action:String):Void
+		{
+		    PlayState.instance.addPlayStateVirtualPad(PlayState.dpadMode.get(DPad), PlayState.actionMode.get(Action));
+		});
+		
+		set('addVirtualPadCamera', function():Void
+		{
+		    PlayState.instance.addPlayStateVirtualPadCamera();
+		});
+		
+		set('removeVirtualPad', function():Void
+		{
+		    PlayState.instance.removePlayStateVirtualPad();
+		});
+		#end
 
 		// not very tested but should work
 		set('createGlobalCallback', function(name:String, func:Dynamic)

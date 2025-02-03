@@ -1,47 +1,54 @@
 package extras;
 
-class CustomSwitchState //Now You Can Add and Remove Custom Menus More Easier Than Old One
+// This Shit is Not Optimized 😭
+class CustomSwitchState
 {
-    public static function switchMenus(Type:String, ?skipTrans:Bool = false, ?skipTransCustom:String = '')
+    public static function switchMenus(StatePrefix:String, ?skipTrans:Bool = false, ?skipTransCustom:String = '')
 	{
 	    FunkinLua.FPSCounterText = null;
 	    if (skipTransCustom == 'TransIn' || skipTrans) FlxTransitionableState.skipNextTransIn = true;
         if (skipTransCustom == 'TransOut' || skipTrans) FlxTransitionableState.skipNextTransOut = true;
         
-        var FileName:String = Type + 'State';
-        if (Type.startsWith('MasterEditor')) FileName = Type + 'Menu';
+        var CP = ClientPrefs.data;
+        var switchState = MusicBeatState.switchState;
+        
+        var File:String = 'states/' + StatePrefix + 'State' + '.hx';
+        var FileName:String = StatePrefix + 'State';
+        if (StatePrefix.startsWith('MasterEditor')) File = 'states/' + StatePrefix + 'Menu' + '.hx';
+        if (StatePrefix.startsWith('MasterEditor')) FileName = StatePrefix + 'Menu';
+        
       //Check
       var fileFound:Bool = false;
-      if (FileSystem.exists(Paths.getScriptPath('states/' + FileName + '.hx')) || FileSystem.exists(Paths.modFolders('scripts/states/' + FileName + '.hx')) || FileSystem.exists(Paths.modpackFolders('scripts/states/' + FileName + '.hx'))) fileFound = true;
+      if (FileSystem.exists(Paths.modpackFolders('scripts/' + File)) || FileSystem.exists(Paths.getScriptPath(File)) || FileSystem.exists(Paths.modFolders('scripts/' + File))) fileFound = true;
       
-      if (fileFound) MusicBeatState.switchState(new ScriptState(FileName));
+      if (fileFound) switchState(new ScriptState(FileName));
 	  else
 	  {
     	//OMG 😱 Rewrited?
-    	switch (Type)
+    	switch (StatePrefix)
 		{
 		    case 'Freeplay':
-		        if (ClientPrefs.data.FreeplayStyle == 'NF') MusicBeatState.switchState(new FreeplayStateNF());
-                else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare') MusicBeatState.switchState(new FreeplayStateNOVA());
-                else MusicBeatState.switchState(new FreeplayState());
+		        if (CP.FreeplayStyle == 'NF') switchState(new FreeplayStateNF());
+                else if (CP.FreeplayStyle == 'NovaFlare') switchState(new FreeplayStateNOVA());
+                else switchState(new FreeplayState());
             case 'MainMenu':
-                if (ClientPrefs.data.MainMenuStyle == '0.6.3' || ClientPrefs.data.MainMenuStyle == 'Extended') MusicBeatState.switchState(new MainMenuStateOld());
-                else if (ClientPrefs.data.MainMenuStyle == 'NovaFlare') MusicBeatState.switchState(new MainMenuStateNOVA());
-                else MusicBeatState.switchState(new MainMenuState());
+                if (CP.MainMenuStyle == '0.6.3' || CP.MainMenuStyle == 'Extended') switchState(new MainMenuStateOld());
+                else if (CP.MainMenuStyle == 'NovaFlare') switchState(new MainMenuStateNOVA());
+                else switchState(new MainMenuState());
             case 'StoryMenu':
-                MusicBeatState.switchState(new StoryMenuState());
+                switchState(new StoryMenuState());
             case 'Options':
                 LoadingState.loadAndSwitchState(new options.OptionsState());
             case 'Credits':
-                MusicBeatState.switchState(new CreditsState());
+                switchState(new CreditsState());
             case 'Title':
-                MusicBeatState.switchState(new TitleState());
+                switchState(new TitleState());
             case 'MasterEditor':
-                MusicBeatState.switchState(new editors.MasterEditorMenu());
+                switchState(new editors.MasterEditorMenu());
             case 'NoteOffset':
-                MusicBeatState.switchState(new options.NoteOffsetState());
+                switchState(new options.NoteOffsetState());
             case 'ModsMenu':
-                MusicBeatState.switchState(new ModsMenuState());
+                switchState(new ModsMenuState());
             case 'AchievementsMenu':
                 LoadingState.loadAndSwitchState(new AchievementsMenuState());
         }

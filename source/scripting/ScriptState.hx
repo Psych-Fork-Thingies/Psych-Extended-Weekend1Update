@@ -29,17 +29,12 @@ class ScriptState extends MusicBeatState
 {
     public static var targetFileName:String; 
     
+    #if HXVIRTUALPAD_ALLOWED
     public static var _hxvirtualpad:FlxVirtualPad;
-    
-    //I tried to add in HScript but didn't work, so I don't have a another solution
-    /*
-    public var virtualPad = ScriptState._hxvirtualpad;
-    //public var _virtualpad = ScriptState._hxvirtualpad;
-    public var hxVirtualPad = ScriptState._hxvirtualpad;
-    */
     
     public static var dpadMode:Map<String, FlxDPadMode>;
 	public static var actionMode:Map<String, FlxActionMode>;
+	#end
 
     public function new(scriptName:String) 
     {
@@ -47,34 +42,6 @@ class ScriptState extends MusicBeatState
 
         targetFileName = scriptName;
     }
-    
-    public function addHxVirtualPadBase(?DPad:FlxDPadMode, ?Action:FlxActionMode) {		
-		if (_hxvirtualpad != null)
-			removeHxVirtualPad();
-
-		_hxvirtualpad = new FlxVirtualPad(DPad, Action);
-		add(_hxvirtualpad);
-
-		controls.setVirtualPadUI(_hxvirtualpad, DPad, Action);
-		trackedinputsUI = controls.trackedInputsUI;
-		controls.trackedInputsUI = [];
-		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
-	}
-	
-	public function removeHxVirtualPadBase() {
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
-		if (_hxvirtualpad != null)
-			remove(_hxvirtualpad);
-	}
-	
-	public function addHxVirtualPadCameraBase() {
-		var camcontrol = new flixel.FlxCamera();
-		camcontrol.bgColor.alpha = 0;
-		FlxG.cameras.add(camcontrol, false);
-		_hxvirtualpad.cameras = [camcontrol];
-	}
 	
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
 
@@ -354,8 +321,10 @@ class ScriptState extends MusicBeatState
 		#end
 		
 		super.destroy();
+		#if HXVIRTUALPAD_ALLOWED
 		if (_hxvirtualpad != null)
 			_hxvirtualpad = FlxDestroyUtil.destroy(_hxvirtualpad);
+		#end
 	}
 
 	#if LUA_ALLOWED
@@ -668,33 +637,39 @@ class ScriptState extends MusicBeatState
 	#if HXVIRTUALPAD_ALLOWED
 	public function addHxVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
 	{
-		addHxVirtualPadBase(DPad, Action);
+		if (_hxvirtualpad != null)
+			removeHxVirtualPad();
+
+		_hxvirtualpad = new FlxVirtualPad(DPad, Action);
+		add(_hxvirtualpad);
+
+		controls.setVirtualPadUI(_hxvirtualpad, DPad, Action);
+		trackedinputsUI = controls.trackedInputsUI;
+		controls.trackedInputsUI = [];
+		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
 	
 	public function addHxVirtualPadCamera()
 	{
-		addHxVirtualPadCameraBase();
+		var camcontrol = new flixel.FlxCamera();
+		camcontrol.bgColor.alpha = 0;
+		FlxG.cameras.add(camcontrol, false);
+		_hxvirtualpad.cameras = [camcontrol];
 	}
 	
 	public function removeHxVirtualPad()
 	{
-		removeHxVirtualPadBase();
+		if (trackedinputsUI.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsUI);
+
+		if (_hxvirtualpad != null)
+			remove(_hxvirtualpad);
 	}
 	
 	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
-	    switch(buttonPostfix) {
-	        case 'A': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonA, type);
-			case 'B': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonB, type);
-			case 'E': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonE, type);
-			case 'C': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonC, type);
-			case 'M': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonM, type);
-			case 'X': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonX, type);
-			case 'Y': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonY, type);
-			case 'Z': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonZ, type);
-			case 'D': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonD, type);
-			case 'V': return Reflect.getProperty(ScriptState._hxvirtualpad.buttonV, type);
-			default: return Reflect.getProperty(ScriptState._hxvirtualpad.buttonA, type);
-		}
+		var buttonName = "button" + buttonPostfix;
+		var button = Reflect.getProperty(ScriptState._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
+		return Reflect.getProperty(button, type);
 		return false;
 	}
 	

@@ -33,6 +33,7 @@ import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.ui.FlxButton;
 #if desktop
 import flixel.ui.FlxButton;
 #end

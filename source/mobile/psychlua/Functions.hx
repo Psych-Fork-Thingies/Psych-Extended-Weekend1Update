@@ -13,6 +13,44 @@ class MobileFunctions
 	{
 	    var lua:State = funk.lua;
 	    
+	    #if PLAYSTATE_VIRTUALPAD_ALLOWED
+		//OMG
+		Lua_helper.add_callback(lua, 'virtualPadPressed', function(buttonPostfix:String):Bool
+		{
+		    return PlayState.checkVPadPress(buttonPostfix, 'pressed');
+		});
+		
+		Lua_helper.add_callback(lua, 'virtualPadJustPressed', function(buttonPostfix:String):Bool
+		{
+		    return PlayState.checkVPadPress(buttonPostfix, 'justPressed');
+		});
+		
+		Lua_helper.add_callback(lua, 'virtualPadReleased', function(buttonPostfix:String):Bool
+		{
+		    return PlayState.checkVPadPress(buttonPostfix, 'released');
+		});
+		
+		Lua_helper.add_callback(lua, 'virtualPadJustReleased', function(buttonPostfix:String):Bool
+		{
+		    return PlayState.checkVPadPress(buttonPostfix, 'justReleased');
+		});
+		
+		Lua_helper.add_callback(lua, 'addVirtualPad', function(DPad:String, Action:String):Void
+		{
+		    PlayState.instance.addPlayStateVirtualPad(PlayState.dpadMode.get(DPad), PlayState.actionMode.get(Action));
+		});
+		
+		Lua_helper.add_callback(lua, 'addVirtualPadCamera', function():Void
+		{
+		    PlayState.instance.addPlayStateVirtualPadCamera();
+		});
+		
+		Lua_helper.add_callback(lua, 'removeVirtualPad', function():Void
+		{
+		    PlayState.instance.removePlayStateVirtualPad();
+		});
+		#end
+	    
 	    Lua_helper.add_callback(lua, "MobileC", function(enabled:Bool = false):Void
 		{
 			if (ClientPrefs.data.mobileC) MusicBeatState.mobilec.visible = enabled;

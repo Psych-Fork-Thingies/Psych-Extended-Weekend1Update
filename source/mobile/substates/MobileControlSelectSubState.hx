@@ -44,7 +44,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
     #end
     var curSelected:Int = 0;
     var buttonistouched:Bool = false;
-    var bindbutton:FlxButton;
+    var bindbutton:MobileButton;
     var config:Config;
     var extendConfig:Config;
     
@@ -431,7 +431,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
         }
     }
 
-    function movebutton(button:UIButton)
+    function movebutton(button:MobileButton)
     {
         button.x = FlxG.mouse.x - vpad.buttonUp.width / 2;
         button.y = FlxG.mouse.y - vpad.buttonUp.height / 2;

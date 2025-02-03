@@ -69,6 +69,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		#end
 		
 	if (ClientPrefs.data.VirtualPadAlpha != 0) {
+	    #if !TouchPad
 		var option:Option = new Option('VirtualPad Skin',
 			"Choose VirtualPad Skin",
 			'VirtualPadSkin',
@@ -77,6 +78,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 
 		addOption(option);
 		option.onChange = resetVirtualPad;
+		#end
 	}
 		
 		var option:Option = new Option('VirtualPad Alpha:',
@@ -103,12 +105,14 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = resetVirtualPad;
 		
+		#if !TouchPad
 		var option:Option = new Option('VirtualPad Type',
 			'Which VirtualPad should use??',
 			'virtualpadType',
 			'string',
 			virtualpadTypes);
 		addOption(option);
+		#end
 		
 		var option:Option = new Option('Extra Controls',
 			"Allow Extra Controls",

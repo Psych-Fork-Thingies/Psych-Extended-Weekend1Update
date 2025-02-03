@@ -97,6 +97,14 @@ using StringTools;
 
 class PlayState extends MusicBeatState
 {	
+    //PlayState VirtualPad Things
+    #if PLAYSTATE_VIRTUALPAD_ALLOWED
+    public static var _playStateVirtualPad:FlxVirtualPad; //trust me, you'll never need to access this directly
+    public static var dpadMode:Map<String, FlxDPadMode>;
+	public static var actionMode:Map<String, FlxActionMode>;
+	#end
+	//end
+    
 	public static var STRUM_X = 48.5;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 	
@@ -321,6 +329,34 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 	    MobileCType = 'DEFAULT';
+	    #if PLAYSTATE_VIRTUALPAD_ALLOWED
+		// FlxDPadModes
+		dpadMode = new Map<String, FlxDPadMode>();
+		dpadMode.set("UP_DOWN", UP_DOWN);
+		dpadMode.set("LEFT_RIGHT", LEFT_RIGHT);
+		dpadMode.set("UP_LEFT_RIGHT", UP_LEFT_RIGHT);
+		dpadMode.set("LEFT_FULL", FULL); //1.0 Support
+		dpadMode.set("FULL", FULL);
+		dpadMode.set("RIGHT_FULL", RIGHT_FULL);
+		dpadMode.set("DUO", DUO);
+		dpadMode.set("NONE", NONE);
+			
+		actionMode = new Map<String, FlxActionMode>();
+		actionMode.set('E', E);
+		actionMode.set('A', A);
+		actionMode.set('B', B);
+		actionMode.set('A_B', A_B);
+		actionMode.set('A_B_C', A_B_C);
+		actionMode.set('A_B_E', A_B_E);
+		actionMode.set('A_B_E_C_M', A_B_E_C_M);
+		actionMode.set('A_B_X_Y', A_B_X_Y);
+		actionMode.set('B_X_Y', B_X_Y);
+		actionMode.set('A_B_C_X_Y_Z', A_B_C_X_Y_Z);
+		actionMode.set('FULL', FULL);
+		actionMode.set('controlExtend', controlExtend);
+		actionMode.set('NONE', NONE);
+		#end
+	    
 		//trace('Playback Rate: ' + playbackRate);
 		Paths.clearStoredMemory();
 		if(nextReloadAll) Paths.clearUnusedMemory();
@@ -2050,12 +2086,6 @@ class PlayState extends MusicBeatState
 					{
 						var strumGroup:FlxTypedGroup<StrumNote> = playerStrums;
 						if(!daNote.mustPress) strumGroup = opponentStrums;
-						
-						//I forgot to add this, I'm a idiot :|
-						/*
-						if(!daNote.mustPress && !opponentChart) strumGroup = opponentStrums;
-						else if(!daNote.mustPress && opponentChart) strumGroup = playerStrums;
-						*/
 
 						var myStrum:StrumNote = strumGroup.members[daNote.noteData];
 						var strumX:Float = myStrum.x;
@@ -2286,6 +2316,7 @@ class PlayState extends MusicBeatState
     	
 	// this things used in indie cross 0.6.3 port -KralOyuncu
 	// I don't need this but I can't remove this because of KralOyuncu -AloneDark
+	// This Shit is Dead ;] -KralOyuncu
 	function addCupheadGameoverButtons() // Why not
 	{
 	    addVirtualPad(UP_DOWN, A);
@@ -3636,6 +3667,11 @@ class PlayState extends MusicBeatState
 		FlxG.animationTimeScale = 1;
 		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
 		super.destroy();
+		
+		#if PLAYSTATE_VIRTUALPAD_ALLOWED
+		if (_playStateVirtualPad != null)
+			_playStateVirtualPad = FlxDestroyUtil.destroy(_playStateVirtualPad);
+		#end
 	}
 	
 	public static function cancelMusicFadeTween()
@@ -4109,6 +4145,46 @@ class PlayState extends MusicBeatState
 			}
 		}
 		FlxG.log.warn('Missing shader $name .frag AND .vert files!');
+		return false;
+	}
+	#end
+	
+	#if PLAYSTATE_VIRTUALPAD_ALLOWED
+	public function addPlayStateVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
+	{
+		if (_playStateVirtualPad != null)
+			removePlayStateVirtualPad();
+
+		_playStateVirtualPad = new FlxVirtualPad(DPad, Action);
+		add(_playStateVirtualPad);
+
+		controls.setVirtualPadUI(_playStateVirtualPad, DPad, Action);
+		trackedinputsUI = controls.trackedInputsUI;
+		controls.trackedInputsUI = [];
+		_playStateVirtualPad.alpha = ClientPrefs.data.VirtualPadAlpha;
+	}
+	
+	public function addPlayStateVirtualPadCamera()
+	{
+		var camcontrol = new flixel.FlxCamera();
+		camcontrol.bgColor.alpha = 0;
+		FlxG.cameras.add(camcontrol, false);
+		_playStateVirtualPad.cameras = [camcontrol];
+	}
+	
+	public function removePlayStateVirtualPad()
+	{
+		if (trackedinputsUI.length > 0)
+			controls.removeVirtualControlsInput(trackedinputsUI);
+
+		if (_playStateVirtualPad != null)
+			remove(_playStateVirtualPad);
+	}
+	
+	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
+		var buttonName = "button" + buttonPostfix;
+		var button = Reflect.getProperty(PlayState._playStateVirtualPad, buttonName); //Access Spesific HxVirtualPad Button
+		return Reflect.getProperty(button, type);
 		return false;
 	}
 	#end

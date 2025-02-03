@@ -2,8 +2,10 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="FNF': Psych Extended Debug" file="PsychExtended" packageName="com.kraloyuncu.psychextended.debug" package="com.kraloyuncu.psychextended.debug" main="Main" version="0.2.8" company="KralOyuncu" if="debugBuild"/>
 	<app title="FNF': Psych Extended" file="PsychExtended" packageName="com.kraloyuncu.psychextended" package="com.kraloyuncu.psychextended" main="Main" version="0.2.8" company="KralOyuncu" unless="debugBuild"/>
+	
+	<!--Debug Build Things -->
+	<app title="FNF': Psych Extended Debug" file="PsychExtended" packageName="com.kraloyuncu.psychextended.debug" package="com.kraloyuncu.psychextended.debug" main="Main" version="0.2.8" company="KralOyuncu" if="debugBuild"/>
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -38,12 +40,16 @@
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
-	<set name="BUILD_DIR" value="export/debug" if="debug" />
+	<set name="BUILD_DIR" value="export/debug" if="debug" unless="termux" />
 	<set name="BUILD_DIR" value="export/release" unless="debug || termux" />
-	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
+	<set name="BUILD_DIR" value="export/32bit" if="32bits" unless="termux" />
 	
 	<!-- For Termux -->
-	<set name="BUILD_DIR" value="/root/PsychExtended/export/release" if='termux' unless="debug" />
+	<section if="termux">
+	    <set name="BUILD_DIR" value="/root/PsychExtended/export/debug" if="debug" />
+	    <set name="BUILD_DIR" value="/root/PsychExtended/export/release" unless="debug" />
+	    <set name="BUILD_DIR" value="/root/PsychExtended/export/32bit" if="32bits" />
+	</section>
 	<!-- Alternative -->
 	<!-- <set name="BUILD_DIR" value="/storage/emulated/0/.PsychEngine/export/release" if='termux' unless="debug" /> -->
 
@@ -51,9 +57,11 @@
 	
 	<!-- PSYCH EXTENDED CUSTOMIZATION -->
 	<define name="BASE_GAME_ASSETS" if="finalBuild" />
-	<define name="HXVIRTUALPAD_ALLOWED" if="desktop || mobile" />
+	<!-- <define name="TouchPad" /> -->
+	<define name="HXVIRTUALPAD_ALLOWED" />
+	<define name="PLAYSTATE_VIRTUALPAD_ALLOWED" />
 	<!-- <define name="FILE_DIALOG_FOR_MOBILE" /> -->
-	<define name="PsychExtended_Extras" unless="extras_disabled"/> <!-- Delete this if you want to remove Extra Features (if you are making source mod, this will be usefull) -->
+	<define name="PsychExtended_Extras" unless="extras_disabled"/> <!-- Delete this if you want to remove Extra Features (if you are making source mod, this will be useful) -->
 	<define name="HIDE_CURSOR" if="mobile" /> <!-- DELETE THIS IF YOU WANT TO SEE CURSOR IN MOBILE BUILDS -->
 	<architecture name="ARM64" exclude="ARMV7" if="32bits_disabled" /> <!-- Only Arm64 Build Because I dont want to wait 30 minute -->
 	

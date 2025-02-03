@@ -13,45 +13,47 @@ import openfl.utils.Assets;
 // Lua VirtualPad
 import haxe.ds.StringMap;
 
+typedef MobileButton = #if TouchPad TouchButton #else FlxButton #end;
+
 class FlxVirtualPad extends FlxSpriteGroup {
 	//Actions
-	public var buttonA:FlxButton;
-	public var buttonB:FlxButton;
-	public var buttonC:FlxButton;
-	public var buttonD:FlxButton;
-	public var buttonE:FlxButton;
-	public var buttonM:FlxButton;
-	public var buttonP:FlxButton;
-	public var buttonV:FlxButton;
-	public var buttonX:FlxButton;
-	public var buttonY:FlxButton;
-	public var buttonZ:FlxButton;
-	public var buttonF:FlxButton;
-	public var buttonG:FlxButton;
+	public var buttonA:MobileButton;
+	public var buttonB:MobileButton;
+	public var buttonC:MobileButton;
+	public var buttonD:MobileButton;
+	public var buttonE:MobileButton;
+	public var buttonM:MobileButton;
+	public var buttonP:MobileButton;
+	public var buttonV:MobileButton;
+	public var buttonX:MobileButton;
+	public var buttonY:MobileButton;
+	public var buttonZ:MobileButton;
+	public var buttonF:MobileButton;
+	public var buttonG:MobileButton;
 	
 	//Extra
-    public var buttonExtra1:FlxButton;
-	public var buttonExtra2:FlxButton;
-	public var buttonExtra3:FlxButton;
-	public var buttonExtra4:FlxButton;
+    public var buttonExtra1:MobileButton;
+	public var buttonExtra2:MobileButton;
+	public var buttonExtra3:MobileButton;
+	public var buttonExtra4:MobileButton;
     
 	//DPad
-	public var buttonLeft:FlxButton;
-	public var buttonUp:FlxButton;
-	public var buttonRight:FlxButton;
-	public var buttonDown:FlxButton;
+	public var buttonLeft:MobileButton;
+	public var buttonUp:MobileButton;
+	public var buttonRight:MobileButton;
+	public var buttonDown:MobileButton;
 
 	//PAD DUO MODE
-	public var buttonLeft2:FlxButton;
-	public var buttonUp2:FlxButton;
-	public var buttonRight2:FlxButton;
-	public var buttonDown2:FlxButton;
+	public var buttonLeft2:MobileButton;
+	public var buttonUp2:MobileButton;
+	public var buttonRight2:MobileButton;
+	public var buttonDown2:MobileButton;
     
-	public var buttonCEUp:FlxButton;
-	public var buttonCEDown:FlxButton;
-	public var buttonCEG:FlxButton;
+	public var buttonCEUp:MobileButton;
+	public var buttonCEDown:MobileButton;
+	public var buttonCEG:MobileButton;
 	
-	public var buttonsString:Map<String, FlxButton>;
+	public var buttonsString:Map<String, MobileButton>;
 	public var dPad:FlxSpriteGroup;
 	public var actions:FlxSpriteGroup;
 	
@@ -67,7 +69,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		
 		#if HXVIRTUALPAD_ALLOWED
     	// DPad Buttons
-    	buttonsString = new Map<String, FlxButton>();
+    	buttonsString = new Map<String, MobileButton>();
     	buttonsString.set("buttonLeft", buttonLeft);
     	buttonsString.set("buttonUp", buttonUp);
     	buttonsString.set("buttonRight", buttonRight);
@@ -111,31 +113,31 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		actions = new FlxSpriteGroup();
 		actions.scrollFactor.set();
 
-		buttonA = new FlxButton(0, 0);
-		buttonB = new FlxButton(0, 0);
-		buttonC = new FlxButton(0, 0);
-		buttonD = new FlxButton(0, 0);
-		buttonE = new FlxButton(0, 0);
-		buttonM = new FlxButton(0, 0);
-		buttonP = new FlxButton(0, 0);
-		buttonV = new FlxButton(0, 0);
-		buttonX = new FlxButton(0, 0);
-		buttonY = new FlxButton(0, 0);
-		buttonZ = new FlxButton(0, 0);
-
-		buttonLeft = new FlxButton(0, 0);
-		buttonUp = new FlxButton(0, 0);
-		buttonRight = new FlxButton(0, 0);
-		buttonDown = new FlxButton(0, 0);
-
-		buttonLeft2 = new FlxButton(0, 0);
-		buttonUp2 = new FlxButton(0, 0);
-		buttonRight2 = new FlxButton(0, 0);
-		buttonDown2 = new FlxButton(0, 0);
-        
-		buttonCEUp = new FlxButton(0, 0);
-		buttonCEDown = new FlxButton(0, 0);
-		buttonCEG = new FlxButton(0, 0);
+        buttonA = new MobileButton(0, 0);
+    	buttonB = new MobileButton(0, 0);
+    	buttonC = new MobileButton(0, 0);
+    	buttonD = new MobileButton(0, 0);
+    	buttonE = new MobileButton(0, 0);
+    	buttonM = new MobileButton(0, 0);
+    	buttonP = new MobileButton(0, 0);
+    	buttonV = new MobileButton(0, 0);
+    	buttonX = new MobileButton(0, 0);
+    	buttonY = new MobileButton(0, 0);
+    	buttonZ = new MobileButton(0, 0);
+    
+    	buttonLeft = new MobileButton(0, 0);
+    	buttonUp = new MobileButton(0, 0);
+    	buttonRight = new MobileButton(0, 0);
+    	buttonDown = new MobileButton(0, 0);
+    
+    	buttonLeft2 = new MobileButton(0, 0);
+    	buttonUp2 = new MobileButton(0, 0);
+    	buttonRight2 = new MobileButton(0, 0);
+    	buttonDown2 = new MobileButton(0, 0);
+            
+    	buttonCEUp = new MobileButton(0, 0);
+    	buttonCEDown = new MobileButton(0, 0);
+    	buttonCEG = new MobileButton(0, 0);
 		
 		switch (DPad){
 			case UP_DOWN:
@@ -265,10 +267,42 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	
 	public function createMobileButton(x:Float, y:Float, Frames:String, ColorS:Int):Dynamic
 	{
+	    #if TouchPad
+	    return createTouchButton(x, y, Frames, ColorS);
+	    #else
 	    return createButton(x, y, Frames, ColorS);
+	    #end
 	}
 	
-	public function createButton(x:Float, y:Float, Frames:String, ColorS:Int):FlxButton {
+	public function createTouchButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):TouchButton {
+	    var button = new TouchButton(x, y);
+		button.label = new FlxSprite();
+		if (Frames == "modding") button.loadGraphic(Paths.image('touchpad/${Frames.toUpperCase()}'));
+		else button.loadGraphic(Paths.image('touchpad/bg'));
+		if (Frames != "modding") button.label.loadGraphic(Paths.image('touchpad/${Frames.toUpperCase()}'));
+
+		button.scale.set(0.243, 0.243);
+		button.updateHitbox();
+		button.updateLabelPosition();
+
+		button.statusBrightness = [1, 0.8, 0.4];
+		button.statusIndicatorType = BRIGHTNESS;
+		button.indicateStatus();
+
+		button.bounds.makeGraphic(Std.int(button.width - 50), Std.int(button.height - 50), FlxColor.TRANSPARENT);
+		button.centerBounds();
+
+		button.immovable = true;
+		button.solid = button.moves = false;
+		button.label.antialiasing = button.antialiasing = ClientPrefs.data.antialiasing;
+		button.tag = Frames.toUpperCase();
+		if (ColorS != -1 && ClientPrefs.data.coloredvpad) button.color = ColorS;
+		button.parentAlpha = button.alpha;
+
+		return button;
+	}
+	
+	public function createButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):FlxButton {
 	if (ClientPrefs.data.virtualpadType == 'New')
 	{
 	    var frames:FlxGraphic;
@@ -329,7 +363,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	{
 		super.destroy();
 		for (field in Reflect.fields(this))
-			if (Std.isOfType(Reflect.field(this, field), FlxButton))
+			if (Std.isOfType(Reflect.field(this, field), MobileButton))
 				Reflect.setField(this, field, FlxDestroyUtil.destroy(Reflect.field(this, field)));
 	}
 }

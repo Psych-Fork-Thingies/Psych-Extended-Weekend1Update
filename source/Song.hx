@@ -68,8 +68,6 @@ class Song
 	public var player2:String = 'dad';
 	public var gfVersion:String = 'gf';
 	public var format:String = 'psych_v1';
-	
-	public static var opponentChart:Bool = ClientPrefs.getGameplaySetting('opponentplay', false);
 
 	public static function convert(songJson:Dynamic) // Convert old charts to psych_v1 format
 	{
@@ -115,14 +113,8 @@ class Song
 			}
 			for (note in section.sectionNotes)
 			{
-				var gottaHitNote:Bool = (note[1] > 4) ? !section.mustHitSection : section.mustHitSection;
-				//fix opponent mode notes
-				if (opponentChart) //{
-    				gottaHitNote = (note[1] <= 4) ? !section.mustHitSection : section.mustHitSection; //this can fix OpponentMode Alt Anim Issues IG
-    			/*	note[1] = (note[1] % 4) + (gottaHitNote ? 4 : 0);
-				}
-				else */ note[1] = (note[1] % 4) + (gottaHitNote ? 0 : 4);
-				    
+				var gottaHitNote:Bool = (note[1] < 4) ? section.mustHitSection : !section.mustHitSection;
+				note[1] = (note[1] % 4) + (gottaHitNote ? 0 : 4);
 				if(note[3] != null && !Std.isOfType(note[3], String))
 					note[3] = Note.defaultNoteTypes[note[3]]; //compatibility with Week 7 and 0.1-0.3 psych charts
 			}
