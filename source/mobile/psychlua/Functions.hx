@@ -51,6 +51,8 @@ class MobileFunctions
 		});
 		#end
 	    
+	    Lua_helper.add_callback(lua, 'mobileC', ClientPrefs.data.mobileC);
+	    
 	    Lua_helper.add_callback(lua, "MobileC", function(enabled:Bool = false):Void
 		{
 			if (ClientPrefs.data.mobileC) MusicBeatState.mobilec.visible = enabled;

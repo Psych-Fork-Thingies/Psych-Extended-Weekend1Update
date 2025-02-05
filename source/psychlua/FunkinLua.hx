@@ -84,13 +84,13 @@ class FunkinLua {
 	public static var hscript_old:HScript_Old = null;
 	#end
 	
+	public var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
 	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
 	public function new(scriptName:String) {
 		#if LUA_ALLOWED
 		lua = LuaL.newstate();
 		LuaL.openlibs(lua);
-		Lua.init_callbacks(lua);
 
 		//trace('Lua version: ' + Lua.version());
 		//trace("LuaJIT version: " + Lua.versionJIT());
@@ -100,6 +100,7 @@ class FunkinLua {
 		this.scriptName = scriptName;
 		
 		var game:PlayState = PlayState.instance;
+		game.luaArray.push(this);
 		
 		var myFolder:Array<String> = this.scriptName.split('/');
 		if(myFolder[0] + '/' == Paths.mods() && (Mods.currentModDirectory == myFolder[1] || Mods.getGlobalMods().contains(myFolder[1]))) //is inside mods folder
@@ -275,8 +276,9 @@ class FunkinLua {
 			if(ignoreSelf && !exclusions.contains(scriptName)) exclusions.push(scriptName);
 			game.setOnHScript(varName, arg, exclusions);
 		});
-		Lua_helper.add_callback(lua, "setOnLuas", function(varName:String, arg:Dynamic, ?exclusions:Array<String> = null) {
+		addLocalCallback("setOnLuas", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null) {
 			if(exclusions == null) exclusions = [];
+			if(ignoreSelf && !exclusions.contains(scriptName)) exclusions.push(scriptName);
 			game.setOnLuas(varName, arg, exclusions);
 		});
 
@@ -286,16 +288,10 @@ class FunkinLua {
 			game.callOnScripts(funcName, args, ignoreStops, excludeScripts, excludeValues);
 			return true;
 		});
-		Lua_helper.add_callback(lua, "callOnLuas", function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops=false, ?exclusions:Array<String> = null) {
-			if(funcName == null){
-				#if (linc_luajit >= "0.0.6")
-				LuaL.error(lua, "bad argument #1 to 'callOnLuas' (string expected, got nil)");
-				#end
-				return false;
-			}
-			if(args == null) args = [];
-			if(exclusions == null) exclusions = [];
-			PlayState.instance.callOnLuas(funcName, args, ignoreStops, exclusions);
+		addLocalCallback("callOnLuas", function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops=false, ?ignoreSelf:Bool = true, ?excludeScripts:Array<String> = null, ?excludeValues:Array<Dynamic> = null) {
+			if(excludeScripts == null) excludeScripts = [];
+			if(ignoreSelf && !excludeScripts.contains(scriptName)) excludeScripts.push(scriptName);
+			game.callOnLuas(funcName, args, ignoreStops, excludeScripts, excludeValues);
 			return true;
 		});
 
@@ -1144,43 +1140,17 @@ class FunkinLua {
 
 		Lua_helper.add_callback(lua, "playAnim", function(obj:String, name:String, forced:Bool = false, ?reverse:Bool = false, ?startFrame:Int = 0)
 		{
-			if(game.getLuaObject(obj, false) != null) {
-				var luaObj:Dynamic = game.getLuaObject(obj,false);
-				if(luaObj.animation.getByName(name) != null)
-				{
-				    if(luaObj.anim != null) luaObj.anim.play(name, forced, reverse, startFrame); //FlxAnimate
-				    else luaObj.animation.play(name, forced, reverse, startFrame);
-					if(Std.isOfType(luaObj, ModchartSprite))
-					{
-						//convert luaObj to ModchartSprite
-						var obj:Dynamic = luaObj;
-						var luaObj:ModchartSprite = obj;
-						var daOffset = luaObj.animOffsets.get(name);
-						if (luaObj.animOffsets.exists(name))
-						{
-							luaObj.offset.set(daOffset[0], daOffset[1]);
-						}
-					}
-					return true;
-				}
-				return false;
+			var obj:Dynamic = LuaUtils.getObjectDirectly(obj, false);
+			if(obj.playAnim != null)
+			{
+				obj.playAnim(name, forced, reverse, startFrame);
+				return true;
 			}
-			
-			var spr:FlxSprite = Reflect.getProperty(LuaUtils.getTargetInstance(), obj);
-			if(spr != null) {
-				if(spr.animation.getByName(name) != null)
-				{
-					if(Std.isOfType(spr, Character))
-					{
-						//convert spr to Character
-						var obj:Dynamic = spr;
-						var spr:Character = obj;
-						spr.playAnim(name, forced, reverse, startFrame);
-					}
-					else
-						spr.animation.play(name, forced, reverse, startFrame);
-					return true;
-				}
+			else
+			{
+				if(obj.anim != null) obj.anim.play(name, forced, reverse, startFrame); //FlxAnimate
+				else obj.animation.play(name, forced, reverse, startFrame);
+				return true;
 			}
 			return false;
 		});
@@ -1683,11 +1653,11 @@ class FunkinLua {
 
 		#if ACHIEVEMENTS_ALLOWED Achievements.addLuaCallbacks(lua); #end
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
-		#if (SScript >= "3.0.0") HScript.implement(this); #end
+		#if (SScript >= "3.0.0") if (ClientPrefs.data.hscriptversion == 'SScript') HScript.implement(this); #end
 		#if android AndroidFunctions.implement(this); #end
 		#if hscript
-		HScript_New.implement(this);
-		HScript_Old.implement(this);
+		if (ClientPrefs.data.hscriptversion == 'HScript New') HScript_New.implement(this);
+		if (ClientPrefs.data.hscriptversion == 'HScript Old') HScript_Old.implement(this);
 		#end
 		DeprecatedFunctions.implement(this);
 		ReflectionFunctions.implement(this);
@@ -1914,6 +1884,14 @@ class FunkinLua {
 		return v;
 		#end
 		return null;
+	}
+	
+	public function addLocalCallback(name:String, myFunction:Dynamic)
+	{
+		#if LUA_ALLOWED
+		callbacks.set(name, myFunction);
+		Lua_helper.add_callback(lua, name, null); //just so that it gets called
+		#end
 	}
 	
 	#if (MODS_ALLOWED && !flash && sys)
