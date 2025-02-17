@@ -158,7 +158,6 @@
 	
 	<!--Psych stuff needed-->
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
-	<haxelib name="hxvlc" />
 	<haxelib name="hxCodec" />
 	<haxelib name="tjson"/>
     <haxelib name="extension-androidtools" if="android"/>

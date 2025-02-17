@@ -11,7 +11,6 @@ haxelib install flixel-ui 2.4.0 --global
 haxelib git SScript https://github.com/28AloneDark53/SScript-for-Psych-Extended main --global
 haxelib install hscript 2.4.0 --global
 haxelib git hxCodec https://github.com/Prohack101010/hxCodec-2.6.0-with-MP4Handler --global
-haxelib git hxCodec-New https://github.com/Prohack202020/hxCodec-New --global #idk
 haxelib git hxcpp https://github.com/mcagabe19-stuff/hxcpp master --global
 haxelib git lime https://github.com/mcagabe19-stuff/lime --global
 haxelib install openfl 9.3.3 --global
