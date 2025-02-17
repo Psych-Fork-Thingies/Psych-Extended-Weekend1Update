@@ -18,8 +18,9 @@ import options.OptionsState;
 import openfl.Lib;
 
 
-class MainMenuStateNOVA extends MusicBeatState
+class MainMenuStateNOVA extends HScriptStateHandler
 {
+    public static var instance:MainMenuStateNOVA;
 	public static var novaFlareEngineDataVersion:Float = 1.8;
 	public static var novaFlareEngineVersion:String = '1.1.5 HOTFIX 2'; //1.1.5 -HOTFIX -2 looks too bad
 	public static var curSelected:Int = 0;
@@ -74,6 +75,22 @@ class MainMenuStateNOVA extends MusicBeatState
 
 	override function create()
 	{
+	    instance = this;
+	    
+	    //HScript Things
+	    var className = Type.getClassName(Type.getClass(this));
+	    //End
+	    
+	    #if HSCRIPT_ALLOWED
+		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		add(luaDebugGroup);
+	    
+	    //HScript Things
+	    startHScriptsNamed('MainMenuStateNOVA.hx');
+    	startHScriptsNamed('global.hx');
+    	#end
+    	//End
+    	
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
@@ -250,7 +267,10 @@ class MainMenuStateNOVA extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-	
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 	    #if (debug && android)
 	        if (FlxG.android.justReleased.BACK)
 		    FlxG.debugger.visible = !FlxG.debugger.visible;
@@ -502,5 +522,8 @@ class MainMenuStateNOVA extends MusicBeatState
         });        
 	}
 	
-	
+	override function destroy() {
+		instance = null;
+		super.destroy();
+	}
 }

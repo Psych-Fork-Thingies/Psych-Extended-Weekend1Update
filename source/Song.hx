@@ -42,6 +42,7 @@ typedef SwagSection =
 {
 	var sectionNotes:Array<Dynamic>;
 	var sectionBeats:Float;
+	@:optional var typeOfSection:Int;
 	var mustHitSection:Bool;
 	@:optional var altAnim:Bool;
 	@:optional var gfSection:Bool;
@@ -51,6 +52,7 @@ typedef SwagSection =
 
 class Song
 {
+    public static var useOldChartLoadSystem:Bool = false; //for Chart Editor
 	public var song:String;
 	public var notes:Array<SwagSection>;
 	public var events:Array<Dynamic>;
@@ -74,7 +76,8 @@ class Song
 		if(songJson.gfVersion == null)
 		{
 			songJson.gfVersion = songJson.player3;
-			if(Reflect.hasField(songJson, 'player3')) Reflect.deleteField(songJson, 'player3');
+			if (ClientPrefs.data.chartLoadSystem == '1.0x') if(Reflect.hasField(songJson, 'player3')) Reflect.deleteField(songJson, 'player3');
+			else songJson.player3 = null;
 		}
 
 		if(songJson.events == null)
@@ -102,21 +105,55 @@ class Song
 		}
 		
 		var sectionsData:Array<SwagSection> = songJson.notes;
-		if(sectionsData == null) return;
-		for (section in sectionsData)
+		if (ClientPrefs.data.chartLoadSystem == '1.0x')
 		{
-			var beats:Null<Float> = cast section.sectionBeats;
-			if (beats == null || Math.isNaN(beats))
+    		if(sectionsData == null) return;
+    		for (section in sectionsData)
+    		{
+    			var beats:Null<Float> = cast section.sectionBeats;
+    			if (beats == null || Math.isNaN(beats))
+    			{
+    				section.sectionBeats = 4;
+    				if(Reflect.hasField(section, 'lengthInSteps')) Reflect.deleteField(section, 'lengthInSteps');
+    			}
+    			for (note in section.sectionNotes)
+    			{
+    				var gottaHitNote:Bool = (note[1] < 4) ? section.mustHitSection : !section.mustHitSection;
+    				note[1] = (note[1] % 4) + (gottaHitNote ? 0 : 4);
+    				if(note[3] != null && !Std.isOfType(note[3], String))
+    					note[3] = Note.defaultNoteTypes[note[3]]; //compatibility with Week 7 and 0.1-0.3 psych charts
+    			}
+    		}
+		}
+	}
+	
+	private static function onLoadJson(songJson:Dynamic) // This is 0.6.3 Chart Load System Because Chart Editor Doesn't Support 1.0 Charts
+	{
+		if(songJson.gfVersion == null)
+		{
+			songJson.gfVersion = songJson.player3;
+			songJson.player3 = null;
+		}
+		if(songJson.events == null)
+		{
+			songJson.events = [];
+			for (secNum in 0...songJson.notes.length)
 			{
-				section.sectionBeats = 4;
-				if(Reflect.hasField(section, 'lengthInSteps')) Reflect.deleteField(section, 'lengthInSteps');
-			}
-			for (note in section.sectionNotes)
-			{
-				var gottaHitNote:Bool = (note[1] < 4) ? section.mustHitSection : !section.mustHitSection;
-				note[1] = (note[1] % 4) + (gottaHitNote ? 0 : 4);
-				if(note[3] != null && !Std.isOfType(note[3], String))
-					note[3] = Note.defaultNoteTypes[note[3]]; //compatibility with Week 7 and 0.1-0.3 psych charts
+				var sec:SwagSection = songJson.notes[secNum];
+				var i:Int = 0;
+				var notes:Array<Dynamic> = sec.sectionNotes;
+				var len:Int = notes.length;
+				while(i < len)
+				{
+					var note:Array<Dynamic> = notes[i];
+					if(note[1] < 0)
+					{
+						songJson.events.push([note[0], [[note[2], note[3], note[4]]]]);
+						notes.remove(note);
+						len = notes.length;
+					}
+					else i++;
+				}
 			}
 		}
 	}
@@ -130,14 +167,64 @@ class Song
 
     public static var chartPath:String;
     public static var loadedSongName:String;
+    //I Don't have a better way to do this 😭
+    /* Fuck This Shit I'm Out
+	public static function loadOldChartFromJson(jsonInput:String, ?folder:String, ?inChartEditor:Bool = false):SwagSong
+	{
+	    
+	}
+	*/
+	public static function parseJSONshit(rawJson:String):SwagSong
+	{
+		var swagShit:SwagSong = cast Json.parse(rawJson).song;
+		swagShit.validScore = true;
+		return swagShit;
+	}
+	
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
-	    if(folder == null) folder = jsonInput;
-		PlayState.SONG = getChart(jsonInput, folder);
-		loadedSongName = folder;
-		chartPath = _lastPath.replace('/', '\\');
-		StageData.loadDirectory(PlayState.SONG);
-		return PlayState.SONG;
+	    if (ClientPrefs.data.chartLoadSystem == '1.0x')
+	    {
+	        trace('Current Chart System: 1.0');
+    		if(folder == null) folder = jsonInput;
+        	PlayState.SONG = getChart(jsonInput, folder);
+        	loadedSongName = folder;
+        	chartPath = _lastPath.replace('/', '\\');
+        	if(jsonInput != 'events') StageData.loadDirectory(PlayState.SONG);
+        	return PlayState.SONG; 
+	    }
+	    else
+	    {
+			trace('Current Chart System: 0.4-0.7x');
+			var rawJson = null;
+			
+			var formattedFolder:String = Paths.formatToSongPath(folder);
+			var formattedSong:String = Paths.formatToSongPath(jsonInput);
+    		
+			#if MODS_ALLOWED
+			var moddyFile:String = Paths.modsJson('$formattedFolder/$formattedSong');
+    		if(FileSystem.exists(moddyFile)) {
+    			rawJson = File.getContent(moddyFile).trim();
+    		}
+    		#end
+    		
+    		if(rawJson == null) {
+    		    var path:String = Paths.json('$formattedFolder/$formattedSong');
+    		    
+    			#if sys
+    			if(FileSystem.exists(path))
+    				rawJson = File.getContent(path);
+    			else
+    			#end
+    				rawJson = Assets.getText(path);
+    		}
+    		
+    		PlayState.SONG = parseJSONshit(rawJson);
+    		loadedSongName = folder;
+    		if(jsonInput != 'events') StageData.loadDirectory(PlayState.SONG);
+    		onLoadJson(PlayState.SONG);
+    		return PlayState.SONG;
+    	}
 	}
 	
 	static var _lastPath:String;

@@ -51,7 +51,8 @@ class SubstateHScript extends SScript
 			@:privateAccess
 			if(hs.parsingException != null)
 			{
-				ScriptSubstate.instance.addTextToDebug('ERROR ON LOADING (${hs.origin}): ${hs.parsingException.message}', FlxColor.RED);
+				if(Std.is(FlxG.state.subState, ScriptSubstate)) ScriptSubstate.instance.addTextToDebug('ERROR ON LOADING (${hs.origin}): ${hs.parsingException.message}', FlxColor.RED);
+			    else HScriptSubStateHandler.instance.addTextToDebug('ERROR ON LOADING (${hs.origin}): ${hs.parsingException.message}', FlxColor.RED);
 			}
 		}
 	}
@@ -134,7 +135,7 @@ class SubstateHScript extends SScript
 		set('FlxTween', flixel.tweens.FlxTween);
 		set('FlxEase', flixel.tweens.FlxEase);
 		set('FlxColor', CustomFlxColor);
-		set('ScriptSubstate', ScriptSubstate);
+		set('controls', PlayerSettings.player1.controls); //fix controls
 		set('Paths', Paths);
 		set('Conductor', Conductor);
 		set('ClientPrefs', ClientPrefs);
@@ -151,7 +152,7 @@ class SubstateHScript extends SScript
 		set('FlxAnimate', FlxAnimate);
 		#end
 		set('Lib', openfl.Lib);
-		set('StateVars', scripting.StateVars);
+		set('ScriptingVars', scripting.ScriptingVars);
 		set('CustomSwitchState', extras.CustomSwitchState);
 		set('CoolUtil', CoolUtil);
 		set('MusicBeatState', MusicBeatState);
@@ -188,16 +189,6 @@ class SubstateHScript extends SScript
 			FlxTransitionableState.skipNextTransIn = !doTransition;
 			FlxTransitionableState.skipNextTransOut = !doTransition;
 			MusicBeatState.switchState(new ScriptSubstate(name));
-		});
-		set("switchState", function(fullClassPath:String, params:Array<Dynamic>, ?doTransition:Bool = true)
-		{
-			FlxTransitionableState.skipNextTransIn = !doTransition;
-			FlxTransitionableState.skipNextTransOut = !doTransition;
-			MusicBeatState.switchState(Type.createInstance(Type.resolveClass(fullClassPath), params));
-		});
-		set('openSubState', function(fullClassPath:String, params:Array<Dynamic>)
-		{
-			FlxG.state.subState.openSubState(Type.createInstance(Type.resolveClass(fullClassPath), params));
 		});
         set('openScriptSubState', function(substate:String)
         {
@@ -289,19 +280,19 @@ class SubstateHScript extends SScript
 
 		set("setGlobalVar", function(id:String, data:Dynamic)
 		{
-			StateVars.globalVars.set(id, data);
+			ScriptingVars.globalVars.set(id, data);
 		});
 		set("getGlobalVar", function(id:String)
 		{
-			return StateVars.globalVars.get(id);
+			return ScriptingVars.globalVars.get(id);
 		});
 		set("existsGlobalVar", function(id:String)
 		{
-			return StateVars.globalVars.exists(id);
+			return ScriptingVars.globalVars.exists(id);
 		});
 		set("removeGlobalVar", function(id:String)
 		{
-			StateVars.globalVars.remove(id);
+			ScriptingVars.globalVars.remove(id);
 		});
 
 		//CPP
@@ -437,33 +428,52 @@ class SubstateHScript extends SScript
 
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic) {
-			ScriptSubstate.instance.variables.set(name, value);
+		    if (Std.is(FlxG.state, PlayState))
+			    PlayState.instance.variables.set(name, value);
+			else if (Std.is(FlxG.state, ScriptSubstate))
+			    ScriptSubstate.instance.variables.set(name, value);
 			return value;
 		});
 		set('getVar', function(name:String) {
 			var result:Dynamic = null;
-			if(ScriptSubstate.instance.variables.exists(name)) result = ScriptSubstate.instance.variables.get(name);
+			if(PlayState.instance.variables.exists(name) && Std.is(FlxG.state, PlayState))
+			    result = PlayState.instance.variables.get(name);
+			else if(PlayState.instance.variables.exists(name) && Std.is(FlxG.state, ScriptSubstate))
+			    result = ScriptSubstate.instance.variables.get(name);
 			return result;
 		});
 		set('removeVar', function(name:String)
 		{
-			if(ScriptSubstate.instance.variables.exists(name))
-			{
-				ScriptSubstate.instance.variables.remove(name);
-				return true;
+		    if(Std.is(FlxG.state, PlayState))
+		    {
+    			if(PlayState.instance.variables.exists(name))
+    			{
+    				PlayState.instance.variables.remove(name);
+    				return true;
+    			}
+			}
+			else if(PlayState.instance.variables.exists(name) && Std.is(FlxG.state, ScriptSubstate))
+		    {
+    			if(ScriptSubstate.instance.variables.exists(name))
+    			{
+    				ScriptSubstate.instance.variables.remove(name);
+    				return true;
+    			}
 			}
 			return false;
 		});
 		set('debugPrint', function(text:String, ?color:FlxColor = null) {
 			if(color == null) color = FlxColor.WHITE;
-			ScriptSubstate.instance.addTextToDebug(text, color);
+			if(Std.is(FlxG.state.subState, ScriptSubstate)) ScriptSubstate.instance.addTextToDebug(text, color);
+			else HScriptSubStateHandler.instance.addTextToDebug(text, color);
 		});
 		set('getModSetting', function(saveTag:String, ?modName:String = null) {
 			if(modName == null)
 			{
 				if(this.modFolder == null)
 				{
-					ScriptSubstate.instance.addTextToDebug('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', FlxColor.RED);
+					if(Std.is(FlxG.state.subState, ScriptSubstate)) ScriptSubstate.instance.addTextToDebug('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', FlxColor.RED);
+			        else HScriptSubStateHandler.instance.addTextToDebug('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', FlxColor.RED);
 					return null;
 				}
 				modName = this.modFolder;
@@ -515,37 +525,44 @@ class SubstateHScript extends SScript
 		//OMG
 		set('virtualPadPressed', function(buttonPostfix:String):Bool
 		{
-		    return ScriptSubstate.checkVPadPress(buttonPostfix, 'pressed');
+		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.checkVPadPress(buttonPostfix, 'pressed');
+		    else return HScriptSubStateHandler.checkVPadPress(buttonPostfix, 'pressed');
 		});
 		
 		set('virtualPadJustPressed', function(buttonPostfix:String):Bool
 		{
-		    return ScriptSubstate.checkVPadPress(buttonPostfix, 'justPressed');
+		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.checkVPadPress(buttonPostfix, 'justPressed');
+		    else return HScriptSubStateHandler.checkVPadPress(buttonPostfix, 'justPressed');
 		});
 		
 		set('virtualPadReleased', function(buttonPostfix:String):Bool
 		{
-		    return ScriptSubstate.checkVPadPress(buttonPostfix, 'released');
+		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.checkVPadPress(buttonPostfix, 'released');
+		    else return HScriptSubStateHandler.checkVPadPress(buttonPostfix, 'released');
 		});
 		
 		set('virtualPadJustReleased', function(buttonPostfix:String):Bool
 		{
-		    return ScriptSubstate.checkVPadPress(buttonPostfix, 'justReleased');
+		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.checkVPadPress(buttonPostfix, 'justReleased');
+		    else return HScriptSubStateHandler.checkVPadPress(buttonPostfix, 'justReleased');
 		});
 		
 		set('addVirtualPad', function(DPad:String, Action:String):Void
 		{
-		    ScriptSubstate.instance.addHxVirtualPad(ScriptSubstate.dpadMode.get(DPad), ScriptSubstate.actionMode.get(Action));
+		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.instance.addHxVirtualPad(HScriptSubStateHandler.dpadMode.get(DPad), HScriptSubStateHandler.actionMode.get(Action));
+		    else HScriptSubStateHandler.instance.addHxVirtualPad(HScriptSubStateHandler.dpadMode.get(DPad), HScriptSubStateHandler.actionMode.get(Action));
 		});
 		
-		set('addVirtualPadCamera', function(?Substate:Bool = false):Void
+		set('addVirtualPadCamera', function():Void
 		{
-		    ScriptSubstate.instance.addHxVirtualPadCamera();
+		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.instance.addHxVirtualPadCamera();
+		    else HScriptSubStateHandler.instance.addHxVirtualPadCamera();
 		});
 		
-		set('removeVirtualPad', function(?Substate:Bool = false):Void
+		set('removeVirtualPad', function():Void
 		{
-		    ScriptSubstate.instance.removeHxVirtualPad();
+		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.instance.removeHxVirtualPad();
+		    else HScriptSubStateHandler.instance.removeHxVirtualPad();
 		});
 		#end
 
@@ -554,9 +571,12 @@ class SubstateHScript extends SScript
 		#if LUA_ALLOWED
 		set('createGlobalCallback', function(name:String, func:Dynamic)
 		{
-			for (script in ScriptSubstate.instance.luaArray)
-				if(script != null && script.lua != null && !script.closed)
-					Lua_helper.add_callback(script.lua, name, func);
+		    if(Std.is(FlxG.state.subState, ScriptSubstate))
+		    {
+    			for (script in ScriptSubstate.instance.luaArray)
+    				if(script != null && script.lua != null && !script.closed)
+    					Lua_helper.add_callback(script.lua, name, func);
+			}
 
 			FunkinLua.customFunctions.set(name, func);
 		});
@@ -589,7 +609,8 @@ class SubstateHScript extends SScript
 					return;
 				}
 				#end
-				if(ScriptSubstate.instance != null) ScriptSubstate.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
+				if(Std.is(FlxG.state.subState, ScriptSubstate) && ScriptSubstate.instance != null) ScriptSubstate.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
+			    else if (!Std.is(FlxG.state.subState, ScriptSubstate) && HScriptSubStateHandler.instance != null) HScriptSubStateHandler.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
 				else trace('$origin - $msg');
 			}
 		});
@@ -616,7 +637,7 @@ class SubstateHScript extends SScript
 
 		if (ScriptSubstate.instance == FlxG.state.subState)
 		{
-			setSpecialObject(ScriptSubstate.instance, false, ScriptSubstate.instance.instancesExclude);
+			setSpecialObject(HScriptSubStateHandler.instance, false, HScriptSubStateHandler.instance.instancesExclude);
 		}
 
 		if(varsToBring != null) {
@@ -637,7 +658,8 @@ class SubstateHScript extends SScript
 			#if LUA_ALLOWED
 			FunkinLua.luaTrace(origin + ' - No HScript function named: $funcToRun', false, false, FlxColor.RED);
 			#else
-			ScriptSubstate.instance.addTextToDebug(origin + ' - No HScript function named: $funcToRun', FlxColor.RED);
+			if(Std.is(FlxG.state.subState, ScriptSubstate)) ScriptSubstate.instance.addTextToDebug(origin + ' - No HScript function named: $funcToRun', FlxColor.RED);
+			    else HScriptSubStateHandler.instance.addTextToDebug(origin + ' - No HScript function named: $funcToRun', FlxColor.RED);
 			#end
 			return null;
 		}
@@ -655,7 +677,8 @@ class SubstateHScript extends SScript
 					return null;
 				}
 				#end
-				ScriptSubstate.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
+				if(Std.is(FlxG.state.subState, ScriptSubstate)) ScriptSubstate.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
+			    else HScriptSubStateHandler.instance.addTextToDebug('$origin - $msg', FlxColor.RED);
 			}
 			return null;
 		}

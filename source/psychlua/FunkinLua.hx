@@ -39,6 +39,9 @@ import DialogueBoxPsych;
 import psychlua.LuaUtils;
 import psychlua.LuaUtils.LuaTweenOptions;
 
+import scripting.state.StateHScript;
+import scripting.substate.SubstateHScript;
+
 import psychlua.HScript;
 import psychlua.DebugLuaText;
 import psychlua.ModchartSprite;
@@ -48,7 +51,7 @@ import psychlua.ModchartText;
 import Discord;
 #end
 
-import tjson.TJSON as Json;
+import haxe.Json;
 
 using StringTools;
 
@@ -78,10 +81,9 @@ class FunkinLua {
 	#end
 	
 	#if hscript
-	public var hscript_new:HScript_New = null;
-	public var statehscript:StateHScript = null;
-	public var substatehscript:SubstateHScript = null;
-	public static var hscript_old:HScript_Old = null;
+	public var hscriptog:HScriptOG = null;
+	public var hxState:StateHScript = null;
+	public var hxSubstate:SubstateHScript = null;
 	#end
 	
 	public var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
@@ -883,7 +885,6 @@ class FunkinLua {
 				FlxTransitionableState.skipNextTransOut = true;
 			}
 
-			PlayState.cancelMusicFadeTween();
 			if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
 		        CustomFadeTransitionNOVA.nextCamera = game.camOther;
 			if(FlxTransitionableState.skipNextTransIn && ClientPrefs.data.TransitionStyle == 'NovaFlare')
@@ -1653,12 +1654,16 @@ class FunkinLua {
 
 		#if ACHIEVEMENTS_ALLOWED Achievements.addLuaCallbacks(lua); #end
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
-		#if (SScript >= "3.0.0") if (ClientPrefs.data.hscriptversion == 'SScript') HScript.implement(this); #end
-		#if android AndroidFunctions.implement(this); #end
-		#if hscript
-		if (ClientPrefs.data.hscriptversion == 'HScript New') HScript_New.implement(this);
-		if (ClientPrefs.data.hscriptversion == 'HScript Old') HScript_Old.implement(this);
+		#if (SScript >= "3.0.0")
+		if (ClientPrefs.data.hscriptversion == 'SScript') HScript.implement(this);
+		HScript.implement_forced(this);
 		#end
+		#if hscript
+		var Hv = ClientPrefs.data.hscriptversion;
+		if (Hv == 'HScript New' || Hv == 'HScript Old') HScriptOG.implement(this);
+		HScriptOG.implement_forced(this);
+		#end
+		#if android AndroidFunctions.implement(this); #end
 		DeprecatedFunctions.implement(this);
 		ReflectionFunctions.implement(this);
 		CustomFunctions.implement(this);
@@ -1760,24 +1765,20 @@ class FunkinLua {
 			hscript.destroy();
 			hscript = null;
 		}
-		if(statehscript != null)
+		if(hxState != null)
 		{
-			statehscript.destroy();
-			statehscript = null;
+			hxState.destroy();
+			hxState = null;
 		}
-		if(substatehscript != null)
+		if(hxSubstate != null)
 		{
-			substatehscript.destroy();
-			substatehscript = null;
+			hxSubstate.destroy();
+			hxSubstate = null;
 		}
 		#end
 		
-    	if(hscript_new != null) hscript_new.interp = null;
-    	hscript_new = null;
-    	
-    	if(hscript_old != null) hscript_old.interp = null;
-    	hscript_old = null;
-		
+    	if(hscriptog != null) hscriptog.interp = null;
+    	hscriptog = null;		
 		#end
 	}
 	//clone functions

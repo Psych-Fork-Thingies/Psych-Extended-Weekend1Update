@@ -14,7 +14,7 @@ import openfl.utils.Assets;
 	别骂了 -- TieGuo
 */
 
-class PauseSubStateNOVA extends MusicBeatSubstate
+class PauseSubStateNOVA extends HScriptSubStateHandler
 {
 	var filePath:String = 'menuExtend/PauseState/';
 	var font:String = Assets.getFont("assets/fonts/montserrat.ttf").fontName;
@@ -98,9 +98,22 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 	public static var curColorAgain:Int = 0;
 	var colorTween:FlxTween;
 	var colorTweenShadow:FlxTween;
+	public static var instance:PauseSubStateNOVA;
 
 	override function create()
 	{
+	    instance = this;
+	    
+	    //HScript Things
+	    #if HSCRIPT_ALLOWED
+		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		add(luaDebugGroup);
+	    
+	    startHScriptsNamed('PauseSubStateNOVA.hx');
+    	startHScriptsNamed('global.hx');
+    	#end
+    	//End
+    	
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 		pauseMusic = new FlxSound();
 		try
@@ -364,7 +377,10 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 	}
 
 	override function update(elapsed:Float) {
-		
+		//HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
 		super.update(elapsed);
@@ -580,7 +596,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 						CustomSwitchState.switchMenus('StoryMenu');
 					else
 						CustomSwitchState.switchMenus('Freeplay');
-					//PlayState.cancelMusicFadeTween();
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
@@ -749,6 +764,7 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 
 	override function destroy()
 	{
+	    instance = null;
 		pauseMusic.destroy();
 		if (colorTween != null && colorTweenShadow != null)
 		{

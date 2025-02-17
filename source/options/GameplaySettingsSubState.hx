@@ -55,10 +55,17 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 		
 		var option:Option = new Option('HScript Version:',
-			"This Option Is Experimental\n(If You Have A Any Problem With Mods Change This)",
+			"If You Have A Any Problem With Mods Change This",
 			'hscriptversion',
 			'string',
 			['HScript Old', 'HScript New', 'SScript']);
+		addOption(option);
+		
+		var option:Option = new Option('Chart System:',
+			"This Option Is Experimental\n(Choose Your Chart System)",
+			'chartLoadSystem',
+			'string',
+			['0.4-0.7x', '1.0x']);
 		addOption(option);
 
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here

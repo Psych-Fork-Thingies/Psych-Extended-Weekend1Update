@@ -3,7 +3,7 @@ package;
 import flixel.util.FlxStringUtil;
 import options.OptionsState;
 
-class PauseSubState extends MusicBeatSubstate
+class PauseSubState extends HScriptSubStateHandler
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
@@ -23,9 +23,24 @@ class PauseSubState extends MusicBeatSubstate
 	var missingText:FlxText;
 
 	public static var songName:String = null;
+	public static var instance:PauseSubState;
 
 	override function create()
 	{
+	    instance = this;
+	    
+	    //HScript Things
+	    var className = Type.getClassName(Type.getClass(this));
+	    
+	    #if HSCRIPT_ALLOWED
+		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		add(luaDebugGroup);
+	    
+	    startHScriptsNamed('${className}' + '.hx');
+    	startHScriptsNamed('global.hx');
+    	#end
+    	//End
+    	
 		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
 
 		if(PlayState.chartingMode)
@@ -161,6 +176,10 @@ class PauseSubState extends MusicBeatSubstate
 	var cantUnpause:Float = 0.1;
 	override function update(elapsed:Float)
 	{
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 		cantUnpause -= elapsed;
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
@@ -330,7 +349,7 @@ class PauseSubState extends MusicBeatSubstate
 					    CustomSwitchState.switchMenus('StoryMenu');
 					else
 						CustomSwitchState.switchMenus('Freeplay');
-					PlayState.cancelMusicFadeTween();
+					//PlayState.cancelMusicFadeTween();
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
@@ -341,7 +360,7 @@ class PauseSubState extends MusicBeatSubstate
 
 					Mods.loadTopMod();
 					CustomSwitchState.switchMenus('MainMenu');
-					PlayState.cancelMusicFadeTween();
+					//PlayState.cancelMusicFadeTween();
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
@@ -387,6 +406,7 @@ class PauseSubState extends MusicBeatSubstate
 	override function destroy()
 	{
 		pauseMusic.destroy();
+		instance = null;
 		super.destroy();
 	}
 

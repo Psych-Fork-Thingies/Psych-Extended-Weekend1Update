@@ -52,7 +52,7 @@ class MainState extends MusicBeatState
 
         MusicBeatState.switchState(new ScriptState('TitleState'));
 
-        StateVars.engineVersion = MainMenuState.psychExtendedVersion.trim();
+        ScriptingVars.engineVersion = MainMenuState.psychExtendedVersion.trim();
 
 		#if CHECK_FOR_UPDATES
 		if (ClientPrefs.data.checkForUpdates) 
@@ -63,16 +63,16 @@ class MainState extends MusicBeatState
 
 			http.onData = function (data:String)
 			{
-				StateVars.onlineVersion = data.split('\n')[0].trim();
+				ScriptingVars.onlineVersion = data.split('\n')[0].trim();
 
-				trace('Current Version: ' + StateVars.onlineVersion);
-                trace('Your Version: ' + StateVars.engineVersion);
+				trace('Current Version: ' + ScriptingVars.onlineVersion);
+                trace('Your Version: ' + ScriptingVars.engineVersion);
 
-				if (StateVars.onlineVersion != StateVars.engineVersion) 
+				if (ScriptingVars.onlineVersion != ScriptingVars.engineVersion) 
                 {
                     trace('Versions aren\'t matching!');
                     
-					StateVars.outdated = true;
+					ScriptingVars.outdated = true;
 				}
 			}
 

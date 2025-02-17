@@ -4,7 +4,7 @@ import haxe.ds.StringMap;
 
 import flixel.input.keyboard.FlxKey;
 
-class StateVars
+class ScriptingVars
 {
 	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
 	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];

@@ -1,5 +1,6 @@
 package;
 
+/*
 typedef SwagSection =
 {
 	var sectionNotes:Array<Dynamic>;
@@ -11,6 +12,7 @@ typedef SwagSection =
 	@:optional var bpm:Float;
 	@:optional var changeBPM:Bool;
 }
+*/
 
 class Section
 {

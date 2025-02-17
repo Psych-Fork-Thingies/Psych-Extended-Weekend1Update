@@ -23,9 +23,11 @@ import flixel.input.keyboard.FlxKey;
 
 using StringTools;
 
-class MainMenuStateOld extends MusicBeatState
+class MainMenuStateOld extends HScriptStateHandler
 {
 	public static var curSelected:Int = 0;
+	
+	public static var instance:MainMenuStateOld;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	private var camGame:FlxCamera;
@@ -48,6 +50,18 @@ class MainMenuStateOld extends MusicBeatState
 
 	override function create()
 	{
+	    instance = this;
+	    
+	    //HScript Things
+	    #if HSCRIPT_ALLOWED
+		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		add(luaDebugGroup);
+	    
+	    startHScriptsNamed('MainMenuStateOld.hx');
+    	startHScriptsNamed('global.hx');
+    	#end
+    	//End
+    	
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 		
@@ -182,6 +196,10 @@ class MainMenuStateOld extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -324,5 +342,10 @@ class MainMenuStateOld extends MusicBeatState
 				spr.centerOffsets();
 			}
 		});
+	}
+	
+	override function destroy() {
+		instance = null;
+		super.destroy();
 	}
 }

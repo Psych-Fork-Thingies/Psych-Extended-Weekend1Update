@@ -12,6 +12,7 @@ class CustomSwitchState
         var CP = ClientPrefs.data;
         var switchState = MusicBeatState.switchState;
         
+        /*
         var File:String = 'states/' + StatePrefix + 'State' + '.hx';
         var FileName:String = StatePrefix + 'State';
         if (StatePrefix.startsWith('MasterEditor')) File = 'states/' + StatePrefix + 'Menu' + '.hx';
@@ -24,6 +25,7 @@ class CustomSwitchState
       if (fileFound) switchState(new ScriptState(FileName));
 	  else
 	  {
+	  */
     	//OMG 😱 Rewrited?
     	switch (StatePrefix)
 		{
@@ -52,6 +54,6 @@ class CustomSwitchState
             case 'AchievementsMenu':
                 LoadingState.loadAndSwitchState(new AchievementsMenuState());
         }
-      }
+      //}
 	}
 }

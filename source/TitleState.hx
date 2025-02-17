@@ -49,8 +49,9 @@ typedef TitleData =
 	backgroundSprite:String,
 	bpm:Float
 }
-class TitleState extends MusicBeatState
+class TitleState extends HScriptStateHandler
 {
+    public static var instance:TitleState;
 	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
 	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
 	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
@@ -89,6 +90,8 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
+	    instance = this;
+    	
         if(!checkOpenFirst){		
     		FlxTransitionableState.skipNextTransOut = true;										
     		checkOpenFirst = true;		
@@ -124,6 +127,18 @@ class TitleState extends MusicBeatState
 		Mods.pushGlobalMods();
 		#end
 		Mods.loadTopMod();
+		
+		//HScript Things
+	    var className = Type.getClassName(Type.getClass(this));
+	    
+	    #if HSCRIPT_ALLOWED
+		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		add(luaDebugGroup);
+	    
+	    startHScriptsNamed('${className}' + '.hx');
+    	startHScriptsNamed('global.hx');
+    	#end
+    	//End
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
@@ -215,6 +230,8 @@ class TitleState extends MusicBeatState
 			}
 		}
 		#end
+		
+		callOnScripts('onCreatePost');
 	}
 
 	var logoBl:FlxSprite;
@@ -240,6 +257,7 @@ class TitleState extends MusicBeatState
 
 	function startIntro()
 	{
+	    callOnScripts('onStartIntro');
 	    FPSCounterShit();
 	    
 		if (!initialized)
@@ -399,6 +417,8 @@ class TitleState extends MusicBeatState
 			skipIntro();
 		else
 			initialized = true;
+			
+		callOnScripts('onStartIntroPost');
 
 		// credGroup.add(credTextShit);
 	}
@@ -429,6 +449,10 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
@@ -560,6 +584,8 @@ class TitleState extends MusicBeatState
 		}
 		
 		super.update(elapsed);
+		
+		callOnScripts('onUpdatePost', [elapsed]);
 	}
 
 	function createCoolText(textArray:Array<String>, ?offset:Float = 0)
@@ -806,6 +832,11 @@ class TitleState extends MusicBeatState
 	    skipVideo.visible = false;
 	    //video.visible = false;
 		startCutscenesOut();
+	}
+	
+	override function destroy() {
+		instance = null;
+		super.destroy();
 	}
 	
 	function showText(){

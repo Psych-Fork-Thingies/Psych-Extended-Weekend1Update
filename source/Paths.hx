@@ -192,11 +192,11 @@ class Paths
 
 	inline static public function shaderFragment(key:String, ?library:String)
 	{
-		return getPath('shaders/$key.frag', TEXT, library);
+		return getPath('shaders/$key.frag', TEXT, library); //this is doesn't work, I don't know why
 	}
 	inline static public function shaderVertex(key:String, ?library:String)
 	{
-		return getPath('shaders/$key.vert', TEXT, library);
+		return getPath('shaders/$key.vert', TEXT, library); //this is doesn't work, I don't know why
 	}
 	inline static public function lua(key:String, ?library:String)
 	{

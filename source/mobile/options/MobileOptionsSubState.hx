@@ -173,7 +173,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	addOption(option);
 	#end
 	
-	#if debugBuild
+	#if FuckYou
 	var option:Option = new Option('Keep My Files',
 		"If checked, your files won't remove when you changed StorageType (only debug build)",
 		'KeepMyFiles',
@@ -202,8 +202,11 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		
     	try
     	{
-    		if ((lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE') #if debugBuild && !ClientPrefs.data.KeepMyFiles #end)
+    	// *sigh* this shit deleted my Psych Extended v1.0.1 Part 2 Source Code 😭
+    	 #if FuckYou
+    		if ((lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE') #if FuckYou && !ClientPrefs.data.KeepMyFiles #end)
     		Sys.command('rm', ['-rf', lastStoragePath]);
+    	#end
     	}
     	catch (e:haxe.Exception)
     		trace('Failed to remove last directory. (${e.message})');

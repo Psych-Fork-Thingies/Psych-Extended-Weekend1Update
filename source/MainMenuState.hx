@@ -32,14 +32,20 @@ enum MainMenuColumn {
 	RIGHT;
 }
 
-class MainMenuState extends MusicBeatState
+class MainMenuState extends HScriptStateHandler
 {
+    public static var instance:MainMenuState;
+    
 	public static var psychEngineVersion:String = '0.6.3'; // This is also used for Discord RPC
 	public static var realPsychEngineVersion:String = '0.6.4b';
 	public static var psychExtendedVersion:String = '1.0.1';
 	public static var curSelected:Int = 0;
 	public static var curColumn:MainMenuColumn = CENTER;
 
+    var versionShit:FlxText;
+    var psychVer:FlxText;
+    var fnfVer:FlxText;
+    
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	var leftItem:FlxSprite;
 	var rightItem:FlxSprite;
@@ -47,21 +53,35 @@ class MainMenuState extends MusicBeatState
 	private var camAchievement:FlxCamera;
 
 	//Centered/Text options
-	var optionShit:Array<String> = [
+	public var optionShit:Array<String> = [
 		'story_mode',
 		'freeplay',
 		#if MODS_ALLOWED 'mods', #end
 		'credits'
 	];
 
-	var leftOption:String = #if ACHIEVEMENTS_ALLOWED 'achievements' #else null #end;
-	var rightOption:String = 'options';
+	public var leftOption:String = #if ACHIEVEMENTS_ALLOWED 'achievements' #else null #end;
+	public var rightOption:String = 'options';
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
-
+	
 	override function create()
 	{
+	    instance = this;
+	    
+	    //HScript Things
+	    var className = Type.getClassName(Type.getClass(this));
+	    
+	    #if HSCRIPT_ALLOWED
+		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		add(luaDebugGroup);
+	    
+	    startHScriptsNamed('${className}' + '.hx');
+    	startHScriptsNamed('global.hx');
+    	#end
+    	//End
+	    
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
 		#end
@@ -119,15 +139,15 @@ class MainMenuState extends MusicBeatState
 			rightItem.x -= rightItem.width;
 		}
 
-        var versionShit:FlxText = new FlxText(12, FlxG.height - 64, 0, "Psych Extended v" + psychExtendedVersion, 12);
+        versionShit = new FlxText(12, FlxG.height - 64, 0, "Psych Extended v" + psychExtendedVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-		var psychVer:FlxText = new FlxText(12, FlxG.height - 44, 0, "Psych Engine v" + realPsychEngineVersion, 12);
+		psychVer = new FlxText(12, FlxG.height - 44, 0, "Psych Engine v" + realPsychEngineVersion, 12);
 		psychVer.scrollFactor.set();
 		psychVer.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(psychVer);
-		var fnfVer:FlxText = new FlxText(12, FlxG.height - 24, 0, "Friday Night Funkin' v" + Application.current.meta.get('version'), 12);
+		fnfVer = new FlxText(12, FlxG.height - 24, 0, "Friday Night Funkin' v" + Application.current.meta.get('version'), 12);
 		fnfVer.scrollFactor.set();
 		fnfVer.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(fnfVer);
@@ -172,6 +192,10 @@ class MainMenuState extends MusicBeatState
 	var timeNotMoving:Float = 0;
 	override function update(elapsed:Float)
 	{
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 		if (FlxG.sound.music.volume < 0.8)
 			FlxG.sound.music.volume = Math.min(FlxG.sound.music.volume + 0.5 * elapsed, 0.8);
 
@@ -384,5 +408,10 @@ class MainMenuState extends MusicBeatState
 		selectedItem.animation.play('selected');
 		selectedItem.centerOffsets();
 		camFollow.y = selectedItem.getGraphicMidpoint().y;
+	}
+	
+	override function destroy() {
+		instance = null;
+		super.destroy();
 	}
 }

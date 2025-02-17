@@ -129,8 +129,10 @@ class Main extends Sprite
 		#end
 		
 		var SelectedState:Dynamic = game.initialState;
+		/*
 		if (FileSystem.exists(Paths.getScriptPath('states/TitleState.hx')) || FileSystem.exists(Paths.modFolders('scripts/states/TitleState.hx')) || FileSystem.exists(Paths.modpackFolders('scripts/states/TitleState.hx'))) SelectedState = MainState;
 		else SelectedState = game.initialState;
+		*/
 
 		FlxG.save.bind('funkin', CoolUtil.getSavePath());
 		

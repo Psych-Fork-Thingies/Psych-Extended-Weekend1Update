@@ -61,7 +61,7 @@ class ScriptSubstate extends MusicBeatSubstate
 	#end
 
 	#if HSCRIPT_ALLOWED
-	public var hscriptArray:Array<SubstateHScript> = [];
+	public var hscriptArray:Array<StateHScript> = [];
 	public var instancesExclude:Array<String> = [];
 	#end
 
@@ -109,8 +109,8 @@ class ScriptSubstate extends MusicBeatSubstate
 		add(luaDebugGroup);
 		#end
 		
-		// #if LUA_ALLOWED startLuasNamed('substates/' + targetFileName + '.lua'); #end
-		#if HSCRIPT_ALLOWED startHScriptsNamed('substates/' + targetFileName + '.hx'); #end
+		// #if LUA_ALLOWED startLuasNamed('custom_substates/' + targetFileName + '.lua'); #end
+		#if HSCRIPT_ALLOWED startHScriptsNamed('custom_substates/' + targetFileName + '.hx'); #end
 
 		callOnScripts('onCreatePost');
 
@@ -358,7 +358,7 @@ class ScriptSubstate extends MusicBeatSubstate
 
 	public function initHScript(file:String)
 	{
-		var newScript:SubstateHScript = new SubstateHScript(null, file);
+		var newScript:StateHScript = new StateHScript(null, file);
 		try
 		{
 			@:privateAccess
@@ -462,7 +462,7 @@ class ScriptSubstate extends MusicBeatSubstate
 		if (len < 1)
 			return returnVal;
 		for(i in 0...len) {
-			var script:SubstateHScript = hscriptArray[i];
+			var script:StateHScript = hscriptArray[i];
 			if(script == null || !script.exists(funcToCall) || exclusions.contains(script.origin))
 				continue;
 

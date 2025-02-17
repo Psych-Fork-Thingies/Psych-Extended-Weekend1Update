@@ -36,9 +36,10 @@ import TitleState;
 	public var hitboxLocation:String = 'Bottom';
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
 	public var DisableIntroVideo:Bool = false;
-	#if debugBuild public var KeepMyFiles:Bool = false; #end
+	#if FuckYou public var KeepMyFiles:Bool = false; #end
 	public var UseNewCamSystem:Bool = false;
 	public var hscriptversion:String = 'HScript Old';
+	public var chartLoadSystem:String = '0.4-0.7x';
 	
 	//FPSCounter things
 	public var FPSCounter:String = 'Psych';
@@ -232,9 +233,10 @@ class ClientPrefs {
 	}
 	public static function toggleVolumeKeys(?turnOn:Bool = true)
 	{
-		FlxG.sound.muteKeys = turnOn ? TitleState.muteKeys : [];
-		FlxG.sound.volumeDownKeys = turnOn ? TitleState.volumeDownKeys : [];
-		FlxG.sound.volumeUpKeys = turnOn ? TitleState.volumeUpKeys : [];
+		final emptyArray = [];
+		FlxG.sound.muteKeys = turnOn ? TitleState.muteKeys : emptyArray;
+		FlxG.sound.volumeDownKeys = turnOn ? TitleState.volumeDownKeys : emptyArray;
+		FlxG.sound.volumeUpKeys = turnOn ? TitleState.volumeUpKeys : emptyArray;
 	}
 
 	public static function reloadControls() {

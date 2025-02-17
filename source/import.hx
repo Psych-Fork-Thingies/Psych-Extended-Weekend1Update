@@ -14,6 +14,7 @@ import shaders.flixel.system.FlxShader;
 import scripting.*;
 
 // Extra
+#if (hxCodec >= "3.0.0" && VIDEOS_ALLOWED) import backend.VideoManager; #end //For Better MP4Handler Support
 import extras.*; //For CustomSwitchState
 import extras.states.*; //Extra States
 import extras.substates.*; //Extra Substates
@@ -30,6 +31,7 @@ import backend.animation.PsychAnimationController; //Psych Animation Controller
 import backend.BaseStage;
 import Song;
 import Song.SwagSection;
+import Section;
 import states.*;
 
 //New Mods System

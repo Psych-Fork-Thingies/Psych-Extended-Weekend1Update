@@ -1,7 +1,7 @@
 package psychlua;
 
 import psychlua.FunkinLua;
-import tjson.TJSON as Json;
+import haxe.Json;
 import debug.FPSPsych;
 
 class CustomFunctions
