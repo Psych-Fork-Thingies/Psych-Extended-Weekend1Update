@@ -49,7 +49,7 @@ class WindowsTerminalCPP
     ')
 	public static function allocConsole() 
     {
-        StateVars.isConsoleVisible = true;
+        ScriptingVars.isConsoleVisible = true;
     }
 
 	@:functionCode('
@@ -70,7 +70,7 @@ class WindowsTerminalCPP
     ')
 	public static function hideConsoleWindow()
     {
-        StateVars.isConsoleVisible = false;
+        ScriptingVars.isConsoleVisible = false;
     }
 }
 #end
