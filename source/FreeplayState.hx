@@ -15,7 +15,7 @@ import flixel.math.FlxMath;
 import flixel.util.FlxDestroyUtil;
 import haxe.Json;
 
-class FreeplayState extends MusicBeatState
+class FreeplayState extends HScriptStateHandler
 {
 	public var songs:Array<SongMetadata> = [];
 
@@ -52,8 +52,19 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		//Paths.clearStoredMemory();
-		//Paths.clearUnusedMemory();
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+		
+		//HScript Things
+	    var className = Type.getClassName(Type.getClass(this));
+	    var classString:String = '${className}' + '.hx';
+	    
+	    if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
+    	//if (classString.startsWith('extras.subtates.')) classString = classString.replace('extras.subtates.', '');
+
+	    startHScriptsNamed(classString);
+    	startHScriptsNamed('global.hx');
+    	//End
 		
 		persistentUpdate = true;
 		PlayState.isStoryMode = false;
@@ -194,6 +205,8 @@ class FreeplayState extends MusicBeatState
 
 		addVirtualPad(FULL, A_B_C_X_Y_Z);
 		super.create();
+		
+		callOnScripts('onCreatePost');
 	}
 
 	override function closeSubState()
@@ -224,6 +237,10 @@ class FreeplayState extends MusicBeatState
 	var stopMusicPlay:Bool = false;
 	override function update(elapsed:Float)
 	{
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 		if (FlxG.sound.music.volume < 0.7)
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
@@ -459,6 +476,10 @@ class FreeplayState extends MusicBeatState
 
 		updateTexts(elapsed);
 		super.update(elapsed);
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 	}
 	
 	function getVocalFromCharacter(char:String)

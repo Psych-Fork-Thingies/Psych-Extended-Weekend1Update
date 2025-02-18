@@ -374,6 +374,8 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 		
 		super.create();
+		
+		callOnScripts('onCreatePost');
 	}
 
 	override function update(elapsed:Float) {
@@ -384,6 +386,10 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
 		super.update(elapsed);
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 		
 		dataText.text = Date.now().toString();
 		

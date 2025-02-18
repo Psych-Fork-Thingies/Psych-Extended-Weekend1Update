@@ -31,7 +31,7 @@ import LoadingState;
 import editors.ChartingState;
 import options.OptionsState;
 
-class FreeplayStateNOVA extends MusicBeatState
+class FreeplayStateNOVA extends HScriptStateHandler
 {
 	static public var instance:FreeplayStateNOVA;
 
@@ -94,9 +94,22 @@ class FreeplayStateNOVA extends MusicBeatState
 
 	override function create()
 	{
+	    //HScript Things
+	    var className = Type.getClassName(Type.getClass(this));
+	    var classString:String = '${className}' + '.hx';
+	    
+	    if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
+    	//if (classString.startsWith('extras.subtates.')) classString = classString.replace('extras.subtates.', '');
+
+	    startHScriptsNamed(classString);
+    	startHScriptsNamed('global.hx');
+    	//End	    
+    	
 		super.create();
 
 		instance = this;
+		
+		callOnScripts('onCreatePost');
 
 		#if !mobile
 		FlxG.mouse.visible = true;
@@ -306,7 +319,15 @@ class FreeplayStateNOVA extends MusicBeatState
 	var isPressed:Bool = false; //修复出判定释放
 	override function update(elapsed:Float)
 	{
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 		super.update(elapsed);
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 
 		if (ignoreCheck) return;
 

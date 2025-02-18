@@ -161,6 +161,8 @@ class PauseSubState extends HScriptSubStateHandler
     	addVirtualPadCamera();
     	
 		super.create();
+		
+		callOnScripts('onCreatePost');
 	}
 	
 	function getPauseSong()
@@ -185,6 +187,10 @@ class PauseSubState extends HScriptSubStateHandler
 			pauseMusic.volume += 0.01 * elapsed;
 
 		super.update(elapsed);
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 
 		if(controls.BACK)
 		{

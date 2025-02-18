@@ -50,7 +50,7 @@ import options.OptionsState;
 	这个玩意铁锅拖了3个月
 */
 
-class FreeplayStateNF extends MusicBeatState {
+class FreeplayStateNF extends HScriptStateHandler {
 
 	var bg:FlxSprite;
 	var bgColorChange:FlxTween;
@@ -131,6 +131,17 @@ class FreeplayStateNF extends MusicBeatState {
 	var lookingTheTutorial:Bool = false;
 	override function create()
 	{
+	    //HScript Things
+	    var className = Type.getClassName(Type.getClass(this));
+	    var classString:String = '${className}' + '.hx';
+	    
+	    if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
+    	//if (classString.startsWith('extras.subtates.')) classString = classString.replace('extras.subtates.', '');
+
+	    startHScriptsNamed(classString);
+    	startHScriptsNamed('global.hx');
+    	//End
+    	
 		persistentUpdate = persistentDraw = true;
 		PlayState.isStoryMode = false;
 		WeekData.reloadWeekFiles(false);
@@ -514,6 +525,8 @@ class FreeplayStateNF extends MusicBeatState {
 								
 		super.create();
 		
+		callOnScripts('onCreatePost');
+		
 		curSelectedFloat = curSelected;
 		changeSong(0);
 		
@@ -531,6 +544,10 @@ class FreeplayStateNF extends MusicBeatState {
 	
 	override function update(elapsed:Float)
 	{		
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -637,6 +654,10 @@ class FreeplayStateNF extends MusicBeatState {
 			curSelectedFloat = curSelected;
 		}
 		super.update(elapsed);
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 	}
 	
 	override function closeSubState()

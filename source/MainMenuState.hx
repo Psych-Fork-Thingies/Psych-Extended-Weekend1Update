@@ -168,6 +168,8 @@ class MainMenuState extends HScriptStateHandler
 		_virtualpad.alpha = 1;
 
 		super.create();
+		
+		callOnScripts('onCreatePost');
 
 		FlxG.camera.follow(camFollow, null, 0.15);
 	}
@@ -381,6 +383,10 @@ class MainMenuState extends HScriptStateHandler
 		}
 
 		super.update(elapsed);
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 	}
 
 	function changeItem(change:Int = 0)

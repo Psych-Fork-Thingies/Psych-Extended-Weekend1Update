@@ -190,6 +190,8 @@ class MainMenuStateOld extends HScriptStateHandler
     	    addVirtualPad(UP_DOWN, A_B_E_C_M);
 
 		super.create();
+		
+		callOnScripts('onCreatePost');
 	}
 
 	var selectedSomethin:Bool = false;
@@ -310,6 +312,10 @@ class MainMenuStateOld extends HScriptStateHandler
 		}
 
 		super.update(elapsed);
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 
 		menuItems.forEach(function(spr:FlxSprite)
 		{

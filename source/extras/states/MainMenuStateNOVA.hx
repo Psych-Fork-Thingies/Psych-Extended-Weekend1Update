@@ -257,6 +257,8 @@ class MainMenuStateNOVA extends HScriptStateHandler
 		_virtualpad.cameras = [camHUD];
         
 		super.create();
+		
+		callOnScripts('onCreatePost');
 	}
 	
 	var canClick:Bool = true;
@@ -422,6 +424,10 @@ class MainMenuStateNOVA extends HScriptStateHandler
 		
 		
 		super.update(elapsed);
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 	}    	
     
     function selectSomething()

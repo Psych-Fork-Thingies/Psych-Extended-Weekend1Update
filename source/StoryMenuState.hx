@@ -21,7 +21,7 @@ import WeekData;
 
 using StringTools;
 
-class StoryMenuState extends MusicBeatState
+class StoryMenuState extends HScriptStateHandler
 {
 	public static var weekCompleted:Map<String, Bool> = new Map<String, Bool>();
 
@@ -51,9 +51,19 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
-
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
+		
+		//HScript Things
+	    var className = Type.getClassName(Type.getClass(this));
+	    var classString:String = '${className}' + '.hx';
+	    
+	    if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
+    	//if (classString.startsWith('extras.subtates.')) classString = classString.replace('extras.subtates.', '');
+
+	    startHScriptsNamed(classString);
+    	startHScriptsNamed('global.hx');
+    	//End
 
 		PlayState.isStoryMode = true;
 		WeekData.reloadWeekFiles(true);
@@ -200,6 +210,8 @@ class StoryMenuState extends MusicBeatState
         addVirtualPad(NONE, B_X_Y);
 
 		super.create();
+		
+		callOnScripts('onCreatePost');
 	}
 
 	override function closeSubState() {
@@ -212,6 +224,10 @@ class StoryMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+	    //HScript Things
+	    callOnScripts('onUpdate', [elapsed]);
+	    //end
+	    
 	    if(WeekData.weeksList.length < 1)
 			return;
 			
@@ -297,6 +313,10 @@ class StoryMenuState extends MusicBeatState
 			lock.y = grpWeekText.members[lock.ID].y;
 			lock.visible = (lock.y > FlxG.height / 2);
 		});
+		
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 	}
 
 	var movedBack:Bool = false;
