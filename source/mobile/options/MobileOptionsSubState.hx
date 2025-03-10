@@ -202,8 +202,8 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		
     	try
     	{
-    	// *sigh* this shit deleted my Psych Extended v1.0.1 Part 2 Source Code 😭
-    	 #if FuckYou
+    	// *sigh* this shit deleted my Psych Extended v1.0.2 Source Code 😭
+    	 #if Allow_RemoveFiles
     		if ((lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE') #if FuckYou && !ClientPrefs.data.KeepMyFiles #end)
     		Sys.command('rm', ['-rf', lastStoragePath]);
     	#end

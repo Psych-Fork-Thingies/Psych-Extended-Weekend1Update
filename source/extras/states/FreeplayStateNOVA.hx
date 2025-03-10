@@ -401,12 +401,14 @@ class FreeplayStateNOVA extends HScriptStateHandler
 	}
 
 	override function closeSubState()
-	{				
+	{	
+	    callOnScripts('onCloseSubState');			
 		super.closeSubState();
 		
 		new FlxTimer().start(0.1, function(tmr:FlxTimer){
 			ignoreCheck = false;
 		});
+		callOnScripts('onCloseSubStatePost');
 	}
 
 	var pressCheck:Bool = false;

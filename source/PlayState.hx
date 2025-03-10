@@ -101,8 +101,8 @@ class PlayState extends MusicBeatState
     //PlayState VirtualPad Things
     #if PLAYSTATE_VIRTUALPAD_ALLOWED
     public static var _playStateVirtualPad:FlxVirtualPad; //trust me, you'll never need to access this directly
-    public static var dpadMode:Map<String, FlxDPadMode>;
-	public static var actionMode:Map<String, FlxActionMode>;
+    public static var dpadMode:StringMap<FlxDPadMode> = new StringMap<FlxDPadMode>();
+	public static var actionMode:StringMap<FlxActionMode> = new StringMap<FlxActionMode>();
 	#end
 	//end
     
@@ -337,30 +337,11 @@ class PlayState extends MusicBeatState
 	    MobileCType = 'DEFAULT';
 	    #if PLAYSTATE_VIRTUALPAD_ALLOWED
 		// FlxDPadModes
-		dpadMode = new Map<String, FlxDPadMode>();
-		dpadMode.set("UP_DOWN", UP_DOWN);
-		dpadMode.set("LEFT_RIGHT", LEFT_RIGHT);
-		dpadMode.set("UP_LEFT_RIGHT", UP_LEFT_RIGHT);
-		dpadMode.set("LEFT_FULL", FULL); //1.0 Support
-		dpadMode.set("FULL", FULL);
-		dpadMode.set("RIGHT_FULL", RIGHT_FULL);
-		dpadMode.set("DUO", DUO);
-		dpadMode.set("NONE", NONE);
-			
-		actionMode = new Map<String, FlxActionMode>();
-		actionMode.set('E', E);
-		actionMode.set('A', A);
-		actionMode.set('B', B);
-		actionMode.set('A_B', A_B);
-		actionMode.set('A_B_C', A_B_C);
-		actionMode.set('A_B_E', A_B_E);
-		actionMode.set('A_B_E_C_M', A_B_E_C_M);
-		actionMode.set('A_B_X_Y', A_B_X_Y);
-		actionMode.set('B_X_Y', B_X_Y);
-		actionMode.set('A_B_C_X_Y_Z', A_B_C_X_Y_Z);
-		actionMode.set('FULL', FULL);
-		actionMode.set('controlExtend', controlExtend);
-		actionMode.set('NONE', NONE);
+		for (data in FlxDPadMode.createAll())
+			dpadMode.set(data.getName(), data);
+
+		for (data in FlxActionMode.createAll())
+			actionMode.set(data.getName(), data);
 		#end
 	    
 		//trace('Playback Rate: ' + playbackRate);
@@ -4152,7 +4133,7 @@ class PlayState extends MusicBeatState
 		return null;
 		#end
 	}
-	public function initLuaShader(name:String)
+	public function initLuaShader(name:String, ?glslVersion:Int = 120)
 	{
 		if(!ClientPrefs.data.shaders) return false;
 		if(runtimeShaders.exists(name))

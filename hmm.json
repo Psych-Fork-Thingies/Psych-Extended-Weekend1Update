@@ -13,12 +13,6 @@
       "url": "https://github.com/Sirox228/linc_luajit"
     },
     {
-      "name": "extension-androidtools",
-      "type": "git",
-      "ref": "9475bc38af35be2fc9754b49142ede4cb93838d4",
-      "url": "https://github.com/MAJigsaw77/extension-androidtools"
-    },
-    {
       "name": "tjson",
       "type": "haxelib",
       "version": null
@@ -53,7 +47,7 @@
       "name": "hxCodec",
       "type": "git",
       "ref": "main",
-      "url": "https://github.com/Prohack101010/hxCodec-2.6.0-with-MP4Handler"
+      "url": "https://github.com/Prohack101010/hxCodec-Extended-Better"
     },
     {
       "name": "hxcpp",
@@ -64,8 +58,8 @@
     {
       "name": "lime",
       "type": "git",
-      "ref": "fa2225b9a347910b025c4202809fbf0b45c9d8c6",
-      "url": "https://github.com/mcagabe19-stuff/lime"
+      "ref": "main",
+      "url": "https://github.com/MobilePorting/lime"
     },
     {
       "name": "openfl",

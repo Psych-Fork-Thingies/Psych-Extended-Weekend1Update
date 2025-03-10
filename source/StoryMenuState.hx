@@ -215,11 +215,13 @@ class StoryMenuState extends HScriptStateHandler
 	}
 
 	override function closeSubState() {
+	    callOnScripts('onCloseSubState');
 		persistentUpdate = true;
 		changeWeek();
 		removeVirtualPad();
 		addVirtualPad(NONE, B_X_Y);
 		super.closeSubState();
+		callOnScripts('onCloseSubStatePost');
 	}
 
 	override function update(elapsed:Float)

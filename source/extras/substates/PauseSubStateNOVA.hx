@@ -387,10 +387,6 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 			pauseMusic.volume += 0.01 * elapsed;
 		super.update(elapsed);
 		
-		//HScript Things
-	    callOnScripts('onUpdatePost', [elapsed]);
-	    //end
-		
 		dataText.text = Date.now().toString();
 		
 		songText.text = PlayState.SONG.song + ' - ' + Difficulty.getString().toUpperCase();
@@ -498,6 +494,10 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 		
 		if (accept)
 			doEvent();
+			
+		//HScript Things
+	    callOnScripts('onUpdatePost', [elapsed]);
+	    //end
 	}
 
 	function changeOptions(num:Int) {

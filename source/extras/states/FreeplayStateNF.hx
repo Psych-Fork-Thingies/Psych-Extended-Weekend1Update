@@ -40,7 +40,7 @@ import MainMenuState;
 import options.OptionsState;
 
 /*
-    Note: This backport only supports Psych Extended & DaffyToons's NF Engine 1.0.1 Build
+    Note: This backport only supports Psych Extended & DaffyToons's NF Engine 1.0.2 Build
     Backported by KralOyuncu 2010x
     
 	created by TieGuo
@@ -661,9 +661,11 @@ class FreeplayStateNF extends HScriptStateHandler {
 	}
 	
 	override function closeSubState()
-	{				
+	{	
+	    callOnScripts('onCloseSubState');			
 		super.closeSubState();
 		persistentUpdate = true;
+		callOnScripts('onCloseSubStatePost');
 	}
 	
 	function overlapButton(tag:FlxSprite)

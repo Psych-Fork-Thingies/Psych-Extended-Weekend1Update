@@ -227,7 +227,10 @@
 	<haxedef name='no-deprecation-warnings' />
 	
 	<!-- Do whatever you want I'm tired uninstall and install everytime -->
-	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
+	<certificate path="key.keystore" password="psychextended" alias="psychex" alias-password="psychextended" if="android" unless="debug" />
+	<!-- MobilePorting's certificate File (For Release) -->
+	<certificate path="oldKey.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug || debugBuild" />
+	
 	<android target-sdk-version="34" if="termux"/>
 	
 	<!--Macro fixes-->

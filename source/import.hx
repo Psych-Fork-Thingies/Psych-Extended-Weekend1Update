@@ -9,6 +9,7 @@ import stages.objects.*;
 import stages.*;
 
 import shaders.flixel.system.FlxShader;
+import haxe.ds.StringMap;
 
 //scripting
 import scripting.*;

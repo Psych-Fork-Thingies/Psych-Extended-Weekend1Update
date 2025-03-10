@@ -432,14 +432,18 @@ class SubstateHScript extends SScript
 			    PlayState.instance.variables.set(name, value);
 			else if (Std.is(FlxG.state, ScriptSubstate))
 			    ScriptSubstate.instance.variables.set(name, value);
+			else
+			    HScriptSubStateHandler.instance.variables.set(name, value);
 			return value;
 		});
 		set('getVar', function(name:String) {
 			var result:Dynamic = null;
 			if(PlayState.instance.variables.exists(name) && Std.is(FlxG.state, PlayState))
 			    result = PlayState.instance.variables.get(name);
-			else if(PlayState.instance.variables.exists(name) && Std.is(FlxG.state, ScriptSubstate))
+			else if(ScriptSubstate.instance.variables.exists(name) && Std.is(FlxG.state, ScriptSubstate))
 			    result = ScriptSubstate.instance.variables.get(name);
+			else if(HScriptSubStateHandler.instance.variables.exists(name))
+			    result = HScriptSubStateHandler.instance.variables.get(name);
 			return result;
 		});
 		set('removeVar', function(name:String)
@@ -457,6 +461,14 @@ class SubstateHScript extends SScript
     			if(ScriptSubstate.instance.variables.exists(name))
     			{
     				ScriptSubstate.instance.variables.remove(name);
+    				return true;
+    			}
+			}
+			else if(HScriptSubStateHandler.instance.variables.exists(name) && Std.is(FlxG.state, ScriptSubstate))
+		    {
+    			if(HScriptSubStateHandler.instance.variables.exists(name))
+    			{
+    				HScriptSubStateHandler.instance.variables.remove(name);
     				return true;
     			}
 			}

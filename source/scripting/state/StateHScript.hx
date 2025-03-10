@@ -405,11 +405,13 @@ class StateHScript extends SScript
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic) {
 			if (Std.is(FlxG.state, ScriptState)) ScriptState.instance.variables.set(name, value);
+			else HScriptStateHandler.instance.variables.set(name, value);
 			return value;
 		});
 		set('getVar', function(name:String) {
 			var result:Dynamic = null;
 			if(Std.is(FlxG.state, ScriptState) && ScriptState.instance.variables.exists(name)) result = ScriptState.instance.variables.get(name);
+			else HScriptStateHandler.instance.variables.get(name);
 			return result;
 		});
 		set('removeVar', function(name:String)
@@ -417,6 +419,11 @@ class StateHScript extends SScript
 			if(ScriptState.instance.variables.exists(name) && Std.is(FlxG.state, ScriptState))
 			{
 				ScriptState.instance.variables.remove(name);
+				return true;
+			}
+			else if(HScriptStateHandler.instance.variables.exists(name))
+			{
+			    HScriptStateHandler.instance.variables.remove(name);
 				return true;
 			}
 			return false;
@@ -509,7 +516,7 @@ class StateHScript extends SScript
 		set('addVirtualPad', function(DPad:String, Action:String):Void
 		{
 		    if(Std.is(FlxG.state, ScriptState)) return ScriptState.instance.addHxVirtualPad(ScriptState.dpadMode.get(DPad), ScriptState.actionMode.get(Action));
-		    else return HScriptStateHandler.instance.addHxVirtualPad(HScriptSubStateHandler.dpadMode.get(DPad), HScriptSubStateHandler.actionMode.get(Action));
+		    else return HScriptStateHandler.instance.addHxVirtualPad(HScriptStateHandler.dpadMode.get(DPad), HScriptStateHandler.actionMode.get(Action));
 		});
 		
 		set('addVirtualPadCamera', function():Void
