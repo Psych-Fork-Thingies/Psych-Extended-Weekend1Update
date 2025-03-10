@@ -160,7 +160,6 @@
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
 	<haxelib name="hxCodec" />
 	<haxelib name="tjson"/>
-    <haxelib name="extension-androidtools" if="android"/>
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="SScript" if="HSCRIPT_ALLOWED"/>
@@ -226,8 +225,9 @@
 	<haxedef name="message.reporting" value="pretty" />
 	<haxedef name='no-deprecation-warnings' />
 	
-	<!-- Do whatever you want I'm tired uninstall and install everytime -->
+	<!-- Do whatever you want I'm tired uninstall and install everytime
 	<certificate path="key.keystore" password="psychextended" alias="psychex" alias-password="psychextended" if="android" unless="debug" />
+	-->
 	<!-- MobilePorting's certificate File (For Release) -->
 	<certificate path="oldKey.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug || debugBuild" />
 	
