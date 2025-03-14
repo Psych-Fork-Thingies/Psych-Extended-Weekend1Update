@@ -53,7 +53,7 @@ class MusicBeatState extends FlxUIState
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
-	var _virtualpad:FlxVirtualPad;
+	public var _virtualpad:FlxVirtualPad;
 	public static var mobilec:MobileControls;
 	
 	var trackedinputsUI:Array<FlxActionInput> = [];
@@ -264,6 +264,10 @@ class MusicBeatState extends FlxUIState
 	}
 	
 	public static function switchState(nextState:FlxState = null) {
+	    //For HScript States/Substates
+	    ScriptingVars.currentScriptableState = null;
+	    ScriptingVars.inPlayState = false;
+	    //
 	    FunkinLua.FPSCounterText = null;
 		if(nextState == null) nextState = FlxG.state;
 		if(nextState == FlxG.state)

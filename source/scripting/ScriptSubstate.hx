@@ -72,6 +72,7 @@ class ScriptSubstate extends MusicBeatSubstate
 
     override public function create()
     {
+        ScriptingVars.currentScriptableState = 'ScriptSubstate'; //for HScript
         instance = this;
 		
 		#if HXVIRTUALPAD_ALLOWED

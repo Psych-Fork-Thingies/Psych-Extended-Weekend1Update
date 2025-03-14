@@ -225,11 +225,15 @@
 	<haxedef name="message.reporting" value="pretty" />
 	<haxedef name='no-deprecation-warnings' />
 	
-	<!-- Do whatever you want I'm tired uninstall and install everytime
+	<!-- Do whatever you want I'm tired uninstall and install everytime -->
 	<certificate path="key.keystore" password="psychextended" alias="psychex" alias-password="psychextended" if="android" unless="debug" />
-	-->
-	<!-- MobilePorting's certificate File (For Release) -->
+	
+	<!-- MobilePorting's certificate File (Useless)
 	<certificate path="oldKey.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug || debugBuild" />
+	-->
+	
+	<!-- Allow Access to Engine Files in mobile for EXTERNAL_DATA -->
+ 	<haxedef name="SHARE_MOBILE_FILES" if="mobile" />
 	
 	<android target-sdk-version="34" if="termux"/>
 	

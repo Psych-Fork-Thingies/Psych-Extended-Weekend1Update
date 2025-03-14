@@ -428,27 +428,27 @@ class SubstateHScript extends SScript
 
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic) {
-		    if (Std.is(FlxG.state, PlayState))
+		    if (ScriptingVars.inPlayState)
 			    PlayState.instance.variables.set(name, value);
-			else if (Std.is(FlxG.state, ScriptSubstate))
+			else if (ScriptingVars.currentScriptableState == 'ScriptSubtate')
 			    ScriptSubstate.instance.variables.set(name, value);
-			else
+			else if (ScriptingVars.currentScriptableState == 'HScriptSubStateHandler')
 			    HScriptSubStateHandler.instance.variables.set(name, value);
 			return value;
 		});
 		set('getVar', function(name:String) {
 			var result:Dynamic = null;
-			if(PlayState.instance.variables.exists(name) && Std.is(FlxG.state, PlayState))
+			if(PlayState.instance.variables.exists(name) && ScriptingVars.inPlayState)
 			    result = PlayState.instance.variables.get(name);
-			else if(ScriptSubstate.instance.variables.exists(name) && Std.is(FlxG.state, ScriptSubstate))
+			else if(ScriptSubstate.instance.variables.exists(name) && ScriptingVars.currentScriptableState == 'ScriptSubtate')
 			    result = ScriptSubstate.instance.variables.get(name);
-			else if(HScriptSubStateHandler.instance.variables.exists(name))
+			else if(HScriptSubStateHandler.instance.variables.exists(name) && ScriptingVars.currentScriptableState == 'HScriptSubStateHandler')
 			    result = HScriptSubStateHandler.instance.variables.get(name);
 			return result;
 		});
 		set('removeVar', function(name:String)
 		{
-		    if(Std.is(FlxG.state, PlayState))
+		    if(ScriptingVars.inPlayState)
 		    {
     			if(PlayState.instance.variables.exists(name))
     			{
@@ -456,7 +456,7 @@ class SubstateHScript extends SScript
     				return true;
     			}
 			}
-			else if(ScriptSubstate.instance.variables.exists(name) && Std.is(FlxG.state, ScriptSubstate))
+			else if(ScriptSubstate.instance.variables.exists(name) && ScriptingVars.currentScriptableState == 'ScriptSubtate')
 		    {
     			if(ScriptSubstate.instance.variables.exists(name))
     			{
@@ -464,7 +464,7 @@ class SubstateHScript extends SScript
     				return true;
     			}
 			}
-			else if(HScriptSubStateHandler.instance.variables.exists(name) && Std.is(FlxG.state, ScriptSubstate))
+			else if(HScriptSubStateHandler.instance.variables.exists(name) && ScriptingVars.currentScriptableState == 'HScriptSubStateHandler')
 		    {
     			if(HScriptSubStateHandler.instance.variables.exists(name))
     			{
@@ -537,44 +537,51 @@ class SubstateHScript extends SScript
 		//OMG
 		set('virtualPadPressed', function(buttonPostfix:String):Bool
 		{
-		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.checkVPadPress(buttonPostfix, 'pressed');
+		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.checkVPadPress(buttonPostfix, 'pressed');
 		    else return HScriptSubStateHandler.checkVPadPress(buttonPostfix, 'pressed');
 		});
 		
 		set('virtualPadJustPressed', function(buttonPostfix:String):Bool
 		{
-		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.checkVPadPress(buttonPostfix, 'justPressed');
+		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.checkVPadPress(buttonPostfix, 'justPressed');
 		    else return HScriptSubStateHandler.checkVPadPress(buttonPostfix, 'justPressed');
 		});
 		
 		set('virtualPadReleased', function(buttonPostfix:String):Bool
 		{
-		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.checkVPadPress(buttonPostfix, 'released');
+		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.checkVPadPress(buttonPostfix, 'released');
 		    else return HScriptSubStateHandler.checkVPadPress(buttonPostfix, 'released');
 		});
 		
 		set('virtualPadJustReleased', function(buttonPostfix:String):Bool
 		{
-		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.checkVPadPress(buttonPostfix, 'justReleased');
+		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.checkVPadPress(buttonPostfix, 'justReleased');
 		    else return HScriptSubStateHandler.checkVPadPress(buttonPostfix, 'justReleased');
 		});
 		
 		set('addVirtualPad', function(DPad:String, Action:String):Void
 		{
-		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.instance.addHxVirtualPad(ScriptSubstate.dpadMode.get(DPad), ScriptSubstate.actionMode.get(Action));
+		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.instance.addHxVirtualPad(ScriptSubstate.dpadMode.get(DPad), ScriptSubstate.actionMode.get(Action));
 		    else HScriptSubStateHandler.instance.addHxVirtualPad(HScriptSubStateHandler.dpadMode.get(DPad), HScriptSubStateHandler.actionMode.get(Action));
 		});
 		
 		set('addVirtualPadCamera', function():Void
 		{
-		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.instance.addHxVirtualPadCamera();
+		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.instance.addHxVirtualPadCamera();
 		    else HScriptSubStateHandler.instance.addHxVirtualPadCamera();
 		});
 		
 		set('removeVirtualPad', function():Void
 		{
-		    if(Std.is(FlxG.state.subState, ScriptSubstate)) return ScriptSubstate.instance.removeHxVirtualPad();
+		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.instance.removeHxVirtualPad();
 		    else HScriptSubStateHandler.instance.removeHxVirtualPad();
+		});
+		
+		set('getSpesificVPadButton', function(buttonPostfix:String):Dynamic
+		{
+		    var buttonName = "button" + buttonPostfix;
+    		return Reflect.getProperty(HScriptSubStateHandler._hxvirtualpad, buttonName); //This Needs to be work
+    		return null;
 		});
 		#end
 
@@ -633,6 +640,9 @@ class SubstateHScript extends SScript
 		#end
 		set('this', this);
 		set('game', FlxG.state.subState);
+		//`game` Alternatives
+		set('state', FlxG.state);
+		set('substate', FlxG.state.subState);
 
 		set('buildTarget', FunkinLua.getBuildTarget());
 

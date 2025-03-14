@@ -492,11 +492,6 @@ class FlxCamera extends FlxBasic
 	 * Internal, used for repetitive calculations and added to help avoid costly allocations.
 	 */
 	var _point:FlxPoint = FlxPoint.get();
-
-    /**
-	 * Internal, the filters array to be applied to the camera.
-	 */
-	var _filters:Array<BitmapFilter>;
 	
 	/**
 	 * The filters array to be applied to the camera.
@@ -504,10 +499,10 @@ class FlxCamera extends FlxBasic
 	public var filters:Null<Array<BitmapFilter>> = null;
 	
 	inline function get_filters():Array<BitmapFilter>
-		return _filters;
+		return filters;
 
 	inline function set_filters(value:Array<BitmapFilter>):Array<BitmapFilter>
-		return _filters = value;
+		return filters = value;
 
 	/**
 	 * Camera's initial zoom value. Used for camera's scale handling.
@@ -618,9 +613,9 @@ class FlxCamera extends FlxBasic
 	public function addShader(shader:FlxShader)
 	{
 		var filter:ShaderFilter = null;
-		if (_filters == null)
-			_filters = [];
-		_filters.push(filter = new ShaderFilter(shader));
+		if (filters == null)
+			filters = [];
+		filters.push(filter = new ShaderFilter(shader));
 		return filter;
 	}
 
@@ -631,16 +626,16 @@ class FlxCamera extends FlxBasic
 	 */
 	public function removeShader(shader:FlxShader):Bool
 	{
-		if (_filters == null)
-			_filters = [];
-		for (f in _filters)
+		if (filters == null)
+			filters = [];
+		for (f in filters)
 		{
 			if (f is ShaderFilter)
 			{
 				var sf = cast(f, ShaderFilter);
 				if (sf.shader == shader)
 				{
-					_filters.remove(f);
+					filters.remove(f);
 					return true;
 				}
 			}
@@ -1075,7 +1070,7 @@ class FlxCamera extends FlxBasic
 	 * @param   Zoom     The initial zoom level of the camera.
 	 *                   A zoom level of 2 will make all pixels display at 2x resolution.
 	 */
-	public function new(X:Int = 0, Y:Int = 0, Width:Int = 0, Height:Int = 0, Zoom:Float = 0)
+	public function new(X:Float = 0, Y:Float = 0, Width:Int = 0, Height:Int = 0, Zoom:Float = 0)
 	{
 		super();
 
@@ -1200,7 +1195,7 @@ class FlxCamera extends FlxBasic
 		updateFlash(elapsed);
 		updateFade(elapsed);
 
-		flashSprite.filters = filtersEnabled ? _filters : null;
+		flashSprite.filters = filtersEnabled ? filters : null;
 
 		updateFlashSpritePosition();
 		updateShake(elapsed);
@@ -1664,7 +1659,7 @@ class FlxCamera extends FlxBasic
 	 */
 	public function setFilters(filters:Array<BitmapFilter>):Void
 	{
-		_filters = filters;
+		this.filters = filters;
 	}
 
 	/**

@@ -28,6 +28,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 	
 	override function create()
 	{
+	    ScriptingVars.currentScriptableState = 'HScriptSubStateHandler'; //for HScript
 	    instance = this;
 	    
 	    #if (LUA_ALLOWED || HSCRIPT_ALLOWED)

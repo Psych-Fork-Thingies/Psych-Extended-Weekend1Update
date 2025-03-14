@@ -28,6 +28,7 @@ class HScriptStateHandler extends MusicBeatState
 	
 	override function create()
 	{
+	    ScriptingVars.currentScriptableState = 'HScriptStateHandler'; //for HScript
 	    instance = this;
 	    
 	    #if (LUA_ALLOWED || HSCRIPT_ALLOWED)

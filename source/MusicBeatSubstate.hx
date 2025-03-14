@@ -35,7 +35,7 @@ class MusicBeatSubstate extends FlxSubState
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
-	var _virtualpad:FlxVirtualPad;
+	public var _virtualpad:FlxVirtualPad;
 	public static var mobilec:MobileControls;
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
@@ -103,6 +103,8 @@ class MusicBeatSubstate extends FlxSubState
 	}
 	
 	override function destroy() {
+	    ScriptingVars.currentScriptableState = null; //fix hx substate glitches
+	    
 	    if (trackedinputsNOTES.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsNOTES);
 

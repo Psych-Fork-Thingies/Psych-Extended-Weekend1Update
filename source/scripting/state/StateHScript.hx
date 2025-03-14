@@ -404,14 +404,14 @@ class StateHScript extends SScript
 
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic) {
-			if (Std.is(FlxG.state, ScriptState)) ScriptState.instance.variables.set(name, value);
+			if (ScriptingVars.currentScriptableState == 'ScriptState') ScriptState.instance.variables.set(name, value);
 			else HScriptStateHandler.instance.variables.set(name, value);
 			return value;
 		});
 		set('getVar', function(name:String) {
 			var result:Dynamic = null;
-			if(Std.is(FlxG.state, ScriptState) && ScriptState.instance.variables.exists(name)) result = ScriptState.instance.variables.get(name);
-			else HScriptStateHandler.instance.variables.get(name);
+			if(ScriptingVars.currentScriptableState == 'ScriptState' && ScriptState.instance.variables.exists(name)) result = ScriptState.instance.variables.get(name);
+			else if(HScriptStateHandler.instance.variables.exists(name)) result = HScriptStateHandler.instance.variables.get(name);
 			return result;
 		});
 		set('removeVar', function(name:String)
@@ -491,44 +491,51 @@ class StateHScript extends SScript
 		//OMG
 		set('virtualPadPressed', function(buttonPostfix:String):Bool
 		{
-		    if(Std.is(FlxG.state, ScriptState)) return ScriptState.checkVPadPress(buttonPostfix, 'pressed');
+		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.checkVPadPress(buttonPostfix, 'pressed');
 		    else return HScriptStateHandler.checkVPadPress(buttonPostfix, 'pressed');
 		});
 		
 		set('virtualPadJustPressed', function(buttonPostfix:String):Bool
 		{
-		    if(Std.is(FlxG.state, ScriptState)) return ScriptState.checkVPadPress(buttonPostfix, 'justPressed');
+		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.checkVPadPress(buttonPostfix, 'justPressed');
 		    else return HScriptStateHandler.checkVPadPress(buttonPostfix, 'justPressed');
 		});
 		
 		set('virtualPadReleased', function(buttonPostfix:String):Bool
 		{
-		    if(Std.is(FlxG.state, ScriptState)) return ScriptState.checkVPadPress(buttonPostfix, 'released');
+		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.checkVPadPress(buttonPostfix, 'released');
 		    else return HScriptStateHandler.checkVPadPress(buttonPostfix, 'released');
 		});
 		
 		set('virtualPadJustReleased', function(buttonPostfix:String):Bool
 		{
-		    if(Std.is(FlxG.state, ScriptState)) return ScriptState.checkVPadPress(buttonPostfix, 'justReleased');
+		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.checkVPadPress(buttonPostfix, 'justReleased');
 		    else return HScriptStateHandler.checkVPadPress(buttonPostfix, 'justReleased');
 		});
 		
 		set('addVirtualPad', function(DPad:String, Action:String):Void
 		{
-		    if(Std.is(FlxG.state, ScriptState)) return ScriptState.instance.addHxVirtualPad(ScriptState.dpadMode.get(DPad), ScriptState.actionMode.get(Action));
+		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.instance.addHxVirtualPad(ScriptState.dpadMode.get(DPad), ScriptState.actionMode.get(Action));
 		    else return HScriptStateHandler.instance.addHxVirtualPad(HScriptStateHandler.dpadMode.get(DPad), HScriptStateHandler.actionMode.get(Action));
 		});
 		
 		set('addVirtualPadCamera', function():Void
 		{
-		    if(Std.is(FlxG.state, ScriptState)) return ScriptState.instance.addHxVirtualPadCamera();
+		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.instance.addHxVirtualPadCamera();
 		    else return HScriptStateHandler.instance.addHxVirtualPadCamera();
 		});
 		
 		set('removeVirtualPad', function():Void
 		{
-		    if(Std.is(FlxG.state, ScriptState)) return ScriptState.instance.removeHxVirtualPad();
+		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.instance.removeHxVirtualPad();
 		    else return HScriptStateHandler.instance.removeHxVirtualPad();
+		});
+		
+		set('getSpesificVPadButton', function(buttonPostfix:String):Dynamic
+		{
+		    var buttonName = "button" + buttonPostfix;
+    		return Reflect.getProperty(HScriptStateHandler._hxvirtualpad, buttonName); //This Needs to be work
+    		return null;
 		});
 		#end
 		
@@ -587,6 +594,9 @@ class StateHScript extends SScript
 		#end
 		set('this', this);
 		set('game', FlxG.state);
+		//`game` Alternatives
+		set('state', FlxG.state);
+		set('substate', FlxG.state.subState);
 
 		set('buildTarget', FunkinLua.getBuildTarget());
 

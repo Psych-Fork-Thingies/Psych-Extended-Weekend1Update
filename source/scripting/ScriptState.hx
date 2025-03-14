@@ -76,6 +76,7 @@ class ScriptState extends MusicBeatState
 
     override public function create()
     {
+        ScriptingVars.currentScriptableState = 'ScriptState'; //for HScript
         #if HXVIRTUALPAD_ALLOWED
 		// FlxDPadModes
 		for (data in FlxDPadMode.createAll())
