@@ -35,19 +35,26 @@ class MobileFunctions
 		    return PlayState.checkVPadPress(buttonPostfix, 'justReleased');
 		});
 		
-		Lua_helper.add_callback(lua, 'addVirtualPad', function(DPad:String, Action:String):Void
+		Lua_helper.add_callback(lua, 'addVirtualPad', function(DPad:String, Action:String, ?addToCustomSubstate:Bool = false, ?posAtCustomSubstate:Int = -1):Void
 		{
-		    PlayState.instance.addPlayStateVirtualPad(PlayState.dpadMode.get(DPad), PlayState.actionMode.get(Action));
+		    PlayState.instance.makeLuaVirtualPad(PlayState.dpadMode.get(DPad), PlayState.actionMode.get(Action));
+			if (addToCustomSubstate)
+			{
+				if (PlayState.instance.luaVirtualPad != null || !PlayState.instance.members.contains(PlayState.instance.luaVirtualPad))
+					CustomSubstate.insertLuaVpad(posAtCustomSubstate);
+			}
+			else
+				PlayState.instance.addLuaVirtualPad();		    
 		});
 		
 		Lua_helper.add_callback(lua, 'addVirtualPadCamera', function():Void
 		{
-		    PlayState.instance.addPlayStateVirtualPadCamera();
+		    PlayState.instance.addLuaVirtualPadCamera();
 		});
 		
 		Lua_helper.add_callback(lua, 'removeVirtualPad', function():Void
 		{
-		    PlayState.instance.removePlayStateVirtualPad();
+		    PlayState.instance.removeLuaVirtualPad();
 		});
 		#end
 	    

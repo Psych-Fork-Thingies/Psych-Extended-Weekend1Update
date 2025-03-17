@@ -13,7 +13,7 @@ import openfl.utils.Assets;
 // Lua VirtualPad
 import haxe.ds.StringMap;
 
-typedef MobileButton = #if TouchPad TouchButton #else FlxButton #end;
+typedef MobileButton = VirtualButton;
 
 class FlxVirtualPad extends FlxSpriteGroup {
 	//Actions
@@ -267,19 +267,23 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	
 	public function createMobileButton(x:Float, y:Float, Frames:String, ColorS:Int):Dynamic
 	{
-	    #if TouchPad
-	    return createTouchButton(x, y, Frames, ColorS);
-	    #else
-	    return createButton(x, y, Frames, ColorS);
-	    #end
+	    if (ClientPrefs.data.virtualpadType == 'TouchPad')
+	        return createTouchButton(x, y, Frames, ColorS);
+	    else
+	        return createVirtualButton(x, y, Frames, ColorS);
 	}
 	
-	public function createTouchButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):TouchButton {
-	    var button = new TouchButton(x, y);
-		button.label = new FlxSprite();
-		if (Frames == "modding") button.loadGraphic(Paths.image('touchpad/${Frames.toUpperCase()}'));
-		else button.loadGraphic(Paths.image('touchpad/bg'));
-		if (Frames != "modding") button.label.loadGraphic(Paths.image('touchpad/${Frames.toUpperCase()}'));
+	public function createTouchButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):VirtualButton {
+	    var button = new VirtualButton(x, y);
+		button.label = new FlxSprite();		
+		final path:Dynamic = Paths.modsImages('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/${Frames.toUpperCase()}');
+			
+		if (Frames == "modding" && FileSystem.exists(path)) button.loadGraphic(path);
+		else if (FileSystem.exists(path)) button.loadGraphic(Paths.image('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/bg'));
+		else button.loadGraphic(Paths.image('touchpad/original/bg'));
+		
+		if (Frames != "modding" && FileSystem.exists(path)) button.label.loadGraphic(path);
+		else if (Frames != "modding") button.label.loadGraphic(Paths.image('touchpad/original/${Frames.toUpperCase()}'));
 
 		button.scale.set(0.243, 0.243);
 		button.updateHitbox();
@@ -302,12 +306,10 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		return button;
 	}
 	
-	public function createButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):FlxButton {
-	if (ClientPrefs.data.virtualpadType == 'New')
-	{
+	public function createVirtualButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):VirtualButton {
 	    var frames:FlxGraphic;
-
-		final path:String = 'shared:assets/shared/images/virtualpad/' + ClientPrefs.data.VirtualPadSkin + '/$Frames.png';
+	    
+        final path:String = 'shared:assets/shared/images/virtualpad/' + ClientPrefs.data.VirtualPadSkin + '/$Frames.png';
 		#if MODS_ALLOWED
 		final modsPath:String = Paths.modsImages('virtualpad/' + ClientPrefs.data.VirtualPadSkin + '/$Frames');
 		if(sys.FileSystem.exists(modsPath))
@@ -316,48 +318,27 @@ class FlxVirtualPad extends FlxSpriteGroup {
 			frames = FlxGraphic.fromBitmapData(Assets.getBitmapData(path));
 		else
 			frames = FlxGraphic.fromBitmapData(Assets.getBitmapData('shared:assets/shared/images/virtualpad/original/default.png'));
-
-		var button:FlxButton = new FlxButton(x, y);
-		button.frames = FlxTileFrames.fromGraphic(frames, FlxPoint.get(Std.int(frames.width / 2), frames.height));
-		button.solid = false;
-		button.immovable = true;
-		button.moves = false;
-		button.scrollFactor.set();
-		if (ColorS != -1 && ClientPrefs.data.coloredvpad) button.color = ColorS;
-		button.antialiasing = ClientPrefs.data.antialiasing;
-		#if FLX_DEBUG
-		button.ignoreDrawDebug = true;
-		#end
-		return button;
-	}
-	else // you can still use the old controls if you want
-	{
-		var button = new FlxButton(x, y);
-		button.frames = FlxTileFrames.fromFrame(getFrames().getByName(Frames), FlxPoint.get(132, 127));
-		button.resetSizeFromFrame();
-		button.solid = false;
-		button.immovable = true;
-		button.scrollFactor.set();
-		if (ColorS != -1 && ClientPrefs.data.coloredvpad) button.color = ColorS;
-		button.antialiasing = ClientPrefs.data.antialiasing;
-		#if FLX_DEBUG
-		button.ignoreDrawDebug = true;
-		#end
-		return button;
-	}
-	}
-
-	public static function getFrames():FlxAtlasFrames {
-	    final path:String = 'assets/images/mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin + '.png';
-		#if MODS_ALLOWED
-		final modsPath:String = Paths.modsImages('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
-		if(sys.FileSystem.exists(modsPath))
-			return Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
-		else #end if(Assets.exists(path))
-			return Paths.getPackerAtlas('mobilecontrols/virtualpad/' + ClientPrefs.data.VirtualPadSkin);
-		else
-			return Paths.getPackerAtlas('mobilecontrols/virtualpad/original');
-	}
+			
+		var button = new VirtualButton(x, y);
+        button.frames = FlxTileFrames.fromGraphic(frames, FlxPoint.get(Std.int(frames.width / 2), frames.height));
+        
+        //button.scale.set(0.243, 0.243);
+        button.updateHitbox();
+        button.updateLabelPosition();
+    
+        button.bounds.makeGraphic(Std.int(button.width - 50), Std.int(button.height - 50), FlxColor.TRANSPARENT);
+        button.centerBounds();
+    
+        button.immovable = true;
+        button.solid = button.moves = false;
+        button.antialiasing = ClientPrefs.data.antialiasing;
+        button.tag = Frames.toUpperCase();
+    
+        if (ColorS != -1 && ClientPrefs.data.coloredvpad) button.color = ColorS;
+        //button.parentAlpha = button.alpha;
+    
+        return button;
+    }
 	
 	override public function destroy():Void
 	{

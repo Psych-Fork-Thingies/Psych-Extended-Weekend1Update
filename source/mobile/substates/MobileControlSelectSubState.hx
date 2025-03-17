@@ -7,7 +7,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionableState;
 import mobile.objects.MobileControls.Config;
-import mobile.flixel.FlxButton as UIButton;
+import flixel.ui.FlxButton as UIButton;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.util.FlxGradient;

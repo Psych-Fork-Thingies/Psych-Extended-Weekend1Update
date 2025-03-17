@@ -17,7 +17,7 @@ import sys.FileSystem;
 
 using StringTools;
 
-class MasterEditorMenu extends MusicBeatState
+class MasterEditorMenu extends HScriptStateHandler
 {
 	var options:Array<String> = [
 		'Week Editor',
@@ -36,6 +36,12 @@ class MasterEditorMenu extends MusicBeatState
 
 	override function create()
 	{
+	    var className = Type.getClassName(Type.getClass(this));
+	    var classString:String = '${className}' + '.hx';
+	    if (classString.startsWith('editors.')) classString = classString.replace('editors.', '');
+	    startHScriptsNamed(classString);
+    	startHScriptsNamed('global.hx');
+    	
 		FlxG.camera.bgColor = FlxColor.BLACK;
 		#if desktop
 		// Updating Discord Rich Presence
@@ -85,10 +91,14 @@ class MasterEditorMenu extends MusicBeatState
 		addVirtualPad(FULL, A_B);
 
 		super.create();
+		
+		callOnScripts('onCreatePost');
 	}
 
 	override function update(elapsed:Float)
 	{
+	    callOnScripts('onUpdate', [elapsed]);
+	    
 		if (controls.UI_UP_P)
 		{
 			changeSelection(-1);
@@ -157,6 +167,8 @@ class MasterEditorMenu extends MusicBeatState
 			}
 		}
 		super.update(elapsed);
+		
+		callOnScripts('onUpdatePost', [elapsed]);
 	}
 
 	function changeSelection(change:Int = 0)

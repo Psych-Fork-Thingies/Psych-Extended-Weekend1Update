@@ -17,7 +17,6 @@ class Data
 	}
 }
 
-
 enum FlxDPadMode {
 	UP_DOWN;
 	LEFT_RIGHT;

@@ -22,15 +22,15 @@ import openfl.geom.Matrix;
  */
 class FlxNewHitbox extends FlxSpriteGroup
 {
-	public var buttonLeft:FlxButton = new FlxButton(0, 0);
-	public var buttonDown:FlxButton = new FlxButton(0, 0);
-	public var buttonUp:FlxButton = new FlxButton(0, 0);
-	public var buttonRight:FlxButton = new FlxButton(0, 0);
+	public var buttonLeft:VirtualButton = new VirtualButton(0, 0);
+	public var buttonDown:VirtualButton = new VirtualButton(0, 0);
+	public var buttonUp:VirtualButton = new VirtualButton(0, 0);
+	public var buttonRight:VirtualButton = new VirtualButton(0, 0);
 	
-	public var buttonExtra1:FlxButton = new FlxButton(0, 0);
-    public var buttonExtra2:FlxButton = new FlxButton(0, 0);
-    public var buttonExtra3:FlxButton = new FlxButton(0, 0);
-	public var buttonExtra4:FlxButton = new FlxButton(0, 0);
+	public var buttonExtra1:VirtualButton = new VirtualButton(0, 0);
+    public var buttonExtra2:VirtualButton = new VirtualButton(0, 0);
+    public var buttonExtra3:VirtualButton = new VirtualButton(0, 0);
+	public var buttonExtra4:VirtualButton = new VirtualButton(0, 0);
 	public static var hitbox_hint:FlxSprite;
 
 	/**
@@ -222,9 +222,9 @@ class FlxNewHitbox extends FlxSpriteGroup
 		return bitmap;
 	}
 
-	private function createHint(X:Float, Y:Float, Width:Int, Height:Int, Color:Int = 0xFFFFFF):FlxButton
+	private function createHint(X:Float, Y:Float, Width:Int, Height:Int, Color:Int = 0xFFFFFF):VirtualButton
 	{
-		var hint:FlxButton = new FlxButton(X, Y);
+		var hint:VirtualButton = new VirtualButton(X, Y);
 		hint.loadGraphic(createHintGraphic(Width, Height, Color));
 		hint.solid = false;
 		hint.immovable = true;

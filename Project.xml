@@ -59,7 +59,7 @@
 	<define name="BASE_GAME_ASSETS" if="finalBuild" />
 	<!-- <define name="TouchPad" /> -->
 	<define name="HXVIRTUALPAD_ALLOWED" />
-	<define name="PLAYSTATE_VIRTUALPAD_ALLOWED" />
+	<define name="LUAVPAD_ALLOWED" />
 	<!-- <define name="FILE_DIALOG_FOR_MOBILE" /> -->
 	<define name="PsychExtended_Extras" unless="extras_disabled"/> <!-- Delete this if you want to remove Extra Features (if you are making source mod, this will be useful) -->
 	<define name="HIDE_CURSOR" if="mobile" /> <!-- DELETE THIS IF YOU WANT TO SEE CURSOR IN MOBILE BUILDS -->

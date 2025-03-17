@@ -46,9 +46,9 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	#end
 	final lastVirtualPadType:String = ClientPrefs.data.virtualpadType;
 	
-	var virtualpadTypes:Array<String> = ["New", "Old"];
-	var virtualpadSkinList:Array<String> = CoolUtil.coolTextFile(Paths.getPreloadPath('images/mobilecontrols/virtualpad/virtualpadSkinList.txt'));
-	var virtualpadSkinListModsFolder:Array<String> = CoolUtil.coolTextFile(Paths.modsImages('virtualpad/virtualpadSkinList.txt'));
+	var virtualpadTypes:Array<String> = ["VirtualPad", "TouchPad"];
+	var virtualpadSkinList:Array<String> = CoolUtil.coolTextFile(Paths.getSharedPath('images/virtualpad/virtualpadSkinList'));
+	var virtualpadSkinListModsFolder:Array<String> = CoolUtil.coolTextFile(Paths.modsTxt('virtualpad/virtualpadSkinList'));
 	
 	public function new()
 	{
@@ -58,18 +58,20 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		title = 'Mobile Options';
 		rpcTitle = 'Mobile Options Menu'; //hi, you can ask what is that, i will answer it's all what you needed lol.
 		
-		if (ClientPrefs.data.virtualpadType == 'New')
-		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.getSharedPath('images/virtualpad/virtualpadSkinList.txt'));
+		if (ClientPrefs.data.virtualpadType == 'TouchPad')
+		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.getPreloadPath('images/touchpad/touchpadSkinList.txt'));
 		    
 		#if MODS_ALLOWED
-		final modsPath:String = Paths.mods('virtualpad/virtualpadSkinList');
-		final modsPathExtra:String = Paths.mods('virtualpad/virtualpadSkinList.txt');
-		if((sys.FileSystem.exists(modsPath) || sys.FileSystem.exists(modsPathExtra)) && ClientPrefs.data.virtualpadType == 'New')
-		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.mods('virtualpad/virtualpadSkinList.txt'));
+		final modsPath:String = Paths.modsTxt('virtualpad/virtualpadSkinList');
+		final modsPathTouch:String = Paths.modsTxt('touchpad/touchpadSkinList');
+		
+		if(FileSystem.exists(modsPathTouch) && ClientPrefs.data.virtualpadType == 'TouchPad')
+		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.modsTxt('touchpad/touchpadSkinList'));
+		else if(FileSystem.exists(modsPath) && ClientPrefs.data.virtualpadType != 'TouchPad')
+		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.modsTxt('virtualpad/virtualpadSkinList'));
 		#end
 		
 	if (ClientPrefs.data.VirtualPadAlpha != 0) {
-	    #if !TouchPad
 		var option:Option = new Option('VirtualPad Skin',
 			"Choose VirtualPad Skin",
 			'VirtualPadSkin',
@@ -78,7 +80,6 @@ class MobileOptionsSubState extends BaseOptionsMenu
 
 		addOption(option);
 		option.onChange = resetVirtualPad;
-		#end
 	}
 		
 		var option:Option = new Option('VirtualPad Alpha:',
@@ -105,14 +106,13 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = resetVirtualPad;
 		
-		#if !TouchPad
 		var option:Option = new Option('VirtualPad Type',
 			'Which VirtualPad should use??',
 			'virtualpadType',
 			'string',
 			virtualpadTypes);
 		addOption(option);
-		#end
+		option.onChange = resetVirtualPad; //remove buggy virtualpad/touchpad and add new one
 		
 		var option:Option = new Option('Extra Controls',
 			"Allow Extra Controls",

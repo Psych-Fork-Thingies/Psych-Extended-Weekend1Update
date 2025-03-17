@@ -10,10 +10,10 @@ import flixel.FlxSprite;
 class FlxHitbox extends FlxSpriteGroup {
 	public var hitbox:FlxSpriteGroup;
 
-	public var buttonLeft:FlxButton;
-	public var buttonDown:FlxButton;
-	public var buttonUp:FlxButton;
-	public var buttonRight:FlxButton;
+	public var buttonLeft:VirtualButton;
+	public var buttonDown:VirtualButton;
+	public var buttonUp:VirtualButton;
+	public var buttonRight:VirtualButton;
 
 	public var orgAlpha:Float = 0.75;
 	public var orgAntialiasing:Bool = true;
@@ -24,10 +24,10 @@ class FlxHitbox extends FlxSpriteGroup {
 		orgAlpha = alphaAlt;
 		orgAntialiasing = antialiasingAlt;
 
-		buttonLeft = new FlxButton(0, 0);
-		buttonDown = new FlxButton(0, 0);
-		buttonUp = new FlxButton(0, 0);
-		buttonRight = new FlxButton(0, 0);
+		buttonLeft = new VirtualButton(0, 0);
+		buttonDown = new VirtualButton(0, 0);
+		buttonUp = new VirtualButton(0, 0);
+		buttonRight = new VirtualButton(0, 0);
 
 		hitbox = new FlxSpriteGroup();
 		hitbox.add(add(buttonLeft = createhitbox(0, 0, "left")));
@@ -42,7 +42,7 @@ class FlxHitbox extends FlxSpriteGroup {
 	}
 
 	public function createhitbox(x:Float = 0, y:Float = 0, frames:String) {
-		var button = new FlxButton(x, y);
+		var button = new VirtualButton(x, y);
 		button.loadGraphic(FlxGraphic.fromFrame(getFrames().getByName(frames)));
 		button.antialiasing = orgAntialiasing;
 		button.alpha = 0;// sorry but I can't hard lock the hitbox alpha

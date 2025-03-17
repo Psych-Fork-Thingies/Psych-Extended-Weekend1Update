@@ -140,7 +140,7 @@ class HScript extends SScript
 		});
 
 		// For adding your own callbacks
-		#if PLAYSTATE_VIRTUALPAD_ALLOWED
+		#if LUAVPAD_ALLOWED
 		//OMG
 		set('virtualPadPressed', function(buttonPostfix:String):Bool
 		{
@@ -162,19 +162,26 @@ class HScript extends SScript
 		    return PlayState.checkVPadPress(buttonPostfix, 'justReleased');
 		});
 		
-		set('addVirtualPad', function(DPad:String, Action:String):Void
+		set('addVirtualPad', function(DPad:String, Action:String, ?addToCustomSubstate:Bool = false, ?posAtCustomSubstate:Int = -1):Void
 		{
-		    PlayState.instance.addPlayStateVirtualPad(PlayState.dpadMode.get(DPad), PlayState.actionMode.get(Action));
+		    PlayState.instance.makeLuaVirtualPad(PlayState.dpadMode.get(DPad), PlayState.actionMode.get(Action));
+			if (addToCustomSubstate)
+			{
+				if (PlayState.instance.luaVirtualPad != null || !PlayState.instance.members.contains(PlayState.instance.luaVirtualPad))
+					CustomSubstate.insertLuaVpad(posAtCustomSubstate);
+			}
+			else
+				PlayState.instance.addLuaVirtualPad();
 		});
 		
 		set('addVirtualPadCamera', function():Void
 		{
-		    PlayState.instance.addPlayStateVirtualPadCamera();
+		    PlayState.instance.addLuaVirtualPadCamera();
 		});
 		
 		set('removeVirtualPad', function():Void
 		{
-		    PlayState.instance.removePlayStateVirtualPad();
+		    PlayState.instance.removeLuaVirtualPad();
 		});
 		#end
 
