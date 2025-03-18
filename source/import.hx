@@ -15,7 +15,7 @@ import haxe.ds.StringMap;
 import scripting.*;
 
 // Extra
-#if (hxCodec >= "3.0.0" && VIDEOS_ALLOWED) import backend.VideoManager; #end //For Better MP4Handler Support
+#if (hxCodec >= "3.0.0" && VIDEOS_ALLOWED && !ios) import backend.VideoManager; #end //For Better MP4Handler Support
 import extras.*; //For CustomSwitchState
 import extras.states.*; //Extra States
 import extras.substates.*; //Extra Substates

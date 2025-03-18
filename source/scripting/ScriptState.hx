@@ -217,7 +217,7 @@ class ScriptState extends MusicBeatState
 		}
 
 		var video:VideoHandler = new VideoHandler();
-			#if (hxCodec >= "3.0.0")
+			#if (hxCodec >= "3.0.0" && !ios)
 			// Recent versions
 			video.play(filepath);
 			video.onEndReached.add(function()

@@ -74,7 +74,7 @@
 	<define name="HSCRIPT_ALLOWED" if="desktop || mobile" />
 	<define name="LUA_ALLOWED" if="desktop || mobile"/>
 	<define name="ACHIEVEMENTS_ALLOWED" />
-	<define name="VIDEOS_ALLOWED" if="web || windows || mobile" unless="32bits"/>
+	<define name="VIDEOS_ALLOWED" if="web || windows || android" unless="32bits || ios"/>
 	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<define name="CRASH_HANDLER" if="desktop release || mobile" />
 
@@ -158,7 +158,7 @@
 	
 	<!--Psych stuff needed-->
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
-	<haxelib name="hxCodec" />
+	<haxelib name="hxCodec" unless="ios"/>
 	<haxelib name="tjson"/>
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="discord_rpc" if="desktop"/>

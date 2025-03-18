@@ -2,14 +2,14 @@
 
 package backend;
 
-#if (hxCodec >= "3.0.0" && VIDEOS_ALLOWED)
+#if (hxCodec >= "3.0.0" && VIDEOS_ALLOWED && !ios)
 import hxcodec.flixel.FlxVideo as Video;
 #end
 import haxe.extern.EitherType;
 import flixel.util.FlxSignal;
 import haxe.io.Path;
 
-#if (hxCodec >= "3.0.0" && VIDEOS_ALLOWED)
+#if (hxCodec >= "3.0.0" && VIDEOS_ALLOWED && !ios)
 class VideoManager extends Video {
     public var playbackRate(get, set):EitherType<Single, Float>;
     public var paused(default, set):Bool = false;
