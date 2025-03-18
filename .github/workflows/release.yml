@@ -4,9 +4,6 @@ jobs:
   Android:
     name: Android
     runs-on: macos-14
-    strategy:
-      matrix:
-        pad-type: [TouchPad, VirtualPad] #VirtualPad is Usless but I don't have a any solution
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -34,12 +31,12 @@ jobs:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: Compile
-        run: haxelib run lime build android -D finalBuild -D ${{ matrix.pad-type }} -final
+        run: haxelib run lime build android -D finalBuild -final
 
       - name: Upload Artifact
         uses: actions/upload-artifact@main
         with:
-          name: androidBuild-${{ matrix.pad-type }}
+          name: androidBuild
           path: export/release/android/bin/app/build/outputs/apk/release/*.apk
           if-no-files-found: warn
   Windows:
@@ -79,23 +76,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - name: Download First Android Build (VirtualPad)
+      - name: Download Android Build
         uses: actions/download-artifact@main
         with:
            name: androidBuild-VirtualPad
            path: /home/runner
 
-      - name: Move First Android File
-        run: mv /home/runner/PsychExtended-release.apk /home/runner/PsychExtended-VirtualPad.apk
-
-      - name: Download Second Android Build (TouchPad)
-        uses: actions/download-artifact@main
-        with:
-           name: androidBuild-TouchPad
-           path: /home/runner
-
-      - name: Move Second Android File
-        run: mv /home/runner/PsychExtended-release.apk /home/runner/PsychExtended-TouchPad.apk
+      - name: Move Android File
+        run: mv /home/runner/PsychExtended-release.apk /home/runner/PsychExtended-1.0.2-PreRelease.apk
 
       - name: Download Windows Build
         uses: actions/download-artifact@main
@@ -108,8 +96,8 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: "1.0.1"
-          title: "1.0.1 Part 2 - Scriptable States Beta"
+          automatic_release_tag: "1.0.2-prerelease"
+          title: "1.0.2 PreRelease - Scriptable States Alpha"
           files: |
             /home/runner/*.apk
             /home/runner/*.zip

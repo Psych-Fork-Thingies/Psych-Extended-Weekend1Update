@@ -276,14 +276,15 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	public function createTouchButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):VirtualButton {
 	    var button = new VirtualButton(x, y);
 		button.label = new FlxSprite();		
-		final path:Dynamic = Paths.modsImages('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/${Frames.toUpperCase()}');
+		final buttonPath:Dynamic = Paths.image('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/${Frames.toUpperCase()}');
+		final bgPath:Dynamic = Paths.image('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/bg');
 			
-		if (Frames == "modding" && FileSystem.exists(path)) button.loadGraphic(path);
-		else if (FileSystem.exists(path)) button.loadGraphic(Paths.image('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/bg'));
+		if (Frames == "modding" && FileSystem.exists(buttonPath)) button.loadGraphic(buttonPath);
+		else if (FileSystem.exists(bgPath)) button.loadGraphic(bgPath);
 		else button.loadGraphic(Paths.image('touchpad/original/bg'));
 		
-		if (Frames != "modding" && FileSystem.exists(path)) button.label.loadGraphic(path);
-		else if (Frames != "modding") button.label.loadGraphic(Paths.image('touchpad/original/${Frames.toUpperCase()}'));
+		if (Frames != "modding" && FileSystem.exists(buttonPath)) button.label.loadGraphic(buttonPath);
+		else if (!FileSystem.exists(buttonPath)) button.label.loadGraphic(Paths.image('touchpad/original/${Frames.toUpperCase()}'));
 
 		button.scale.set(0.243, 0.243);
 		button.updateHitbox();

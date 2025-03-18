@@ -3,9 +3,6 @@ on: workflow_dispatch
 jobs:
   Android:
     runs-on: macos-14
-    strategy:
-      matrix:
-        pad-type: [TouchPad, VirtualPad] #VirtualPad is Usless but I don't have a any solution
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -38,13 +35,51 @@ jobs:
           haxelib run lime config ANDROID_SETUP true
 
       - name: Compile
-        run: haxelib run lime build android -D finalBuild -D ${{ matrix.pad-type }} -D 32bits_disabled -ARM64 -final
+        run: haxelib run lime build android -D finalBuild -D 32bits_disabled -ARM64 -final
 
       - name: Upload Artifact
         uses: actions/upload-artifact@main
         with:
-          name: androidBuild-${{ matrix.pad-type }}
+          name: androidBuild
           path: export/release/android/bin/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+  iOS:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.3.6
+
+      - name: Install Libraries
+        run: |
+          haxelib setup ~/haxelib
+          haxelib install hmm --quiet
+          haxelib run hmm install --quiet
+
+      - name: Compile
+        run: haxelib run lime build ios -D officialBuild -nosign -arm64 -final
+
+      - name: Make Ipa
+        run: |
+          cd export/release/ios/build/Release-iphoneos
+          mkdir Payload
+          mv *.app Payload
+          zip -r PsychExtended.ipa Payload
+
+      - name: Make Zip For Release
+        run: |
+           cd export/release/ios/build/Release-iphoneos
+           zip PsychExtended-iOS.zip PsychExtended.ipa
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: iOSBuild
+          path: export/release/ios/build/Release-iphoneos/*.zip
           if-no-files-found: error
   Windows:
     runs-on: windows-latest
