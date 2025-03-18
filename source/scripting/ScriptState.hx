@@ -200,6 +200,7 @@ class ScriptState extends MusicBeatState
 
 	public static var inCutscene:Bool;
 
+    #if !ios
 	public function startVideo(name:String)
 	{
 		#if VIDEOS_ALLOWED
@@ -241,6 +242,7 @@ class ScriptState extends MusicBeatState
 		return;
 		#end
 	}
+	#end
 
     /*
 	private function keyPressed(key:Int)

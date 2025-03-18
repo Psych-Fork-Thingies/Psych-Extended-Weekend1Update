@@ -191,6 +191,7 @@ class ScriptSubstate extends MusicBeatSubstate
 
 	public static var inCutscene:Bool;
 
+    #if !ios
 	public function startVideo(name:String)
 	{
 		#if VIDEOS_ALLOWED
@@ -232,6 +233,7 @@ class ScriptSubstate extends MusicBeatSubstate
 		return;
 		#end
 	}
+	#end
 
     /*
 	private function keyPressed(key:Int)

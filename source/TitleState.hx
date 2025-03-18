@@ -248,7 +248,12 @@ class TitleState extends HScriptStateHandler
 			startIntro();
 			return;
 		}
+		#if !ios
 		startVideo('intro');
+		#else
+		startIntro();
+		return;
+		#end
 	}
 	
 	function startCutscenesOut()
