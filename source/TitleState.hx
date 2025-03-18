@@ -34,7 +34,9 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import openfl.Assets;
 
+#if !ios
 import backend.VideoHandler_Title;
+#end
 
 using StringTools;
 typedef TitleData =

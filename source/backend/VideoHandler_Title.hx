@@ -4,7 +4,9 @@ import flixel.FlxG;
 import openfl.Lib;
 import openfl.events.Event;
 import sys.FileSystem;
+#if !ios
 import vlc.VLCBitmap;
+#end
 
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
@@ -13,6 +15,7 @@ import flixel.util.FlxColor;
  * Handles video playback.
  * Use bitmap to connect to a graphic or use `VideoSprite`.
  */
+#if !ios
 class VideoHandler_Title extends VLCBitmap
 {
 	public var canSkip:Bool = true;
@@ -207,3 +210,4 @@ class VideoSprite extends FlxSprite
 		
 	}
 }
+#end
