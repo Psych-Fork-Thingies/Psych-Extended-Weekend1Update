@@ -91,11 +91,13 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 		
+		#if VIDEOS_ALLOWED
 		var option:Option = new Option('Disable Intro Video',
 			"If checked, disables the Intro Video",
 			'DisableIntroVideo',
 			'bool');
 		addOption(option);
+		#end
 		#end
 
 		var option:Option = new Option('Note Splashes',

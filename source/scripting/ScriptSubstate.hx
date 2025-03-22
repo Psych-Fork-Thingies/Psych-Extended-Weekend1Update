@@ -191,7 +191,6 @@ class ScriptSubstate extends MusicBeatSubstate
 
 	public static var inCutscene:Bool;
 
-    #if !ios
 	public function startVideo(name:String)
 	{
 		#if VIDEOS_ALLOWED
@@ -209,7 +208,7 @@ class ScriptSubstate extends MusicBeatSubstate
 		}
 
 		var video:VideoHandler = new VideoHandler();
-			#if (hxCodec >= "3.0.0" && !ios)
+			#if (hxCodec >= "3.0.0")
 			// Recent versions
 			video.play(filepath);
 			video.onEndReached.add(function()
@@ -229,11 +228,9 @@ class ScriptSubstate extends MusicBeatSubstate
 			#end
 		#else
 		FlxG.log.warn('Platform not supported!');
-		startAndEnd();
 		return;
 		#end
 	}
-	#end
 
     /*
 	private function keyPressed(key:Int)

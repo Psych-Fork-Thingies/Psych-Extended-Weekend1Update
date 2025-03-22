@@ -35,7 +35,7 @@ import TitleState;
 	public var extraKeys:Int = 2;
 	public var hitboxLocation:String = 'Bottom';
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
-	public var DisableIntroVideo:Bool = false;
+	#if VIDEOS_ALLOWED public var DisableIntroVideo:Bool = false; #end
 	#if FuckYou public var KeepMyFiles:Bool = false; #end
 	public var UseNewCamSystem:Bool = false;
 	public var hscriptversion:String = 'HScript Old';

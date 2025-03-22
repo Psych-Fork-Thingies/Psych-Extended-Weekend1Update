@@ -244,15 +244,14 @@ class TitleState extends HScriptStateHandler
 	
 	function startCutscenesIn()
 	{
+	    #if VIDEOS_ALLOWED
 		if (inGame || ClientPrefs.data.DisableIntroVideo) {
 			startIntro();
 			return;
 		}
-		#if !ios
 		startVideo('intro');
 		#else
 		startIntro();
-		return;
 		#end
 	}
 	

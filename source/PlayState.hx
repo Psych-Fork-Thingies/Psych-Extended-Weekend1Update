@@ -4233,7 +4233,7 @@ class PlayState extends MusicBeatState
 	
 	function checkForResync()
 	{
-		if (endingSong || paused || shutdownThread)
+		if (!startedCountdown && endingSong || paused || shutdownThread)
  			return;
  
  		if (requiresSyncing)
@@ -4249,7 +4249,7 @@ class PlayState extends MusicBeatState
 	{
 		Thread.create(function()
  		{
- 			while (!endingSong && !paused && !shutdownThread)
+ 			while (startedCountdown && !endingSong && !paused && !shutdownThread) //add `startedCountdown` for cutscenes
  			{
  				if (requiresSyncing)
  					continue;
