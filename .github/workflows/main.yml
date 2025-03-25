@@ -14,7 +14,7 @@ jobs:
             setupCommand: .\"setup/windows.bat"
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
-            system: "Windows""
+            system: "Windows"
           - name: Android
             os: ubuntu-24.04
             buildArgs: "android -D finalBuild -ONLY_ARM64 -final"
