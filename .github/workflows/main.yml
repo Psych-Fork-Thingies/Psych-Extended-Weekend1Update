@@ -15,7 +15,7 @@ jobs:
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
           - name: Android
-            os: ubuntu-24.04
+            os: macos-14
             buildArgs: "android -D finalBuild -ONLY_ARM64 -final"
             setupCommand: sh ./setup/mobile.sh
             artifactName: androidBuild
