@@ -29,13 +29,6 @@ jobs:
             artifactName: androidBuild-Armv7
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             system: Android
-          - name: iOS
-            os: macos-13
-            buildArgs: "ios -nosign"
-            setupCommand: sh ./setup/mobile.sh
-            artifactName: iOSBuild
-            artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
-            system: iOS
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}
