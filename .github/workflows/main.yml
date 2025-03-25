@@ -23,7 +23,9 @@ jobs:
           
       - name: Install Libraries
         run: |
-          sh ./setup/mobile.sh
+          haxelib setup ~/haxelib
+          haxelib install hmm --quiet
+          haxelib run hmm install --quiet
 
       - name: Configure Android
         run: |

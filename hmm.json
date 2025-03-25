@@ -9,8 +9,8 @@
     {
       "name": "linc_luajit",
       "type": "git",
-      "ref": "master",
-      "url": "https://github.com/Sirox228/linc_luajit"
+      "ref": "main",
+      "url": "https://github.com/PsychExtendedThings/linc_luajit"
     },
     {
       "name": "tjson",
@@ -37,7 +37,7 @@
       "name": "SScript",
       "type": "git",
       "ref": "main",
-      "url": "https://github.com/28AloneDark53/SScript-for-Psych-Extended"
+      "url": "https://github.com/PsychExtendedThings/SScript"
     },
     {
       "name": "hscript",
@@ -59,8 +59,8 @@
     {
       "name": "lime",
       "type": "git",
-      "ref": "main",
-      "url": "https://github.com/MobilePorting/lime"
+      "ref": "04d432ace274b5f50e5356faf2e12eb5596e82a0",
+      "url": "https://github.com/HomuHomu833-stuff/lime"
     },
     {
       "name": "openfl",
