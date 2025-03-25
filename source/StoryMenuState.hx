@@ -55,6 +55,7 @@ class StoryMenuState extends HScriptStateHandler
 		Paths.clearUnusedMemory();
 		
 		//HScript Things
+		#if HSCRIPT_ALLOWED
 	    var className = Type.getClassName(Type.getClass(this));
 	    var classString:String = '${className}' + '.hx';
 	    
@@ -63,6 +64,7 @@ class StoryMenuState extends HScriptStateHandler
 
 	    startHScriptsNamed(classString);
     	startHScriptsNamed('global.hx');
+    	#end
     	//End
 
 		PlayState.isStoryMode = true;

@@ -10,6 +10,19 @@ import TitleState;
 // Add a variable here and it will get automatically saved
 @:structInit class SaveVariables {
 	//Psych Extended
+	//Extras (More Easier Than To remove everything)
+	#if !PsychExtended_Extras
+	public final NoteSkin:String = 'original';
+	public final FreeplayStyle:String = 'Psych';
+    public final PauseMenuStyle:String = 'Psych';
+    public final FreakyMenu:String = 'Extended';
+    public final TransitionStyle:String = 'Psych';
+    public final MainMenuStyle:String = '1.0';
+	public final touchmenus:Bool = #if UNUSED_TOUCHMENUS true #else false #end;
+	public final UseNewCamSystem:Bool = false;
+	public final hscriptversion:String = 'HScript Old';
+	public final chartLoadSystem:String = '0.4-0.7x';
+	#else
 	public var NoteSkin:String = 'original';
 	public var FreeplayStyle:String = 'Psych';
     public var PauseMenuStyle:String = 'Psych';
@@ -17,6 +30,11 @@ import TitleState;
     public var TransitionStyle:String = 'Psych';
     public var MainMenuStyle:String = '1.0';
 	public var touchmenus:Bool = #if UNUSED_TOUCHMENUS true #else false #end;
+	public var UseNewCamSystem:Bool = false;
+	public var hscriptversion:String = 'HScript Old';
+	public var chartLoadSystem:String = '0.4-0.7x';
+	#end
+	//end
 	public var Modpack:Bool = false;
 	public var wideScreen:Bool = false;
 	public var mobileC:Bool = true; //better than using if mobile
@@ -37,13 +55,15 @@ import TitleState;
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
 	#if VIDEOS_ALLOWED public var DisableIntroVideo:Bool = false; #end
 	#if FuckYou public var KeepMyFiles:Bool = false; #end
-	public var UseNewCamSystem:Bool = false;
-	public var hscriptversion:String = 'HScript Old';
-	public var chartLoadSystem:String = '0.4-0.7x';
 	
 	//FPSCounter things
+	#if !PsychExtended_Extras
+	public final FPSCounter:String = 'Psych';
+	public final rainbowFPS:Bool = false;
+	#else
 	public var FPSCounter:String = 'Psych';
 	public var rainbowFPS:Bool = false;
+	#end
 	public var memoryType:Int = 0;
 	
 	//New Psych Features
@@ -113,6 +133,16 @@ import TitleState;
 class ClientPrefs {
 	public static var data:SaveVariables = {};
 	public static var defaultData:SaveVariables = {};
+	
+	public static var psychExtrasKeys = [
+	    #if !PsychExtended_Extras
+	    //Visual and ui
+	    'NoteSkin', 'FreeplayStyle', 'PauseMenuStyle', 'FreakyMenu',
+		'TransitionStyle', 'MainMenuStyle', 'touchmenus', 'FPSCounter', 'rainbowFPS',
+		//Gameplay
+		'UseNewCamSystem', 'hscriptversion', 'chartLoadSystem'
+		#end
+	];
 
 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
@@ -146,9 +176,10 @@ class ClientPrefs {
 		//trace(defaultKeys);
 	}
 
-	public static function saveSettings() {
+	public static function saveSettings() {		
 		for (key in Reflect.fields(data))
-			Reflect.setField(FlxG.save.data, key, Reflect.field(data, key));
+		    if (psychExtrasKeys.indexOf(key) == -1)
+				Reflect.setField(FlxG.save.data, key, Reflect.field(data, key));
 
 		#if ACHIEVEMENTS_ALLOWED Achievements.save(); #end
 		FlxG.save.flush();
@@ -165,7 +196,7 @@ class ClientPrefs {
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 
 		for (key in Reflect.fields(data))
-			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key))
+			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key) && psychExtrasKeys.indexOf(key) == -1)
 				Reflect.setField(data, key, Reflect.field(FlxG.save.data, key));
 				
 		if(Main.fpsVarNova != null && ClientPrefs.data.FPSCounter == 'NovaFlare')

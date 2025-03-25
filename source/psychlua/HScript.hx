@@ -188,9 +188,11 @@ class HScript extends SScript
 		// not very tested but should work
 		set('createGlobalCallback', function(name:String, func:Dynamic)
 		{
+		    #if LUA_ALLOWED
 			for (script in PlayState.instance.luaArray)
 				if(script != null && script.lua != null && !script.closed)
 					Lua_helper.add_callback(script.lua, name, func);
+			#end
 			FunkinLua.customFunctions.set(name, func);
 		});
 
@@ -291,8 +293,8 @@ class HScript extends SScript
 	}
 	
 	public static function implement(funk:FunkinLua) {
+	    #if LUA_ALLOWED
 	    var lua:State = funk.lua;
-		#if LUA_ALLOWED
 		funk.addLocalCallback("runHaxeCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):Dynamic {
 			#if (SScript >= "3.0.0")
 			initHaxeModuleCode(funk, codeToRun, varsToBring);
@@ -363,8 +365,8 @@ class HScript extends SScript
 	}
 	
 	public static function implement_forced(funk:FunkinLua) {
+	    #if LUA_ALLOWED
 	    var lua:State = funk.lua;
-		#if LUA_ALLOWED
 		funk.addLocalCallback("runSScriptCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):Dynamic {
 			#if (SScript >= "3.0.0")
 			initHaxeModuleCode(funk, codeToRun, varsToBring);
@@ -434,7 +436,7 @@ class HScript extends SScript
 		#end
 	}
 	
-	#if (SScript >= "3.0.3")
+	#if (SScript >= "3.0.3" || HSCRIPT_ALLOWED)
 	override public function destroy()
 	{
 		origin = null;
@@ -467,7 +469,7 @@ class HScriptOG
 	
 	public static function initHaxeModule(parent:FunkinLua)
 	{
-		#if hscript
+		#if (hscript && HSCRIPT_ALLOWED)
 		if(parent.hscriptog == null)
 		{
 			trace('initializing haxe interp for: ${parent.scriptName}');
@@ -529,18 +531,22 @@ class HScriptOG
 		// not very tested but should work
 		interp.variables.set('createGlobalCallback', function(name:String, func:Dynamic)
 		{
+		    #if LUA_ALLOWED
 			for (script in PlayState.instance.luaArray)
 				if(script != null && script.lua != null && !script.closed)
 					Lua_helper.add_callback(script.lua, name, func);
+			#end
 			FunkinLua.customFunctions.set(name, func);
 		});
 		
 		// tested
 		interp.variables.set('createCallback', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
 		{
+		    #if LUA_ALLOWED
 		    var lua:State = funk.lua;
 			if(funk == null) funk = parentLua;
 			funk.addLocalCallback(name, func);
+			#end
 		});
 		
 		interp.variables.set('addHaxeLibrary', function(libName:String, ?libPackage:String = '') {
@@ -560,6 +566,7 @@ class HScriptOG
 	public function execute(codeToRun:String, ?funcToRun:String = null, ?funcArgs:Array<Dynamic>):Dynamic
 	{
 		@:privateAccess
+		#if HSCRIPT_ALLOWED
 		HScriptOG.parser.line = 1;
     	HScriptOG.parser.allowTypes = true;
 		if (ClientPrefs.data.hscriptversion == 'HScript New')
@@ -579,6 +586,7 @@ class HScriptOG
 		    return interp.execute(HScriptOG.parser.parseString(codeToRun));
 		else
 		    trace('HScript OG: Wrong HScript Option');
+		#end
 		    
 		return null;
 	}
@@ -603,15 +611,15 @@ class HScriptOG
 	
 	public static function implement(funk:FunkinLua)
 	{
-	    var lua:State = funk.lua;
 	    #if LUA_ALLOWED
+	    var lua:State = funk.lua;
 		funk.addLocalCallback("runHaxeCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null) {
 			var retVal:Dynamic = null;
-			#if hscript
 			initHaxeModule(funk);
 			
 			if (ClientPrefs.data.hscriptversion == 'HScript New')
 			{
+			    #if (hscript && HSCRIPT_ALLOWED)
     			try {
     				if(varsToBring != null)
     				{
@@ -633,7 +641,7 @@ class HScriptOG
     		}
     		else if (ClientPrefs.data.hscriptversion == 'HScript Old')
     		{
-    		    #if hscript
+    		    #if (hscript && HSCRIPT_ALLOWED)
     			try { retVal = funk.hscriptog.execute(codeToRun); }
     			catch (e:Dynamic) { FunkinLua.luaTrace(funk.scriptName + ":" + funk.lastCalledFunction + " - " + e, false, false, FlxColor.RED); }
     			#else
@@ -647,6 +655,7 @@ class HScriptOG
 		});
 		
 		funk.addLocalCallback("runHaxeFunction", function(funcToRun:String, ?funcArgs:Array<Dynamic> = null) {
+		    #if HSCRIPT_ALLOWED
 			try {
 				return funk.hscriptog.executeFunction(funcToRun, funcArgs);
 			}
@@ -655,9 +664,10 @@ class HScriptOG
 				FunkinLua.luaTrace(Std.string(e));
 				return null;
 			}
+			#end
 		});
 		funk.addLocalCallback("addHaxeLibrary", function(libName:String, ?libPackage:String = '') {
-			#if hscript
+			#if (hscript && HSCRIPT_ALLOWED)
 			initHaxeModule(funk);
 			try {
 				var str:String = '';
@@ -676,6 +686,7 @@ class HScriptOG
 	public function execute_forced(HScriptVersion:String, codeToRun:String, ?funcToRun:String = null, ?funcArgs:Array<Dynamic>):Dynamic
 	{
 		@:privateAccess
+		#if HSCRIPT_ALLOWED
 		HScriptOG.parser.line = 1;
     	HScriptOG.parser.allowTypes = true;
 		if (HScriptVersion == 'HScript New')
@@ -695,19 +706,20 @@ class HScriptOG
 		    return interp.execute(HScriptOG.parser.parseString(codeToRun));
 		else
 		    trace('HScript OG: Only HScript Old, HScript New Supported');
+		#end
 		    
 		return null;
 	}
 	
 	public static function implement_forced(funk:FunkinLua)
 	{
-	    var lua:State = funk.lua;
 	    #if LUA_ALLOWED
+	    var lua:State = funk.lua;
 		funk.addLocalCallback("runHScriptNewCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null) {
 			var retVal:Dynamic = null;
-			#if hscript
 			initHaxeModule(funk);
 			
+			#if (hscript && HSCRIPT_ALLOWED)
     		try {
     			if(varsToBring != null)
     			{
@@ -733,7 +745,7 @@ class HScriptOG
 			var retVal:Dynamic = null;
 			initHaxeModule(funk);
 			
-			#if hscript
+			#if (hscript && HSCRIPT_ALLOWED)
     		try { retVal = funk.hscriptog.execute_forced('HScript Old', codeToRun); }
     		catch (e:Dynamic) { FunkinLua.luaTrace(funk.scriptName + ":" + funk.lastCalledFunction + " - " + e, false, false, FlxColor.RED); }
     		#else
@@ -746,6 +758,7 @@ class HScriptOG
 		});
 		
 		funk.addLocalCallback("runHScriptFunction", function(funcToRun:String, ?funcArgs:Array<Dynamic> = null) {
+		    #if HSCRIPT_ALLOWED
 			try {
 				return funk.hscriptog.executeFunction(funcToRun, funcArgs);
 			}
@@ -754,9 +767,10 @@ class HScriptOG
 				FunkinLua.luaTrace(Std.string(e));
 				return null;
 			}
+			#end
 		});
 		funk.addLocalCallback("addHScriptLibrary", function(libName:String, ?libPackage:String = '') {
-			#if hscript
+			#if (hscript && HSCRIPT_ALLOWED)
 			initHaxeModule(funk);
 			try {
 				var str:String = '';

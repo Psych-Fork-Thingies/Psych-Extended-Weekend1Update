@@ -395,9 +395,11 @@ class Paths
 			return true;
 		}
 		
+		#if MODS_ALLOWED
 		if (FileSystem.exists(mods('$key'))) {
 			return true;
 		}
+		#end
 				
 		return false;
 	}
@@ -696,7 +698,7 @@ class Paths
 		}
 		return Sys.getCwd() + 'modpack/' + key;
 	}
-		
+	#end
 	#if flxanimate
 	public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null)
 	{
@@ -771,6 +773,5 @@ class Paths
 		}
 		return null;
 	}*/
-	#end
 	#end
 }

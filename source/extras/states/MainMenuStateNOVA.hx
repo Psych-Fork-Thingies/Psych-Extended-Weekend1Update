@@ -78,14 +78,12 @@ class MainMenuStateNOVA extends HScriptStateHandler
 	    instance = this;
 	    
 	    //HScript Things
-	    var className = Type.getClassName(Type.getClass(this));
-	    //End
-	    
 	    #if HSCRIPT_ALLOWED
+	    var className = Type.getClassName(Type.getClass(this));
+	    
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
 		add(luaDebugGroup);
 	    
-	    //HScript Things
 	    startHScriptsNamed('MainMenuStateNOVA.hx');
     	startHScriptsNamed('global.hx');
     	#end

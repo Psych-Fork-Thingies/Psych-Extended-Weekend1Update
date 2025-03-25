@@ -132,6 +132,7 @@ class FreeplayStateNF extends HScriptStateHandler {
 	override function create()
 	{
 	    //HScript Things
+	    #if HSCRIPT_ALLOWED
 	    var className = Type.getClassName(Type.getClass(this));
 	    var classString:String = '${className}' + '.hx';
 	    
@@ -140,6 +141,7 @@ class FreeplayStateNF extends HScriptStateHandler {
 
 	    startHScriptsNamed(classString);
     	startHScriptsNamed('global.hx');
+    	#end
     	//End
     	
 		persistentUpdate = persistentDraw = true;

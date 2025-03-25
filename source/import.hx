@@ -36,9 +36,7 @@ import Section;
 import states.*;
 
 //New Mods System
-#if MODS_ALLOWED
 import backend.Mods;
-#end
 
 //New Lua System
 #if ACHIEVEMENTS_ALLOWED

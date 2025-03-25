@@ -8,6 +8,7 @@ class CustomFunctions
 {
 	public static function implement(funk:FunkinLua)
 	{
+	    #if LUA_ALLOWED
 	    var lua:State = funk.lua;
 	    
 	    Lua_helper.add_callback(lua, "saveScore", function():Void
@@ -70,6 +71,7 @@ class CustomFunctions
 		{
 			lime.system.System.exit(1);
 		});
+		#end
 	}
 	
 	/* Not Needed Anymore Becuase You can add this with HScript

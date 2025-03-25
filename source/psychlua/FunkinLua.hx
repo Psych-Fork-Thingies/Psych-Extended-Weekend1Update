@@ -76,6 +76,7 @@ class FunkinLua {
 	public static var extra4:String = ClientPrefs.data.extraKeyReturn4.toUpperCase();
 	public static var FPSCounterText:String = null;
 
+    #if HSCRIPT_ALLOWED
 	#if (SScript >= "3.0.0")
 	public var hscript:HScript = null;
 	#end
@@ -84,6 +85,7 @@ class FunkinLua {
 	public var hscriptog:HScriptOG = null;
 	public var hxState:StateHScript = null;
 	public var hxSubstate:SubstateHScript = null;
+	#end
 	#end
 	
 	public var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
@@ -1654,11 +1656,11 @@ class FunkinLua {
 
 		#if ACHIEVEMENTS_ALLOWED Achievements.addLuaCallbacks(lua); #end
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
-		#if (SScript >= "3.0.0")
+		#if (SScript >= "3.0.0" || HSCRIPT_ALLOWED)
 		if (ClientPrefs.data.hscriptversion == 'SScript') HScript.implement(this);
 		HScript.implement_forced(this);
 		#end
-		#if hscript
+		#if (hscript && HSCRIPT_ALLOWED)
 		var Hv = ClientPrefs.data.hscriptversion;
 		if (Hv == 'HScript New' || Hv == 'HScript Old') HScriptOG.implement(this);
 		HScriptOG.implement_forced(this);
@@ -1759,6 +1761,9 @@ class FunkinLua {
 		}
 		Lua.close(lua);
 		lua = null;
+		#end
+		
+		#if HSCRIPT_ALLOWED
 		#if (SScript >= "3.0.0")
 		if(hscript != null)
 		{
@@ -1778,8 +1783,8 @@ class FunkinLua {
 		#end
 		
     	if(hscriptog != null) hscriptog.interp = null;
-    	hscriptog = null;		
-		#end
+    	hscriptog = null;
+    	#end
 	}
 	//clone functions
 	public static function getBuildTarget():String
@@ -1805,6 +1810,7 @@ class FunkinLua {
 	
 	function oldTweenFunction(tag:String, vars:String, tweenValue:Any, duration:Float, ease:String, funcName:String)
 	{
+	    #if LUA_ALLOWED
 		var target:Dynamic = LuaUtils.tweenPrepare(tag, vars);
 		if(target != null) {
 			PlayState.instance.modchartTweens.set(tag, FlxTween.tween(target, tweenValue, duration, {ease: LuaUtils.getTweenEaseByString(ease),
@@ -1816,6 +1822,7 @@ class FunkinLua {
 		} else {
 			luaTrace('$funcName: Couldnt find object: $vars', false, false, FlxColor.RED);
 		}
+		#end
 	}
 
 	public static function luaTrace(text:String, ignoreCheck:Bool = false, deprecated:Bool = false, color:FlxColor = FlxColor.WHITE) {

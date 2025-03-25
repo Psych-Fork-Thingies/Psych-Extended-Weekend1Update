@@ -11,9 +11,10 @@ class MobileFunctions
 {
 	public static function implement(funk:FunkinLua)
 	{
+	    #if LUA_ALLOWED
 	    var lua:State = funk.lua;
 	    
-	    #if PLAYSTATE_VIRTUALPAD_ALLOWED
+	    #if LUAVPAD_ALLOWED
 		//OMG
 		Lua_helper.add_callback(lua, 'virtualPadPressed', function(buttonPostfix:String):Bool
 		{
@@ -142,6 +143,8 @@ class MobileFunctions
 			return TouchFunctions.touchOverlapObject(obj);
 		});
 		#end
+		
+		#end
 	}
 }
 
@@ -150,6 +153,7 @@ class AndroidFunctions
 {
 	public static function implement(funk:FunkinLua)
 	{
+	    #if LUA_ALLOWED
 		var lua:State = funk.lua;
 		
 		Lua_helper.add_callback(lua, "isDolbyAtmos", AndroidTools.isDolbyAtmos());
@@ -215,6 +219,7 @@ class AndroidFunctions
 			if (text != null) return FunkinLua.luaTrace('setActivityTitle: No text specified.');
 			PsychJNI.setActivityTitle(text);
 		});
+		#end
 	}
 }
 #end

@@ -48,6 +48,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = changeModFolder;
 		
+		#if PsychExtended_Extras
 		var option:Option = new Option('Use Experimental Cameras',
 			'If checked, game uses camFollowNew instead of camFollow.\n(If you have a any camera issue, enable or disable this)',
 			'UseNewCamSystem',
@@ -67,6 +68,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'string',
 			['0.4-0.7x', '1.0x']);
 		addOption(option);
+		#end
 
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option('Downscroll', //Name

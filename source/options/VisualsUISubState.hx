@@ -90,6 +90,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'rainbowFPS',
 			'bool');
 		addOption(option);
+		#end
 		
 		#if VIDEOS_ALLOWED
 		var option:Option = new Option('Disable Intro Video',
@@ -97,7 +98,6 @@ class VisualsUISubState extends BaseOptionsMenu
 			'DisableIntroVideo',
 			'bool');
 		addOption(option);
-		#end
 		#end
 
 		var option:Option = new Option('Note Splashes',

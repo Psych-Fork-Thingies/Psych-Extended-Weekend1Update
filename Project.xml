@@ -24,7 +24,7 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="1280" height="720" fps="" background="#000000" hardware="true" vsync="false" />
+	<window width="1280" height="720" fps="" background="#900000" hardware="true" vsync="false" />
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
@@ -61,11 +61,8 @@
 	<define name="HXVIRTUALPAD_ALLOWED" />
 	<define name="LUAVPAD_ALLOWED" />
 	<!-- <define name="FILE_DIALOG_FOR_MOBILE" /> -->
-	<define name="PsychExtended_Extras" unless="extras_disabled"/> <!-- Delete this if you want to remove Extra Features (if you are making source mod, this will be useful) -->
+	<define name="PsychExtended_Extras" unless="extras_disabled"/> <!-- Psych Extended Extra Features (if you are making source mod, you can delete this) -->
 	<define name="HIDE_CURSOR" if="mobile" /> <!-- DELETE THIS IF YOU WANT TO SEE CURSOR IN MOBILE BUILDS -->
-	<section if="32bits_disabled">
-	    <architecture name="ARM64" exclude="ARMV7" /> <!-- Only Arm64 Build Because I dont want to wait 30 minute -->
-	</section>
 	
 	<!-- PSYCH ENGINE CUSTOMIZATION -->
 	<section if="officialBuild">

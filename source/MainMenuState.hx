@@ -71,9 +71,9 @@ class MainMenuState extends HScriptStateHandler
 	    instance = this;
 	    
 	    //HScript Things
+	    #if HSCRIPT_ALLOWED
 	    var className = Type.getClassName(Type.getClass(this));
 	    
-	    #if HSCRIPT_ALLOWED
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
 		add(luaDebugGroup);
 	    

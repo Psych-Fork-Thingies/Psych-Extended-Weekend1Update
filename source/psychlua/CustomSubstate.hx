@@ -100,6 +100,7 @@ class CustomSubstate extends MusicBeatSubstate
 	
 	public static function insertLuaVpad(?pos:Int = -1)
 	{
+	    #if LUAVPAD_ALLOWED
 		if(instance != null)
 		{
 			var tagObject:FlxObject = PlayState.instance.luaVirtualPad;
@@ -111,6 +112,7 @@ class CustomSubstate extends MusicBeatSubstate
 				return true;
 			}
 		}
+		#end
 		return false;
 	}
 }

@@ -95,15 +95,16 @@ class FreeplayStateNOVA extends HScriptStateHandler
 	override function create()
 	{
 	    //HScript Things
+	    #if HSCRIPT_ALLOWED
 	    var className = Type.getClassName(Type.getClass(this));
 	    var classString:String = '${className}' + '.hx';
 	    
 	    if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
-    	//if (classString.startsWith('extras.subtates.')) classString = classString.replace('extras.subtates.', '');
 
 	    startHScriptsNamed(classString);
     	startHScriptsNamed('global.hx');
-    	//End	    
+    	#end
+    	//End
     	
 		super.create();
 

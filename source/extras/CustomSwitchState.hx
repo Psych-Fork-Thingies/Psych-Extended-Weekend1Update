@@ -15,7 +15,7 @@ class CustomSwitchState
         /*
         var File:String = 'states/' + StatePrefix + 'State' + '.hx';
         var FileName:String = StatePrefix + 'State';
-        if (StatePrefix.startsWith('MasterEditor')) File = 'states/' + StatePrefix + 'Menu' + '.hx';
+        if (StatePrefix.startsWith('MasterEditor')) File = 'states/' + StatePrefix + 'Menu' + '.hx';=
         if (StatePrefix.startsWith('MasterEditor')) FileName = StatePrefix + 'Menu';
         
       //Check
@@ -51,8 +51,10 @@ class CustomSwitchState
                 switchState(new options.NoteOffsetState());
             case 'ModsMenu':
                 switchState(new ModsMenuState());
+            #if ACHIEVEMENTS_ALLOWED
             case 'AchievementsMenu':
                 LoadingState.loadAndSwitchState(new AchievementsMenuState());
+            #end
         }
       //}
 	}

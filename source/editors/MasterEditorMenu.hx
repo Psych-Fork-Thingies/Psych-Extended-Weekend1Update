@@ -36,11 +36,13 @@ class MasterEditorMenu extends HScriptStateHandler
 
 	override function create()
 	{
+	    #if HSCRIPT_ALLOWED
 	    var className = Type.getClassName(Type.getClass(this));
 	    var classString:String = '${className}' + '.hx';
 	    if (classString.startsWith('editors.')) classString = classString.replace('editors.', '');
 	    startHScriptsNamed(classString);
     	startHScriptsNamed('global.hx');
+    	#end
     	
 		FlxG.camera.bgColor = FlxColor.BLACK;
 		#if desktop

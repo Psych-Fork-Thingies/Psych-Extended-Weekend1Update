@@ -553,8 +553,10 @@ class PlayState extends MusicBeatState
 		    {
 				if(file.toLowerCase().endsWith('.lua'))
 					new FunkinLua(folder + file);
+				#if HSCRIPT_ALLOWED
 				if(file.toLowerCase().endsWith('.hx'))
 					initHScript(folder + file);
+				#end
 			}
 
 
@@ -845,8 +847,10 @@ class PlayState extends MusicBeatState
 			{
 				if(file.toLowerCase().endsWith('.lua'))
 					new FunkinLua(folder + file);
+				#if HSCRIPT_ALLOWED
 				if(file.toLowerCase().endsWith('.hx'))
 					initHScript(folder + file);
+				#end
 			}
 
 		startCallback();
@@ -1066,13 +1070,15 @@ class PlayState extends MusicBeatState
 			if(SScript.global.exists(scriptFile))
 				doPush = false;
 				
+			#if HSCRIPT_ALLOWED
 			if(doPush) initHScript(scriptFile);
+			#end
 		}
 		#end
 	}
 
 	public function getLuaObject(tag:String, text:Bool=true):FlxSprite {
-	    #if MODS_ALLOWED
+	    #if LUA_ALLOWED
 		if(modchartSprites.exists(tag)) return modchartSprites.get(tag);
 		if(text && modchartTexts.exists(tag)) return modchartTexts.get(tag);
 		if(variables.exists(tag)) return variables.get(tag);
@@ -2389,8 +2395,10 @@ class PlayState extends MusicBeatState
 				persistentDraw = false;
 				FlxTimer.globalManager.clear();
 				FlxTween.globalManager.clear();
+				#if LUA_ALLOWED
 				modchartTimers.clear();
 				modchartTweens.clear();
+				#end
 				
 				if(GameOverSubstate.deathDelay > 0)
 				{
@@ -3698,7 +3706,7 @@ class PlayState extends MusicBeatState
 		FlxG.signals.preUpdate.remove(checkForResync);
 		super.destroy();
 		
-		#if PLAYSTATE_VIRTUALPAD_ALLOWED
+		#if LUAVPAD_ALLOWED
 		if (luaVirtualPad != null)
 			luaVirtualPad = FlxDestroyUtil.destroy(luaVirtualPad);
 		#end

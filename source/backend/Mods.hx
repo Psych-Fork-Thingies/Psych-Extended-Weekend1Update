@@ -54,6 +54,7 @@ class Mods
 	inline public static function getModDirectories():Array<String>
 	{
 		var list:Array<String> = [];
+		#if MODS_ALLOWED
 		var modsFolder:String = Paths.mods();
 		if(FileSystem.exists(modsFolder)) {
 			for (folder in FileSystem.readDirectory(modsFolder))
@@ -63,6 +64,7 @@ class Mods
 					list.push(folder);
 			}
 		}
+		#end
 		return list;
 	}
 	
@@ -120,6 +122,7 @@ class Mods
 	
 	public static function getPack(?folder:String = null):Dynamic
 	{
+	    #if MODS_ALLOWED
 		if(folder == null) folder = Mods.currentModDirectory;
 
 		var path = Paths.mods(folder + '/pack.json');
@@ -131,6 +134,7 @@ class Mods
 				trace(e);
 			}
 		}
+		#end
 		return null;
 	}
 
@@ -139,6 +143,7 @@ class Mods
 		if(!updatedOnState) updateModList();
 		var list:ModsList = {enabled: [], disabled: [], all: []};
 
+        #if MODS_ALLOWED
 		try {
 		    if (ClientPrefs.data.Modpack)
 		    {
@@ -169,11 +174,13 @@ class Mods
 		} catch(e) {
 			trace(e);
 		}
+		#end
 		return list;
 	}
 	
 	private static function updateModList()
 	{
+	    #if MODS_ALLOWED
 		// Find all that are already ordered
 		var list:Array<Array<Dynamic>> = [];
 		var added:Array<String> = [];
@@ -233,6 +240,7 @@ class Mods
 		else File.saveContent('modsList.txt', fileStr);
 		updatedOnState = true;
 		//trace('Saved modsList.txt');
+		#end
 	}
 
 	public static function loadTopMod()

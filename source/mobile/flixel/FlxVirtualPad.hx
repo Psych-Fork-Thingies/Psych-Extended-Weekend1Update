@@ -280,11 +280,12 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		final bgPath:Dynamic = Paths.image('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/bg');
 			
 		if (Frames == "modding" && FileSystem.exists(buttonPath)) button.loadGraphic(buttonPath);
+		if (Frames == "modding" && !FileSystem.exists(buttonPath)) button.loadGraphic(Paths.image('touchpad/original/${Frames.toUpperCase()}'));
 		else if (FileSystem.exists(bgPath)) button.loadGraphic(bgPath);
 		else button.loadGraphic(Paths.image('touchpad/original/bg'));
 		
 		if (Frames != "modding" && FileSystem.exists(buttonPath)) button.label.loadGraphic(buttonPath);
-		else if (!FileSystem.exists(buttonPath)) button.label.loadGraphic(Paths.image('touchpad/original/${Frames.toUpperCase()}'));
+		else if (Frames != "modding" && !FileSystem.exists(buttonPath)) button.label.loadGraphic(Paths.image('touchpad/original/${Frames.toUpperCase()}'));
 
 		button.scale.set(0.243, 0.243);
 		button.updateHitbox();
