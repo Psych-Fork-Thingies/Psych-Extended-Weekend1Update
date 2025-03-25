@@ -14,28 +14,28 @@ jobs:
             setupCommand: .\"setup/windows.bat"
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
-            system: "Windows"
+            system: Windows
           - name: Android
             os: ubuntu-24.04
             buildArgs: "android -D finalBuild -ONLY_ARM64 -final"
             setupCommand: sh ./setup/mobile.sh
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
-            system: "Android"
+            system: Android
           - name: Android-Armv7
             os: ubuntu-24.04
             buildArgs: "android -D finalBuild -ONLY_ARMV7 -final"
             setupCommand: sh ./setup/mobile.sh
             artifactName: androidBuild-Armv7
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
-            system: "Android"
+            system: Android
           - name: iOS
             os: macos-13
             buildArgs: "ios -nosign"
             setupCommand: sh ./setup/mobile.sh
             artifactName: iOSBuild
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
-            system: "iOS"
+            system: iOS
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}
