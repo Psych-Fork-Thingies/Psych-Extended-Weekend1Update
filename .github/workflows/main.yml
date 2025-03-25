@@ -44,3 +44,4 @@ jobs:
         setupCommand: ${{ matrix.setupCommand }}
         artifactName: ${{ matrix.artifactName }}
         artifactPath: ${{ matrix.artifactPath }}
+        system: ${{ matrix.system }}
