@@ -15,12 +15,14 @@ jobs:
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
           - name: Android
+            system: Android #Multiple Build Support
             os: ubuntu-24.04
             buildArgs: "android -D finalBuild -ONLY_ARM64 -final"
             setupCommand: sh ./setup/mobile.sh
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
           - name: Android-Armv7
+            system: Android #Multiple Build Support
             os: ubuntu-24.04
             buildArgs: "android -D finalBuild -ONLY_ARMV7 -final"
             setupCommand: sh ./setup/mobile.sh

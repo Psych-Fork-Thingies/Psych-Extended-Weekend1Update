@@ -6,6 +6,9 @@ on:
       name:
         required: true
         type: string
+      system:
+        required: false
+        type: string
       os:
         required: true
         type: string
@@ -40,7 +43,7 @@ jobs:
           haxe-version: ${{ env.HAXE_VERSION }}
 
       - name: Setup Android NDK
-        if: inputs.name == 'Android'
+        if: system.name == 'Android'
         id: setup-ndk
         uses: nttld/setup-ndk@main
         with:
@@ -51,7 +54,7 @@ jobs:
         run: ${{ inputs.setupCommand }}
 
       - name: Configure Android
-        if: inputs.name == 'Android' || inputs.name == 'Android-Armv7'
+        if: system.name == 'Android'
         run: |
           haxelib run lime config ANDROID_SDK $ANDROID_HOME
           haxelib run lime config ANDROID_NDK_ROOT ${{ steps.setup-ndk.outputs.ndk-path }}
