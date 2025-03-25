@@ -6,9 +6,6 @@ on:
       name:
         required: true
         type: string
-      system:
-        required: false
-        type: string
       os:
         required: true
         type: string
@@ -22,6 +19,9 @@ on:
         required: true
         type: string
       artifactPath:
+        required: true
+        type: string
+      system:
         required: true
         type: string
 
@@ -65,7 +65,7 @@ jobs:
         run: haxelib run lime build ${{ inputs.buildArgs }}
 
       - name: Make IPA
-        if: inputs.name == 'iOS'
+        if: inputs.system == 'iOS'
         run: |
           cd export/release/ios/build/Release-iphoneos
           mkdir Payload
