@@ -15,7 +15,7 @@ jobs:
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
             system: Windows
-            release: Enabled
+            release: "Enabled"
           - name: Android-Arm64
             os: ubuntu-24.04
             buildArgs: "android -ONLY_ARM64 -final"
@@ -23,7 +23,7 @@ jobs:
             artifactName: androidBuild-Arm64
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             system: Android
-            release: Enabled
+            release: "Enabled"
           - name: Android-Armv7
             os: ubuntu-24.04
             buildArgs: "android -ONLY_ARMV7 -final"
@@ -31,7 +31,7 @@ jobs:
             artifactName: androidBuild-Armv7
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             system: Android
-            release: Enabled
+            release: "Enabled"
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}
