@@ -15,7 +15,7 @@ jobs:
             artifactName: windowsBuild-x86_64
             artifactPath: export\release\windows\bin\*
             system: Windows
-            release: true
+            release: Enabled
           - name: Android-Arm64
             os: ubuntu-24.04
             buildArgs: "android -ONLY_ARM64 -final"
@@ -23,7 +23,7 @@ jobs:
             artifactName: androidBuild-Arm64
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             system: Android
-            release: true
+            release: Enabled
           - name: Android-Armv7
             os: ubuntu-24.04
             buildArgs: "android -ONLY_ARMV7 -final"
@@ -31,7 +31,7 @@ jobs:
             artifactName: androidBuild-Armv7
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             system: Android
-            release: true
+            release: Enabled
     uses: ./.github/workflows/build.yml
     with:
         name: ${{ matrix.name }}
@@ -43,31 +43,31 @@ jobs:
         system: ${{ matrix.system }}
         
   Releaser:
-    if: matrix.release == true
+    if: matrix.release == Enabled
     needs: [Android-Arm64, Android-Armv7, Windows]
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
       - name: Download Android Build
-        if: matrix.release == true
+        if: matrix.release == Enabled
         uses: actions/download-artifact@main
         with:
            name: androidBuild-VirtualPad
            path: /home/runner
 
       - name: Move Android File
-        if: matrix.release == true
+        if: matrix.release == Enabled
         run: mv /home/runner/PsychExtended-release.apk /home/runner/PsychExtended-1.0.2-PreRelease.apk
 
       - name: Download Windows Build
-        if: matrix.release == true
+        if: matrix.release == Enabled
         uses: actions/download-artifact@main
         with:
            name: windowsBuild
            path: /home/runner
 
       - name: Publish The Release
-        if: matrix.release == true
+        if: matrix.release == Enabled
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
