@@ -1,97 +1,73 @@
-name: Build + Release
+name: Release Psych Extended
+
 on: workflow_dispatch
+
 jobs:
-  Android:
-    name: Android
-    runs-on: macos-14
-    steps:
-      - name: Checkout
-        uses: actions/checkout@main
-
-      - name: Setup Haxe
-        uses: krdlab/setup-haxe@master
-        with:
-          haxe-version: 4.3.6
-
-      - name: Install Haxelib
-        run: |
-          haxelib setup ~/haxelib
-          haxelib install hmm --quiet
-          haxelib run hmm install --quiet
-      - name: Create Version Tag
-        run: echo "${{github.run_id}}" > VERSION
-
-      - name: Setup Lime
-        run: |
-          haxelib run lime config ANDROID_SDK $ANDROID_HOME
-          haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_LATEST_HOME
-          haxelib run lime config JAVA_HOME $JAVA_HOME_17_arm64
-          haxelib run lime config ANDROID_SETUP true
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-
-      - name: Compile
-        run: haxelib run lime build android -D finalBuild -final
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@main
-        with:
-          name: androidBuild
-          path: export/release/android/bin/app/build/outputs/apk/release/*.apk
-          if-no-files-found: warn
-  Windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@main
-
-      - name: Setup Haxe
-        uses: krdlab/setup-haxe@master
-        with:
-          haxe-version: 4.3.6
-
-      - name: Install Libraries
-        run: |
-          haxelib install hmm --quiet
-          haxelib run hmm install --quiet
-
-      - name: Compile
-        run: haxelib run lime build windows -D finalBuild
-
-      - name: Make zip for release
-        shell: pwsh
-        run: | 
-          cd export\release\windows\bin
-          Compress-Archive -Path . -DestinationPath windows.zip
-
-      - name: Upload Artifact
-        if: ${{ success() }}
-        uses: actions/upload-artifact@main
-        with:
-          name: windowsBuild
-          path: export\release\windows\bin\*.zip
-          if-no-files-found: error      
+  Build:
+    name: ${{ matrix.name }}
+    strategy:
+      matrix:
+        include:
+          - name: Windows
+            os: windows-2022
+            buildArgs: windows
+            setupCommand: .\"setup/windows.bat"
+            artifactName: windowsBuild-x86_64
+            artifactPath: export\release\windows\bin\*
+            system: Windows
+            release: true
+          - name: Android-Arm64
+            os: ubuntu-24.04
+            buildArgs: "android -ONLY_ARM64 -final"
+            setupCommand: sh ./setup/mobile.sh
+            artifactName: androidBuild-Arm64
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+            system: Android
+            release: true
+          - name: Android-Armv7
+            os: ubuntu-24.04
+            buildArgs: "android -ONLY_ARMV7 -final"
+            setupCommand: sh ./setup/mobile.sh
+            artifactName: androidBuild-Armv7
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+            system: Android
+            release: true
+    uses: ./.github/workflows/build.yml
+    with:
+        name: ${{ matrix.name }}
+        os: ${{ matrix.os }}
+        buildArgs: ${{ matrix.buildArgs }}
+        setupCommand: ${{ matrix.setupCommand }}
+        artifactName: ${{ matrix.artifactName }}
+        artifactPath: ${{ matrix.artifactPath }}
+        system: ${{ matrix.system }}
+        
   Releaser:
-    needs: [Android, Windows]
+    if: matrix.release == true
+    needs: [Android-Arm64, Android-Armv7, Windows]
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
       - name: Download Android Build
+        if: matrix.release == true
         uses: actions/download-artifact@main
         with:
            name: androidBuild-VirtualPad
            path: /home/runner
 
       - name: Move Android File
+        if: matrix.release == true
         run: mv /home/runner/PsychExtended-release.apk /home/runner/PsychExtended-1.0.2-PreRelease.apk
 
       - name: Download Windows Build
+        if: matrix.release == true
         uses: actions/download-artifact@main
         with:
            name: windowsBuild
            path: /home/runner
 
       - name: Publish The Release
+        if: matrix.release == true
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
