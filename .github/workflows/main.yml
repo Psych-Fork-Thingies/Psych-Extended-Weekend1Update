@@ -29,16 +29,14 @@ jobs:
             artifactName: androidBuild-Armv7
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
             system: Android
+          - name: Android-Debug
+            os: ubuntu-24.04
+            buildArgs: "android -ONLY_ARM64 -final"
+            setupCommand: sh ./setup/mobile.sh
+            artifactName: androidBuild-Debug
+            artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
+            system: Android
     uses: ./.github/workflows/build.yml
-    with:
-        name: ${{ matrix.name }}
-        os: ${{ matrix.os }}
-        buildArgs: ${{ matrix.buildArgs }}
-        setupCommand: ${{ matrix.setupCommand }}
-        artifactName: ${{ matrix.artifactName }}
-        artifactPath: ${{ matrix.artifactPath }}
-        system: ${{ matrix.system }}
-    uses: ./.github/workflows/build-debug.yml
     with:
         name: ${{ matrix.name }}
         os: ${{ matrix.os }}
