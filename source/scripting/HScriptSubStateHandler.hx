@@ -21,9 +21,6 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 	
 	#if HXVIRTUALPAD_ALLOWED
     public static var _hxvirtualpad:FlxVirtualPad;
-    
-    public static var dpadMode:StringMap<FlxDPadMode> = new StringMap<FlxDPadMode>();
-	public static var actionMode:StringMap<FlxActionMode> = new StringMap<FlxActionMode>();
 	#end
 	
 	override function create()
@@ -34,15 +31,6 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 	    #if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
 		add(luaDebugGroup);
-		#end
-	    
-	    #if HXVIRTUALPAD_ALLOWED
-		// FlxDPadModes
-		for (data in FlxDPadMode.createAll())
-			dpadMode.set(data.getName(), data);
-
-		for (data in FlxActionMode.createAll())
-			actionMode.set(data.getName(), data);
 		#end
 
         super.create();
@@ -292,7 +280,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 	}
 	
 	#if HXVIRTUALPAD_ALLOWED
-	public function addHxVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
+	public function addHxVirtualPad(DPad:String, Action:String)
 	{
 		if (_hxvirtualpad != null)
 			removeHxVirtualPad();

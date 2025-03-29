@@ -177,7 +177,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		changeSelection();
 		reloadCheckboxes();
 
-        addVirtualPad(FULL, A_B_C);
+        addVirtualPad("FULL", "A_B_C");
     	addVirtualPadCamera();
 		
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];

@@ -164,7 +164,7 @@ class HScript extends SScript
 		
 		set('addVirtualPad', function(DPad:String, Action:String, ?addToCustomSubstate:Bool = false, ?posAtCustomSubstate:Int = -1):Void
 		{
-		    PlayState.instance.makeLuaVirtualPad(PlayState.dpadMode.get(DPad), PlayState.actionMode.get(Action));
+		    PlayState.instance.makeLuaVirtualPad(DPad, Action);
 			if (addToCustomSubstate)
 			{
 				if (PlayState.instance.luaVirtualPad != null || !PlayState.instance.members.contains(PlayState.instance.luaVirtualPad))

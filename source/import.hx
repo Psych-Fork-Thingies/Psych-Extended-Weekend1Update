@@ -72,6 +72,7 @@ import mobile.backend.Data;
 import mobile.flixel.FlxHitbox;
 import mobile.flixel.FlxVirtualPad;
 import mobile.flixel.FlxNewHitbox;
+import mobile.backend.MobileData;
 
 // Android
 #if android

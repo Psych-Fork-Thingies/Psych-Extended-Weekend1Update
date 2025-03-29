@@ -190,7 +190,7 @@ class ModsMenuState extends MusicBeatState
 
 			FlxG.autoPause = false;
 			changeSelectedMod();
-			addVirtualPad(NONE, B);
+			addVirtualPad("NONE", "B");
 			return super.create();
 		}
 
@@ -320,7 +320,7 @@ class ModsMenuState extends MusicBeatState
 		bottomText.scrollFactor.set();
 		add(bottomText);
 
-		addVirtualPad(UP_DOWN, B);
+		addVirtualPad("UP_DOWN", "B");
 		_virtualpad.y -= 215; // so that you can press the buttons.
 		#if mobile
 			_virtualpad.alpha = 0.3;
@@ -606,7 +606,7 @@ class ModsMenuState extends MusicBeatState
 		super.closeSubState();
 		#if mobile
 		removeVirtualPad();
-    	addVirtualPad(UP_DOWN, B);
+    	addVirtualPad("UP_DOWN", "B");
     	_virtualpad.y -= 215; // so that you can press the buttons.
     	_virtualpad.alpha = 0.3;
 		#end

@@ -2341,7 +2341,7 @@ class PlayState extends MusicBeatState
 	// This Shit is Dead ;] -KralOyuncu
 	function addCupheadGameoverButtons() // Why not
 	{
-	    addVirtualPad(UP_DOWN, A);
+	    addVirtualPad("UP_DOWN", "A");
 		addVirtualPadCamera();
 	}
     
@@ -4197,7 +4197,7 @@ class PlayState extends MusicBeatState
 	#end
 	
 	#if LUAVPAD_ALLOWED
-	public function makeLuaVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
+	public function makeLuaVirtualPad(DPad:String, Action:String)
 	{
 	    if(members.contains(luaVirtualPad)) return;
 

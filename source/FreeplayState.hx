@@ -204,7 +204,7 @@ class FreeplayState extends HScriptStateHandler
 		changeSelection();
 		updateTexts();
 
-		addVirtualPad(FULL, A_B_C_X_Y_Z);
+		addVirtualPad("FULL", "A_B_C_X_Y_Z");
 		super.create();
 		
 		callOnScripts('onCreatePost');
@@ -217,7 +217,7 @@ class FreeplayState extends HScriptStateHandler
 		persistentUpdate = true;
 		super.closeSubState();
 		removeVirtualPad();
-		addVirtualPad(FULL, A_B_C_X_Y_Z);
+		addVirtualPad("FULL", "A_B_C_X_Y_Z");
 		callOnScripts('onCloseSubStatePost');
 	}
 

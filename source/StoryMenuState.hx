@@ -209,7 +209,7 @@ class StoryMenuState extends HScriptStateHandler
 		changeWeek();
 		changeDifficulty();
 
-        addVirtualPad(NONE, B_X_Y);
+        addVirtualPad("NONE", "B_X_Y");
 
 		super.create();
 		
@@ -221,7 +221,7 @@ class StoryMenuState extends HScriptStateHandler
 		persistentUpdate = true;
 		changeWeek();
 		removeVirtualPad();
-		addVirtualPad(NONE, B_X_Y);
+		addVirtualPad("NONE", "B_X_Y");
 		super.closeSubState();
 		callOnScripts('onCloseSubStatePost');
 	}

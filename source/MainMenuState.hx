@@ -164,7 +164,7 @@ class MainMenuState extends HScriptStateHandler
     		#end
     	#end
 
-		addVirtualPad(NONE, E);
+		addVirtualPad("NONE", "E");
 		_virtualpad.alpha = 1;
 
 		super.create();

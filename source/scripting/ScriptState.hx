@@ -31,9 +31,6 @@ class ScriptState extends MusicBeatState
     
     #if HXVIRTUALPAD_ALLOWED
     public static var _hxvirtualpad:FlxVirtualPad;
-    
-    public static var dpadMode:StringMap<FlxDPadMode> = new StringMap<FlxDPadMode>();
-	public static var actionMode:StringMap<FlxActionMode> = new StringMap<FlxActionMode>();
 	#end
 
     public function new(scriptName:String) 
@@ -77,14 +74,6 @@ class ScriptState extends MusicBeatState
     override public function create()
     {
         ScriptingVars.currentScriptableState = 'ScriptState'; //for HScript
-        #if HXVIRTUALPAD_ALLOWED
-		// FlxDPadModes
-		for (data in FlxDPadMode.createAll())
-			dpadMode.set(data.getName(), data);
-
-		for (data in FlxActionMode.createAll())
-			actionMode.set(data.getName(), data);
-		#end
 		
 		Paths.clearUnusedMemory();
 		
@@ -616,7 +605,7 @@ class ScriptState extends MusicBeatState
 	*/
 	
 	#if HXVIRTUALPAD_ALLOWED
-	public function addHxVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
+	public function addHxVirtualPad(DPad:String, Action:String)
 	{
 		if (_hxvirtualpad != null)
 			removeHxVirtualPad();

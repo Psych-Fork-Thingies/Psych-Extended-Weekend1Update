@@ -288,6 +288,8 @@ class TitleState extends HScriptStateHandler
 			if(FlxG.sound.music == null) {
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 			}
+			
+			MobileData.init();
 		}
 
 		Conductor.bpm = titleJSON.bpm;

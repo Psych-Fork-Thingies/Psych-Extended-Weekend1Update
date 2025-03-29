@@ -113,6 +113,8 @@ class WeekEditorState extends MusicBeatState
 		reloadAllShit();
 
 		FlxG.mouse.visible = true;
+		
+		addVirtualPad("UP_DOWN", "B");
 
 		super.create();
 	}
@@ -454,7 +456,7 @@ class WeekEditorState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if(FlxG.keys.justPressed.ESCAPE  #if android || FlxG.android.justReleased.BACK #end #if ios || _virtualpad.buttonB.pressed #end) {
+			if(_virtualpad.buttonB.justPressed || FlxG.keys.justPressed.ESCAPE) {
 				CustomSwitchState.switchMenus('MasterEditor');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}
@@ -640,7 +642,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 		addEditorBox();
 		changeSelection();
 
-		addVirtualPad(UP_DOWN, NONE);
+		addVirtualPad("UP_DOWN", "B");
 
 		super.create();
 	}
@@ -825,7 +827,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if(FlxG.keys.justPressed.ESCAPE  #if android || FlxG.android.justReleased.BACK #end #if ios || _virtualpad.buttonB.pressed #end) {
+			if(_virtualpad.buttonB.justPressed || FlxG.keys.justPressed.ESCAPE) {
 				CustomSwitchState.switchMenus('MasterEditor');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}

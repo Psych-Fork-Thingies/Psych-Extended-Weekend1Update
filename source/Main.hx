@@ -179,6 +179,7 @@ class Main extends Sprite
 		#end
 
 		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
+		
 
 		#if mobile
 		FlxG.scaleMode = new MobileScaleMode();

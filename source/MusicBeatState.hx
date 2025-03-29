@@ -59,7 +59,7 @@ class MusicBeatState extends FlxUIState
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
 
-	public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode) {		
+	public function addVirtualPad(?DPad:String, ?Action:String) {
 		if (_virtualpad != null)
 			removeVirtualPad();
 
@@ -113,10 +113,10 @@ class MusicBeatState extends FlxUIState
 		switch (mobilec.mode)
 		{
 			case VIRTUALPAD_RIGHT | VIRTUALPAD_LEFT | VIRTUALPAD_CUSTOM:
-				controls.setVirtualPadNOTES(mobilec.vpad, FULL, NONE);
+				controls.setVirtualPadNOTES(mobilec.vpad, "FULL", "NONE");
 				MusicBeatState.checkHitbox = false;
 			case DUO:
-				controls.setVirtualPadNOTES(mobilec.vpad, DUO, NONE);
+				controls.setVirtualPadNOTES(mobilec.vpad, "DUO", "NONE");
 				MusicBeatState.checkHitbox = false;
 			case HITBOX:
 			    if(ClientPrefs.data.hitboxmode != 'New') controls.setHitBox(mobilec.hbox);

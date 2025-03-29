@@ -83,14 +83,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - name: Download Android Build
+      - name: Download Arm64 Android Build
         uses: actions/download-artifact@main
         with:
-           name: androidBuild
+           name: androidBuild-Arm64
            path: /home/runner
 
-      - name: Move Android File
-        run: mv /home/runner/${{ env.PROJECT_NAME }}-release.apk /home/runner/${{ env.PROJECT_NAME }}-1.0.2-PreRelease.apk
+      - name: Move Arm64 Android File
+        run: mv /home/runner/${{ env.PROJECT_NAME }}-release.apk /home/runner/${{ env.PROJECT_NAME }}-1.0.2-PreRelease-(Arm64).apk
+        
+      - name: Download Armv7 Android Build
+        uses: actions/download-artifact@main
+        with:
+           name: androidBuild-Armv7
+           path: /home/runner
+
+      - name: Move Armv7 Android File
+        run: mv /home/runner/${{ env.PROJECT_NAME }}-release.apk /home/runner/${{ env.PROJECT_NAME }}-1.0.2-PreRelease-(Armv7).apk
         
       - name: Download Windows Build
         uses: actions/download-artifact@main

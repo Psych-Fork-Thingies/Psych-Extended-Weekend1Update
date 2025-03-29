@@ -83,7 +83,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		PlayState.instance.callOnScripts('onGameOverStart', []);
 		FlxG.sound.music.loadEmbedded(Paths.music(loopSoundName), true);
 		
-		addVirtualPad(NONE, A_B);
+		addVirtualPad("NONE", "A_B");
     	addVirtualPadCamera();
 
         // For Pico Mix Mods ig

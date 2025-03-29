@@ -251,7 +251,7 @@ class MainMenuStateNOVA extends HScriptStateHandler
 	    #if HIDE_CURSOR FlxG.mouse.visible = false; #end
 	    #end
         
-		addVirtualPad(UP_DOWN, A_B_E);
+		addVirtualPad("UP_DOWN", "A_B_E");
 		_virtualpad.cameras = [camHUD];
         
 		super.create();

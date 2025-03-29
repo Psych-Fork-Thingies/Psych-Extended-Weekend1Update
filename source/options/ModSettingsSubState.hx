@@ -135,7 +135,7 @@ class ModSettingsSubState extends BaseModOptionsMenu
 		bg.color = FlxColor.WHITE;
 		reloadCheckboxes();
 		
-		addVirtualPad(FULL, A_B);
+		addVirtualPad("FULL", "A_B");
 	}
 
 	override public function update(elapsed:Float)

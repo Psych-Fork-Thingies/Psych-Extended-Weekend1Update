@@ -561,8 +561,8 @@ class SubstateHScript extends SScript
 		
 		set('addVirtualPad', function(DPad:String, Action:String):Void
 		{
-		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.instance.addHxVirtualPad(ScriptSubstate.dpadMode.get(DPad), ScriptSubstate.actionMode.get(Action));
-		    else HScriptSubStateHandler.instance.addHxVirtualPad(HScriptSubStateHandler.dpadMode.get(DPad), HScriptSubStateHandler.actionMode.get(Action));
+		    if(ScriptingVars.currentScriptableState == 'ScriptSubstate') return ScriptSubstate.instance.addHxVirtualPad(DPad, Action);
+		    else HScriptSubStateHandler.instance.addHxVirtualPad(DPad, Action);
 		});
 		
 		set('addVirtualPadCamera', function():Void

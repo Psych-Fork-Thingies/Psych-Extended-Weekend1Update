@@ -68,10 +68,13 @@ class MenuCharacterEditorState extends MusicBeatState
 		txtOffsets.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
 		txtOffsets.alpha = 0.7;
 		add(txtOffsets);
+		
+		final buttonSpace:String = #if mobile 'A' #else 'Space' #end;
+		final buttonShift:String = #if mobile 'C' #else 'shift' #end;
 
 		var tipText:FlxText = new FlxText(0, 540, FlxG.width,
-			"Arrow Keys - Change Offset (Hold shift for 10x speed)
-			\nSpace - Play \"Start Press\" animation (Boyfriend Character Type)", 16);
+			'Arrow Keys - Change Offset (Hold $buttonShift for 10x speed)
+			\n$buttonSpace - Play \"Start Press\" animation (Boyfriend Character Type)', 16);
 		tipText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER);
 		tipText.scrollFactor.set();
 		add(tipText);
@@ -80,7 +83,7 @@ class MenuCharacterEditorState extends MusicBeatState
 		FlxG.mouse.visible = true;
 		updateCharTypeBox();
 
-		addVirtualPad(FULL, A_B);
+		addVirtualPad("MENU_CHARACTER", "MENU_CHARACTER");
 
 		super.create();
 	}
@@ -289,32 +292,32 @@ class MenuCharacterEditorState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if(FlxG.keys.justPressed.ESCAPE  #if android || FlxG.android.justReleased.BACK #end #if ios || _virtualpad.buttonB.pressed #end) {
+			if(_virtualpad.buttonB.justPressed || FlxG.keys.justPressed.ESCAPE) {
 				CustomSwitchState.switchMenus('MasterEditor');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}
 
 			var shiftMult:Int = 1;
-			if(FlxG.keys.pressed.SHIFT || _virtualpad.buttonA.pressed) shiftMult = 10;
+			if(_virtualpad.buttonC.pressed || FlxG.keys.pressed.SHIFT) shiftMult = 10;
 
-			if(FlxG.keys.justPressed.LEFT || _virtualpad.buttonLeft.justPressed) {
+			if(_virtualpad.buttonLeft.justPressed || FlxG.keys.justPressed.LEFT) {
 				characterFile.position[0] += shiftMult;
 				updateOffset();
 			}
-			if(FlxG.keys.justPressed.RIGHT || _virtualpad.buttonRight.justPressed) {
+			if(_virtualpad.buttonRight.justPressed || FlxG.keys.justPressed.RIGHT) {
 				characterFile.position[0] -= shiftMult;
 				updateOffset();
 			}
-			if(FlxG.keys.justPressed.UP || _virtualpad.buttonUp.justPressed) {
+			if(_virtualpad.buttonUp.justPressed || FlxG.keys.justPressed.UP) {
 				characterFile.position[1] += shiftMult;
 				updateOffset();
 			}
-			if(FlxG.keys.justPressed.DOWN || _virtualpad.buttonDown.justPressed) {
+			if(_virtualpad.buttonDown.justPressed || FlxG.keys.justPressed.DOWN) {
 				characterFile.position[1] -= shiftMult;
 				updateOffset();
 			}
 
-			if(FlxG.keys.justPressed.SPACE #if android || _virtualpad.buttonB.pressed #end && curTypeSelected == 1) {
+			if(_virtualpad.buttonA.justPressed || FlxG.keys.justPressed.SPACE && curTypeSelected == 1) {
 				grpWeekCharacters.members[curTypeSelected].animation.play('confirm', true);
 			}
 		}

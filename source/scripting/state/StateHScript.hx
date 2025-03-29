@@ -515,8 +515,8 @@ class StateHScript extends SScript
 		
 		set('addVirtualPad', function(DPad:String, Action:String):Void
 		{
-		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.instance.addHxVirtualPad(ScriptState.dpadMode.get(DPad), ScriptState.actionMode.get(Action));
-		    else return HScriptStateHandler.instance.addHxVirtualPad(HScriptStateHandler.dpadMode.get(DPad), HScriptStateHandler.actionMode.get(Action));
+		    if(ScriptingVars.currentScriptableState == 'ScriptState') return ScriptState.instance.addHxVirtualPad(DPad, Action);
+		    else return HScriptStateHandler.instance.addHxVirtualPad(DPad, Action);
 		});
 		
 		set('addVirtualPadCamera', function():Void

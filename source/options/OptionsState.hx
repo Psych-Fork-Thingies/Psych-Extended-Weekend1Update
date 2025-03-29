@@ -109,7 +109,7 @@ class OptionsState extends MusicBeatState
 		changeSelection();
 		ClientPrefs.saveSettings();
 
-		addVirtualPad(UP_DOWN, A_B_E);
+		addVirtualPad("UP_DOWN", "A_B_E");
 
 		super.create();
 	}
@@ -118,7 +118,7 @@ class OptionsState extends MusicBeatState
 		super.closeSubState();
 		ClientPrefs.saveSettings();
 		removeVirtualPad();
-		addVirtualPad(UP_DOWN, A_B_E);
+		addVirtualPad("UP_DOWN", "A_B_E");
 		if (ClientPrefs.data.VirtualPadAlpha != 0) //pls work
 		    options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 		else

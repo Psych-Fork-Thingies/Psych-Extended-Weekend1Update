@@ -90,7 +90,7 @@ class MasterEditorMenu extends HScriptStateHandler
 
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 
-		addVirtualPad(FULL, A_B);
+		addVirtualPad("FULL", "A_B");
 
 		super.create();
 		

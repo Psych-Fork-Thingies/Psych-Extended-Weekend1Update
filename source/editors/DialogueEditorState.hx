@@ -84,7 +84,10 @@ class DialogueEditorState extends MusicBeatState
 		addEditorBox();
 		FlxG.mouse.visible = true;
 
-		var addLineText:FlxText = new FlxText(10, 10, FlxG.width - 20, 'Press O to remove the current dialogue line, Press P to add another line after the current one.', 8);
+		final buttonO:String = #if mobile 'A' #else 'O' #end;
+		final buttonP:String = #if mobile 'X' #else 'P' #end;
+
+		var addLineText:FlxText = new FlxText(10, 10, FlxG.width - 20, 'Press $buttonO to remove the current dialogue line, Press $buttonP to add another line after the current one.', 8);
 		addLineText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		addLineText.scrollFactor.set();
 		add(addLineText);
@@ -105,7 +108,7 @@ class DialogueEditorState extends MusicBeatState
 		add(daText);
 		changeText();
 
-		addVirtualPad(FULL, A_B_C);
+		addVirtualPad("FULL", "A_B_X_Y");
 
 		super.create();
 	}
@@ -228,9 +231,12 @@ class DialogueEditorState extends MusicBeatState
 		character.y += character.jsonFile.position[1];
 		character.playAnim(); //Plays random animation
 		characterAnimSpeed();
+		
+		final buttonW:String = #if mobile 'Up' #else 'W' #end;
+		final buttonS:String = #if mobile 'Down' #else 'S' #end;
 
 		if(character.animation.curAnim != null && character.jsonFile.animations != null) {
-			animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press W or S to scroll';
+			animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press $buttonW or $buttonS to scroll';
 		} else {
 			animText.text = 'ERROR! NO ANIMATIONS FOUND';
 		}
@@ -277,8 +283,10 @@ class DialogueEditorState extends MusicBeatState
 				if(character.jsonFile.animations.length > 0) {
 					curAnim = 0;
 					if(character.jsonFile.animations.length > curAnim && character.jsonFile.animations[curAnim] != null) {
+					    final buttonW:String = #if mobile 'Up' #else 'W' #end;
+						final buttonS:String = #if mobile 'Down' #else 'S' #end;
 						character.playAnim(character.jsonFile.animations[curAnim].anim, daText.finishedText);
-						animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press W or S to scroll';
+						animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press $buttonW or $buttonS to scroll';
 					} else {
 						animText.text = 'ERROR! NO ANIMATIONS FOUND';
 					}
@@ -357,17 +365,17 @@ class DialogueEditorState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if(FlxG.keys.justPressed.SPACE || _virtualpad.buttonC.justPressed) {
+			if(_virtualpad.buttonY.justPressed || FlxG.keys.justPressed.SPACE) {
 				reloadText(false);
 			}
-			if(FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justReleased.BACK #end #if ios || _virtualpad.buttonB.pressed #end) {
+			if(_virtualpad.buttonB.justPressed || FlxG.keys.justPressed.ESCAPE) {
 				CustomSwitchState.switchMenus('MasterEditor');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 1);
 				transitioning = true;
 			}
 			var negaMult:Array<Int> = [1, -1];
 			var controlAnim:Array<Bool> = [FlxG.keys.justPressed.W || _virtualpad.buttonUp.justPressed, FlxG.keys.justPressed.S || _virtualpad.buttonDown.justPressed];
-			var controlText:Array<Bool> = [FlxG.keys.justPressed.D || _virtualpad.buttonLeft.justPressed, FlxG.keys.justPressed.A || _virtualpad.buttonRight.justPressed];
+ 			var controlText:Array<Bool> = [FlxG.keys.justPressed.D || _virtualpad.buttonRight.justPressed, FlxG.keys.justPressed.A || _virtualpad.buttonLeft.justPressed];
 			for (i in 0...controlAnim.length) {
 				if(controlAnim[i] && character.jsonFile.animations.length > 0) {
 					curAnim -= negaMult[i];
@@ -379,14 +387,16 @@ class DialogueEditorState extends MusicBeatState
 						character.playAnim(animToPlay, daText.finishedText);
 						dialogueFile.dialogue[curSelected].expression = animToPlay;
 					}
-					animText.text = 'Animation: ' + animToPlay + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press W or S to scroll';
+					final buttonW:String = #if mobile 'Up' #else 'W' #end;
+					final buttonS:String = #if mobile 'Down' #else 'S' #end;
+					animText.text = 'Animation: ' + animToPlay + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press $buttonW or $buttonS to scroll';
 				}
 				if(controlText[i]) {
 					changeText(negaMult[i]);
 				}
 			}
 
-			if(FlxG.keys.justPressed.O || _virtualpad.buttonA.justPressed) {
+			if(_virtualpad.buttonA.justPressed || FlxG.keys.justPressed.O) {
 				dialogueFile.dialogue.remove(dialogueFile.dialogue[curSelected]);
 				if(dialogueFile.dialogue.length < 1) //You deleted everything, dumbo!
 				{
@@ -395,7 +405,7 @@ class DialogueEditorState extends MusicBeatState
 					];
 				}
 				changeText();
-			} else if(FlxG.keys.justPressed.P #if android || _virtualpad.buttonB.justPressed #end) {
+			} else if(_virtualpad.buttonX.justPressed || FlxG.keys.justPressed.P) {
 				dialogueFile.dialogue.insert(curSelected + 1, copyDefaultLine());
 				changeText(1);
 			}
@@ -437,13 +447,18 @@ class DialogueEditorState extends MusicBeatState
 				}
 			}
 			character.playAnim(character.jsonFile.animations[curAnim].anim, daText.finishedText);
-			animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + leLength + ') - Press W or S to scroll';
+			final buttonW:String = #if mobile 'Up' #else 'W' #end;
+			final buttonS:String = #if mobile 'Down' #else 'S' #end;
+			animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + leLength + ') - Press $buttonW or $buttonS to scroll';
 		} else {
 			animText.text = 'ERROR! NO ANIMATIONS FOUND';
 		}
 		characterAnimSpeed();
 
-		selectedText.text = 'Line: (' + (curSelected + 1) + ' / ' + dialogueFile.dialogue.length + ') - Press A or D to scroll';
+		final buttonA:String = #if mobile 'Left' #else 'A' #end;
+		final buttonD:String = #if mobile 'Right' #else 'D' #end;
+
+		selectedText.text = 'Line: (' + (curSelected + 1) + ' / ' + dialogueFile.dialogue.length + ') - Press $buttonA or $buttonD to scroll';
 	}
 
 	function characterAnimSpeed() {

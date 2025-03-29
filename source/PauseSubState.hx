@@ -155,9 +155,9 @@ class PauseSubState extends HScriptSubStateHandler
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
         if (PlayState.chartingMode)
-    	    addVirtualPad(FULL, A);
+    	    addVirtualPad("FULL", "A");
     	else
-    	    addVirtualPad(FULL, A);
+    	    addVirtualPad("FULL", "A");
     	addVirtualPadCamera();
     	
 		super.create();
@@ -391,7 +391,7 @@ class PauseSubState extends HScriptSubStateHandler
 		persistentUpdate = true;
 		super.closeSubState();
 		removeVirtualPad();
-		addVirtualPad(FULL, A);
+		addVirtualPad("FULL", "A");
 		addVirtualPadCamera();
 	}
 

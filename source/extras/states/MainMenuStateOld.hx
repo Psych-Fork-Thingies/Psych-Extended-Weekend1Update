@@ -185,9 +185,9 @@ class MainMenuStateOld extends HScriptStateHandler
     	#end
 
     	if (ClientPrefs.data.MainMenuStyle == '0.6.3')
-    	    addVirtualPad(UP_DOWN, A_B_E);
+    	    addVirtualPad("UP_DOWN", "A_B_E");
     	else
-    	    addVirtualPad(UP_DOWN, A_B_E_C_M);
+    	    addVirtualPad("UP_DOWN", "A_B_E_C_M");
 
 		super.create();
 		

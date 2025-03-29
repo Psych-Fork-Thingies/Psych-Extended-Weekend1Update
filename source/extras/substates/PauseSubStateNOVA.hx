@@ -364,11 +364,11 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 		
 		/* nope
 		if (PlayState.chartingMode)
-			addVirtualPad(PAUSE, A);
+			addVirtualPad("PAUSE", "A");
 		else
-			addVirtualPad(UP_DOWN, A);
+			addVirtualPad("UP_DOWN", "A");
 		*/
-		addVirtualPad(PAUSE, A);
+		addVirtualPad("PAUSE", "A");
 		addVirtualPadCamera();
 		
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
@@ -832,7 +832,7 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 		persistentUpdate = true;
 		super.closeSubState();
 		removeVirtualPad();
-		addVirtualPad(PAUSE, A);
+		addVirtualPad("PAUSE", "A");
 		addVirtualPadCamera();
 	}
 }

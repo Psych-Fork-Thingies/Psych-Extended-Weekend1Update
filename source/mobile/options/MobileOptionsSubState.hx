@@ -247,6 +247,6 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	function resetVirtualPad()
 	{
 	    removeVirtualPad();
-	    addVirtualPad(FULL, A_B_C);
+	    addVirtualPad("FULL", "A_B_C");
 	}
 }
