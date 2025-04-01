@@ -147,7 +147,7 @@ class CharacterEditorState extends MusicBeatState
 
 		final buttonEQ:String = #if mobile 'X/Y' #else 'E/Q' #end;
  		final buttonR:String = #if mobile 'Z' #else 'R' #end;
- 		final buttonWS:String = #if mobile 'V/D'#else: 'W/S' #end;
+ 		final buttonWS:String = #if mobile 'V/D'#else 'W/S' #end;
  		final buttonT:String = #if mobile 'A' #else 'T' #end;
  		final buttonShift:String = #if mobile 'Shift' #else 'C' #end;
  
