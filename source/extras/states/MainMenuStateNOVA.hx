@@ -23,7 +23,7 @@ class MainMenuStateNOVA extends HScriptStateHandler
     public static var instance:MainMenuStateNOVA;
 	public static var novaFlareEngineDataVersion:Float = 1.8;
 	public static var novaFlareEngineVersion:String = '1.1.5 HOTFIX 2'; //1.1.5 -HOTFIX -2 looks too bad
-	public static var curSelected:Int = 0;
+	public var curSelected:Int = 0;
     public static var saveCurSelected:Int = 0;
     
 	var menuItems:FlxTypedGroup<FlxSprite>;

@@ -20,7 +20,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
 	#if HXVIRTUALPAD_ALLOWED
-    public static var _hxvirtualpad:FlxVirtualPad;
+    public var _hxvirtualpad:FlxVirtualPad;
 	#end
 	
 	override function create()
@@ -313,7 +313,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 	
 	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
 		var buttonName = "button" + buttonPostfix;
-		var button = Reflect.getProperty(HScriptStateHandler._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
+		var button = Reflect.getProperty(HScriptSubStateHandler.instance._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
 		return Reflect.getProperty(button, type);
 		return false;
 	}

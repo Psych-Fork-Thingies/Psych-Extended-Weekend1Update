@@ -21,7 +21,7 @@ import lime.utils.Assets;
 
 using StringTools;
 
-class CreditsState extends MusicBeatState
+class CreditsState extends HScriptStateHandler
 {
 	var curSelected:Int = -1;
 
@@ -34,6 +34,40 @@ class CreditsState extends MusicBeatState
 	var intendedColor:Int;
 	var colorTween:FlxTween;
 	var descBox:AttachedSprite;
+	
+	//You can Change It with HScript
+	var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
+		['Psych Extended'],
+		['KralOyuncu 2010X',	 'KralOyuncuV3',	'Creator of Psych Extended\n(Only Person Working on Psych Extended for now)',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
+		[''],
+		['Needed Credits'],
+		['MobilePorting',			 'MobilePorting',               "I'm using their Codes",                           'https://github.com/MobilePorting',		'FFE7C0'],
+		['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(I used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
+		[''],
+		['Psych Engine Team'],
+		['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],
+		['RiverOaken',			'river',			'Main Artist/Animator of Psych Engine',							'https://twitter.com/RiverOaken',		'B42F71'],
+		['shubs',				'shubs',			'Additional Programmer of Psych Engine',						'https://twitter.com/yoshubs',			'5E99DF'],
+		[''],
+		['Former Engine Members'],
+		['bb-panzu',			'bb',				'Ex-Programmer of Psych Engine',								'https://twitter.com/bbsub3',			'3E813A'],
+		[''],
+		['Engine Contributors'],
+		['iFlicky',				'flicky',			'Composer of Psync and Tea Time\nMade the Dialogue Sounds',		'https://twitter.com/flicky_i',			'9E29CF'],
+		['SqirraRNG',			'sqirra',			'Crash Handler and Base code for\nChart Editor\'s Waveform',	'https://twitter.com/gedehari',			'E1843A'],
+		['EliteMasterEric',		'mastereric',		'Runtime Shaders support',										'https://twitter.com/EliteMasterEric',	'FFBD40'],
+		['PolybiusProxy',		'proxy',			'.MP4 Video Loader Library (hxCodec)',							'https://twitter.com/polybiusproxy',	'DCD294'],
+		['KadeDev',				'kade',				'Fixed some cool stuff on Chart Editor\nand other PRs',			'https://twitter.com/kade0912',			'64A250'],
+		['Keoiki',				'keoiki',			'Note Splash Animations',										'https://twitter.com/Keoiki_',			'D2D2D2'],
+		['Nebula the Zorua',	'nebula',			'LUA JIT Fork and some Lua reworks',							'https://twitter.com/Nebula_Zorua',		'7D40B2'],
+		['Smokey',				'smokey',			'Sprite Atlas Support',											'https://twitter.com/Smokey_5_',		'483D92'],
+		[''],
+		["Funkin' Crew"],
+		['ninjamuffin99',		'ninjamuffin99',	"Programmer of Friday Night Funkin'",							'https://twitter.com/ninja_muffin99',	'CF2D2D'],
+		['PhantomArcade',		'phantomarcade',	"Animator of Friday Night Funkin'",								'https://twitter.com/PhantomArcade3K',	'FADC45'],
+		['evilsk8r',			'evilsk8r',			"Artist of Friday Night Funkin'",								'https://twitter.com/evilsk8r',			'5ABD4B'],
+		['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",								'https://twitter.com/kawaisprite',		'378FC7']
+	];
 
 	var offsetThing:Float = -75;
 
@@ -51,6 +85,18 @@ class CreditsState extends MusicBeatState
 		
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
+		
+		//HScript Things
+	    #if HSCRIPT_ALLOWED
+	    var className = Type.getClassName(Type.getClass(this));
+	    
+		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		add(luaDebugGroup);
+	    
+	    startHScriptsNamed('${className}' + '.hx');
+    	startHScriptsNamed('global.hx');
+    	#end
+    	//End
 
 		#if MODS_ALLOWED
 		for (mod in Mods.parseList().enabled) pushModCreditsToList(mod);
@@ -70,40 +116,6 @@ class CreditsState extends MusicBeatState
 			['beihu',		                'beihu',		            'Main Programmer',							'https://b23.tv/LVj0JVk',	                'FFC0CB'],
 			[''],
 		*/
-
-		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
-			['Psych Extended'],
-			['AloneDark',	 'AloneDark',	'Owner of Psych Extended',					                        'https://youtube.com/@28alonedark53',	    '444444'],
-			['KralOyuncu 2010X',	 'KralOyuncuV3',	'Porter of Psych Engine 0.6.3 Mobile\n(0.6.3 Libs and Thanks For Experimental SScript Support)',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
-			[''],
-			['Needed Credits'],
-			['MobilePorting',			 'MobilePorting',               'KralOyuncu using their Codes',                           'https://github.com/MobilePorting',		'FFE7C0'],
-			['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(We used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
-			[''],
-			['Psych Engine Team'],
-			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],
-			['RiverOaken',			'river',			'Main Artist/Animator of Psych Engine',							'https://twitter.com/RiverOaken',		'B42F71'],
-			['shubs',				'shubs',			'Additional Programmer of Psych Engine',						'https://twitter.com/yoshubs',			'5E99DF'],
-			[''],
-			['Former Engine Members'],
-			['bb-panzu',			'bb',				'Ex-Programmer of Psych Engine',								'https://twitter.com/bbsub3',			'3E813A'],
-			[''],
-			['Engine Contributors'],
-			['iFlicky',				'flicky',			'Composer of Psync and Tea Time\nMade the Dialogue Sounds',		'https://twitter.com/flicky_i',			'9E29CF'],
-			['SqirraRNG',			'sqirra',			'Crash Handler and Base code for\nChart Editor\'s Waveform',	'https://twitter.com/gedehari',			'E1843A'],
-			['EliteMasterEric',		'mastereric',		'Runtime Shaders support',										'https://twitter.com/EliteMasterEric',	'FFBD40'],
-			['PolybiusProxy',		'proxy',			'.MP4 Video Loader Library (hxCodec)',							'https://twitter.com/polybiusproxy',	'DCD294'],
-			['KadeDev',				'kade',				'Fixed some cool stuff on Chart Editor\nand other PRs',			'https://twitter.com/kade0912',			'64A250'],
-			['Keoiki',				'keoiki',			'Note Splash Animations',										'https://twitter.com/Keoiki_',			'D2D2D2'],
-			['Nebula the Zorua',	'nebula',			'LUA JIT Fork and some Lua reworks',							'https://twitter.com/Nebula_Zorua',		'7D40B2'],
-			['Smokey',				'smokey',			'Sprite Atlas Support',											'https://twitter.com/Smokey_5_',		'483D92'],
-			[''],
-			["Funkin' Crew"],
-			['ninjamuffin99',		'ninjamuffin99',	"Programmer of Friday Night Funkin'",							'https://twitter.com/ninja_muffin99',	'CF2D2D'],
-			['PhantomArcade',		'phantomarcade',	"Animator of Friday Night Funkin'",								'https://twitter.com/PhantomArcade3K',	'FADC45'],
-			['evilsk8r',			'evilsk8r',			"Artist of Friday Night Funkin'",								'https://twitter.com/evilsk8r',			'5ABD4B'],
-			['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",								'https://twitter.com/kawaisprite',		'378FC7']
-		];
 		
 		for(i in defaultList){
 			creditsStuff.push(i);
@@ -161,6 +173,9 @@ class CreditsState extends MusicBeatState
 		changeSelection();
 		
         addVirtualPad("UP_DOWN", "A_B");
+        
+        callOnScripts('onCreatePost');
+        
 		super.create();
 	}
 
@@ -172,6 +187,8 @@ class CreditsState extends MusicBeatState
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
+		
+		callOnScripts('onUpdate');
 
 		if(!quitting)
 		{
@@ -239,6 +256,8 @@ class CreditsState extends MusicBeatState
 			}
 		}
 		super.update(elapsed);
+		
+		callOnScripts('onUpdatePost');
 	}
 
 	var moveTween:FlxTween = null;

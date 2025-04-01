@@ -12,7 +12,7 @@ haxelib dev hscript /root/haxelib/hscript/2,4,0
 haxelib dev hxCodec /root/haxelib/hxCodec/git
 haxelib dev hxcpp /root/haxelib/hxcpp/git
 haxelib dev lime /root/haxelib/lime/git
-haxelib dev openfl /root/haxelib/openfl/git
+haxelib dev openfl /root/haxelib/openfl/9,3,3
 haxelib dev flxanimate /root/haxelib/flxanimate/git
 haxelib dev funkin.vis /root/haxelib/funkin,vis/git
 haxelib dev grig.audio /root/haxelib/grig,audio/git

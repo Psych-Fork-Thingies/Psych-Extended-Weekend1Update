@@ -152,6 +152,30 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		'hitboxhint',
 		'bool');
 	addOption(option);
+	
+	var option:Option = new Option('Custom VPad Size Multipler', //KralOyuncu was here again
+		"Changes Custom VPad's size",
+		'vpadsize',
+		'float');
+	option.scrollSpeed = 1.6;
+	option.minValue = 1;
+	option.maxValue = 2;
+	option.changeValue = 0.1;
+	option.decimals = 1;
+	option.displayFormat = "%vX";
+	addOption(option);
+	
+	var option:Option = new Option('Extra VPad Size Multipler', //KralOyuncu was here again
+		"Changes Extra VPad's size",
+		'extravpadsize',
+		'float');
+	option.scrollSpeed = 1.6;
+	option.minValue = 1;
+	option.maxValue = 2;
+	option.changeValue = 0.1;
+	option.decimals = 1;
+	option.displayFormat = "%vX";
+	addOption(option);
 		
 	var option:Option = new Option('Hitbox Opacity', //mariomaster was here again
 		'Changes hitbox opacity -omg',

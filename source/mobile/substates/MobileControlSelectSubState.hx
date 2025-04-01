@@ -273,28 +273,28 @@ class MobileControlSelectSubState extends MusicBeatSubstate
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend");
+                vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend", false, true);
                 add(vpad);
                 loadcustom(false);
             case 'Pad-Left':
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad("FULL", "controlExtend");
+                vpad = new FlxVirtualPad("FULL", "controlExtend", false, true);
                 add(vpad);
                 loadcustom(false);
             case 'Pad-Custom':
                 reset.visible = true;
                 keyboard.visible = false;
                 remove(vpad);
-                vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend");
+                vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend", true, true);
                 add(vpad);
                 loadcustom(true);
             case 'Duo':
                 reset.visible = false;
                 keyboard.visible = true;
                 remove(vpad);
-                vpad = new FlxVirtualPad("DUO", "controlExtend");
+                vpad = new FlxVirtualPad("DUO", "controlExtend", false, true);
                 add(vpad);
                 loadcustom(false);
             case 'Hitbox':

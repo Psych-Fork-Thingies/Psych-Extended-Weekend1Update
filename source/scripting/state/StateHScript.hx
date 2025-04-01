@@ -85,6 +85,7 @@ class StateHScript extends SScript
 	//Window Shit end
 
 	public var origin:String;
+	
 	override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null)
 	{
 		if (file == null)
@@ -93,6 +94,9 @@ class StateHScript extends SScript
 		this.varsToBring = varsToBring;
 	
 		super(file, false, false);
+		var customInterp:CustomInterp = new CustomInterp();
+ 		customInterp.parentInstance = FlxG.state;
+ 		this.interp = customInterp;
 
 		#if LUA_ALLOWED
 		parentLua = parent;
@@ -534,7 +538,7 @@ class StateHScript extends SScript
 		set('getSpesificVPadButton', function(buttonPostfix:String):Dynamic
 		{
 		    var buttonName = "button" + buttonPostfix;
-    		return Reflect.getProperty(HScriptStateHandler._hxvirtualpad, buttonName); //This Needs to be work
+    		return Reflect.getProperty(HScriptStateHandler.instance._hxvirtualpad, buttonName); //This Needs to be work
     		return null;
 		});
 		#end

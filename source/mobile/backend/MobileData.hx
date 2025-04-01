@@ -24,7 +24,7 @@ class MobileData
 		readDirectory(Paths.getPreloadPath('mobile/DPadModes'), dpadModes);
 		readDirectory(Paths.getPreloadPath('mobile/ActionModes'), actionModes);
 		#if MODS_ALLOWED
-		for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/'))
+		for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/')) //MobilePorting removed StorageTypes from Their Ports, I think I can use the this folder without any file issues between ports
 		{
 			readDirectory(Path.join([folder, 'DPadModes']), dpadModes);
 			readDirectory(Path.join([folder, 'ActionModes']), actionModes);

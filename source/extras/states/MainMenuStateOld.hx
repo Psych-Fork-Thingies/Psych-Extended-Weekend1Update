@@ -25,7 +25,7 @@ using StringTools;
 
 class MainMenuStateOld extends HScriptStateHandler
 {
-	public static var curSelected:Int = 0;
+	public var curSelected:Int = 0;
 	
 	public static var instance:MainMenuStateOld;
 

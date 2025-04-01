@@ -20,20 +20,20 @@ class HScriptStateHandler extends MusicBeatState
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
 	#if HXVIRTUALPAD_ALLOWED
-    public static var _hxvirtualpad:FlxVirtualPad;
+    public var _hxvirtualpad:FlxVirtualPad;
 	#end
 	
 	override function create()
 	{
 	    ScriptingVars.currentScriptableState = 'HScriptStateHandler'; //for HScript
 	    instance = this;
-	    
-	    #if (LUA_ALLOWED || HSCRIPT_ALLOWED)
+
+        super.create();
+        
+        #if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
 		add(luaDebugGroup);
 		#end
-
-        super.create();
         
 		callOnScripts('onCreatePost');
 	}
@@ -311,7 +311,7 @@ class HScriptStateHandler extends MusicBeatState
 	
 	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
 		var buttonName = "button" + buttonPostfix;
-		var button = Reflect.getProperty(HScriptStateHandler._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
+		var button = Reflect.getProperty(HScriptStateHandler.instance._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
 		return Reflect.getProperty(button, type);
 		return false;
 	}

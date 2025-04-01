@@ -17,7 +17,7 @@ haxelib install hscript 2.4.0 --global
 haxelib git hxCodec https://github.com/MobilePorting/hxCodec-0.6.3 --global
 haxelib git hxcpp https://github.com/mcagabe19-stuff/hxcpp --global
 haxelib git lime https://github.com/MobilePorting/lime --global
-haxelib git openfl https://github.com/MobilePorting/openfl 9.3.3 --global
+haxelib install openfl 9.3.3 --global
 haxelib git flxanimate https://github.com/ShadowMario/flxanimate.git dev --global
 haxelib git funkin.vis https://github.com/beihu235/funkVis-FrequencyFixed main --global
 haxelib git grig.audio https://gitlab.com/haxe-grig/grig.audio.git 57f5d47f2533fd0c3dcd025a86cb86c0dfa0b6d2 --global
@@ -32,7 +32,7 @@ haxelib dev hscript /root/haxelib/hscript/2,4,0
 haxelib dev hxCodec /root/haxelib/hxCodec/custom #git
 haxelib dev hxcpp /root/haxelib/hxcpp/git
 haxelib dev lime /root/haxelib/lime/git
-haxelib dev openfl /root/haxelib/openfl/git
+haxelib dev openfl /root/haxelib/openfl/9,3,3
 haxelib dev flxanimate /root/haxelib/flxanimate/git
 haxelib dev funkin.vis /root/haxelib/funkin,vis/git
 haxelib dev grig.audio /root/haxelib/grig,audio/git

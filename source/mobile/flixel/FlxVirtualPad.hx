@@ -63,7 +63,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	 * @param   ActionMode   The action buttons mode. `A_B_C` for example.
 	 */
 
-	public function new(DPad:String, Action:String) {
+	public function new(DPad:String, Action:String, ?Sizeable:Bool = false, ?ExtraSizeable:Bool = false) {
 		super();
 		
 		dPad = new FlxSpriteGroup();
@@ -80,7 +80,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 			for (buttonData in MobileData.dpadModes.get(DPad).buttons)
 			{
 				Reflect.setField(this, buttonData.button,
-					createMobileButton(buttonData.x, buttonData.y, buttonData.graphic, CoolUtil.colorFromString(buttonData.color)));
+					createMobileButton(buttonData.x, buttonData.y, buttonData.graphic, CoolUtil.colorFromString(buttonData.color), Sizeable));
 				dPad.add(add(Reflect.field(this, buttonData.button)));
 			}
 		}
@@ -100,23 +100,23 @@ class FlxVirtualPad extends FlxSpriteGroup {
 
 		switch (Action){			
 			case "controlExtend":
-			    if (Type.getClass(FlxG.state) != PlayState || Type.getClass(FlxG.state) == PlayState && ClientPrefs.data.extraKeys >= 1) actions.add(add(buttonExtra1 = createMobileButton(FlxG.width * 0.5 - 44 * 3, FlxG.height * 0.5 - 127 * 0.5, "f", 0xFF0000)));
-				if (Type.getClass(FlxG.state) != PlayState || Type.getClass(FlxG.state) == PlayState && ClientPrefs.data.extraKeys >= 2) actions.add(add(buttonExtra2 = createMobileButton(FlxG.width * 0.5, FlxG.height * 0.5 - 127 * 0.5, "g", 0xFFFF00)));
-				if (Type.getClass(FlxG.state) != PlayState || Type.getClass(FlxG.state) == PlayState && ClientPrefs.data.extraKeys >= 3) actions.add(add(buttonExtra3 = createMobileButton(FlxG.width * 0.5, FlxG.height * 0.5 - 127 * 0.5, "x", 0x99062D)));
-				if (Type.getClass(FlxG.state) != PlayState || Type.getClass(FlxG.state) == PlayState && ClientPrefs.data.extraKeys >= 4) actions.add(add(buttonExtra4 = createMobileButton(FlxG.width * 0.5, FlxG.height * 0.5 - 127 * 0.5, "y", 0x4A35B9)));
+			    if (Type.getClass(FlxG.state) != PlayState || Type.getClass(FlxG.state) == PlayState && ClientPrefs.data.extraKeys >= 1) actions.add(add(buttonExtra1 = createMobileButton(FlxG.width * 0.5 - 44 * 3, FlxG.height * 0.5 - 127 * 0.5, "f", 0xFF0000, false, ExtraSizeable)));
+				if (Type.getClass(FlxG.state) != PlayState || Type.getClass(FlxG.state) == PlayState && ClientPrefs.data.extraKeys >= 2) actions.add(add(buttonExtra2 = createMobileButton(FlxG.width * 0.5, FlxG.height * 0.5 - 127 * 0.5, "g", 0xFFFF00, false, ExtraSizeable)));
+				if (Type.getClass(FlxG.state) != PlayState || Type.getClass(FlxG.state) == PlayState && ClientPrefs.data.extraKeys >= 3) actions.add(add(buttonExtra3 = createMobileButton(FlxG.width * 0.5, FlxG.height * 0.5 - 127 * 0.5, "x", 0x99062D, false, ExtraSizeable)));
+				if (Type.getClass(FlxG.state) != PlayState || Type.getClass(FlxG.state) == PlayState && ClientPrefs.data.extraKeys >= 4) actions.add(add(buttonExtra4 = createMobileButton(FlxG.width * 0.5, FlxG.height * 0.5 - 127 * 0.5, "y", 0x4A35B9, false, ExtraSizeable)));
 			case "NONE":
 		}
 	}
 	
-	public function createMobileButton(x:Float, y:Float, Frames:String, ColorS:Int):Dynamic
+	public function createMobileButton(x:Float, y:Float, Frames:String, ColorS:Int, ?Sizeable:Bool = false, ?ExtraSizeable:Bool = false):Dynamic
 	{
 	    if (ClientPrefs.data.virtualpadType == 'TouchPad')
-	        return createTouchButton(x, y, Frames, ColorS);
+	        return createTouchButton(x, y, Frames, ColorS, Sizeable, ExtraSizeable);
 	    else
-	        return createVirtualButton(x, y, Frames, ColorS);
+	        return createVirtualButton(x, y, Frames, ColorS, Sizeable, ExtraSizeable);
 	}
 	
-	public function createTouchButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):VirtualButton {
+	public function createTouchButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF, ?Sizeable = false, ?ExtraSizeable:Bool = false):VirtualButton {
 	    var button = new VirtualButton(x, y);
 		button.label = new FlxSprite();		
 		final buttonPath:Dynamic = Paths.image('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/${Frames.toUpperCase()}');
@@ -130,7 +130,9 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		if (Frames != "modding" && FileSystem.exists(buttonPath)) button.label.loadGraphic(buttonPath);
 		else if (Frames != "modding" && !FileSystem.exists(buttonPath)) button.label.loadGraphic(Paths.image('touchpad/original/${Frames.toUpperCase()}'));
 
-		button.scale.set(0.243, 0.243);
+		if (Sizeable) button.scale.set(0.243 * ClientPrefs.data.vpadsize, 0.243 * ClientPrefs.data.vpadsize);
+		else if (ExtraSizeable) button.scale.set(0.243 * ClientPrefs.data.extravpadsize, 0.243 * ClientPrefs.data.extravpadsize);
+		else button.scale.set(0.243, 0.243);
 		button.updateHitbox();
 		button.updateLabelPosition();
 
@@ -151,7 +153,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 		return button;
 	}
 	
-	public function createVirtualButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF):VirtualButton {
+	public function createVirtualButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF, ?Sizeable = false, ?ExtraSizeable:Bool = false):VirtualButton {
 	    var frames:FlxGraphic;
 	    
         final path:String = 'shared:assets/shared/images/virtualpad/' + ClientPrefs.data.VirtualPadSkin + '/$Frames.png';
@@ -168,6 +170,8 @@ class FlxVirtualPad extends FlxSpriteGroup {
         button.frames = FlxTileFrames.fromGraphic(frames, FlxPoint.get(Std.int(frames.width / 2), frames.height));
         
         //button.scale.set(0.243, 0.243);
+        if (Sizeable) button.scale.set(button.scale.x * ClientPrefs.data.vpadsize, button.scale.y * ClientPrefs.data.vpadsize); //Pls Work
+        if (ExtraSizeable) button.scale.set(button.scale.x * ClientPrefs.data.extravpadsize, button.scale.y * ClientPrefs.data.extravpadsize); //Pls Work
         button.updateHitbox();
         button.updateLabelPosition();
     

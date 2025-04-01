@@ -39,7 +39,7 @@ class MainMenuState extends HScriptStateHandler
 	public static var psychEngineVersion:String = '0.6.3'; // This is also used for Discord RPC
 	public static var realPsychEngineVersion:String = '0.6.4b';
 	public static var psychExtendedVersion:String = '1.0.2';
-	public static var curSelected:Int = 0;
+	public var curSelected:Int = 0;
 	public static var curColumn:MainMenuColumn = CENTER;
 
     var versionShit:FlxText;
@@ -69,19 +69,7 @@ class MainMenuState extends HScriptStateHandler
 	override function create()
 	{
 	    instance = this;
-	    
-	    //HScript Things
-	    #if HSCRIPT_ALLOWED
-	    var className = Type.getClassName(Type.getClass(this));
-	    
-		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
-		add(luaDebugGroup);
-	    
-	    startHScriptsNamed('${className}' + '.hx');
-    	startHScriptsNamed('global.hx');
-    	#end
-    	//End
-	    
+
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
 		#end
@@ -120,6 +108,18 @@ class MainMenuState extends HScriptStateHandler
 		magenta.visible = false;
 		magenta.color = 0xFFfd719b;
 		add(magenta);
+
+		//HScript Things
+	    #if HSCRIPT_ALLOWED
+	    var className = Type.getClassName(Type.getClass(this));
+
+		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		add(luaDebugGroup);
+
+	    startHScriptsNamed('${className}' + '.hx');
+    	startHScriptsNamed('global.hx');
+    	#end
+    	//End
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
