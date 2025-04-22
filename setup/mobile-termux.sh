@@ -16,7 +16,7 @@ haxelib git SScript https://github.com/PsychExtendedThings/SScript --global
 haxelib git hscript-iris https://github.com/PsychExtendedThings/hscript-iris --global
 haxelib install hscript 2.4.0 --global
 haxelib git hxCodec https://github.com/MobilePorting/hxCodec-0.6.3 --global
-haxelib git hxcpp https://github.com/mcagabe19-stuff/hxcpp --global
+haxelib git hxcpp https://github.com/MobilePorting/hxcpp --global
 haxelib git lime https://github.com/MobilePorting/lime --global
 haxelib install openfl 9.3.3 --global
 haxelib git flxanimate https://github.com/ShadowMario/flxanimate.git dev --global
