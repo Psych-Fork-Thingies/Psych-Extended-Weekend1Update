@@ -9,10 +9,11 @@ echo Installing dependencies...
 echo This might take a few moments depending on your internet speed.
 haxelib git linc_luajit https://github.com/PsychExtendedThings/linc_luajit --global
 haxelib install tjson --global
-haxelib install flixel 5.5.0 --global
+haxelib git flixel https://github.com/MobilePorting/flixel 5.6.1 --global
 haxelib install flixel-addons 3.2.2 --global
 haxelib install flixel-ui 2.4.0 --global
 haxelib git SScript https://github.com/PsychExtendedThings/SScript --global
+haxelib git hscript-iris https://github.com/PsychExtendedThings/hscript-iris --global
 haxelib install hscript 2.4.0 --global
 haxelib git hxCodec https://github.com/MobilePorting/hxCodec-0.6.3 --global
 haxelib git hxcpp https://github.com/mcagabe19-stuff/hxcpp --global
@@ -28,6 +29,7 @@ haxelib dev flixel /root/haxelib/flixel/git
 haxelib dev flixel-addons /root/haxelib/flixel-addons/3,2,2
 haxelib dev flixel-ui /root/haxelib/flixel-ui/2,4,0
 haxelib dev SScript /root/haxelib/SScript/git
+haxelib dev hscript-iris /root/haxelib/hscript-iris/git
 haxelib dev hscript /root/haxelib/hscript/2,4,0
 haxelib dev hxCodec /root/haxelib/hxCodec/custom #git
 haxelib dev hxcpp /root/haxelib/hxcpp/git

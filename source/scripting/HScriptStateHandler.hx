@@ -1,60 +1,77 @@
 package scripting;
 
-#if SScript
-import tea.SScript;
-#end
+#if SCRIPTING_ALLOWED
+import scripting.state.HScript.HScriptInfos;
+import crowplexus.iris.Iris;
+import crowplexus.hscript.Expr.Error as IrisError;
+import crowplexus.hscript.Printer;
+import scripting.state.HScript;
 
 class HScriptStateHandler extends MusicBeatState
 {
-	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-    private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
-    #end
-    
-    public static var instance:HScriptStateHandler;
-    
-    #if HSCRIPT_ALLOWED
-	public var hscriptArray:Array<StateHScript> = [];
-	public var instancesExclude:Array<String> = [];
-	#end
-	
+	private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
+	public static var instance:HScriptStateHandler;
+	public var hscriptArray:Array<HScript> = [];
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
-	
+
 	#if HXVIRTUALPAD_ALLOWED
-    public var _hxvirtualpad:FlxVirtualPad;
+	public var _hxvirtualpad:FlxVirtualPad;
 	#end
-	
+
 	override function create()
 	{
-	    ScriptingVars.currentScriptableState = 'HScriptStateHandler'; //for HScript
-	    instance = this;
+		instance = this;
+		super.create();
 
-        super.create();
-        
-        #if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
 		add(luaDebugGroup);
-		#end
-        
-		callOnScripts('onCreatePost');
+
+		Iris.warn = function(x, ?pos:haxe.PosInfos) {
+			Iris.logLevel(WARN, x, pos);
+			var newPos:HScriptInfos = cast pos;
+			if (newPos.showLine == null) newPos.showLine = true;
+			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '')  + '${newPos.fileName}:';
+			if (newPos.showLine == true) {
+				msgInfo += '${newPos.lineNumber}:';
+			}
+			msgInfo += ' $x';
+			HScriptStateHandler.instance.addTextToDebug('WARNING: $msgInfo', FlxColor.YELLOW);
+		}
+		Iris.error = function(x, ?pos:haxe.PosInfos) {
+			Iris.logLevel(ERROR, x, pos);
+			var newPos:HScriptInfos = cast pos;
+			if (newPos.showLine == null) newPos.showLine = true;
+			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '')  + '${newPos.fileName}:';
+			if (newPos.showLine == true) {
+				msgInfo += '${newPos.lineNumber}:';
+			}
+			msgInfo += ' $x';
+			HScriptStateHandler.instance.addTextToDebug('ERROR: $msgInfo', FlxColor.RED);
+		}
+		Iris.fatal = function(x, ?pos:haxe.PosInfos) {
+			Iris.logLevel(FATAL, x, pos);
+			var newPos:HScriptInfos = cast pos;
+			if (newPos.showLine == null) newPos.showLine = true;
+			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '')  + '${newPos.fileName}:';
+			if (newPos.showLine == true) {
+				msgInfo += '${newPos.lineNumber}:';
+			}
+			msgInfo += ' $x';
+			HScriptStateHandler.instance.addTextToDebug('FATAL: $msgInfo', 0xFFBB0000);
+		}
 	}
-	
+
 	override function update(elapsed:Float)
 	{
-	    super.update(elapsed);
-	    
-		callOnScripts('onUpdatePost', [elapsed]);
+		super.update(elapsed);
 	}
-	
+
 	var lastStepHit:Int = -1;
-	
+
 	override function stepHit()
 	{
 		super.stepHit();
-
-		if(curStep >= lastStepHit) {
-			return;
-		}
-
+		if(curStep >= lastStepHit) return;
 		lastStepHit = curStep;
 		setOnScripts('curStep', curStep);
 		callOnScripts('onStepHit');
@@ -64,14 +81,9 @@ class HScriptStateHandler extends MusicBeatState
 
 	override function beatHit()
 	{
-		if(lastBeatHit >= curBeat) {
-			return;
-		}
-
+		if(lastBeatHit >= curBeat) return;
 		super.beatHit();
-
 		lastBeatHit = curBeat;
-
 		setOnScripts('curBeat', curBeat);
 		callOnScripts('onBeatHit');
 	}
@@ -80,69 +92,60 @@ class HScriptStateHandler extends MusicBeatState
 
 	override function sectionHit()
 	{
-		if (lastSectionHit >= curSection)
-		{
-			return;
-		}
-
+		if (lastSectionHit >= curSection) return;
 		super.sectionHit();
-
 		setOnScripts('curSection', curSection);
 		callOnScripts('onSectionHit');
 	}
-	
-	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-    public function addTextToDebug(text:String, color:FlxColor) 
-    {
-        var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
-        newText.text = text;
-        newText.color = color;
-        newText.disableTime = 6;
-        newText.alpha = 1;
-        newText.setPosition(10, 8 - newText.height);
-        newText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
-        luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
-            spr.y += newText.height + 2;
-        });
-        luaDebugGroup.add(newText);
+	public function addTextToDebug(text:String, color:FlxColor) 
+	{
+		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
+		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
+		newText.text = text;
+		newText.color = color;
+		newText.disableTime = 6;
+		newText.alpha = 1;
+		newText.setPosition(10, 8 - newText.height);
+		newText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
-        Sys.println(text);
-    }
-    #end
-    
-    override function destroy() {
-        instance = null;
-        
-		#if HSCRIPT_ALLOWED
+		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
+			spr.y += newText.height + 2;
+		});
+		luaDebugGroup.add(newText);
+
+		Sys.println(text);
+	}
+
+	override function destroy() {
+		instance = null;
 		for (script in hscriptArray)
 			if(script != null)
 			{
-				script.call('onDestroy');
+				if(script.exists('onDestroy')) script.call('onDestroy');
 				script.destroy();
 			}
-
 		hscriptArray = null;
-		#end
-		
 		super.destroy();
-		
 		#if HXVIRTUALPAD_ALLOWED
 		if (_hxvirtualpad != null)
 			_hxvirtualpad = FlxDestroyUtil.destroy(_hxvirtualpad);
 		#end
 	}
-	
-	#if HSCRIPT_ALLOWED
+
 	public function startHScriptsNamed(scriptFile:String)
 	{
-	    var scriptToLoad:String = Paths.modFolders('scripts/states/' + scriptFile);
+		#if MODS_ALLOWED
+		var scriptToLoad:String = Paths.modFolders('scripts/states/' + scriptFile);
 		if(!FileSystem.exists(scriptToLoad))
 			scriptToLoad = Paths.getScriptPath('states/' + scriptFile);
+		#else
+		var scriptToLoad:String = Paths.getScriptPath('states/' + scriptFile);
+		#end
 
 		if(FileSystem.exists(scriptToLoad))
 		{
-			if (SScript.global.exists(scriptToLoad)) return false;
+			if (Iris.instances.exists(scriptToLoad)) return false;
 
 			initHScript(scriptToLoad);
 			return true;
@@ -152,47 +155,23 @@ class HScriptStateHandler extends MusicBeatState
 
 	public function initHScript(file:String)
 	{
-	    var newScript:StateHScript = new StateHScript(null, file);
+		var newScript:HScript = null;
 		try
 		{
-			@:privateAccess
-			if(newScript.parsingExceptions != null && newScript.parsingExceptions.length > 0)
-			{
-				@:privateAccess
-				for (e in newScript.parsingExceptions)
-					if(e != null)
-						addTextToDebug('ERROR ON LOADING: ${newScript.parsingException.message}', FlxColor.RED);
-				newScript.destroy();
-				return;
-			}
+			(newScript = new HScript(null, file)).setParent(this);
+			if (newScript.exists('onCreate')) newScript.call('onCreate');
+			trace('initialized hscript interp successfully: $file');
 			hscriptArray.push(newScript);
-			if(newScript.exists('onCreate'))
-			{
-				var callValue = newScript.call('onCreate');
-				if(!callValue.succeeded)
-				{
-					for (e in callValue.exceptions)
-						if (e != null)
-							addTextToDebug('ERROR ($file: onCreate) - ${e.message.substr(0, e.message.indexOf('\n'))}', FlxColor.RED);
-					newScript.destroy();
-					hscriptArray.remove(newScript);
-					trace('failed to initialize sscript interp!!! ($file)');
-				}
-				else trace('initialized sscript interp successfully: $file');
-			}
-
 		}
-		catch(e)
+		catch(e:IrisError)
 		{
-			addTextToDebug('ERROR ($file) - ' + e.message.substr(0, e.message.indexOf('\n')), FlxColor.RED);
+			var pos:HScriptInfos = cast {fileName: file, showLine: false};
+			Iris.error(Printer.errorToString(e, false), pos);
+			var newScript:HScript = cast (Iris.instances.get(file), HScript);
 			if(newScript != null)
-			{
 				newScript.destroy();
-				hscriptArray.remove(newScript);
-			}
 		}
 	}
-	#end
 
 	public function callOnScripts(funcToCall:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
 		var returnVal:Dynamic = FunkinLua.Function_Continue;
@@ -204,11 +183,10 @@ class HScriptStateHandler extends MusicBeatState
 		if(result == null || excludeValues.contains(result)) result = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
 		return result;
 	}
-	
+
 	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
 		var returnVal:Dynamic = FunkinLua.Function_Continue;
 
-		#if HSCRIPT_ALLOWED
 		if(exclusions == null) exclusions = new Array();
 		if(excludeValues == null) excludeValues = new Array();
 		excludeValues.push(FunkinLua.Function_Continue);
@@ -216,44 +194,28 @@ class HScriptStateHandler extends MusicBeatState
 		var len:Int = hscriptArray.length;
 		if (len < 1)
 			return returnVal;
-		for(i in 0...len) {
-			var script:StateHScript = hscriptArray[i];
+
+		for(script in hscriptArray)
+		{
+			@:privateAccess
 			if(script == null || !script.exists(funcToCall) || exclusions.contains(script.origin))
 				continue;
 
-			var myValue:Dynamic = null;
-			try {
-				var callValue = script.call(funcToCall, args);
-				if(!callValue.succeeded)
-				{
-					var e = callValue.exceptions[0];
-					if(e != null)
-					{
-						var len:Int = e.message.indexOf('\n') + 1;
-						if(len <= 0) len = e.message.length;
-						addTextToDebug('ERROR (${callValue.calledFunction}) - ' + e.message.substr(0, len), FlxColor.RED);
-					}
-				}
-				else
-				{
-					myValue = callValue.returnValue;
+			var callValue = script.call(funcToCall, args);
+			if(callValue != null)
+			{
+				var myValue:Dynamic = callValue.returnValue;
 
-					// compiler fuckup fix
-					final stopHscript = myValue == FunkinLua.Function_StopHScript;
-					final stopAll = myValue == FunkinLua.Function_StopAll;
-					if((stopHscript || stopAll) && !excludeValues.contains(myValue) && !ignoreStops)
-					{
-						returnVal = myValue;
-						break;
-					}
-
-					if(myValue != null && !excludeValues.contains(myValue))
-						returnVal = myValue;
+				if((myValue == FunkinLua.Function_StopHScript || myValue == FunkinLua.Function_StopAll) && !excludeValues.contains(myValue) && !ignoreStops)
+				{
+					returnVal = myValue;
+					break;
 				}
+
+				if(myValue != null && !excludeValues.contains(myValue))
+					returnVal = myValue;
 			}
-			catch (e:Dynamic) {}
 		}
-		#end
 
 		return returnVal;
 	}
@@ -264,19 +226,15 @@ class HScriptStateHandler extends MusicBeatState
 	}
 
 	public function setOnHScript(variable:String, arg:Dynamic, exclusions:Array<String> = null) {
-		#if HSCRIPT_ALLOWED
 		if(exclusions == null) exclusions = [];
 		for (script in hscriptArray) {
 			if(exclusions.contains(script.origin))
 				continue;
 
-			if(!instancesExclude.contains(variable))
-				instancesExclude.push(variable);
 			script.set(variable, arg);
 		}
-		#end
 	}
-	
+
 	#if HXVIRTUALPAD_ALLOWED
 	public function addHxVirtualPad(DPad:String, Action:String)
 	{
@@ -291,7 +249,7 @@ class HScriptStateHandler extends MusicBeatState
 		controls.trackedInputsUI = [];
 		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
-	
+
 	public function addHxVirtualPadCamera()
 	{
 		var camcontrol = new flixel.FlxCamera();
@@ -299,7 +257,7 @@ class HScriptStateHandler extends MusicBeatState
 		FlxG.cameras.add(camcontrol, false);
 		_hxvirtualpad.cameras = [camcontrol];
 	}
-	
+
 	public function removeHxVirtualPad()
 	{
 		if (trackedinputsUI.length > 0)
@@ -308,12 +266,21 @@ class HScriptStateHandler extends MusicBeatState
 		if (_hxvirtualpad != null)
 			remove(_hxvirtualpad);
 	}
-	
+
 	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
 		var buttonName = "button" + buttonPostfix;
-		var button = Reflect.getProperty(HScriptStateHandler.instance._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
+		var button = Reflect.getProperty(HScriptStateHandler.getState()._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
 		return Reflect.getProperty(button, type);
 		return false;
 	}
 	#end
+
+	public static function getState():HScriptStateHandler {
+		var curState:Dynamic = FlxG.state;
+		var leState:HScriptStateHandler = curState;
+		return leState;
+	}
 }
+#else
+typedef HScriptStateHandler = MusicBeatState;
+#end

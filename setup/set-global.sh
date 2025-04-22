@@ -8,6 +8,7 @@ haxelib dev flixel /root/haxelib/flixel/git
 haxelib dev flixel-addons /root/haxelib/flixel-addons/3,2,2
 haxelib dev flixel-ui /root/haxelib/flixel-ui/2,4,0
 haxelib dev SScript /root/haxelib/SScript/git
+haxelib dev hscript-iris /root/haxelib/hscript-iris/git
 haxelib dev hscript /root/haxelib/hscript/2,4,0
 haxelib dev hxCodec /root/haxelib/hxCodec/git
 haxelib dev hxcpp /root/haxelib/hxcpp/git

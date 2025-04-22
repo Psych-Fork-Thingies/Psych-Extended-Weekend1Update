@@ -71,6 +71,7 @@
 	</section>
 	<define name="MODS_ALLOWED" if="desktop || mobile" />
 	<define name="HSCRIPT_ALLOWED" if="desktop || mobile" />
+	<define name="SCRIPTING_ALLOWED" if="desktop || mobile" /> <!-- DELETE THIS TO DISABLE SCRIPTING STATES -->
 	<define name="LUA_ALLOWED" if="desktop || mobile"/>
 	<define name="ACHIEVEMENTS_ALLOWED" />
 	<define name="VIDEOS_ALLOWED" if="web || windows || android" unless="32bits || ios"/>
@@ -162,6 +163,7 @@
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="SScript" if="HSCRIPT_ALLOWED"/>
+	<haxelib name="hscript-iris" if="SCRIPTING_ALLOWED" />
 	<haxedef name="openflPos" />
 	<haxedef name="hscriptPos" />
 	<haxelib name="hscript" />
@@ -232,7 +234,7 @@
 	-->
 	
 	<!-- Allow Access to Engine Files in mobile for EXTERNAL_DATA -->
- 	<haxedef name="SHARE_MOBILE_FILES" if="mobile" />
+	<haxedef name="SHARE_MOBILE_FILES" if="mobile" />
 	
 	<android target-sdk-version="34" if="termux"/>
 	

@@ -39,8 +39,8 @@ import DialogueBoxPsych;
 import psychlua.LuaUtils;
 import psychlua.LuaUtils.LuaTweenOptions;
 
-import scripting.state.StateHScript;
-import scripting.substate.SubstateHScript;
+import scripting.state.HScript as HScriptState;
+import scripting.substate.HScript as HScriptSubstate;
 
 import psychlua.HScript;
 import psychlua.DebugLuaText;
@@ -83,8 +83,6 @@ class FunkinLua {
 	
 	#if hscript
 	public var hscriptog:HScriptOG = null;
-	public var hxState:StateHScript = null;
-	public var hxSubstate:SubstateHScript = null;
 	#end
 	#end
 	
@@ -1658,13 +1656,12 @@ class FunkinLua {
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
 		#if (SScript >= "3.0.0" || HSCRIPT_ALLOWED)
 		if (ClientPrefs.data.hscriptversion == 'SScript') HScript.implement(this);
-		HScript.implement_forced(this);
 		#end
 		#if (hscript && HSCRIPT_ALLOWED)
-		var Hv = ClientPrefs.data.hscriptversion;
-		if (Hv == 'HScript New' || Hv == 'HScript Old') HScriptOG.implement(this);
-		HScriptOG.implement_forced(this);
+		if (ClientPrefs.data.hscriptversion != 'SScript') HScriptOG.implement(this);
 		#end
+		HScript.implementForced(this);
+		HScriptOG.implementForced(this);
 		#if android AndroidFunctions.implement(this); #end
 		DeprecatedFunctions.implement(this);
 		ReflectionFunctions.implement(this);
@@ -1769,16 +1766,6 @@ class FunkinLua {
 		{
 			hscript.destroy();
 			hscript = null;
-		}
-		if(hxState != null)
-		{
-			hxState.destroy();
-			hxState = null;
-		}
-		if(hxSubstate != null)
-		{
-			hxSubstate.destroy();
-			hxSubstate = null;
 		}
 		#end
 		

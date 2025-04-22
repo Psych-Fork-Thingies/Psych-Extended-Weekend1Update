@@ -53,23 +53,18 @@ class StoryMenuState extends HScriptStateHandler
 	{
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		
-		//HScript Things
-		#if HSCRIPT_ALLOWED
-	    var className = Type.getClassName(Type.getClass(this));
-	    var classString:String = '${className}' + '.hx';
-	    
-	    if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
-    	//if (classString.startsWith('extras.subtates.')) classString = classString.replace('extras.subtates.', '');
 
-	    startHScriptsNamed(classString);
-    	startHScriptsNamed('global.hx');
-    	#end
-    	//End
+		super.create();
+
+		#if SCRIPTING_ALLOWED
+		var className = Type.getClassName(Type.getClass(this));
+		startHScriptsNamed('${className}' + '.hx');
+		startHScriptsNamed('global.hx');
+		#end
 
 		PlayState.isStoryMode = true;
 		WeekData.reloadWeekFiles(true);
-		
+
 		if(WeekData.weeksList.length < 1)
 		{
 			FlxTransitionableState.skipNextTransIn = true;
@@ -79,7 +74,7 @@ class StoryMenuState extends HScriptStateHandler
 				function() CustomSwitchState.switchMenus('MainMenu')));
 			return;
 		}
-		
+
 		if(curWeek >= WeekData.weeksList.length) curWeek = 0;
 		persistentUpdate = persistentDraw = true;
 
@@ -176,7 +171,7 @@ class StoryMenuState extends HScriptStateHandler
 			lastDifficultyName = Difficulty.getDefault();
 		}
 		curDifficulty = Math.round(Math.max(0, Difficulty.defaultList.indexOf(lastDifficultyName)));
-		
+
 		sprDifficulty = new FlxSprite(0, leftArrow.y);
 		sprDifficulty.antialiasing = ClientPrefs.data.antialiasing;
 		difficultySelectors.add(sprDifficulty);
@@ -209,32 +204,28 @@ class StoryMenuState extends HScriptStateHandler
 		changeWeek();
 		changeDifficulty();
 
-        addVirtualPad("NONE", "B_X_Y");
+		addVirtualPad("NONE", "B_X_Y");
 
-		super.create();
-		
-		callOnScripts('onCreatePost');
+		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	override function closeSubState() {
-	    callOnScripts('onCloseSubState');
+		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubState'); #end
 		persistentUpdate = true;
 		changeWeek();
 		removeVirtualPad();
 		addVirtualPad("NONE", "B_X_Y");
 		super.closeSubState();
-		callOnScripts('onCloseSubStatePost');
+		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
 	}
 
 	override function update(elapsed:Float)
 	{
-	    //HScript Things
-	    callOnScripts('onUpdate', [elapsed]);
-	    //end
-	    
-	    if(WeekData.weeksList.length < 1)
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+
+		if(WeekData.weeksList.length < 1)
 			return;
-			
+		
 		// scoreText.setFormat('VCR OSD Mono', 32);
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, CoolUtil.boundTo(elapsed * 30, 0, 1)));
 		if(Math.abs(intendedScore - lerpScore) < 10) lerpScore = intendedScore;
@@ -283,24 +274,24 @@ class StoryMenuState extends HScriptStateHandler
 			else if (upP || downP || Swipe.Up || Swipe.Down)
 				changeDifficulty();
 
-    			if(FlxG.keys.justPressed.CONTROL || _virtualpad.buttonX.justPressed)
-    			{
-    				removeVirtualPad();
-    				persistentUpdate = false;
-    				openSubState(new GameplayChangersSubstate());
-    			}
-    			else if(controls.RESET || _virtualpad.buttonY.justPressed)
-    			{
-    				removeVirtualPad();
-    				persistentUpdate = false;
-    				openSubState(new ResetScoreSubState('', curDifficulty, '', curWeek));
-    				//FlxG.sound.play(Paths.sound('scrollMenu'));
-    			}
-			
-    			else if (FlxG.mouse.overlaps(grpWeekText.members[curWeek]) && FlxG.mouse.justPressed || controls.ACCEPT)
-    			{
-    				selectWeek();
-    			}
+				if(FlxG.keys.justPressed.CONTROL || _virtualpad.buttonX.justPressed)
+				{
+					removeVirtualPad();
+					persistentUpdate = false;
+					openSubState(new GameplayChangersSubstate());
+				}
+				else if(controls.RESET || _virtualpad.buttonY.justPressed)
+				{
+					removeVirtualPad();
+					persistentUpdate = false;
+					openSubState(new ResetScoreSubState('', curDifficulty, '', curWeek));
+					//FlxG.sound.play(Paths.sound('scrollMenu'));
+				}
+		
+				else if (FlxG.mouse.overlaps(grpWeekText.members[curWeek]) && FlxG.mouse.justPressed || controls.ACCEPT)
+				{
+					selectWeek();
+				}
 		}
 
 		if (controls.BACK && !movedBack && !selectedWeek || Swipe.Right && !movedBack && !selectedWeek)
@@ -317,10 +308,8 @@ class StoryMenuState extends HScriptStateHandler
 			lock.y = grpWeekText.members[lock.ID].y;
 			lock.visible = (lock.y > FlxG.height / 2);
 		});
-		
-		//HScript Things
-	    callOnScripts('onUpdatePost', [elapsed]);
-	    //end
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	var movedBack:Bool = false;
@@ -331,7 +320,7 @@ class StoryMenuState extends HScriptStateHandler
 	{
 		if (!weekIsLocked(loadedWeeks[curWeek].fileName))
 		{
-		    // I can't use Dynamic Array .copy() because that crashes HTML5, here's a workaround.
+			// I can't use Dynamic Array .copy() because that crashes HTML5, here's a workaround.
 			var songArray:Array<String> = [];
 			var leWeek:Array<Dynamic> = loadedWeeks[curWeek].songs;
 			for (i in 0...leWeek.length) {
@@ -359,7 +348,7 @@ class StoryMenuState extends HScriptStateHandler
 				trace('ERROR! $e');
 				return;
 			}
-			
+		
 			if (stopspamming == false)
 			{
 				FlxG.sound.play(Paths.sound('confirmMenu'));
@@ -376,17 +365,17 @@ class StoryMenuState extends HScriptStateHandler
 				stopspamming = true;
 			}
 
-            LoadingState.prepareToSong();
+			LoadingState.prepareToSong();
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
-			    if (!ClientPrefs.data.loadingScreen) FlxG.sound.music.stop();
+				if (!ClientPrefs.data.loadingScreen) FlxG.sound.music.stop();
 				LoadingState.loadAndSwitchState(new PlayState(), true);
 				if (ClientPrefs.data.FreeplayStyle == 'NF')
-    				FreeplayStateNF.destroyFreeplayVocals();
-    		    else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
-    				FreeplayStateNOVA.destroyFreeplayVocals();
-    			else
-				    FreeplayState.destroyFreeplayVocals();
+					FreeplayStateNF.destroyFreeplayVocals();
+				else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
+					FreeplayStateNOVA.destroyFreeplayVocals();
+				else
+					FreeplayState.destroyFreeplayVocals();
 			});
 		} else {
 			FlxG.sound.play(Paths.sound('cancelMenu'));
@@ -407,7 +396,7 @@ class StoryMenuState extends HScriptStateHandler
 
 		var diff:String = Difficulty.getString(curDifficulty);
 		var newImage:FlxGraphic;
-		
+	
 		if(!Paths.fileExists('images/menudifficulties/' + Paths.formatToSongPath(diff) + '.png', IMAGE)) newImage = Paths.image('menudifficulties/imagenotfound');
 		else newImage = Paths.image('menudifficulties/' + Paths.formatToSongPath(diff));
 		//trace(Mods.currentModDirectory + ', menudifficulties/' + Paths.formatToSongPath(diff));
@@ -474,7 +463,7 @@ class StoryMenuState extends HScriptStateHandler
 		}
 		PlayState.storyWeek = curWeek;
 
-        Difficulty.loadFromWeek();
+		Difficulty.loadFromWeek();
 		difficultySelectors.visible = unlocked;
 
 		if(Difficulty.list.contains(Difficulty.getDefault()))
@@ -532,7 +521,7 @@ class Swipe
    * Indicates if there is a down swipe gesture detected.
    */
   public static var Down(get, never):Bool;
-  
+
   /**
    * Indicates if there is a right swipe gesture detected.
    */
@@ -551,16 +540,16 @@ class Swipe
   @:noCompletion
   static function get_Down():Bool
   {
-    #if FLX_POINTER_INPUT
-    for (swipe in FlxG.swipes)
-    {
-      if (swipe.degrees > -135 && swipe.degrees < -45 && swipe.distance > 20) return true;
-    }
-    #end
+	#if FLX_POINTER_INPUT
+	for (swipe in FlxG.swipes)
+	{
+	  if (swipe.degrees > -135 && swipe.degrees < -45 && swipe.distance > 20) return true;
+	}
+	#end
 
-    return false;
+	return false;
   }
-  
+
   /**
    * Determines if there is a right swipe in the FlxG.swipes array.
    *
@@ -569,14 +558,14 @@ class Swipe
   @:noCompletion
   static function get_Right():Bool
   {
-    #if FLX_POINTER_INPUT
-    for (swipe in FlxG.swipes)
-    {
-      if (swipe.degrees > -45 && swipe.degrees < 45 && swipe.distance > 20) return true;
-    }
-    #end
+	#if FLX_POINTER_INPUT
+	for (swipe in FlxG.swipes)
+	{
+	  if (swipe.degrees > -45 && swipe.degrees < 45 && swipe.distance > 20) return true;
+	}
+	#end
 
-    return false;
+	return false;
   }
 
   /**
@@ -587,13 +576,13 @@ class Swipe
   @:noCompletion
   static function get_Up():Bool
   {
-    #if FLX_POINTER_INPUT
-    for (swipe in FlxG.swipes)
-    {
-      if (swipe.degrees > 45 && swipe.degrees < 135 && swipe.distance > 20) return true;
-    }
-    #end
+	#if FLX_POINTER_INPUT
+	for (swipe in FlxG.swipes)
+	{
+	  if (swipe.degrees > 45 && swipe.degrees < 135 && swipe.distance > 20) return true;
+	}
+	#end
 
-    return false;
+	return false;
   }
 }

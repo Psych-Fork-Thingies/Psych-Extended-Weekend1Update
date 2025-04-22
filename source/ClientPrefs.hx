@@ -14,10 +14,10 @@ import TitleState;
 	#if !PsychExtended_Extras
 	public final NoteSkin:String = 'original';
 	public final FreeplayStyle:String = 'Psych';
-    public final PauseMenuStyle:String = 'Psych';
-    public final FreakyMenu:String = 'Extended';
-    public final TransitionStyle:String = 'Psych';
-    public final MainMenuStyle:String = '1.0';
+	public final PauseMenuStyle:String = 'Psych';
+	public final FreakyMenu:String = 'Extended';
+	public final TransitionStyle:String = 'Psych';
+	public final MainMenuStyle:String = '1.0';
 	public final touchmenus:Bool = #if UNUSED_TOUCHMENUS true #else false #end;
 	public final UseNewCamSystem:Bool = false;
 	public final hscriptversion:String = 'HScript Old';
@@ -25,10 +25,10 @@ import TitleState;
 	#else
 	public var NoteSkin:String = 'original';
 	public var FreeplayStyle:String = 'Psych';
-    public var PauseMenuStyle:String = 'Psych';
-    public var FreakyMenu:String = 'Extended';
-    public var TransitionStyle:String = 'Psych';
-    public var MainMenuStyle:String = '1.0';
+	public var PauseMenuStyle:String = 'Psych';
+	public var FreakyMenu:String = 'Extended';
+	public var TransitionStyle:String = 'Psych';
+	public var MainMenuStyle:String = '1.0';
 	public var touchmenus:Bool = #if UNUSED_TOUCHMENUS true #else false #end;
 	public var UseNewCamSystem:Bool = false;
 	public var hscriptversion:String = 'HScript Old';
@@ -39,14 +39,14 @@ import TitleState;
 	public var wideScreen:Bool = false;
 	public var mobileC:Bool = true; //better than using if mobile
 	#if android public var storageType:String = "EXTERNAL_DATA"; #end
-	public var virtualpadType:String = "VirtualPad";
+	public var virtualpadTexture:String = "VirtualPad";
 	public var VirtualPadSkin:String = 'original';
 	public var VirtualPadAlpha:Float = #if mobile 0.6 #else 0 #end;
 	public var coloredvpad:Bool = true;
 	public var extraKeyReturn1:String = 'SHIFT';
-    public var extraKeyReturn2:String = 'SPACE';
-    public var extraKeyReturn3:String = 'Q';
-    public var extraKeyReturn4:String = 'E';
+	public var extraKeyReturn2:String = 'SPACE';
+	public var extraKeyReturn3:String = 'Q';
+	public var extraKeyReturn4:String = 'E';
 	public var hitboxhint:Bool = false;
 	public var hitboxmode:String = 'New';  //starting new way to change between hitboxes yay
 	public var hitboxtype:String = 'Gradient';
@@ -75,7 +75,7 @@ import TitleState;
 	public var downScroll:Bool = false;
 	public var marvelousRating:Bool = true;	
 	public var marvelousSprite:Bool = true;	
-    public var marvelousWindow:Int = 15;
+	public var marvelousWindow:Int = 15;
 	public var middleScroll:Bool = false;
 	public var opponentStrums:Bool = true;
 	public var showFPS:Bool = true;
@@ -137,9 +137,9 @@ class ClientPrefs {
 	public static var defaultData:SaveVariables = {};
 	
 	public static var psychExtrasKeys = [
-	    #if !PsychExtended_Extras
-	    //Visual and ui
-	    'NoteSkin', 'FreeplayStyle', 'PauseMenuStyle', 'FreakyMenu',
+		#if !PsychExtended_Extras
+		//Visual and ui
+		'NoteSkin', 'FreeplayStyle', 'PauseMenuStyle', 'FreakyMenu',
 		'TransitionStyle', 'MainMenuStyle', 'touchmenus', 'FPSCounter', 'rainbowFPS',
 		//Gameplay
 		'UseNewCamSystem', 'hscriptversion', 'chartLoadSystem'
@@ -180,13 +180,13 @@ class ClientPrefs {
 
 	public static function saveSettings() {		
 		for (key in Reflect.fields(data))
-		    if (psychExtrasKeys.indexOf(key) == -1)
+			if (psychExtrasKeys.indexOf(key) == -1)
 				Reflect.setField(FlxG.save.data, key, Reflect.field(data, key));
 
 		#if ACHIEVEMENTS_ALLOWED Achievements.save(); #end
 		FlxG.save.flush();
 
-        //Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
+		//Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', CoolUtil.getSavePath());
 		save.data.customControls = keyBinds;
@@ -208,7 +208,7 @@ class ClientPrefs {
 		if(Main.fpsVar != null && ClientPrefs.data.FPSCounter == 'Psych')
 			Main.fpsVar.visible = data.showFPS;
 
-        #if (!html5 && !switch)
+		#if (!html5 && !switch)
 		if(FlxG.save.data.framerate == null) {
 			final refreshRate:Int = FlxG.stage.application.window.displayMode.refreshRate;
 			data.framerate = Std.int(FlxMath.bound(refreshRate, 60, 240));

@@ -54,19 +54,15 @@ class FreeplayState extends HScriptStateHandler
 	{
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		
-		//HScript Things
-		#if HSCRIPT_ALLOWED
-	    var className = Type.getClassName(Type.getClass(this));
-	    var classString:String = '${className}' + '.hx';
-	    
-	    if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
 
-	    startHScriptsNamed(classString);
-    	startHScriptsNamed('global.hx');
-    	#end
-    	//End
-		
+		super.create();
+
+		#if SCRIPTING_ALLOWED
+		var className = Type.getClassName(Type.getClass(this));
+		startHScriptsNamed('${className}' + '.hx');
+		startHScriptsNamed('global.hx');
+		#end
+
 		persistentUpdate = true;
 		PlayState.isStoryMode = false;
 		WeekData.reloadWeekFiles(false);
@@ -75,7 +71,7 @@ class FreeplayState extends HScriptStateHandler
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
 		#end
-		
+
 		if(WeekData.weeksList.length < 1)
 		{
 			FlxTransitionableState.skipNextTransIn = true;
@@ -134,7 +130,7 @@ class FreeplayState extends HScriptStateHandler
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
 			icon.sprTracker = songText;
 
-			
+
 			// too laggy with a lot of songs, so i had to recode the logic for it
 			songText.visible = songText.active = songText.isMenuItem = false;
 			icon.visible = icon.active = false;
@@ -167,7 +163,7 @@ class FreeplayState extends HScriptStateHandler
 		missingTextBG.alpha = 0.6;
 		missingTextBG.visible = false;
 		add(missingTextBG);
-		
+
 		missingText = new FlxText(50, 0, FlxG.width - 100, '', 24);
 		missingText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		missingText.scrollFactor.set();
@@ -185,40 +181,39 @@ class FreeplayState extends HScriptStateHandler
 		bottomBG.alpha = 0.6;
 		add(bottomBG);
 
-        var leText:String;
-        if (ClientPrefs.data.mobileC)
-		    leText = "Press X to listen to the Song / Press C to open the Gameplay Changers Menu / Press Y to Reset your Score and Accuracy.";
-        else
-		    leText = "Press SPACE to listen to the Song / Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
-		
+		var leText:String;
+		if (ClientPrefs.data.mobileC)
+			leText = "Press X to listen to the Song / Press C to open the Gameplay Changers Menu / Press Y to Reset your Score and Accuracy.";
+		else
+			leText = "Press SPACE to listen to the Song / Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
+
 		bottomString = leText;
 		var size:Int = 16;
 		bottomText = new FlxText(bottomBG.x, bottomBG.y + 4, FlxG.width, leText, size);
 		bottomText.setFormat(Paths.font("vcr.ttf"), size, FlxColor.WHITE, CENTER);
 		bottomText.scrollFactor.set();
 		add(bottomText);
-		
+
 		player = new MusicPlayer(this);
 		add(player);
-		
+
 		changeSelection();
 		updateTexts();
 
 		addVirtualPad("FULL", "A_B_C_X_Y_Z");
-		super.create();
-		
-		callOnScripts('onCreatePost');
+
+		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	override function closeSubState()
 	{
-	    callOnScripts('onCloseSubState');
+		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubState'); #end
 		changeSelection(0, false);
 		persistentUpdate = true;
 		super.closeSubState();
 		removeVirtualPad();
 		addVirtualPad("FULL", "A_B_C_X_Y_Z");
-		callOnScripts('onCloseSubStatePost');
+		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
 	}
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String, color:Int)
@@ -240,10 +235,8 @@ class FreeplayState extends HScriptStateHandler
 	var stopMusicPlay:Bool = false;
 	override function update(elapsed:Float)
 	{
-	    //HScript Things
-	    callOnScripts('onUpdate', [elapsed]);
-	    //end
-	    
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+
 		if (FlxG.sound.music.volume < 0.7)
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
@@ -258,31 +251,31 @@ class FreeplayState extends HScriptStateHandler
 		var ratingSplit:Array<String> = Std.string(CoolUtil.floorDecimal(lerpRating * 100, 2)).split('.');
 		if(ratingSplit.length < 2) //No decimals, add an empty space
 			ratingSplit.push('');
-		
+
 		while(ratingSplit[1].length < 2) //Less than 2 decimals in it, add decimals then
 			ratingSplit[1] += '0';
 
 		var shiftMult:Int = 1;
-        if((FlxG.keys.pressed.SHIFT || _virtualpad.buttonZ.pressed) && !player.playingMusic) shiftMult = 3;
+		if((FlxG.keys.pressed.SHIFT || _virtualpad.buttonZ.pressed) && !player.playingMusic) shiftMult = 3;
 
 		if (!player.playingMusic)
 		{
 			scoreText.text = 'PERSONAL BEST: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
 			positionHighscore();
-			
+
 			if(songs.length > 1)
 			{
 				if(FlxG.keys.justPressed.HOME)
 				{
 					curSelected = 0;
 					changeSelection();
-					holdTime = 0;	
+					holdTime = 0;
 				}
 				else if(FlxG.keys.justPressed.END)
 				{
 					curSelected = songs.length - 1;
 					changeSelection();
-					holdTime = 0;	
+					holdTime = 0;
 				}
 				if (controls.UI_UP_P)
 				{
@@ -324,7 +317,7 @@ class FreeplayState extends HScriptStateHandler
 			}
 		}
 
-        if (controls.BACK)
+		if (controls.BACK)
 		{
 			if (player.playingMusic)
 			{
@@ -347,13 +340,13 @@ class FreeplayState extends HScriptStateHandler
 			}
 		}
 
-        if((FlxG.keys.justPressed.CONTROL || _virtualpad.buttonC.justPressed) && !player.playingMusic)
+		if((FlxG.keys.justPressed.CONTROL || _virtualpad.buttonC.justPressed) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new GameplayChangersSubstate());
 			removeVirtualPad();
 		}
-        else if(FlxG.keys.justPressed.SPACE || _virtualpad.buttonX.justPressed)
+		else if(FlxG.keys.justPressed.SPACE || _virtualpad.buttonX.justPressed)
 		{
 			if(instPlaying != curSelected && !player.playingMusic)
 			{
@@ -365,12 +358,12 @@ class FreeplayState extends HScriptStateHandler
 				Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 				if (PlayState.SONG.needsVoices)
 				{
-				    try
+					try
 					{
 						var playerVocals:String = getVocalFromCharacter(PlayState.SONG.player1);
 						var loadedVocals = Paths.voices(PlayState.SONG.song, (playerVocals != null && playerVocals.length > 0) ? playerVocals : 'Player');
 						if(loadedVocals == null) loadedVocals = Paths.voices(PlayState.SONG.song);
-						
+
 						if(loadedVocals != null && loadedVocals.length > 0)
 						{
 							vocals.loadEmbedded(loadedVocals);
@@ -386,14 +379,14 @@ class FreeplayState extends HScriptStateHandler
 					{
 						vocals = FlxDestroyUtil.destroy(vocals);
 					}
-					
+
 					opponentVocals = new FlxSound();
 					try
 					{
 						//trace('please work...');
 						var oppVocals:String = getVocalFromCharacter(PlayState.SONG.player2);
 						var loadedVocals = Paths.voices(PlayState.SONG.song, (oppVocals != null && oppVocals.length > 0) ? oppVocals : 'Opponent');
-						
+
 						if(loadedVocals != null && loadedVocals.length > 0)
 						{
 							opponentVocals.loadEmbedded(loadedVocals);
@@ -459,7 +452,7 @@ class FreeplayState extends HScriptStateHandler
 				return;
 			}
 
-            LoadingState.prepareToSong();  
+			LoadingState.prepareToSong();  
 			LoadingState.loadAndSwitchState(new PlayState());
 			if (!ClientPrefs.data.loadingScreen) FlxG.sound.music.stop();
 			stopMusicPlay = true;
@@ -469,7 +462,7 @@ class FreeplayState extends HScriptStateHandler
 			DiscordClient.loadModRPC();
 			#end
 		}
-        else if((controls.RESET || _virtualpad.buttonY.justPressed) && !player.playingMusic)
+		else if((controls.RESET || _virtualpad.buttonY.justPressed) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
@@ -479,12 +472,10 @@ class FreeplayState extends HScriptStateHandler
 
 		updateTexts(elapsed);
 		super.update(elapsed);
-		
-		//HScript Things
-	    callOnScripts('onUpdatePost', [elapsed]);
-	    //end
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
-	
+
 	function getVocalFromCharacter(char:String)
 	{
 		try
@@ -503,7 +494,7 @@ class FreeplayState extends HScriptStateHandler
 	public static function destroyFreeplayVocals() {
 		if(vocals != null) vocals.stop();
 		vocals = FlxDestroyUtil.destroy(vocals);
-		
+
 		if(opponentVocals != null) opponentVocals.stop();
 		opponentVocals = FlxDestroyUtil.destroy(opponentVocals);
 	}
@@ -559,11 +550,11 @@ class FreeplayState extends HScriptStateHandler
 				icon.alpha = 1;
 			}
 		}
-		
+
 		Mods.currentModDirectory = songs[curSelected].folder;
 		PlayState.storyWeek = songs[curSelected].week;
 		Difficulty.loadFromWeek();
-		
+
 		var savedDiff:String = songs[curSelected].lastDifficulty;
 		var lastDiff:Int = Difficulty.list.indexOf(lastDifficultyName);
 		if(savedDiff != null && !Difficulty.list.contains(savedDiff) && Difficulty.list.contains(savedDiff))
@@ -625,7 +616,7 @@ class FreeplayState extends HScriptStateHandler
 		FlxG.autoPause = true;
 		if (!FlxG.sound.music.playing && !stopMusicPlay)
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
-	}	
+	}
 }
 
 class SongMetadata

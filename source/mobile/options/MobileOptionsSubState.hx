@@ -39,38 +39,38 @@ using StringTools;
 
 class MobileOptionsSubState extends BaseOptionsMenu
 {
-    #if android
+	#if android
 	var storageTypes:Array<String> = ["EXTERNAL_DATA", "EXTERNAL", "EXTERNAL_EX", "EXTERNAL_NF", "EXTERNAL_OBB", "EXTERNAL_MEDIA", "EXTERNAL_ONLINE"];
 	var externalPaths:Array<String> = StorageUtil.checkExternalPaths(true);
 	final lastStorageType:String = ClientPrefs.data.storageType;
 	#end
-	final lastVirtualPadType:String = ClientPrefs.data.virtualpadType;
-	
-	var virtualpadTypes:Array<String> = ["VirtualPad", "TouchPad"];
+	final lastVirtualPadTexture:String = ClientPrefs.data.virtualpadTexture;
+
+	var virtualpadTextures:Array<String> = ["VirtualPad", "TouchPad"];
 	var virtualpadSkinList:Array<String> = CoolUtil.coolTextFile(Paths.getSharedPath('images/virtualpad/virtualpadSkinList'));
 	var virtualpadSkinListModsFolder:Array<String> = CoolUtil.coolTextFile(Paths.modsTxt('virtualpad/virtualpadSkinList'));
-	
+
 	public function new()
 	{
-	    #if android
-	    storageTypes = storageTypes.concat(externalPaths); //SD Card
-	    #end
+		#if android
+		storageTypes = storageTypes.concat(externalPaths); //SD Card
+		#end
 		title = 'Mobile Options';
 		rpcTitle = 'Mobile Options Menu'; //hi, you can ask what is that, i will answer it's all what you needed lol.
-		
-		if (ClientPrefs.data.virtualpadType == 'TouchPad')
-		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.getPreloadPath('images/touchpad/touchpadSkinList.txt'));
-		    
+
+		if (ClientPrefs.data.virtualpadTexture == 'TouchPad')
+			virtualpadSkinList = CoolUtil.coolTextFile(Paths.getPreloadPath('images/touchpad/touchpadSkinList.txt'));
+
 		#if MODS_ALLOWED
 		final modsPath:String = Paths.modsTxt('virtualpad/virtualpadSkinList');
 		final modsPathTouch:String = Paths.modsTxt('touchpad/touchpadSkinList');
-		
-		if(FileSystem.exists(modsPathTouch) && ClientPrefs.data.virtualpadType == 'TouchPad')
-		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.modsTxt('touchpad/touchpadSkinList'));
-		else if(FileSystem.exists(modsPath) && ClientPrefs.data.virtualpadType != 'TouchPad')
-		    virtualpadSkinList = CoolUtil.coolTextFile(Paths.modsTxt('virtualpad/virtualpadSkinList'));
+
+		if(FileSystem.exists(modsPathTouch) && ClientPrefs.data.virtualpadTexture == 'TouchPad')
+			virtualpadSkinList = CoolUtil.coolTextFile(Paths.modsTxt('touchpad/touchpadSkinList'));
+		else if(FileSystem.exists(modsPath) && ClientPrefs.data.virtualpadTexture != 'TouchPad')
+			virtualpadSkinList = CoolUtil.coolTextFile(Paths.modsTxt('virtualpad/virtualpadSkinList'));
 		#end
-		
+
 	if (ClientPrefs.data.VirtualPadAlpha != 0) {
 		var option:Option = new Option('VirtualPad Skin',
 			"Choose VirtualPad Skin",
@@ -81,7 +81,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = resetVirtualPad;
 	}
-		
+
 		var option:Option = new Option('VirtualPad Alpha:',
 			'Changes VirtualPad Alpha -cool feature',
 			'VirtualPadAlpha',
@@ -106,11 +106,11 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = resetVirtualPad;
 		
-		var option:Option = new Option('VirtualPad Type',
-			'Which VirtualPad should use??',
-			'virtualpadType',
+		var option:Option = new Option('VirtualPad Texture',
+			'Which VirtualPad Texture should use??',
+			'virtualpadTexture',
 			'string',
-			virtualpadTypes);
+			virtualpadTextures);
 		addOption(option);
 		option.onChange = resetVirtualPad; //remove buggy virtualpad/touchpad and add new one
 		
@@ -224,40 +224,39 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	
 		var lastStoragePath:String = StorageType.fromStrForce(lastStorageType) + '/';
 		
-    	try
-    	{
-    	// *sigh* this shit deleted my Psych Extended v1.0.2 Source Code 😭
-    	 #if Allow_RemoveFiles
-    		if ((lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE') #if FuckYou && !ClientPrefs.data.KeepMyFiles #end)
-    		Sys.command('rm', ['-rf', lastStoragePath]);
-    	#end
-    	}
-    	catch (e:haxe.Exception)
-    		trace('Failed to remove last directory. (${e.message})');
+		try
+		{
+		// *sigh* this shit deleted my Psych Extended v1.0.2 Source Code 😭
+		 #if Allow_RemoveFiles
+			if ((lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE') #if FuckYou && !ClientPrefs.data.KeepMyFiles #end)
+			Sys.command('rm', ['-rf', lastStoragePath]);
+		#end
+		}
+		catch (e:haxe.Exception)
+			trace('Failed to remove last directory. (${e.message})');
 	}
 	#end
 
 	override public function destroy() {
 		super.destroy();
 		
-		if (ClientPrefs.data.virtualpadType != lastVirtualPadType) //Better Way -AloneDark
+		if (ClientPrefs.data.virtualpadTexture != lastVirtualPadTexture) //Better Way -AloneDark
 		{
-        	ClientPrefs.data.VirtualPadSkin = 'original';
-        	ClientPrefs.saveSettings();
-        	ClientPrefs.data.VirtualPadSkin = 'original';
-        	
-        	//Restart Game
-        	TitleState.initialized = false;
-    		TitleState.closedState = false;
-    		FlxG.sound.music.fadeOut(0.3);
-    		if(FreeplayState.vocals != null)
-    		{
-    			FreeplayState.vocals.fadeOut(0.3);
-    			FreeplayState.vocals = null;
-    		}
-    		FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
-        }
-        	
+			ClientPrefs.data.VirtualPadSkin = 'original';
+			ClientPrefs.saveSettings();
+			
+			//Restart Game
+			TitleState.initialized = false;
+			TitleState.closedState = false;
+			FlxG.sound.music.fadeOut(0.3);
+			if(FreeplayState.vocals != null)
+			{
+				FreeplayState.vocals.fadeOut(0.3);
+				FreeplayState.vocals = null;
+			}
+			FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
+		}
+			
 		#if android
 		if (ClientPrefs.data.storageType != lastStorageType) {
 			onStorageChange();
@@ -270,7 +269,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	
 	function resetVirtualPad()
 	{
-	    removeVirtualPad();
-	    addVirtualPad("FULL", "A_B_C");
+		removeVirtualPad();
+		addVirtualPad("FULL", "A_B_C");
 	}
 }

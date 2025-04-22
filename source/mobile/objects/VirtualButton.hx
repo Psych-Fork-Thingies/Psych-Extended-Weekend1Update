@@ -194,7 +194,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	{
 		super(X, Y);
 
-		if (statusIndicatorType == BRIGHTNESS && ClientPrefs.data.virtualpadType == 'TouchPad')
+		if (statusIndicatorType == BRIGHTNESS && ClientPrefs.data.virtualpadTexture == 'TouchPad')
  			shader = brightShader;
  		else
  		    loadDefaultGraphic();
@@ -209,7 +209,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		// Since this is a UI element, the default scrollFactor is (0, 0)
 		scrollFactor.set();
 
-		if (ClientPrefs.data.virtualpadType != 'TouchPad') {
+		if (ClientPrefs.data.virtualpadTexture != 'TouchPad') {
     		statusAnimations[VirtualButton.HIGHLIGHT] = 'normal';
     		labelAlphas[VirtualButton.HIGHLIGHT] = 1;
     	}
@@ -221,7 +221,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	{
 		super.graphicLoaded();
 
-        if (ClientPrefs.data.virtualpadType != 'TouchPad') {
+        if (ClientPrefs.data.virtualpadTexture != 'TouchPad') {
     		setupAnimation('normal', VirtualButton.NORMAL);
     		setupAnimation('pressed', VirtualButton.PRESSED);
     	}
@@ -250,7 +250,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		onOver = FlxDestroyUtil.destroy(onOver);
 		onOut = FlxDestroyUtil.destroy(onOut);
 
-        if (ClientPrefs.data.virtualpadType != 'TouchPad') {
+        if (ClientPrefs.data.virtualpadTexture != 'TouchPad') {
     		labelOffsets = FlxDestroyUtil.putArray(labelOffsets);
     		labelAlphas = null;
 		}
@@ -275,7 +275,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 			#end
 
 			// Trigger the animation only if the button's input status changes.
-			if (lastStatus != status && ClientPrefs.data.virtualpadType != 'TouchPad')
+			if (lastStatus != status && ClientPrefs.data.virtualpadTexture != 'TouchPad')
 			{
 				updateStatusAnimation();
 				lastStatus = status;
@@ -295,13 +295,13 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	{
 		super.draw();
 
-        if (_spriteLabel != null && _spriteLabel.graphic != null && _spriteLabel.pixels != null && _spriteLabel.visible && ClientPrefs.data.virtualpadType == 'TouchPad')
+        if (_spriteLabel != null && _spriteLabel.graphic != null && _spriteLabel.pixels != null && _spriteLabel.visible && ClientPrefs.data.virtualpadTexture == 'TouchPad')
         {
             if (_spriteLabel.cameras != cameras)
  				_spriteLabel.cameras = cameras;
  			_spriteLabel.draw();
         }
-		else if (_spriteLabel != null && _spriteLabel.visible && ClientPrefs.data.virtualpadType != 'TouchPad')
+		else if (_spriteLabel != null && _spriteLabel.visible && ClientPrefs.data.virtualpadTexture != 'TouchPad')
 		{
 			_spriteLabel.cameras = cameras;
 			_spriteLabel.draw();
@@ -394,12 +394,12 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 
 	public function updateLabelPosition()
 	{
-		if (_spriteLabel != null && ClientPrefs.data.virtualpadType == 'TouchPad')
+		if (_spriteLabel != null && ClientPrefs.data.virtualpadTexture == 'TouchPad')
 		{
 			_spriteLabel.x = ((width - _spriteLabel.width) / 2) + (pixelPerfectPosition ? Math.floor(x) : x);
  			_spriteLabel.y = ((height - _spriteLabel.height) / 2) + (pixelPerfectPosition ? Math.floor(y) : y);
 		}
-		else if (_spriteLabel != null && ClientPrefs.data.virtualpadType != 'TouchPad')
+		else if (_spriteLabel != null && ClientPrefs.data.virtualpadTexture != 'TouchPad')
 		{
 		    _spriteLabel.x = (pixelPerfectPosition ? Math.floor(x) : x) + labelOffsets[status].x;
 			_spriteLabel.y = (pixelPerfectPosition ? Math.floor(y) : y) + labelOffsets[status].y;
@@ -484,7 +484,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 
 		updateLabelPosition();
 		
-		if (statusIndicatorType == BRIGHTNESS && label != null && brightShader != null && ClientPrefs.data.virtualpadType == 'TouchPad')
+		if (statusIndicatorType == BRIGHTNESS && label != null && brightShader != null && ClientPrefs.data.virtualpadTexture == 'TouchPad')
  			label.shader = brightShader;
 
 		return Value;
@@ -493,7 +493,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	function set_status(Value:Int):Int
 	{
 		status = Value;
-		if (ClientPrefs.data.virtualpadType == 'TouchPad') indicateStatus();
+		if (ClientPrefs.data.virtualpadTexture == 'TouchPad') indicateStatus();
 		else updateLabelAlpha();
 		return status;
 	}
@@ -501,7 +501,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	override function set_alpha(Value:Float):Float
 	{
 		super.set_alpha(Value);
-		if (ClientPrefs.data.virtualpadType == 'TouchPad')
+		if (ClientPrefs.data.virtualpadTexture == 'TouchPad')
 		{
 		    if (_spriteLabel != null && canChangeLabelAlpha)
  			    _spriteLabel.alpha = alpha == 0 ? 0 : alpha + labelStatusDiff;
@@ -516,7 +516,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	
 	override function set_visible(Value:Bool):Bool
  	{
- 	    if (ClientPrefs.data.virtualpadType == 'TouchPad')
+ 	    if (ClientPrefs.data.virtualpadTexture == 'TouchPad')
 		{
      		super.set_visible(Value);
      		if (_spriteLabel != null)
@@ -544,7 +544,7 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
  	    if (_spriteLabel != null)
      		_spriteLabel.color = Value;
      	
- 	    if (ClientPrefs.data.virtualpadType == 'TouchPad')
+ 	    if (ClientPrefs.data.virtualpadTexture == 'TouchPad')
      		brightShader.color = Value;
      	
      	super.set_color(Value);

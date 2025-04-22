@@ -11,21 +11,7 @@ class CustomSwitchState
         
         var CP = ClientPrefs.data;
         var switchState = MusicBeatState.switchState;
-        
-        /*
-        var File:String = 'states/' + StatePrefix + 'State' + '.hx';
-        var FileName:String = StatePrefix + 'State';
-        if (StatePrefix.startsWith('MasterEditor')) File = 'states/' + StatePrefix + 'Menu' + '.hx';=
-        if (StatePrefix.startsWith('MasterEditor')) FileName = StatePrefix + 'Menu';
-        
-      //Check
-      var fileFound:Bool = false;
-      if (FileSystem.exists(Paths.modpackFolders('scripts/' + File)) || FileSystem.exists(Paths.getScriptPath(File)) || FileSystem.exists(Paths.modFolders('scripts/' + File))) fileFound = true;
-      
-      if (fileFound) switchState(new ScriptState(FileName));
-	  else
-	  {
-	  */
+
     	//OMG 😱 Rewrited?
     	switch (StatePrefix)
 		{

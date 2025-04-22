@@ -27,26 +27,23 @@ class PauseSubState extends HScriptSubStateHandler
 
 	override function create()
 	{
-	    instance = this;
-	    
-	    //HScript Things
-	    #if HSCRIPT_ALLOWED
-	    var className = Type.getClassName(Type.getClass(this));
-	    
-		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
-		add(luaDebugGroup);
-	    
-	    startHScriptsNamed('${className}' + '.hx');
-    	startHScriptsNamed('global.hx');
-    	#end
-    	//End
-    	
+		instance = this;
+
+		super.create();
+
+		#if SCRIPTING_ALLOWED
+		var className = Type.getClassName(Type.getClass(this));
+		startHScriptsNamed('${className}' + '.hx');
+		startHScriptsNamed('global.hx');
+		setErrorHandler();
+		#end
+
 		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
 
 		if(PlayState.chartingMode)
 		{
 			menuItemsOG.insert(2, 'Leave Charting Mode');
-			
+
 			/*
 			var num:Int = 0;
 			if(!PlayState.instance.startingSong)
@@ -144,7 +141,7 @@ class PauseSubState extends HScriptSubStateHandler
 		missingTextBG.alpha = 0.6;
 		missingTextBG.visible = false;
 		add(missingTextBG);
-		
+
 		missingText = new FlxText(50, 0, FlxG.width - 100, '', 24);
 		missingText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		missingText.scrollFactor.set();
@@ -154,17 +151,15 @@ class PauseSubState extends HScriptSubStateHandler
 		regenMenu();
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
-        if (PlayState.chartingMode)
-    	    addVirtualPad("FULL", "A");
-    	else
-    	    addVirtualPad("FULL", "A");
-    	addVirtualPadCamera();
-    	
-		super.create();
-		
-		callOnScripts('onCreatePost');
+		if (PlayState.chartingMode)
+			addVirtualPad("FULL", "A");
+		else
+			addVirtualPad("FULL", "A");
+		addVirtualPadCamera();
+
+		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
-	
+
 	function getPauseSong()
 	{
 		var formattedSongName:String = (songName != null ? Paths.formatToSongPath(songName) : '');
@@ -178,19 +173,13 @@ class PauseSubState extends HScriptSubStateHandler
 	var cantUnpause:Float = 0.1;
 	override function update(elapsed:Float)
 	{
-	    //HScript Things
-	    callOnScripts('onUpdate', [elapsed]);
-	    //end
-	    
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+
 		cantUnpause -= elapsed;
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
 
 		super.update(elapsed);
-		
-		//HScript Things
-	    callOnScripts('onUpdatePost', [elapsed]);
-	    //end
 
 		if(controls.BACK)
 		{
@@ -269,7 +258,7 @@ class PauseSubState extends HScriptSubStateHandler
 				catch(e:haxe.Exception)
 				{
 					trace('ERROR! ${e.message}');
-	
+
 					var errorStr:String = e.message;
 					if(errorStr.startsWith('[lime.utils.Assets] ERROR:')) errorStr = 'Missing file: ' + errorStr.substring(errorStr.indexOf(songLowercase), errorStr.length-1); //Missing chart
 					else errorStr += '\n\n' + e.stack;
@@ -333,16 +322,16 @@ class PauseSubState extends HScriptSubStateHandler
 					PlayState.instance.botplayTxt.alpha = 1;
 					PlayState.instance.botplaySine = 0;
 				case 'Chart Editor':
-		            MusicBeatState.switchState(new editors.ChartingState());
-		            PlayState.chartingMode = true;
-		        case 'Options':
+					MusicBeatState.switchState(new editors.ChartingState());
+					PlayState.chartingMode = true;
+				case 'Options':
 					options.OptionsState.stateType = 3;
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 					CustomSwitchState.switchMenus('Options');
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				case "Change Gameplay Settings":
-				    persistentUpdate = false;
+					persistentUpdate = false;
 					removeVirtualPad();
 					GameplayChangersSubstate.inThePauseMenu = true;
 					openSubState(new GameplayChangersSubstate());
@@ -352,7 +341,7 @@ class PauseSubState extends HScriptSubStateHandler
 
 					Mods.loadTopMod();
 					if(PlayState.isStoryMode)
-					    CustomSwitchState.switchMenus('StoryMenu');
+						CustomSwitchState.switchMenus('StoryMenu');
 					else
 						CustomSwitchState.switchMenus('Freeplay');
 					//PlayState.cancelMusicFadeTween();
@@ -360,7 +349,7 @@ class PauseSubState extends HScriptSubStateHandler
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
 					FlxG.camera.followLerp = 0;
-			    case "Exit to main menu":
+				case "Exit to main menu":
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 
@@ -373,6 +362,8 @@ class PauseSubState extends HScriptSubStateHandler
 					FlxG.camera.followLerp = 0;
 			}
 		}
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function deleteSkipTimeText()
@@ -386,7 +377,7 @@ class PauseSubState extends HScriptSubStateHandler
 		skipTimeText = null;
 		skipTimeTracker = null;
 	}
-	
+
 	override function closeSubState() {
 		persistentUpdate = true;
 		super.closeSubState();
@@ -469,7 +460,7 @@ class PauseSubState extends HScriptSubStateHandler
 		curSelected = 0;
 		changeSelection();
 	}
-	
+
 	function updateSkipTextStuff()
 	{
 		if(skipTimeText == null || skipTimeTracker == null) return;

@@ -36,14 +36,8 @@ class MasterEditorMenu extends HScriptStateHandler
 
 	override function create()
 	{
-	    #if HSCRIPT_ALLOWED
-	    var className = Type.getClassName(Type.getClass(this));
-	    var classString:String = '${className}' + '.hx';
-	    if (classString.startsWith('editors.')) classString = classString.replace('editors.', '');
-	    startHScriptsNamed(classString);
-    	startHScriptsNamed('global.hx');
-    	#end
-    	
+		super.create();
+
 		FlxG.camera.bgColor = FlxColor.BLACK;
 		#if desktop
 		// Updating Discord Rich Presence
@@ -58,6 +52,14 @@ class MasterEditorMenu extends HScriptStateHandler
 		grpTexts = new FlxTypedGroup<Alphabet>();
 		add(grpTexts);
 
+		#if SCRIPTING_ALLOWED
+		var className = Type.getClassName(Type.getClass(this));
+		var classString:String = '${className}' + '.hx';
+		if (classString.startsWith('editors.')) classString = classString.replace('editors.', '');
+		startHScriptsNamed(classString);
+		startHScriptsNamed('global.hx');
+		#end
+
 		for (i in 0...options.length)
 		{
 			var leText:Alphabet = new Alphabet(90, 320, options[i], true);
@@ -66,7 +68,7 @@ class MasterEditorMenu extends HScriptStateHandler
 			grpTexts.add(leText);
 			leText.snapToPosition();
 		}
-		
+
 		#if MODS_ALLOWED
 		var textBG:FlxSprite = new FlxSprite(0, FlxG.height - 42).makeGraphic(FlxG.width, 42, 0xFF000000);
 		textBG.alpha = 0.6;
@@ -76,7 +78,7 @@ class MasterEditorMenu extends HScriptStateHandler
 		directoryTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
 		directoryTxt.scrollFactor.set();
 		add(directoryTxt);
-		
+
 		for (folder in Mods.getModDirectories())
 		{
 			directories.push(folder);
@@ -91,16 +93,13 @@ class MasterEditorMenu extends HScriptStateHandler
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 
 		addVirtualPad("FULL", "A_B");
-
-		super.create();
-		
-		callOnScripts('onCreatePost');
+		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	override function update(elapsed:Float)
 	{
-	    callOnScripts('onUpdate', [elapsed]);
-	    
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+
 		if (controls.UI_UP_P)
 		{
 			changeSelection(-1);
@@ -145,14 +144,14 @@ class MasterEditorMenu extends HScriptStateHandler
 			FlxG.sound.music.volume = 0;
 			#if PRELOAD_ALL
 			if (ClientPrefs.data.FreeplayStyle == 'NF')
-			    FreeplayStateNF.destroyFreeplayVocals();
+				FreeplayStateNF.destroyFreeplayVocals();
 			else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
-			    FreeplayStateNOVA.destroyFreeplayVocals();
+				FreeplayStateNOVA.destroyFreeplayVocals();
 			else
-			    FreeplayState.destroyFreeplayVocals();
+				FreeplayState.destroyFreeplayVocals();
 			#end
 		}
-		
+
 		var bullShit:Int = 0;
 		for (item in grpTexts.members)
 		{
@@ -169,8 +168,8 @@ class MasterEditorMenu extends HScriptStateHandler
 			}
 		}
 		super.update(elapsed);
-		
-		callOnScripts('onUpdatePost', [elapsed]);
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function changeSelection(change:Int = 0)
@@ -188,6 +187,8 @@ class MasterEditorMenu extends HScriptStateHandler
 	#if MODS_ALLOWED
 	function changeDirectory(change:Int = 0)
 	{
+		#if SCRIPTING_ALLOWED callOnScripts('onDirectoryChanged'); #end
+
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
 		curDirectory += change;
@@ -196,7 +197,7 @@ class MasterEditorMenu extends HScriptStateHandler
 			curDirectory = directories.length - 1;
 		if(curDirectory >= directories.length)
 			curDirectory = 0;
-	
+
 		WeekData.setDirectoryFromWeek();
 		if(directories[curDirectory] == null || directories[curDirectory].length < 1)
 			directoryTxt.text = '< No Mod Directory Loaded >';
@@ -206,6 +207,8 @@ class MasterEditorMenu extends HScriptStateHandler
 			directoryTxt.text = '< Loaded Mod Directory: ' + Mods.currentModDirectory + ' >';
 		}
 		directoryTxt.text = directoryTxt.text.toUpperCase();
+
+		#if SCRIPTING_ALLOWED callOnScripts('onDirectoryChangedPost'); #end
 	}
 	#end
 }

@@ -10,10 +10,7 @@ import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
 import openfl.utils.Assets;
 
-// Lua VirtualPad
-import haxe.ds.StringMap;
-
-typedef MobileButton = VirtualButton;
+typedef MobileButton = VirtualButton; // don't judge me for this
 
 class FlxVirtualPad extends FlxSpriteGroup {
 	//Actions
@@ -110,7 +107,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	
 	public function createMobileButton(x:Float, y:Float, Frames:String, ColorS:Int, ?Sizeable:Bool = false, ?ExtraSizeable:Bool = false):Dynamic
 	{
-	    if (ClientPrefs.data.virtualpadType == 'TouchPad')
+	    if (ClientPrefs.data.virtualpadTexture == 'TouchPad')
 	        return createTouchButton(x, y, Frames, ColorS, Sizeable, ExtraSizeable);
 	    else
 	        return createVirtualButton(x, y, Frames, ColorS, Sizeable, ExtraSizeable);
@@ -118,7 +115,7 @@ class FlxVirtualPad extends FlxSpriteGroup {
 	
 	public function createTouchButton(x:Float, y:Float, Frames:String, ?ColorS:Int = 0xFFFFFF, ?Sizeable = false, ?ExtraSizeable:Bool = false):VirtualButton {
 	    var button = new VirtualButton(x, y);
-		button.label = new FlxSprite();		
+		button.label = new FlxSprite();
 		final buttonPath:Dynamic = Paths.image('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/${Frames.toUpperCase()}');
 		final bgPath:Dynamic = Paths.image('touchpad/' + ClientPrefs.data.VirtualPadSkin + '/bg');
 			

@@ -3,7 +3,6 @@ package scripting.substate;
 import flixel.FlxBasic;
 import Character;
 import psychlua.LuaUtils;
-import scripting.state.StateHScript;
 
 import Song;
 import WeekData;
@@ -137,7 +136,7 @@ class SubstateHScript extends SScript
 		set('FlxTimer', flixel.util.FlxTimer);
 		set('FlxTween', flixel.tweens.FlxTween);
 		set('FlxEase', flixel.tweens.FlxEase);
-		set('FlxColor', CustomFlxColor);
+		set('FlxColor', psychlua.HScript.CustomFlxColor);
 		set('controls', PlayerSettings.player1.controls); //fix controls
 		set('Paths', Paths);
 		set('Conductor', Conductor);
@@ -187,12 +186,14 @@ class SubstateHScript extends SScript
 		*/
 		set('FlxGradient', flixel.util.FlxGradient);
 
-        set("switchToScriptState", function(name:String, ?doTransition:Bool = true)
+		/*
+		set("switchToScriptState", function(name:String, ?doTransition:Bool = true)
 		{
 			FlxTransitionableState.skipNextTransIn = !doTransition;
 			FlxTransitionableState.skipNextTransOut = !doTransition;
 			MusicBeatState.switchState(new ScriptState(name));
 		});
+		*/
         set('openScriptSubState', function(substate:String)
         {
             FlxG.state.openSubState(new ScriptSubstate(substate));

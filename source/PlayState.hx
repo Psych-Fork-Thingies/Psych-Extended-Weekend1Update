@@ -97,15 +97,11 @@ import vlc.MP4Handler;
 using StringTools;
 
 class PlayState extends MusicBeatState
-{	
-    //PlayState VirtualPad Things
-    #if LUAVPAD_ALLOWED
-    public var luaVirtualPad:FlxVirtualPad; //trust me, you'll never need to access this directly
-    public static var dpadMode:StringMap<FlxDPadMode> = new StringMap<FlxDPadMode>();
-	public static var actionMode:StringMap<FlxActionMode> = new StringMap<FlxActionMode>();
+{
+	#if LUAVPAD_ALLOWED
+	public var luaVirtualPad:FlxVirtualPad; //trust me, you'll never need to access this directly
 	#end
-	//end
-    
+
 	public static var STRUM_X = 48.5;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 	
@@ -336,17 +332,9 @@ class PlayState extends MusicBeatState
     public static var nextReloadAll:Bool = false;
 	override public function create()
 	{
-	    ScriptingVars.inPlayState = true; //for HScriptSubstates
-	    MobileCType = 'DEFAULT';
-	    #if LUAVPAD_ALLOWED
-		// FlxDPadModes
-		for (data in FlxDPadMode.createAll())
-			dpadMode.set(data.getName(), data);
+		ScriptingVars.inPlayState = true; //for HScriptSubstates
+		MobileCType = 'DEFAULT';
 
-		for (data in FlxActionMode.createAll())
-			actionMode.set(data.getName(), data);
-		#end
-	    
 		//trace('Playback Rate: ' + playbackRate);
 		Paths.clearStoredMemory();
 		if(nextReloadAll) Paths.clearUnusedMemory();
@@ -956,6 +944,7 @@ class PlayState extends MusicBeatState
 
 	public function addTextToDebug(text:String, color:FlxColor) {
 		#if LUA_ALLOWED
+		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
 		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
 		newText.text = text;
 		newText.color = color;

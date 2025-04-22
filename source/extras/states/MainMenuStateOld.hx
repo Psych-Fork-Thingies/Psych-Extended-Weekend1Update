@@ -26,19 +26,19 @@ using StringTools;
 class MainMenuStateOld extends HScriptStateHandler
 {
 	public var curSelected:Int = 0;
-	
+
 	public static var instance:MainMenuStateOld;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	private var camGame:FlxCamera;
 	private var camAchievement:FlxCamera;
-	
+
 	var optionShit:Array<String> = [
 		'story_mode',
 		'freeplay',
 		//#if MODS_ALLOWED 'mods', #end
 		#if ACHIEVEMENTS_ALLOWED 'awards', #end
-	        //'credits',
+			//'credits',
 		//#if !switch 'donate', #end
 		'options'
 	];
@@ -50,33 +50,32 @@ class MainMenuStateOld extends HScriptStateHandler
 
 	override function create()
 	{
-	    instance = this;
-	    
-	    //HScript Things
-	    #if HSCRIPT_ALLOWED
-		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
-		add(luaDebugGroup);
-	    
-	    startHScriptsNamed('MainMenuStateOld.hx');
-    	startHScriptsNamed('global.hx');
-    	#end
-    	//End
-    	
+		instance = this;
+		super.create();
+
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		
+
 		if (ClientPrefs.data.MainMenuStyle == '0.6.3')
 		{
-		optionShit = [
-    		'story_mode',
-    		'freeplay',
-    		#if MODS_ALLOWED 'mods', #end
-    		#if ACHIEVEMENTS_ALLOWED 'awards', #end
-    	        'credits',
-    		//#if !switch 'donate', #end
-    		'options'
-    	];
-    	}
+			optionShit = [
+				'story_mode',
+				'freeplay',
+				#if MODS_ALLOWED 'mods', #end
+				#if ACHIEVEMENTS_ALLOWED 'awards', #end
+					'credits',
+				//#if !switch 'donate', #end
+				'options'
+			];
+		}
+
+		#if SCRIPTING_ALLOWED
+		var className = Type.getClassName(Type.getClass(this));
+		var classString:String = '${className}' + '.hx';
+		if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
+		startHScriptsNamed(classString);
+		startHScriptsNamed('global.hx');
+		#end
 
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
@@ -122,7 +121,7 @@ class MainMenuStateOld extends HScriptStateHandler
 		magenta.antialiasing = ClientPrefs.data.antialiasing;
 		magenta.color = 0xFFfd719b;
 		add(magenta);
-		
+
 		// magenta.scrollFactor.set();
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
@@ -156,7 +155,7 @@ class MainMenuStateOld extends HScriptStateHandler
 
 		FlxG.camera.follow(camFollowPos, null, 1);
 
-        var versionShit:FlxText = new FlxText(12, FlxG.height - 64, 0, "Psych Extended v" + MainMenuState.psychExtendedVersion, 12);
+		var versionShit:FlxText = new FlxText(12, FlxG.height - 64, 0, "Psych Extended v" + MainMenuState.psychExtendedVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -174,43 +173,39 @@ class MainMenuStateOld extends HScriptStateHandler
 		changeItem();
 
 		#if ACHIEVEMENTS_ALLOWED
-    	// Unlocks "Freaky on a Friday Night" achievement if it's a Friday and between 18:00 PM and 23:59 PM
-    		var leDate = Date.now();
-    	    if (leDate.getDay() == 5 && leDate.getHours() >= 18)
-    			Achievements.unlock('friday_night_play');
-    
-    		#if MODS_ALLOWED
-    		Achievements.reloadList();
-    		#end
-    	#end
+		// Unlocks "Freaky on a Friday Night" achievement if it's a Friday and between 18:00 PM and 23:59 PM
+			var leDate = Date.now();
+			if (leDate.getDay() == 5 && leDate.getHours() >= 18)
+				Achievements.unlock('friday_night_play');
 
-    	if (ClientPrefs.data.MainMenuStyle == '0.6.3')
-    	    addVirtualPad("UP_DOWN", "A_B_E");
-    	else
-    	    addVirtualPad("UP_DOWN", "A_B_E_C_M");
+			#if MODS_ALLOWED
+			Achievements.reloadList();
+			#end
+		#end
 
-		super.create();
-		
-		callOnScripts('onCreatePost');
+		if (ClientPrefs.data.MainMenuStyle == '0.6.3')
+			addVirtualPad("UP_DOWN", "A_B_E");
+		else
+			addVirtualPad("UP_DOWN", "A_B_E_C_M");
+
+		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	var selectedSomethin:Bool = false;
 
 	override function update(elapsed:Float)
 	{
-	    //HScript Things
-	    callOnScripts('onUpdate', [elapsed]);
-	    //end
-	    
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 			if (ClientPrefs.data.FreeplayStyle == 'NF')
-			    if(FreeplayStateNF.vocals != null) FreeplayStateNF.vocals.volume += 0.5 * elapsed;
+				if(FreeplayStateNF.vocals != null) FreeplayStateNF.vocals.volume += 0.5 * elapsed;
 			else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
-			    if(FreeplayStateNOVA.vocals != null) FreeplayStateNOVA.vocals.volume += 0.5 * elapsed;
+				if(FreeplayStateNOVA.vocals != null) FreeplayStateNOVA.vocals.volume += 0.5 * elapsed;
 			else
-			    if(FreeplayState.vocals != null) FreeplayState.vocals.volume += 0.5 * elapsed;
+				if(FreeplayState.vocals != null) FreeplayState.vocals.volume += 0.5 * elapsed;
 		}
 
 		var lerpVal:Float = CoolUtil.boundTo(elapsed * 7.5, 0, 1);
@@ -236,13 +231,13 @@ class MainMenuStateOld extends HScriptStateHandler
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				CustomSwitchState.switchMenus('Title');
 			}
-			
+
 			if (_virtualpad.buttonM.justPressed)
 			{
 				selectedSomethin = true;
 				CustomSwitchState.switchMenus('ModsMenu');
 			}
-			
+
 			if (_virtualpad.buttonC.justPressed)
 			{
 				selectedSomethin = true;
@@ -312,10 +307,8 @@ class MainMenuStateOld extends HScriptStateHandler
 		}
 
 		super.update(elapsed);
-		
-		//HScript Things
-	    callOnScripts('onUpdatePost', [elapsed]);
-	    //end
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 
 		menuItems.forEach(function(spr:FlxSprite)
 		{
@@ -349,7 +342,7 @@ class MainMenuStateOld extends HScriptStateHandler
 			}
 		});
 	}
-	
+
 	override function destroy() {
 		instance = null;
 		super.destroy();

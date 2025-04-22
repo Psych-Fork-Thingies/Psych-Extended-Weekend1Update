@@ -65,7 +65,7 @@ class MainMenuState extends HScriptStateHandler
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
-	
+
 	override function create()
 	{
 	    instance = this;
@@ -80,7 +80,7 @@ class MainMenuState extends HScriptStateHandler
 		DiscordClient.changePresence("In the Menus", null);
 		#end
 		debugKeys = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
-		
+
 		camAchievement = new FlxCamera();
 		camAchievement.bgColor.alpha = 0;
 		FlxG.cameras.add(camAchievement, false);
@@ -109,17 +109,13 @@ class MainMenuState extends HScriptStateHandler
 		magenta.color = 0xFFfd719b;
 		add(magenta);
 
-		//HScript Things
-	    #if HSCRIPT_ALLOWED
-	    var className = Type.getClassName(Type.getClass(this));
+		super.create();
 
-		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
-		add(luaDebugGroup);
-
-	    startHScriptsNamed('${className}' + '.hx');
-    	startHScriptsNamed('global.hx');
-    	#end
-    	//End
+		#if SCRIPTING_ALLOWED
+		var className = Type.getClassName(Type.getClass(this));
+		startHScriptsNamed('${className}' + '.hx');
+		startHScriptsNamed('global.hx');
+		#end
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
@@ -167,13 +163,11 @@ class MainMenuState extends HScriptStateHandler
 		addVirtualPad("NONE", "E");
 		_virtualpad.alpha = 1;
 
-		super.create();
-		
-		callOnScripts('onCreatePost');
+		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 
 		FlxG.camera.follow(camFollow, null, 0.15);
 	}
-	
+
 	function createMenuItem(name:String, x:Float, y:Float):FlxSprite
 	{
 		var menuItem:FlxSprite = new FlxSprite(x, y);
@@ -182,7 +176,7 @@ class MainMenuState extends HScriptStateHandler
 		menuItem.animation.addByPrefix('selected', '$name selected', 24, true);
 		menuItem.animation.play('idle');
 		menuItem.updateHitbox();
-		
+
 		menuItem.antialiasing = ClientPrefs.data.antialiasing;
 		menuItem.scrollFactor.set();
 		menuItems.add(menuItem);
@@ -194,10 +188,6 @@ class MainMenuState extends HScriptStateHandler
 	var timeNotMoving:Float = 0;
 	override function update(elapsed:Float)
 	{
-	    //HScript Things
-	    callOnScripts('onUpdate', [elapsed]);
-	    //end
-	    
 		if (FlxG.sound.music.volume < 0.8)
 			FlxG.sound.music.volume = Math.min(FlxG.sound.music.volume + 0.5 * elapsed, 0.8);
 
@@ -302,6 +292,8 @@ class MainMenuState extends HScriptStateHandler
 					}
 			}
 
+			#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+
 			if (controls.BACK)
 			{
 				selectedSomethin = true;
@@ -363,7 +355,7 @@ class MainMenuState extends HScriptStateHandler
 								CustomSwitchState.switchMenus('Options');
 						}
 					});
-					
+
 					for (memb in menuItems)
 					{
 						if(memb == item)
@@ -383,10 +375,8 @@ class MainMenuState extends HScriptStateHandler
 		}
 
 		super.update(elapsed);
-		
-		//HScript Things
-	    callOnScripts('onUpdatePost', [elapsed]);
-	    //end
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function changeItem(change:Int = 0)
@@ -415,7 +405,7 @@ class MainMenuState extends HScriptStateHandler
 		selectedItem.centerOffsets();
 		camFollow.y = selectedItem.getGraphicMidpoint().y;
 	}
-	
+
 	override function destroy() {
 		instance = null;
 		super.destroy();

@@ -53,7 +53,7 @@ typedef TitleData =
 }
 class TitleState extends HScriptStateHandler
 {
-    public static var instance:TitleState;
+	public static var instance:TitleState;
 	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
 	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
 	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
@@ -68,7 +68,7 @@ class TitleState extends HScriptStateHandler
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
-	
+
 	var titleTextColors:Array<FlxColor> = [0xFF33FFFF, 0xFF3333CC];
 	var titleTextAlphas:Array<Float> = [1, .64];
 
@@ -92,13 +92,13 @@ class TitleState extends HScriptStateHandler
 
 	override public function create():Void
 	{
-	    instance = this;
-    	
-        if(!checkOpenFirst){		
-    		FlxTransitionableState.skipNextTransOut = true;										
-    		checkOpenFirst = true;		
+		instance = this;
+
+		if(!checkOpenFirst){
+			FlxTransitionableState.skipNextTransOut = true;
+			checkOpenFirst = true;
 		}
-    
+
 		#if android
 		FlxG.android.preventDefaultKeys = [BACK];
 		#end
@@ -122,25 +122,19 @@ class TitleState extends HScriptStateHandler
 		super.create();
 
 		FlxG.save.bind('funkin', CoolUtil.getSavePath());
-		
+
 		ClientPrefs.loadPrefs();
 
 		#if LUA_ALLOWED
 		Mods.pushGlobalMods();
 		#end
 		Mods.loadTopMod();
-		
-		//HScript Things
-	    var className = Type.getClassName(Type.getClass(this));
-	    
-	    #if HSCRIPT_ALLOWED
-		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
-		add(luaDebugGroup);
-	    
-	    startHScriptsNamed('${className}' + '.hx');
-    	startHScriptsNamed('global.hx');
-    	#end
-    	//End
+
+		#if SCRIPTING_ALLOWED
+		var className = Type.getClassName(Type.getClass(this));
+		startHScriptsNamed('${className}' + '.hx');
+		startHScriptsNamed('global.hx');
+		#end
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
@@ -228,8 +222,8 @@ class TitleState extends HScriptStateHandler
 			}
 		}
 		#end
-		
-		callOnScripts('onCreatePost');
+
+		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	var logoBl:FlxSprite;
@@ -237,10 +231,10 @@ class TitleState extends HScriptStateHandler
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
 	var swagShader:ColorSwap = null;
-	
+
 	function startCutscenesIn()
 	{
-	    #if VIDEOS_ALLOWED
+		#if VIDEOS_ALLOWED
 		if (inGame || ClientPrefs.data.DisableIntroVideo) {
 			startIntro();
 			return;
@@ -250,7 +244,7 @@ class TitleState extends HScriptStateHandler
 		startIntro();
 		#end
 	}
-	
+
 	function startCutscenesOut()
 	{
 		inGame = true;
@@ -259,9 +253,9 @@ class TitleState extends HScriptStateHandler
 
 	function startIntro()
 	{
-	    callOnScripts('onStartIntro');
-	    FPSCounterShit();
-	    
+		#if SCRIPTING_ALLOWED callOnScripts('onStartIntro'); #end
+		FPSCounterShit();
+
 		if (!initialized)
 		{
 			/*var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
@@ -288,7 +282,7 @@ class TitleState extends HScriptStateHandler
 			if(FlxG.sound.music == null) {
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 			}
-			
+
 			MobileData.init();
 		}
 
@@ -365,20 +359,20 @@ class TitleState extends HScriptStateHandler
 			titleText.animation.findByPrefix(animFrames, "ENTER IDLE");
 			titleText.animation.findByPrefix(animFrames, "ENTER FREEZE");
 		}
-		
+
 		if (animFrames.length > 0) {
 			newTitle = true;
-			
+
 			titleText.animation.addByPrefix('idle', "ENTER IDLE", 24);
 			titleText.animation.addByPrefix('press', ClientPrefs.data.flashing ? "ENTER PRESSED" : "ENTER FREEZE", 24);
 		}
 		else {
 			newTitle = false;
-			
+
 			titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
 			titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
 		}
-		
+
 		titleText.antialiasing = ClientPrefs.data.antialiasing;
 		titleText.animation.play('idle');
 		titleText.updateHitbox();
@@ -421,15 +415,15 @@ class TitleState extends HScriptStateHandler
 			skipIntro();
 		else
 			initialized = true;
-			
-		callOnScripts('onStartIntroPost');
+
+		#if SCRIPTING_ALLOWED callOnScripts('onStartIntroPost'); #end
 
 		// credGroup.add(credTextShit);
 	}
 
 	function getIntroTextShit():Array<Array<String>>
 	{
-	    #if MODS_ALLOWED
+		#if MODS_ALLOWED
 		var firstArray:Array<String> = Mods.mergeAllTextsNamed('data/introText.txt', Paths.getPreloadPath());
 		#else
 		var fullText:String = Assets.getText(Paths.txt('introText'));
@@ -447,16 +441,14 @@ class TitleState extends HScriptStateHandler
 
 	var transitioning:Bool = false;
 	private static var playJingle:Bool = false;
-	
+
 	var newTitle:Bool = false;
 	var titleTimer:Float = 0;
 
 	override function update(elapsed:Float)
 	{
-	    //HScript Things
-	    callOnScripts('onUpdate', [elapsed]);
-	    //end
-	    
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
@@ -472,7 +464,7 @@ class TitleState extends HScriptStateHandler
 			}
 		}
 		#end
-		
+
 		if (newTitle) {
 			titleTimer += CoolUtil.boundTo(elapsed, 0, 1);
 			if (titleTimer > 2) titleTimer -= 2;
@@ -487,18 +479,18 @@ class TitleState extends HScriptStateHandler
 				var timer:Float = titleTimer;
 				if (timer >= 1)
 					timer = (-timer) + 2;
-				
+
 				timer = FlxEase.quadInOut(timer);
-				
+
 				titleText.color = FlxColor.interpolate(titleTextColors[0], titleTextColors[1], timer);
 				titleText.alpha = FlxMath.lerp(titleTextAlphas[0], titleTextAlphas[1], timer);
 			}
-			
+
 			if(pressedEnter)
 			{
 				titleText.color = FlxColor.WHITE;
 				titleText.alpha = 1;
-				
+
 				if(titleText != null) titleText.animation.play('press');
 
 				FlxG.camera.flash(ClientPrefs.data.flashing ? FlxColor.WHITE : 0x4CFFFFFF, 1);
@@ -507,14 +499,14 @@ class TitleState extends HScriptStateHandler
 				transitioning = true;
 				// FlxG.sound.music.stop();
 
-    			new FlxTimer().start(1, function(tmr:FlxTimer)
-    			{
-    				if (mustUpdate)
-    					MusicBeatState.switchState(new OutdatedState());
-    				else
-                	    CustomSwitchState.switchMenus('MainMenu');
-    				closedState = true;
-    			});
+				new FlxTimer().start(1, function(tmr:FlxTimer)
+				{
+					if (mustUpdate)
+						MusicBeatState.switchState(new OutdatedState());
+					else
+						CustomSwitchState.switchMenus('MainMenu');
+					closedState = true;
+				});
 				// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 			}
 			#if TITLE_SCREEN_EASTER_EGG
@@ -554,15 +546,15 @@ class TitleState extends HScriptStateHandler
 							});
 							FlxG.sound.music.fadeOut();
 							if (ClientPrefs.data.FreeplayStyle == 'NF')
-    							if(FreeplayStateNF.vocals != null)
-    								FreeplayStateNF.vocals.fadeOut();
-    								
-    						else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
-    							if(FreeplayStateNOVA.vocals != null)
-    								FreeplayStateNOVA.vocals.fadeOut();
-    						else
-    							if(FreeplayState.vocals != null)
-    								FreeplayState.vocals.fadeOut();
+								if(FreeplayStateNF.vocals != null)
+									FreeplayStateNF.vocals.fadeOut();
+
+							else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
+								if(FreeplayStateNOVA.vocals != null)
+									FreeplayStateNOVA.vocals.fadeOut();
+							else
+								if(FreeplayState.vocals != null)
+									FreeplayState.vocals.fadeOut();
 
 							closedState = true;
 							transitioning = true;
@@ -586,10 +578,10 @@ class TitleState extends HScriptStateHandler
 			if(controls.UI_LEFT) swagShader.hue -= elapsed * 0.1;
 			if(controls.UI_RIGHT) swagShader.hue += elapsed * 0.1;
 		}
-		
+
 		super.update(elapsed);
-		
-		callOnScripts('onUpdatePost', [elapsed]);
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function createCoolText(textArray:Array<String>, ?offset:Float = 0)
@@ -675,9 +667,9 @@ class TitleState extends HScriptStateHandler
 					addMoreText('\nFOR 0.6.3 PLAYERS', 15);
 					//ngSpr.visible = true;
 				case 9:
-				    deleteCoolText();
+					deleteCoolText();
 				case 10:
-				    createCoolText(['\nPOWERED BY'], 15);
+					createCoolText(['\nPOWERED BY'], 15);
 				case 11:
 					addMoreText('\nPSYCH ENGINE', 15);
 				case 14:
@@ -689,7 +681,7 @@ class TitleState extends HScriptStateHandler
 				case 17:
 					addMoreText("Funkin'");
 				case 18:
-				    addMoreText('Psych Extended');
+					addMoreText('Psych Extended');
 
 				case 19:
 					skipIntro();
@@ -771,36 +763,36 @@ class TitleState extends HScriptStateHandler
 				{
 					FlxG.sound.music.fadeOut();
 					if (ClientPrefs.data.FreeplayStyle == 'NF')
-    					if(FreeplayStateNF.vocals != null)
-    						FreeplayStateNF.vocals.fadeOut();
+						if(FreeplayStateNF.vocals != null)
+							FreeplayStateNF.vocals.fadeOut();
 
-    				else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
-    					if(FreeplayStateNOVA.vocals != null)
-    						FreeplayStateNOVA.vocals.fadeOut();
+					else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
+						if(FreeplayStateNOVA.vocals != null)
+							FreeplayStateNOVA.vocals.fadeOut();
 
-    				else
-    					if(FreeplayState.vocals != null)
-    						FreeplayState.vocals.fadeOut();
+					else
+						if(FreeplayState.vocals != null)
+							FreeplayState.vocals.fadeOut();
 				}
 				#end
 			}
 			skippedIntro = true;
 		}
 	}
-	
+
 	#if VIDEOS_ALLOWED
 	var video:VideoSprite;
 	function startVideo(name:String)
 	{
-	    skipVideo = new FlxText(0, FlxG.height - 26, 0, "Press " + #if android "Back on your phone " #else "Enter " #end + "to skip", 18);
+		skipVideo = new FlxText(0, FlxG.height - 26, 0, "Press " + #if android "Back on your phone " #else "Enter " #end + "to skip", 18);
 		skipVideo.setFormat(Assets.getFont("assets/fonts/montserrat.ttf").fontName, 18);
 		skipVideo.alpha = 0;
 		skipVideo.alignment = CENTER;
-        skipVideo.screenCenter(X);
-        skipVideo.scrollFactor.set();
+		skipVideo.screenCenter(X);
+		skipVideo.scrollFactor.set();
 		skipVideo.antialiasing = ClientPrefs.data.antialiasing;
-		
-		
+
+
 		#if VIDEOS_ALLOWED
 		var filepath:String = Paths.video(name);
 		#if sys
@@ -813,8 +805,8 @@ class TitleState extends HScriptStateHandler
 			videoEnd();
 			return;
 		}
-        
-        
+
+
 		var video:VideoSprite = new VideoSprite(0, 0, 1280, 720);
 			video.playVideo(filepath);
 			add(video);
@@ -824,7 +816,7 @@ class TitleState extends HScriptStateHandler
 				videoEnd();
 				return;
 			}
-		showText();	
+		showText();
 		#else
 		FlxG.log.warn('Platform not supported!');
 		videoEnd();
@@ -833,35 +825,35 @@ class TitleState extends HScriptStateHandler
 	}
 	function videoEnd()
 	{
-	    skipVideo.visible = false;
-	    //video.visible = false;
+		skipVideo.visible = false;
+		//video.visible = false;
 		startCutscenesOut();
 	}
-	
+
 	override function destroy() {
 		instance = null;
 		super.destroy();
 	}
-	
+
 	function showText(){
-	    add(skipVideo);
+		add(skipVideo);
 		FlxTween.tween(skipVideo, {alpha: 1}, 1, {ease: FlxEase.quadIn});
 		FlxTween.tween(skipVideo, {alpha: 0}, 1, {ease: FlxEase.quadIn, startDelay: 4});
-	
+
 	}
 	#end
-	
+
 	function FPSCounterShit()
 	{
-	    Main.fpsVar.visible = false;
-	    Main.fpsVarNF.visible = false;
-	    Main.fpsVarNova.visible = false;
-	    
+		Main.fpsVar.visible = false;
+		Main.fpsVarNF.visible = false;
+		Main.fpsVarNova.visible = false;
+
 		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
-	        Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
-	    else if (ClientPrefs.data.FPSCounter == 'NF')
-	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
-	    else if (ClientPrefs.data.FPSCounter == 'Psych')
-	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
+			Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
+		else if (ClientPrefs.data.FPSCounter == 'NF')
+			Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
+		else if (ClientPrefs.data.FPSCounter == 'Psych')
+			Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}
 }

@@ -1,4 +1,19 @@
-package scripting;
+package scripting.substate;
+
+import openfl.utils.Assets as OpenFlAssets;
+import flixel.util.FlxSave;
+
+import Character;
+
+import options.*;
+import editors.*;
+
+import flixel.addons.display.FlxRuntimeShader;
+import openfl.filters.ShaderFilter;
+
+#if VIDEOS_ALLOWED
+import vlc.MP4Handler as VideoHandler;
+#end
 
 #if SCRIPTING_ALLOWED
 import scripting.substate.HScript.HScriptInfos;
@@ -6,29 +21,52 @@ import crowplexus.iris.Iris;
 import crowplexus.hscript.Expr.Error as IrisError;
 import crowplexus.hscript.Printer;
 import scripting.substate.HScript;
+import scripting.state.ScriptState;
 
-class HScriptSubStateHandler extends MusicBeatSubstate
+class ScriptSubstate extends MusicBeatSubstate
 {
-	private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
-	public static var instance:HScriptSubStateHandler;
-	public var hscriptArray:Array<HScript> = [];
-	public static var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
+	public static var targetFileName:String; 
 
 	#if HXVIRTUALPAD_ALLOWED
 	public var _hxvirtualpad:FlxVirtualPad;
 	#end
 
-	override function create()
+	public function new(scriptName:String) 
 	{
-		super.create();
+		super();
+
+		targetFileName = scriptName;
+	}
+
+	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
+
+	public static var instance:ScriptSubstate;
+
+	private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
+
+	public var modchartTweens:Map<String, FlxTween> = new Map<String, FlxTween>();
+	public var modchartSprites:Map<String, ModchartSprite> = new Map<String, ModchartSprite>();
+	public var modchartTimers:Map<String, FlxTimer> = new Map<String, FlxTimer>();
+	public var modchartSounds:Map<String, FlxSound> = new Map<String, FlxSound>();
+	public var modchartTexts:Map<String, FlxText> = new Map<String, FlxText>();
+	public var modchartSaves:Map<String, FlxSave> = new Map<String, FlxSave>();
+
+	public var hscriptArray:Array<HScript> = [];
+
+	public static var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
+
+	var keysPressed:Array<Int> = [];
+	private var keysArray:Array<String>;
+
+	override public function create()
+	{
 		instance = this;
-		setErrorHandler();
+
+		Paths.clearUnusedMemory();
 
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
 		add(luaDebugGroup);
-	}
 
-	function setErrorHandler() {
 		Iris.warn = function(x, ?pos:haxe.PosInfos) {
 			Iris.logLevel(WARN, x, pos);
 			var newPos:HScriptInfos = cast pos;
@@ -38,7 +76,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			HScriptSubStateHandler.instance.addTextToDebug('WARNING: $msgInfo', FlxColor.YELLOW);
+			ScriptSubstate.instance.addTextToDebug('WARNING: $msgInfo', FlxColor.YELLOW);
 		}
 		Iris.error = function(x, ?pos:haxe.PosInfos) {
 			Iris.logLevel(ERROR, x, pos);
@@ -49,7 +87,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			HScriptSubStateHandler.instance.addTextToDebug('ERROR: $msgInfo', FlxColor.RED);
+			ScriptSubstate.instance.addTextToDebug('ERROR: $msgInfo', FlxColor.RED);
 		}
 		Iris.fatal = function(x, ?pos:haxe.PosInfos) {
 			Iris.logLevel(FATAL, x, pos);
@@ -60,14 +98,22 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			HScriptSubStateHandler.instance.addTextToDebug('FATAL: $msgInfo', 0xFFBB0000);
+			ScriptSubstate.instance.addTextToDebug('FATAL: $msgInfo', 0xFFBB0000);
 		}
+		startHScriptsNamed('custom_substates/' + targetFileName + '.hx');
+		callOnScripts('onCreatePost');
+		super.create();
 	}
 
-	override function update(elapsed:Float)
+	override public function update(elapsed:Float)
 	{
-		super.update(elapsed);
+		callOnScripts('onUpdate', [elapsed]);
+
+		if (FlxG.sound.music != null && FlxG.sound.music.looped) FlxG.sound.music.onComplete = fixMusic.bind();
+
 		callOnScripts('onUpdatePost', [elapsed]);
+
+		super.update(elapsed);
 	}
 
 	var lastStepHit:Int = -1;
@@ -101,16 +147,40 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 		callOnScripts('onBeatHit');
 	}
 
-	public function addTextToDebug(text:String, color:FlxColor)
+	var lastSectionHit:Int = -1;
+
+	/*
+	override function sectionHit()
 	{
-		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
+		if (lastSectionHit >= curSection)
+		{
+			return;
+		}
+
+		super.sectionHit();
+
+		setOnScripts('curSection', curSection);
+		callOnScripts('onSectionHit');
+	}
+	*/
+
+	function fixMusic()
+	{
+		MusicBeatState.instance.resetMusicVars();
+
+		lastStepHit = -1;
+		lastBeatHit = -1;
+		lastSectionHit = -1;
+	}
+
+	public function addTextToDebug(text:String, color:FlxColor) 
+	{
 		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
 		newText.text = text;
 		newText.color = color;
 		newText.disableTime = 6;
 		newText.alpha = 1;
 		newText.setPosition(10, 8 - newText.height);
-		newText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
 		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
 			spr.y += newText.height + 2;
@@ -120,7 +190,56 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 		Sys.println(text);
 	}
 
-	override function destroy() {
+	public function getLuaObject(tag:String, text:Bool=true):FlxSprite
+		return variables.get(tag);
+
+	public static var inCutscene:Bool;
+
+	public function startVideo(name:String)
+	{
+		#if VIDEOS_ALLOWED
+		inCutscene = true;
+
+		var filepath:String = Paths.video(name);
+		#if sys
+		if(!FileSystem.exists(filepath))
+		#else
+		if(!OpenFlAssets.exists(filepath))
+		#end
+		{
+			FlxG.log.warn('Couldnt find video file: ' + name);
+			return;
+		}
+
+		var video:VideoHandler = new VideoHandler();
+			#if (hxCodec >= "3.0.0")
+			// Recent versions
+			video.play(filepath);
+			video.onEndReached.add(function()
+			{
+				video.dispose();
+				inCutscene = false;
+				return;
+			}, true);
+			#else
+			// Older versions
+			video.playVideo(filepath);
+			video.finishCallback = function()
+			{
+				inCutscene = false;
+				return;
+			}
+			#end
+		#else
+		FlxG.log.warn('Platform not supported!');
+		return;
+		#end
+	}
+
+	override public function close()
+	{
+		super.close();
+
 		instance = null;
 
 		for (script in hscriptArray)
@@ -129,28 +248,18 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 				if(script.exists('onDestroy')) script.call('onDestroy');
 				script.destroy();
 			}
+
 		hscriptArray = null;
-		super.destroy();
-
-		#if HXVIRTUALPAD_ALLOWED
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
-		if (_hxvirtualpad != null) {
-			_hxvirtualpad = FlxDestroyUtil.destroy(_hxvirtualpad);
-			remove(_hxvirtualpad);
-		}
-		#end
 	}
 
 	public function startHScriptsNamed(scriptFile:String)
 	{
 		#if MODS_ALLOWED
-		var scriptToLoad:String = Paths.modFolders('scripts/substates/' + scriptFile);
+		var scriptToLoad:String = Paths.modFolders('scripts/' + scriptFile);
 		if(!FileSystem.exists(scriptToLoad))
-			scriptToLoad = Paths.getScriptPath('substates/' + scriptFile);
+			scriptToLoad = Paths.getScriptPath(scriptFile);
 		#else
-		var scriptToLoad:String = Paths.getScriptPath('substates/' + scriptFile);
+		var scriptToLoad:String = Paths.getScriptPath(scriptFile);
 		#end
 
 		if(FileSystem.exists(scriptToLoad))
@@ -245,12 +354,16 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 		}
 	}
 
+	public function resetScriptState(?doTransition:Bool = false)
+	{
+		FlxTransitionableState.skipNextTransIn = !doTransition;
+		FlxTransitionableState.skipNextTransOut = !doTransition;
+		MusicBeatState.switchState(new ScriptState(targetFileName));
+	}
+
 	#if HXVIRTUALPAD_ALLOWED
 	public function addHxVirtualPad(DPad:String, Action:String)
 	{
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
 		if (_hxvirtualpad != null)
 			removeHxVirtualPad();
 
@@ -276,26 +389,26 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 		if (trackedinputsUI.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsUI);
 
-		if (_hxvirtualpad != null) {
-			_hxvirtualpad = FlxDestroyUtil.destroy(_hxvirtualpad);
+		if (_hxvirtualpad != null)
 			remove(_hxvirtualpad);
-		}
 	}
 
 	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
 		var buttonName = "button" + buttonPostfix;
-		var button = Reflect.getProperty(HScriptSubStateHandler.getState()._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
+		var button = Reflect.getProperty(ScriptState.instance._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
 		return Reflect.getProperty(button, type);
 		return false;
 	}
 	#end
-
-	public static function getState():HScriptSubStateHandler {
-		var curState:Dynamic = FlxG.state.subState;
-		var leState:HScriptSubStateHandler = curState;
-		return leState;
-	}
 }
 #else
-typedef HScriptSubStateHandler = MusicBeatSubstate;
+class ScriptSubstate extends MusicBeatSubstate
+{
+	public function new(scriptName:String) 
+	{
+		super();
+
+		targetFileName = scriptName;
+	}
+}
 #end

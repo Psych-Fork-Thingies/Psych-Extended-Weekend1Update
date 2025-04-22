@@ -34,15 +34,16 @@ class CreditsState extends HScriptStateHandler
 	var intendedColor:Int;
 	var colorTween:FlxTween;
 	var descBox:AttachedSprite;
-	
-	//You can Change It with HScript
+
+	var offsetThing:Float = -75;
+
 	var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 		['Psych Extended'],
-		['KralOyuncu 2010X',	 'KralOyuncuV3',	'Creator of Psych Extended\n(Only Person Working on Psych Extended for now)',					                        'https://youtube.com/@kraloyuncurbx',	    '378FC7'],
+		['KralOyuncu 2010X',	 'KralOyuncuV3',	'Creator of Psych Extended\n(Only Person Working on Psych Extended for now)',											'https://youtube.com/@kraloyuncurbx',		'378FC7'],
 		[''],
 		['Needed Credits'],
-		['MobilePorting',			 'MobilePorting',               "I'm using their Codes",                           'https://github.com/MobilePorting',		'FFE7C0'],
-		['beihu',		         'beihu',		    'Owner of NovaFlare Engine\n(I used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',	        'FFC0CB'],
+		['MobilePorting',			 'MobilePorting',			"I'm using their Codes",						'https://github.com/MobilePorting',		'FFE7C0'],
+		['beihu',				 'beihu',			'Owner of NovaFlare Engine\n(I used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',			'FFC0CB'],
 		[''],
 		['Psych Engine Team'],
 		['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],
@@ -69,10 +70,10 @@ class CreditsState extends HScriptStateHandler
 		['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",								'https://twitter.com/kawaisprite',		'378FC7']
 	];
 
-	var offsetThing:Float = -75;
-
 	override function create()
 	{
+		super.create();
+
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
@@ -82,45 +83,26 @@ class CreditsState extends HScriptStateHandler
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		add(bg);
 		bg.screenCenter();
-		
+
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
-		
-		//HScript Things
-	    #if HSCRIPT_ALLOWED
-	    var className = Type.getClassName(Type.getClass(this));
-	    
-		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
-		add(luaDebugGroup);
-	    
-	    startHScriptsNamed('${className}' + '.hx');
-    	startHScriptsNamed('global.hx');
-    	#end
-    	//End
+
+		#if SCRIPTING_ALLOWED
+		var className = Type.getClassName(Type.getClass(this));
+		startHScriptsNamed('${className}' + '.hx');
+		startHScriptsNamed('global.hx');
+		#end
 
 		#if MODS_ALLOWED
 		for (mod in Mods.parseList().enabled) pushModCreditsToList(mod);
 		#end
-		
-		/* this is useless
-			['Psych Engine Android Team'],
-			['MaysLastPlay',		'MaysLastPlay',		'Android Porter',							'https://www.youtube.com/channel/UCx0LxtFR8ROd9sFAq-UxDfw',	'5DE7FF'],
-			['Nuno Filipe Studios',	'nuno',				'Android Porter',							'https://www.youtube.com/channel/UCq7G3p4msVN5SX2CpJ86tTw',	'989c99'],
-			['M.A. Jigsaw', 		'saw',				'AndroidTools Creator/Vpad Designer',		'https://www.youtube.com/channel/UC2Sk7vtPzOvbVzdVTWrribQ', '444444'],
-			['MarioMaster',		    'mariomaster',		    'hi its a me',	 'https://www.youtube.com/c/MarioMaster1997',	'D10616'],
-			
-			['Mobile Porting Team'],
-			['mcagabe19',			        'lily',                    'Head Porter of Psych Engine 0.6.3 Mobile',   'https://youtube.com/@mcagabe19',		'FFE7C0'],
-			[''],
-			['NF Engine Team'],
-			['beihu',		                'beihu',		            'Main Programmer',							'https://b23.tv/LVj0JVk',	                'FFC0CB'],
-			[''],
-		*/
-		
+
+		#if SCRIPTING_ALLOWED callOnScripts('onModCreditsPushed'); #end
+
 		for(i in defaultList){
 			creditsStuff.push(i);
 		}
-	
+
 		for (i in 0...creditsStuff.length)
 		{
 			var isSelectable:Bool = !unselectableCheck(i);
@@ -142,7 +124,7 @@ class CreditsState extends HScriptStateHandler
 				var icon:AttachedSprite = new AttachedSprite(str);
 				icon.xAdd = optionText.width + 10;
 				icon.sprTracker = optionText;
-	
+
 				// using a FlxGroup is too much fuss!
 				iconArray.push(icon);
 				add(icon);
@@ -152,7 +134,7 @@ class CreditsState extends HScriptStateHandler
 			}
 			else optionText.alignment = CENTERED;
 		}
-		
+
 		descBox = new AttachedSprite();
 		descBox.makeGraphic(1, 1, FlxColor.BLACK);
 		descBox.xAdd = -10;
@@ -171,12 +153,9 @@ class CreditsState extends HScriptStateHandler
 		bg.color = getCurrentBGColor();
 		intendedColor = bg.color;
 		changeSelection();
-		
-        addVirtualPad("UP_DOWN", "A_B");
-        
-        callOnScripts('onCreatePost');
-        
-		super.create();
+
+		addVirtualPad("UP_DOWN", "A_B");
+		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	var quitting:Bool = false;
@@ -187,8 +166,8 @@ class CreditsState extends HScriptStateHandler
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
-		
-		callOnScripts('onUpdate');
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdate'); #end
 
 		if(!quitting)
 		{
@@ -223,21 +202,21 @@ class CreditsState extends HScriptStateHandler
 					}
 				}
 			}
-            
-    		if(controls.ACCEPT && (creditsStuff[curSelected][3] == null || creditsStuff[curSelected][3].length > 4)) {
-    			CoolUtil.browserLoad(creditsStuff[curSelected][3]);
-    		}
-    		if (controls.BACK)
-    		{
-    			if(colorTween != null) {
-    				colorTween.cancel();
-    			}
-    			FlxG.sound.play(Paths.sound('cancelMenu'));
-    			CustomSwitchState.switchMenus('MainMenu');
-    			quitting = true;
-    		}
+
+			if(controls.ACCEPT && (creditsStuff[curSelected][3] == null || creditsStuff[curSelected][3].length > 4)) {
+				CoolUtil.browserLoad(creditsStuff[curSelected][3]);
+			}
+			if (controls.BACK)
+			{
+				if(colorTween != null) {
+					colorTween.cancel();
+				}
+				FlxG.sound.play(Paths.sound('cancelMenu'));
+				CustomSwitchState.switchMenus('MainMenu');
+				quitting = true;
+			}
 		}
-		
+
 		for (item in grpOptions.members)
 		{
 			if(!item.bold)
@@ -256,8 +235,8 @@ class CreditsState extends HScriptStateHandler
 			}
 		}
 		super.update(elapsed);
-		
-		callOnScripts('onUpdatePost');
+
+		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost'); #end
 	}
 
 	var moveTween:FlxTween = null;
