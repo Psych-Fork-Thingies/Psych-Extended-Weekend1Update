@@ -252,7 +252,7 @@
 		<haxeflag name="--macro" value="include('openfl')" />
 	</section>
 	
-	<haxedef name="DISABLED_MACRO_SUPERLATIVE" if="android" />
+	<haxedef name="DISABLED_MACRO_SUPERLATIVE" />
 
 	<!-- _________________________________ Custom _______________________________ -->
 
