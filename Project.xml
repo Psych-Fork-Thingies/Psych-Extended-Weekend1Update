@@ -169,7 +169,9 @@
 	<haxedef name="hscriptPos" />
 	<haxelib name="hscript" />
 	<define name="hscriptPos" />
+	<section if="THREE_D_SUPPORT">
 	<haxelib name="away3d" />
+	</section>
 	
 	<!-- Extra packages-->
 	<haxelib name="grig.audio" />
