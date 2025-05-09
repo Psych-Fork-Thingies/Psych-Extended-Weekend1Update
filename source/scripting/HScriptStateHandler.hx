@@ -160,6 +160,7 @@ class HScriptStateHandler extends MusicBeatState
 		{
 			(newScript = new HScript(null, file)).setParent(this);
 			if (newScript.exists('onCreate')) newScript.call('onCreate');
+			else if (newScript.exists('create')) newScript.call('create');
 			trace('initialized hscript interp successfully: $file');
 			hscriptArray.push(newScript);
 		}
@@ -174,6 +175,7 @@ class HScriptStateHandler extends MusicBeatState
 	}
 
 	public function callOnScripts(funcToCall:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
+		#if HXFUCKER
 		var returnVal:Dynamic = FunkinLua.Function_Continue;
 		if(args == null) args = [];
 		if(exclusions == null) exclusions = [];
@@ -182,6 +184,9 @@ class HScriptStateHandler extends MusicBeatState
 		var result:Dynamic = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
 		if(result == null || excludeValues.contains(result)) result = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
 		return result;
+		#else
+		return callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
+		#end
 	}
 
 	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
@@ -217,6 +222,13 @@ class HScriptStateHandler extends MusicBeatState
 			}
 		}
 
+		switch (funcToCall) //Codename Engine Functions (if you're using `update` function in your code, Don't add `onUpdate`)
+		{
+			case 'onCreate': callOnScripts('create');
+			case 'onCreatePost': callOnScripts('postCreate');
+			case 'onUpdate': callOnScripts('update');
+			case 'onUpdatePost': callOnScripts('postUpdate');
+		}
 		return returnVal;
 	}
 

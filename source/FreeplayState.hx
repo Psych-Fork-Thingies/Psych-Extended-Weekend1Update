@@ -452,7 +452,7 @@ class FreeplayState extends HScriptStateHandler
 				return;
 			}
 
-			LoadingState.prepareToSong();  
+			LoadingState.prepareToSong();
 			LoadingState.loadAndSwitchState(new PlayState());
 			if (!ClientPrefs.data.loadingScreen) FlxG.sound.music.stop();
 			stopMusicPlay = true;

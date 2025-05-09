@@ -29,6 +29,12 @@ import backend.Mods;
 
 using StringTools;
 
+enum AssetSource {
+    SOURCE;
+    MODS;
+    BOTH;
+}
+
 typedef ModsList = {
 	enabled:Array<String>,
 	disabled:Array<String>,
@@ -188,6 +194,26 @@ class Paths
 	inline static public function json(key:String, ?library:String)
 	{
 		return getPath('data/$key.json', TEXT, library);
+	}
+
+	inline static public function fragShaderPath(key:String)
+	{
+		return getPath('shaders/$key.frag');
+	}
+
+	inline static public function vertShaderPath(key:String)
+	{
+		return getPath('shaders/$key.vert');
+	}
+
+	inline static public function fragShader(key:String)
+	{
+		return getTextFromFile('shaders/$key.frag');
+	}
+
+	inline static public function vertShader(key:String)
+	{
+		return getTextFromFile('shaders/$key.vert');
 	}
 
 	inline static public function shaderFragment(key:String, ?library:String)
@@ -565,6 +591,49 @@ class Paths
 		try { return currentTrackedSounds.get(gottenPath); } catch(e:Dynamic) { return null; }
 	}
 	
+	static public function getFolderContent(key:String, addPath:Bool = false, source:AssetSource = BOTH):Array<String> {
+        var content:Array<String> = [];
+        var folder = key.endsWith('/') ? key : key + '/';
+    
+        #if MODS_ALLOWED
+        if (source == MODS || source == BOTH) {
+            var modDirs:Array<String> = [];
+            if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
+                modDirs.push(Mods.currentModDirectory);
+            modDirs = modDirs.concat(Mods.getGlobalMods());
+    
+            for (mod in modDirs) {
+                var modFolder = Paths.mods('$mod/$folder');
+                if (FileSystem.exists(modFolder)) {
+                    for (file in FileSystem.readDirectory(modFolder)) {
+                        if (!FileSystem.isDirectory('$modFolder/$file')) {
+                            var path = addPath ? '$folder$file' : file;
+                            if (!content.contains(path))
+                                content.push(path);
+                        }
+                    }
+                }
+            }
+    
+            // Check modpack folder if enabled
+            if (ClientPrefs.data.Modpack) {
+                var modpackFolder = Paths.modpack(folder);
+                if (FileSystem.exists(modpackFolder)) {
+                    for (file in FileSystem.readDirectory(modpackFolder)) {
+                        if (!FileSystem.isDirectory('$modpackFolder/$file')) {
+                            var path = addPath ? '$folder$file' : file;
+                            if (!content.contains(path))
+                                content.push(path);
+                        }
+                    }
+                }
+            }
+        }
+        #end
+    
+        return content;
+    }
+	
 	public static function readDirectory(directory:String):Array<String>
 	{
 		#if MODS_ALLOWED
@@ -676,7 +745,7 @@ class Paths
 		}
 		return if (ClientPrefs.data.Modpack) Sys.getCwd() + 'modpack/' + key; else Sys.getCwd() + 'mods/' + key;
 	}
-	
+
 	//for HScript TitleState
 	inline static public function modpack(key:String = '') {
 	    return Sys.getCwd() + 'modpack/' + key;

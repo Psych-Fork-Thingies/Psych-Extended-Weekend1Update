@@ -152,6 +152,11 @@ class HScript extends Iris
 		set('FlxTilemap', flixel.tile.FlxTilemap);
 		set('Process', sys.io.Process);
 
+		//Codename Engine
+		set('FunkinText', funkin.backend.FunkinText); //Not Tested! (EDIT: after the 7 hours later, I can tell It's works)
+		set('FunkinShader', funkin.backend.shaders.FunkinShader);
+		set('CustomShader', funkin.backend.shaders.CustomShader);
+
 		//ScriptedState Functions
 		set("switchToScriptState", function(name:String, ?doTransition:Bool = true)
 		{

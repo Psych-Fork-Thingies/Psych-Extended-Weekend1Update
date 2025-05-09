@@ -51,7 +51,6 @@ class MainMenuStateOld extends HScriptStateHandler
 	override function create()
 	{
 		instance = this;
-		super.create();
 
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
@@ -187,6 +186,8 @@ class MainMenuStateOld extends HScriptStateHandler
 			addVirtualPad("UP_DOWN", "A_B_E");
 		else
 			addVirtualPad("UP_DOWN", "A_B_E_C_M");
+
+		super.create();
 
 		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}

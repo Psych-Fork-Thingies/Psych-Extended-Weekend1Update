@@ -410,6 +410,7 @@ class PauseSubState extends HScriptSubStateHandler
 	function changeSelection(change:Int = 0):Void
 	{
 		curSelected = FlxMath.wrap(curSelected + change, 0, menuItems.length - 1);
+		callOnScripts('onSelectItem', [curSelected]);
 		for (num => item in grpMenuShit.members)
 		{
 			item.targetY = num - curSelected;

@@ -25,6 +25,25 @@ import tea.SScript;
 class HScript extends SScript
 {
 	public var parentLua:FunkinLua;
+	public static var staticVariables:Map<String, Dynamic> = [];
+	
+	public function setParent(parent:Dynamic) {
+		interp.allowStaticVariables = interp.allowPublicVariables = true; //Double Check as Always
+		interp.scriptObject = parent;
+		interp.staticVariables = HScript.staticVariables;
+		//interp.publicVariables = map;
+		/*
+		PlayState.instance.addTextToDebug('Static is ' + interp.allowStaticVariables, FlxColor.RED);
+		PlayState.instance.addTextToDebug('Public is ' + interp.allowPublicVariables, FlxColor.RED);
+		PlayState.instance.addTextToDebug('staticVariables is ' + interp.staticVariables, FlxColor.RED);
+		PlayState.instance.addTextToDebug('publicVariables is ' + interp.publicVariables, FlxColor.RED);
+		PlayState.instance.addTextToDebug('variables is ' + interp.variables, FlxColor.RED);
+		*/
+	}
+	
+	public function setPublicMap(map:Map<String, Dynamic>) {
+		interp.publicVariables = map;
+	}
 	
 	public static function initHaxeModule(parent:FunkinLua)
 	{
@@ -68,8 +87,11 @@ class HScript extends SScript
 			file = '';
 			
 		this.varsToBring = varsToBring;
-	
+
 		super(file, false, false);
+		if (PlayState.publicVariables != [] && PlayState.publicVariables != null)
+			interp.publicVariables = PlayState.publicVariables;
+
 		parentLua = parent;
 		if (parent != null)
 			origin = parent.scriptName;
@@ -77,6 +99,9 @@ class HScript extends SScript
 			origin = scriptFile;
 		preset();
 		execute();
+		if (PlayState.publicVariables == [] || PlayState.publicVariables == null) PlayState.publicVariables = interp.publicVariables;
+		PlayState.instance.addTextToDebug('publicVariables in Parent: ' + PlayState.publicVariables, FlxColor.GREEN);
+		PlayState.instance.addTextToDebug('publicVariables in Interp: ' + interp.publicVariables, FlxColor.YELLOW);
 	}
 
 	var varsToBring:Any = null;
@@ -115,6 +140,7 @@ class HScript extends SScript
 		#end
 		set('ShaderFilter', openfl.filters.ShaderFilter);
 		set('CustomShader', funkin.backend.shaders.CustomShader); //CustomShader from CNE
+		set('FunkinShader', funkin.backend.shaders.FunkinShader); //FunkinShader from CNE
 		set('StringTools', StringTools);
 		#if flxanimate
 		set('FlxAnimate', FlxAnimate);
@@ -535,6 +561,7 @@ class HScript extends SScript
 		origin = null;
 		parentLua = null;
 		super.destroy();
+		PlayState.publicVariables = [];
 	}
 	#else
 	public function destroy()

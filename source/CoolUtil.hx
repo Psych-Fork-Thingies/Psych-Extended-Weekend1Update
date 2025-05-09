@@ -408,4 +408,8 @@ class CoolUtil
 	{
 		FlxG.stage.window.alert(message, title);
 	}
+
+	@:noUsing public static inline function getMacroAbstractClass(className:String) {
+		return Type.resolveClass('${className}_HSC');
+	}
 }

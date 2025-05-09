@@ -73,6 +73,7 @@
 	<define name="HSCRIPT_ALLOWED" if="desktop || mobile" />
 	<define name="SCRIPTING_ALLOWED" if="desktop || mobile" /> <!-- DELETE THIS TO DISABLE SCRIPTING STATES -->
 	<define name="LUA_ALLOWED" if="desktop || mobile"/>
+	<!-- <define name="THREE_D_SUPPORT"/> -->
 	<define name="ACHIEVEMENTS_ALLOWED" />
 	<define name="VIDEOS_ALLOWED" if="web || windows || android" unless="32bits || ios"/>
 	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
@@ -168,6 +169,7 @@
 	<haxedef name="hscriptPos" />
 	<haxelib name="hscript" />
 	<define name="hscriptPos" />
+	<haxelib name="away3d" />
 	
 	<!-- Extra packages-->
 	<haxelib name="grig.audio" />
@@ -241,6 +243,12 @@
 	<!--Macro fixes-->
 	<haxeflag name="--macro" value="allowPackage('flash')" />
 	<haxeflag name="--macro" value="include('my.pack')" />
+	<section if="THREE_D_SUPPORT">
+		<haxeflag name="--macro" value="include('away3d')" />
+		<haxeflag name="--macro" value="include('flx3d')" />
+		<haxeflag name="--macro" value="include('flixel')" />
+		<haxeflag name="--macro" value="include('openfl')" />
+	</section>
 	
 	<haxedef name="DISABLED_MACRO_SUPERLATIVE" if="android" />
 

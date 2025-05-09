@@ -30,9 +30,6 @@ class MobileData
 			readDirectory(Path.join([folder, 'ActionModes']), actionModes);
 		}
 		#end
-
-		for (data in ExtraActions.createAll())
-			extraActions.set(data.getName(), data);
 	}
 
 	public static function setVirtualPadCustom(virtualPad:FlxVirtualPad):Void

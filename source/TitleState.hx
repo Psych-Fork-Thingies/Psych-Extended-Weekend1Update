@@ -161,6 +161,7 @@ class TitleState extends HScriptStateHandler
 		#end
 
 		Highscore.load();
+		MobileData.init();
 
 		// IGNORE THIS!!!
 		titleJSON = Json.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
@@ -282,8 +283,6 @@ class TitleState extends HScriptStateHandler
 			if(FlxG.sound.music == null) {
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 			}
-
-			MobileData.init();
 		}
 
 		Conductor.bpm = titleJSON.bpm;

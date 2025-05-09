@@ -59,7 +59,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			"If You Have A Any Problem With Mods Change This",
 			'hscriptversion',
 			'string',
-			['HScript Old', 'HScript New', 'SScript']);
+			['HScript Old', 'HScript New', 'SScript', 'Iris']);
 		addOption(option);
 		
 		var option:Option = new Option('Chart System:',

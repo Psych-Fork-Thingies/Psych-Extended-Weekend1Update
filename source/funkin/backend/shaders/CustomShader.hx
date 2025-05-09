@@ -2,11 +2,12 @@ package funkin.backend.shaders;
 
 import haxe.Exception;
 import openfl.Assets;
+import crowplexus.hscript.IHScriptCustomBehaviour;
 
 /**
- * Class for custom shaders.
+ * Class for custom shaders from Codename Engine, Added for Using Shaders in PsychEngine without any shitty code.
  *
- * To create one, create a `shaders` folder in your assets/mod folder, then add a file named `my-shader.frag` or/and `my-shader.vert`.
+ * To create one, create a `shaders` folder in your mod folder, then add a file named `my-shader.frag` or/and `my-shader.vert`.
  *
  * Non-existent shaders will only load the default one, and throw a warning in the console.
  *
@@ -21,11 +22,18 @@ class CustomShader extends FunkinShader {
 	 * @param glslVersion GLSL version to use. Defaults to `100` in mobile, `120` in desktop.
 	 */
 	public function new(name:String, glslVersion:String = #if mobile "100" #else "120" #end) {
-		var fragCode = Paths.fileExists('shaders/$name.frag', TEXT) ? Paths.getTextFromFile('shaders/$name.frag') : null;
-		var vertCode = Paths.fileExists('shaders/$name.vert', TEXT) ? Paths.getTextFromFile('shaders/$name.vert') : null;
+		var fragShaderPath = Paths.fragShaderPath(name);
+		var vertShaderPath = Paths.vertShaderPath(name);
+		var fragCode = Paths.fileExists('shaders/$name.frag', TEXT) ? Paths.fragShader(name) : null;
+		var vertCode = Paths.fileExists('shaders/$name.vert', TEXT) ? Paths.vertShader(name) : null;
+
+		fragFileName = fragShaderPath;
+		vertFileName = vertShaderPath;
+
+		path = fragShaderPath+vertShaderPath;
 
 		if (fragCode == null && vertCode == null)
-			trace('Shader "$fragCode" and "$vertCode" couldn\'t be found.');
+			CoolUtil.showPopUp('Shader "$fragShaderPath" and "$vertShaderPath" couldn\'t be found.', "ERROR");
 
 		super(fragCode, vertCode, glslVersion);
 	}

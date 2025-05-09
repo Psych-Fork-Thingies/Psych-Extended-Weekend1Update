@@ -184,6 +184,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 	}
 
 	public function callOnScripts(funcToCall:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
+		#if HXFUCKER
 		var returnVal:Dynamic = FunkinLua.Function_Continue;
 		if(args == null) args = [];
 		if(exclusions == null) exclusions = [];
@@ -192,6 +193,9 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 		var result:Dynamic = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
 		if(result == null || excludeValues.contains(result)) result = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
 		return result;
+		#else
+		return callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
+		#end
 	}
 
 	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
@@ -227,6 +231,13 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 			}
 		}
 
+		switch (funcToCall) //Codename Engine Functions (if you're using `update` function in your code, Don't add `onUpdate`)
+		{
+			case 'onCreate': callOnScripts('create');
+			case 'onCreatePost': callOnScripts('postCreate');
+			case 'onUpdate': callOnScripts('update');
+			case 'onUpdatePost': callOnScripts('postUpdate');
+		}
 		return returnVal;
 	}
 
