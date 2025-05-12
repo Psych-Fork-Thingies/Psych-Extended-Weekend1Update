@@ -54,7 +54,7 @@
 	<!-- <set name="BUILD_DIR" value="/storage/emulated/0/.PsychEngine/export/release" if='termux' unless="debug" /> -->
 
 	<classpath name="source" />
-	
+
 	<!-- PSYCH EXTENDED CUSTOMIZATION -->
 	<define name="BASE_GAME_ASSETS" if="finalBuild" />
 	<!-- <define name="TouchPad" /> -->

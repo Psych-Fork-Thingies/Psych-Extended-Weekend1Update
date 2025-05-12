@@ -179,13 +179,8 @@ class FunkinLua {
 		set('healthLossMult', game.healthLoss);
 		#if FLX_PITCH set('playbackRate', game.playbackRate); #end
 		set('instakillOnMiss', game.instakillOnMiss);
-		set('OpponentMode', game.cpuControlled_opponent);
-		
-		if (PlayState.opponentChart)
-		    set('botPlay', game.cpuControlled_opponent);
-		else
-		    set('botPlay', game.cpuControlled);
-		    
+
+		set('botPlay', game.cpuControlled);
 		set('practice', game.practiceMode);
 
 		for (i in 0...4) {

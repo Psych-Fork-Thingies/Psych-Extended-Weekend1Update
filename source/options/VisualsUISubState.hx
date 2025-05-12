@@ -31,14 +31,15 @@ using StringTools;
 
 class VisualsUISubState extends BaseOptionsMenu
 {
-    var noteSkinList:Array<String> = CoolUtil.coolTextFile(StorageUtil.getStorageDirectory() + Paths.getPreloadPath('images/NoteSkin/DataSet/noteSkinList.txt'));
-    
+	var noteOptionID:Int = -1;
+	var notes:FlxTypedGroup<StrumNote>;
+	var notesTween:Array<FlxTween> = [];
+	var noteY:Float = 90;
 	public function new()
 	{
 		title = 'Visuals and UI Settings';
 		rpcTitle = 'Visuals and UI Settings Menu'; //for Discord Rich Presence
-		noteSkinList.unshift('original');
-		
+
 		#if PsychExtended_Extras
 		var option:Option = new Option('Freeplay Menu Style:',
 			"Choose your Freeplay Menu Style",
@@ -68,15 +69,35 @@ class VisualsUISubState extends BaseOptionsMenu
 			['Psych', 'NovaFlare', 'Extended']);
 		addOption(option);
 		
-		var option:Option = new Option('Note Skin:',
-			"Choose Note Skin",
-			'NoteSkin',
-			'string',
-			noteSkinList);	
-		option.showNote = true;
-		addOption(option);
-		option.onChange = onChangeNoteSkin;
-		
+		// for note skins
+		notes = new FlxTypedGroup<StrumNote>();
+		for (i in 0...Note.colArray.length)
+		{
+			var note:StrumNote = new StrumNote(370 + (560 / Note.colArray.length) * i, -200, i, 0);
+			note.centerOffsets();
+			note.centerOrigin();
+			note.playAnim('static');
+			notes.add(note);
+		}
+
+		// options
+		var noteSkins:Array<String> = Mods.mergeAllTextsNamed('images/noteSkins/list.txt', 'shared');
+		if(noteSkins.length > 0)
+		{
+			if(!noteSkins.contains(ClientPrefs.data.noteSkin))
+				ClientPrefs.data.noteSkin = ClientPrefs.defaultData.noteSkin; //Reset to default if saved noteskin couldnt be found
+
+			noteSkins.insert(0, ClientPrefs.defaultData.noteSkin); //Default skin always comes first
+			var option:Option = new Option('Note Skins:',
+				"Select your prefered Note skin.",
+				'noteSkin',
+				'string',
+				noteSkins);
+			addOption(option);
+			option.onChange = onChangeNoteSkin;
+			noteOptionID = optionsArray.length - 1;
+		}
+
 		var option:Option = new Option('FPSCounter:',
 			"Choose your FPSCounter",
 			'FPSCounter',
@@ -188,6 +209,24 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		super();
+		add(notes);
+	}
+
+	override function changeSelection(change:Int = 0)
+	{
+		super.changeSelection(change);
+
+		if(noteOptionID < 0) return;
+
+		for (i in 0...Note.colArray.length)
+		{
+			var note:StrumNote = notes.members[i];
+			if(notesTween[i] != null) notesTween[i].cancel();
+			if(curSelected == noteOptionID)
+				notesTween[i] = FlxTween.tween(note, {y: noteY}, Math.abs(note.y / (200 + noteY)) / 3, {ease: FlxEase.quadInOut});
+			else
+				notesTween[i] = FlxTween.tween(note, {y: -200}, Math.abs(note.y / (200 + noteY)) / 3, {ease: FlxEase.quadInOut});
+		}
 	}
 
 	var changedMusic:Bool = false;
@@ -238,30 +277,22 @@ class VisualsUISubState extends BaseOptionsMenu
 	
 	function onChangeNoteSkin()
 	{
-		remove(grpNote);
+		notes.forEachAlive(function(note:StrumNote) {
+			changeNoteSkin(note);
+			note.centerOffsets();
+			note.centerOrigin();
+		});
+	}
 
-		grpNote = new FlxTypedGroup<FlxSprite>();
-		add(grpNote);
-		
-		for (i in 0...ClientPrefs.data.arrowHSV.length) {
-			var notes:FlxSprite = new FlxSprite((i * 125), 100);
-			if (ClientPrefs.data.NoteSkin == 'original')
-			    notes.frames = Paths.getSparrowAtlas('NOTE_assets');
-			else
-			    notes.frames = Paths.getSparrowAtlas('NoteSkin/' + ClientPrefs.data.NoteSkin);
-			var animations:Array<String> = ['purple0', 'blue0', 'green0', 'red0'];
-			notes.animation.addByPrefix('idle', animations[i]);
-			notes.animation.play('idle');
-			notes.scale.set(0.8, 0.8);
-			notes.x += 700;
-			notes.antialiasing = ClientPrefs.data.antialiasing;
-			grpNote.add(notes);
-			
-			var newShader:ColorSwap = new ColorSwap();
-			notes.shader = newShader.shader;
-			newShader.hue = ClientPrefs.data.arrowHSV[i][0] / 360;
-			newShader.saturation = ClientPrefs.data.arrowHSV[i][1] / 100;
-			newShader.brightness = ClientPrefs.data.arrowHSV[i][2] / 100;	    
-		}
+	function changeNoteSkin(note:StrumNote)
+	{
+		var skin:String = Note.defaultNoteSkin;
+		if (Note.getNoteSkinPostfix() == '' || Note.getNoteSkinPostfix() == null) skin = 'NOTE_assets';
+		var customSkin:String = skin + Note.getNoteSkinPostfix();
+		if(Paths.fileExists('images/$customSkin.png', IMAGE)) skin = customSkin;
+
+		note.texture = skin; //Load texture and anims
+		note.reloadNote();
+		note.playAnim('static');
 	}
 }

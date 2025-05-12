@@ -37,15 +37,15 @@ class OptionsState extends MusicBeatState
 	public static var menuBG:FlxSprite;
 
 	function openSelectedSubstate(label:String) {
-	    persistentUpdate = false;
-	    if (label != "Adjust Delay and Combo") removeVirtualPad();
+		persistentUpdate = false;
+		if (label != "Adjust Delay and Combo") removeVirtualPad();
 		switch(label) {
 			case 'Note Colors':
 				openSubState(new options.NotesSubState());
 			case 'Controls':
 				openSubState(new options.ControlsSubState());
 			case 'Mobile Controls':
-    			openSubState(new MobileControlSelectSubState());
+				openSubState(new MobileControlSelectSubState());
 			case 'Graphics':
 				openSubState(new options.GraphicsSettingsSubState());
 			case 'Visuals and UI':
@@ -53,7 +53,7 @@ class OptionsState extends MusicBeatState
 			case 'Gameplay':
 				openSubState(new options.GameplaySettingsSubState());
 			case 'Mobile Options':
-			    openSubState(new MobileOptionsSubState());
+				openSubState(new MobileOptionsSubState());
 			case 'Adjust Delay and Combo':
 				CustomSwitchState.switchMenus('NoteOffset');
 		}
@@ -71,7 +71,7 @@ class OptionsState extends MusicBeatState
 		#end
 		
 		if (ClientPrefs.data.VirtualPadAlpha != 0) 
-		    options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
+			options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFFea71fd;
@@ -120,9 +120,9 @@ class OptionsState extends MusicBeatState
 		removeVirtualPad();
 		addVirtualPad("UP_DOWN", "A_B_E");
 		if (ClientPrefs.data.VirtualPadAlpha != 0) //pls work
-		    options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
+			options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 		else
-		    options = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
+			options = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 		persistentUpdate = true;
 	}
 
@@ -135,17 +135,17 @@ class OptionsState extends MusicBeatState
 			changeSelection(1);
 		
 		if (controls.BACK) {
-    		if (OptionsState.stateType == 2)
-    		    MusicBeatState.switchState(new FreeplayStateNF());
-    		else if (OptionsState.stateType == 1)
-    		    MusicBeatState.switchState(new FreeplayStateNOVA());
-    		else if (OptionsState.stateType == 3 || onPlayState)
-    		    LoadingState.loadAndSwitchState(new PlayState());
+			if (OptionsState.stateType == 2)
+				MusicBeatState.switchState(new FreeplayStateNF());
+			else if (OptionsState.stateType == 1)
+				MusicBeatState.switchState(new FreeplayStateNOVA());
+			else if (OptionsState.stateType == 3 || onPlayState)
+				LoadingState.loadAndSwitchState(new PlayState());
 			else
-    			CustomSwitchState.switchMenus('MainMenu');
-    		FlxG.sound.play(Paths.sound('cancelMenu'));
-    		onPlayState = false;
-    	    stateType = 0;
+				CustomSwitchState.switchMenus('MainMenu');
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+			onPlayState = false;
+			stateType = 0;
 		}
 		
 		if (_virtualpad.buttonE.justPressed) {

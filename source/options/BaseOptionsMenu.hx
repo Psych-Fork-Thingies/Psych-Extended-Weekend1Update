@@ -43,7 +43,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private var checkboxGroup:FlxTypedGroup<CheckboxThingie>;
 	private var grpTexts:FlxTypedGroup<AttachedText>;
-	public var showNotes:Bool = false;
 
     private var boyfriend:Character = null;
 	private var descBox:FlxSprite;
@@ -326,14 +325,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		
 		if(boyfriend != null)
 			boyfriend.visible = optionsArray[curSelected].showBoyfriend;
-		if (optionsArray[curSelected].showNote == false)
-		 remove(grpNote);
-		else{
-		remove(grpNote);		
-		grpNote = new FlxTypedGroup<FlxSprite>();
-		add(grpNote);
-		reloadNotes();
-		}
 		curOption = optionsArray[curSelected]; //shorter lol
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 	}
@@ -354,31 +345,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		boyfriend.dance();
 		insert(1, boyfriend);
 		boyfriend.visible = wasVisible;
-	}
-
-	public function reloadNotes()
-		{
-			for (i in 0...ClientPrefs.data.arrowHSV.length) {
-				var notes:FlxSprite = new FlxSprite((i * 125), 100);
-				if (ClientPrefs.data.NoteSkin == 'original')
-    			    notes.frames = Paths.getSparrowAtlas('NOTE_assets');
-    			else
-    			    notes.frames = Paths.getSparrowAtlas('NoteSkin/' + ClientPrefs.data.NoteSkin);
-				var animations:Array<String> = ['purple0', 'blue0', 'green0', 'red0'];
-				notes.animation.addByPrefix('idle', animations[i]);
-				notes.animation.play('idle');
-				//notes.visible = true;
-				notes.scale.set(0.8, 0.8);
-				notes.x += 700;
-				notes.antialiasing = ClientPrefs.data.antialiasing;
-				grpNote.add(notes);
-				
-				var newShader:ColorSwap = new ColorSwap();
-			    notes.shader = newShader.shader;
-			    newShader.hue = ClientPrefs.data.arrowHSV[i][0] / 360;
-			    newShader.saturation = ClientPrefs.data.arrowHSV[i][1] / 100;
-			    newShader.brightness = ClientPrefs.data.arrowHSV[i][2] / 100;
-		}
 	}
 
 	function reloadCheckboxes()

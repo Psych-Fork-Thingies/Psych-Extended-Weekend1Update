@@ -22,8 +22,8 @@ import flixel.util.FlxDestroyUtil;
 
 class MusicBeatState extends FlxUIState
 {
-    public static var instance:MusicBeatState;
-    
+	public static var instance:MusicBeatState;
+
 	private var curSection:Int = 0;
 	private var stepsToDo:Int = 0;
 
@@ -32,19 +32,19 @@ class MusicBeatState extends FlxUIState
 
 	private var curDecStep:Float = 0;
 	private var curDecBeat:Float = 0;
-	
+
 	public function resetMusicVars()
 	{
 		curSection = 0;
 		stepsToDo = 0;
-	
+
 		curStep = 0;
 		curBeat = 0;
-	
+
 		curDecStep = 0;
 		curDecBeat = 0;
 	}
-	
+
 	public var controls(get, never):Controls;
 	public static var checkHitbox:Bool = false;
 
@@ -55,7 +55,7 @@ class MusicBeatState extends FlxUIState
 
 	public var _virtualpad:FlxVirtualPad;
 	public static var mobilec:MobileControls;
-	
+
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
 
@@ -71,7 +71,7 @@ class MusicBeatState extends FlxUIState
 		controls.trackedInputsUI = [];
 		_virtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
-	
+
 	public function removeVirtualPad() {
 		if (trackedinputsUI.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsUI);
@@ -79,36 +79,17 @@ class MusicBeatState extends FlxUIState
 		if (_virtualpad != null)
 			remove(_virtualpad);
 	}
-	
+
 	public function removeMobileControls() {
 		if (trackedinputsNOTES.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsNOTES);
-			
+
 		if (mobilec != null)
 			remove(mobilec);
 	}
-	
-	public function addMobileControls(?mode:Null<String>) {
-		mobilec = new MobileControls();
-		PlayState.MobileCType = 'DEFAULT';
-		
-		switch (mode.toLowerCase())
-		{
-		    case 'normal':
-				PlayState.MobileCType = 'NORMAL';
-				mobilec.visible = true;
-			case 'shift':
-			    PlayState.MobileCType = 'SHIFT';
-			    mobilec.visible = true;
-			case 'space':
-				PlayState.MobileCType = 'SPACE';
-				mobilec.visible = true;
-			case 'both':
-				PlayState.MobileCType = 'BOTH';
-				mobilec.visible = true;
-			default:
-				// do nothing
-		}
+
+	public function addMobileControls(?mode:Float = -1) {
+		mobilec = new MobileControls(mode);
 
 		switch (mobilec.mode)
 		{
@@ -119,8 +100,8 @@ class MusicBeatState extends FlxUIState
 				controls.setVirtualPadNOTES(mobilec.vpad, "DUO", "NONE");
 				MusicBeatState.checkHitbox = false;
 			case HITBOX:
-			    if(ClientPrefs.data.hitboxmode != 'New') controls.setHitBox(mobilec.hbox);
-				else controls.setNewHitBox(mobilec.newhbox);
+				if(ClientPrefs.data.hitboxmode == 'New') controls.setNewHitBox(mobilec.newhbox);
+				else controls.setHitBox(mobilec.hbox);
 				MusicBeatState.checkHitbox = true;
 			default:
 		}
@@ -135,14 +116,14 @@ class MusicBeatState extends FlxUIState
 
 		add(mobilec);
 	}
-	
-    public function addVirtualPadCamera() {
+
+	public function addVirtualPadCamera() {
 		var camcontrol = new flixel.FlxCamera();
 		camcontrol.bgColor.alpha = 0;
 		FlxG.cameras.add(camcontrol, false);
 		_virtualpad.cameras = [camcontrol];
 	}
-	
+
 	override function destroy() {
 		if (trackedinputsNOTES.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsNOTES);
@@ -166,14 +147,14 @@ class MusicBeatState extends FlxUIState
 		super.create();
 
 		if(!skip) {
-		    if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
-			    openSubState(new CustomFadeTransitionNOVA(0.7, true));
+			if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
+				openSubState(new CustomFadeTransitionNOVA(0.7, true));
 			else
-			    openSubState(new CustomFadeTransition(0.7, true));
+				openSubState(new CustomFadeTransition(0.7, true));
 		}
 		FlxTransitionableState.skipNextTransOut = false;
 	}
-	
+
 	public function initPsychCamera():PsychCamera
 	{
 		var camera = new PsychCamera();
@@ -207,7 +188,7 @@ class MusicBeatState extends FlxUIState
 		}
 
 		if(FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
-		
+
 		stagesFunc(function(stage:BaseStage) {
 			stage.update(elapsed);
 		});
@@ -262,13 +243,9 @@ class MusicBeatState extends FlxUIState
 		curDecStep = lastChange.stepTime + shit;
 		curStep = lastChange.stepTime + Math.floor(shit);
 	}
-	
+
 	public static function switchState(nextState:FlxState = null) {
-	    //For HScript States/Substates
-	    ScriptingVars.currentScriptableState = null;
-	    ScriptingVars.inPlayState = false;
-	    //
-	    FunkinLua.FPSCounterText = null;
+		FunkinLua.FPSCounterText = null;
 		if(nextState == null) nextState = FlxG.state;
 		if(nextState == FlxG.state)
 		{
@@ -293,24 +270,24 @@ class MusicBeatState extends FlxUIState
 		if(nextState == null)
 			nextState = FlxG.state;
 
-        if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
-		    FlxG.state.openSubState(new CustomFadeTransitionNOVA(0.6, false));
+		if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
+			FlxG.state.openSubState(new CustomFadeTransitionNOVA(0.6, false));
 		else
-		    FlxG.state.openSubState(new CustomFadeTransition(0.6, false));
+			FlxG.state.openSubState(new CustomFadeTransition(0.6, false));
 		if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
 		{
-    		if(nextState == FlxG.state)
-    			CustomFadeTransitionNOVA.finishCallback = function() FlxG.resetState();
-    		else
-    			CustomFadeTransitionNOVA.finishCallback = function() FlxG.switchState(nextState);
-    	}
-    	else
-    	{
-    		if(nextState == FlxG.state)
-    			CustomFadeTransition.finishCallback = function() FlxG.resetState();
-    		else
-    			CustomFadeTransition.finishCallback = function() FlxG.switchState(nextState);
-    	}
+			if(nextState == FlxG.state)
+				CustomFadeTransitionNOVA.finishCallback = function() FlxG.resetState();
+			else
+				CustomFadeTransitionNOVA.finishCallback = function() FlxG.switchState(nextState);
+		}
+		else
+		{
+			if(nextState == FlxG.state)
+				CustomFadeTransition.finishCallback = function() FlxG.resetState();
+			else
+				CustomFadeTransition.finishCallback = function() FlxG.switchState(nextState);
+		}
 	}
 
 	public static function getState():MusicBeatState {
@@ -321,7 +298,7 @@ class MusicBeatState extends FlxUIState
 
 	public function stepHit():Void
 	{
-	    stagesFunc(function(stage:BaseStage) {
+		stagesFunc(function(stage:BaseStage) {
 			stage.curStep = curStep;
 			stage.curDecStep = curDecStep;
 			stage.stepHit();
@@ -331,7 +308,7 @@ class MusicBeatState extends FlxUIState
 			beatHit();
 	}
 
-    public var stages:Array<BaseStage> = [];
+	public var stages:Array<BaseStage> = [];
 	public function beatHit():Void
 	{
 		//trace('Beat: ' + curBeat);

@@ -50,11 +50,11 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		
 		#if PsychExtended_Extras
 		var option:Option = new Option('Use Experimental Cameras',
-			'If checked, game uses camFollowNew instead of camFollow.\n(If you have a any camera issue, enable or disable this)',
+			"If checked, game uses 0.7x's Camera System instead of 0.6x's.\n(If you have a any camera issue, enable or disable this)",
 			'UseNewCamSystem',
 			'bool');
 		addOption(option);
-		
+
 		var option:Option = new Option('HScript Version:',
 			"If You Have A Any Problem With Mods Change This",
 			'hscriptversion',

@@ -278,9 +278,9 @@ class Character extends FlxSprite
 		}
 
 		if (getAnimationName().startsWith('sing')) holdTimer += elapsed;
-		else if(isPlayer && !PlayState.opponentChart) holdTimer = 0;
+		else if(isPlayer) holdTimer = 0;
 
-		if ((!isPlayer || PlayState.opponentChart) && holdTimer >= Conductor.stepCrochet * (0.0011 #if FLX_PITCH / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1) #end) * singDuration)
+		if ((!isPlayer) && holdTimer >= Conductor.stepCrochet * (0.0011 #if FLX_PITCH / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1) #end) * singDuration)
 		{
 			dance();
 			holdTimer = 0;

@@ -49,9 +49,8 @@ class MusicBeatSubstate extends FlxSubState
 		_virtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
 	
-	public function addMobileControls(?mode:Null<String>) {
+	public function addMobileControls() {
 		mobilec = new MobileControls();
-		PlayState.MobileCType = 'DEFAULT';
 
 		switch (mobilec.mode)
 		{
@@ -62,8 +61,8 @@ class MusicBeatSubstate extends FlxSubState
 				controls.setVirtualPadNOTES(mobilec.vpad, "DUO", "NONE");
 				MusicBeatState.checkHitbox = false;
 			case HITBOX:
-			    if(ClientPrefs.data.hitboxmode != 'New') controls.setHitBox(mobilec.hbox);
-				else controls.setNewHitBox(mobilec.newhbox);
+				if(ClientPrefs.data.hitboxmode == 'New') controls.setNewHitBox(mobilec.newhbox);
+				else controls.setHitBox(mobilec.hbox);
 				MusicBeatState.checkHitbox = true;
 			default:
 		}
@@ -103,9 +102,7 @@ class MusicBeatSubstate extends FlxSubState
 	}
 	
 	override function destroy() {
-	    ScriptingVars.currentScriptableState = null; //fix hx substate glitches
-	    
-	    if (trackedinputsNOTES.length > 0)
+		if (trackedinputsNOTES.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsNOTES);
 
 		if (trackedinputsUI.length > 0)

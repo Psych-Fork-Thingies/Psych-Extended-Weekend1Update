@@ -10,9 +10,9 @@ import TitleState;
 // Add a variable here and it will get automatically saved
 @:structInit class SaveVariables {
 	//Psych Extended
+	public var noteSkin:String = 'Default';
 	//Extras (More Easier Than To remove everything)
 	#if !PsychExtended_Extras
-	public final NoteSkin:String = 'original';
 	public final FreeplayStyle:String = 'Psych';
 	public final PauseMenuStyle:String = 'Psych';
 	public final FreakyMenu:String = 'Extended';
@@ -23,7 +23,6 @@ import TitleState;
 	public final hscriptversion:String = 'HScript Old';
 	public final chartLoadSystem:String = '0.4-0.7x';
 	#else
-	public var NoteSkin:String = 'original';
 	public var FreeplayStyle:String = 'Psych';
 	public var PauseMenuStyle:String = 'Psych';
 	public var FreakyMenu:String = 'Extended';

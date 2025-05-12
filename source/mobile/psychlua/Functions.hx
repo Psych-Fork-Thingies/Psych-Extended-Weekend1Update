@@ -11,82 +11,77 @@ class MobileFunctions
 {
 	public static function implement(funk:FunkinLua)
 	{
-	    #if LUA_ALLOWED
-	    var lua:State = funk.lua;
-	    
-	    #if LUAVPAD_ALLOWED
+		#if LUA_ALLOWED
+		var lua:State = funk.lua;
+
+		#if LUAVPAD_ALLOWED
 		//OMG
 		Lua_helper.add_callback(lua, 'virtualPadPressed', function(buttonPostfix:String):Bool
 		{
-		    return PlayState.checkVPadPress(buttonPostfix, 'pressed');
+			return PlayState.checkVPadPress(buttonPostfix, 'pressed');
 		});
-		
+
 		Lua_helper.add_callback(lua, 'virtualPadJustPressed', function(buttonPostfix:String):Bool
 		{
-		    return PlayState.checkVPadPress(buttonPostfix, 'justPressed');
+			return PlayState.checkVPadPress(buttonPostfix, 'justPressed');
 		});
-		
+
 		Lua_helper.add_callback(lua, 'virtualPadReleased', function(buttonPostfix:String):Bool
 		{
-		    return PlayState.checkVPadPress(buttonPostfix, 'released');
+			return PlayState.checkVPadPress(buttonPostfix, 'released');
 		});
-		
+
 		Lua_helper.add_callback(lua, 'virtualPadJustReleased', function(buttonPostfix:String):Bool
 		{
-		    return PlayState.checkVPadPress(buttonPostfix, 'justReleased');
+			return PlayState.checkVPadPress(buttonPostfix, 'justReleased');
 		});
-		
+
 		Lua_helper.add_callback(lua, 'addVirtualPad', function(DPad:String, Action:String, ?addToCustomSubstate:Bool = false, ?posAtCustomSubstate:Int = -1):Void
 		{
-		    PlayState.instance.makeLuaVirtualPad(DPad, Action);
+			PlayState.instance.makeLuaVirtualPad(DPad, Action);
 			if (addToCustomSubstate)
 			{
 				if (PlayState.instance.luaVirtualPad != null || !PlayState.instance.members.contains(PlayState.instance.luaVirtualPad))
 					CustomSubstate.insertLuaVpad(posAtCustomSubstate);
 			}
 			else
-				PlayState.instance.addLuaVirtualPad();		    
+				PlayState.instance.addLuaVirtualPad();
 		});
-		
+
 		Lua_helper.add_callback(lua, 'addVirtualPadCamera', function():Void
 		{
-		    PlayState.instance.addLuaVirtualPadCamera();
+			PlayState.instance.addLuaVirtualPadCamera();
 		});
-		
+
 		Lua_helper.add_callback(lua, 'removeVirtualPad', function():Void
 		{
-		    PlayState.instance.removeLuaVirtualPad();
+			PlayState.instance.removeLuaVirtualPad();
 		});
 		#end
-	    
-	    Lua_helper.add_callback(lua, 'mobileC', ClientPrefs.data.mobileC);
-	    
-	    Lua_helper.add_callback(lua, "MobileC", function(enabled:Bool = false):Void
+
+		Lua_helper.add_callback(lua, 'mobileC', ClientPrefs.data.mobileC);
+
+		Lua_helper.add_callback(lua, "MobileC", function(enabled:Bool = false):Void
 		{
 			if (ClientPrefs.data.mobileC) MusicBeatState.mobilec.visible = enabled;
 		});
-		
-		Lua_helper.add_callback(lua, "changeHitboxControls", function(mode:String):Void
+
+		Lua_helper.add_callback(lua, "changeMobileControls", function(?mode:Int = -1):Void
 		{
-			PlayState.instance.changeHitboxControls(mode);
-		});
-		
-		Lua_helper.add_callback(lua, "addHitboxControls", function(mode:String):Void
-		{
-			PlayState.instance.addHitboxControls(mode);
-		});
-		
-		Lua_helper.add_callback(lua, "addMobileControls", function():Void
-		{
-			PlayState.instance.addPlayStateMobileControls();
-		});
-		
-		Lua_helper.add_callback(lua, "removeMobileControls", function():Void
-		{
-			PlayState.instance.removePlayStateMobileControls();
+			PlayState.instance.changeControls(mode);
 		});
 
-        #if mobile
+		Lua_helper.add_callback(lua, "addMobileControls", function(?mode:Int = -1):Void
+		{
+			PlayState.instance.addControls(mode);
+		});
+
+		Lua_helper.add_callback(lua, "removeMobileControls", function():Void
+		{
+			PlayState.instance.removeControls();
+		});
+
+		#if mobile
 		Lua_helper.add_callback(lua, "vibrate", function(duration:Null<Int>, ?period:Null<Int>)
 		{
 			if (period == null)
@@ -95,7 +90,7 @@ class MobileFunctions
 				return FunkinLua.luaTrace('vibrate: No duration specified.');
 			return Haptic.vibrate(period, duration);
 		});
-		
+
 		Lua_helper.add_callback(lua, "touchJustPressed", TouchFunctions.touchJustPressed);
 		Lua_helper.add_callback(lua, "touchPressed", TouchFunctions.touchPressed);
 		Lua_helper.add_callback(lua, "touchJustReleased", TouchFunctions.touchJustReleased);
@@ -143,7 +138,7 @@ class MobileFunctions
 			return TouchFunctions.touchOverlapObject(obj);
 		});
 		#end
-		
+
 		#end
 	}
 }
@@ -153,9 +148,9 @@ class AndroidFunctions
 {
 	public static function implement(funk:FunkinLua)
 	{
-	    #if LUA_ALLOWED
+		#if LUA_ALLOWED
 		var lua:State = funk.lua;
-		
+
 		Lua_helper.add_callback(lua, "isDolbyAtmos", AndroidTools.isDolbyAtmos());
 		Lua_helper.add_callback(lua, "isAndroidTV", AndroidTools.isAndroidTV());
 		Lua_helper.add_callback(lua, "isTablet", AndroidTools.isTablet());

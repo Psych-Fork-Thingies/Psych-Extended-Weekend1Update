@@ -67,10 +67,26 @@ class NotesSubState extends MusicBeatSubstate
 				var optionText:Alphabet = new Alphabet(posX + (225 * j) + 250, yPos + 60, Std.string(ClientPrefs.data.arrowHSV[i][j]), true);
 				grpNumbers.add(optionText);
 			}
+			
+			var defaultNoteSkin:String = 'noteSkins/NOTE_assets';
+			if (Note.getNoteSkinPostfix() == '') defaultNoteSkin = 'NOTE_assets';
+
+			var skin:String = null;
+			if(skin == null || skin.length < 1)
+				skin = defaultNoteSkin;
+			
+			var skinPixel:String = skin;
+			var skinPostfix:String = Note.getNoteSkinPostfix();
+			var customSkin:String = skin + skinPostfix;
+			var path:String = '';
+			if(Paths.fileExists('images/' + path + customSkin + '.png', IMAGE))
+			{
+				skin = customSkin;
+			}
+			else skinPostfix = '';
 
 			var note:FlxSprite = new FlxSprite(posX, yPos);
-			note.frames = Paths.getSparrowAtlas('NOTE_assets');
-			if (ClientPrefs.data.NoteSkin != 'original') note.frames = Paths.getSparrowAtlas('NoteSkin/' + ClientPrefs.data.NoteSkin);
+			note.frames = Paths.getSparrowAtlas(skin);
 			var animations:Array<String> = ['purple0', 'blue0', 'green0', 'red0'];
 			note.animation.addByPrefix('idle', animations[i]);
 			note.animation.play('idle');

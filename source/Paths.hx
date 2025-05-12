@@ -29,12 +29,6 @@ import backend.Mods;
 
 using StringTools;
 
-enum AssetSource {
-    SOURCE;
-    MODS;
-    BOTH;
-}
-
 typedef ModsList = {
 	enabled:Array<String>,
 	disabled:Array<String>,
@@ -591,12 +585,12 @@ class Paths
 		try { return currentTrackedSounds.get(gottenPath); } catch(e:Dynamic) { return null; }
 	}
 	
-	static public function getFolderContent(key:String, addPath:Bool = false, source:AssetSource = BOTH):Array<String> {
+	static public function getFolderContent(key:String, addPath:Bool = false, source:String = "BOTH"):Array<String> {
         var content:Array<String> = [];
         var folder = key.endsWith('/') ? key : key + '/';
     
         #if MODS_ALLOWED
-        if (source == MODS || source == BOTH) {
+        if (source == "MODS" || source == "BOTH") {
             var modDirs:Array<String> = [];
             if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
                 modDirs.push(Mods.currentModDirectory);

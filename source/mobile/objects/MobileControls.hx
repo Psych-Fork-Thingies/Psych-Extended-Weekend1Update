@@ -34,29 +34,29 @@ class Config {
 		{
 			save.data.buttons = new Array();
 			if (!isExtend){
-    			for (buttons in _pad){
-    				save.data.buttons.push(FlxPoint.get(buttons.x, buttons.y));
-    			}
-			}
-			else{
-			    save.data.buttons[0] = FlxPoint.get(_pad.buttonExtra2.x, _pad.buttonExtra2.y);
-			    save.data.buttons[1] = FlxPoint.get(_pad.buttonExtra1.x, _pad.buttonExtra1.y);
-			    save.data.buttons[2] = FlxPoint.get(_pad.buttonExtra3.x, _pad.buttonExtra3.y);
-			    save.data.buttons[3] = FlxPoint.get(_pad.buttonExtra4.x, _pad.buttonExtra4.y);
-			}
-		}else{
-			if (!isExtend){
-			    var tempCount:Int = 0;
-			    for (buttons in _pad){
-				    save.data.buttons[tempCount] = FlxPoint.get(buttons.x, buttons.y);
-				    tempCount++;
+				for (buttons in _pad){
+					save.data.buttons.push(FlxPoint.get(buttons.x, buttons.y));
 				}
 			}
 			else{
-			    save.data.buttons[0] = FlxPoint.get(_pad.buttonExtra2.x, _pad.buttonExtra2.y);
-			    save.data.buttons[1] = FlxPoint.get(_pad.buttonExtra1.x, _pad.buttonExtra1.y);
-			    save.data.buttons[2] = FlxPoint.get(_pad.buttonExtra3.x, _pad.buttonExtra3.y);
-			    save.data.buttons[3] = FlxPoint.get(_pad.buttonExtra4.x, _pad.buttonExtra4.y);
+				save.data.buttons[0] = FlxPoint.get(_pad.buttonExtra2.x, _pad.buttonExtra2.y);
+				save.data.buttons[1] = FlxPoint.get(_pad.buttonExtra1.x, _pad.buttonExtra1.y);
+				save.data.buttons[2] = FlxPoint.get(_pad.buttonExtra3.x, _pad.buttonExtra3.y);
+				save.data.buttons[3] = FlxPoint.get(_pad.buttonExtra4.x, _pad.buttonExtra4.y);
+			}
+		}else{
+			if (!isExtend){
+				var tempCount:Int = 0;
+				for (buttons in _pad){
+					save.data.buttons[tempCount] = FlxPoint.get(buttons.x, buttons.y);
+					tempCount++;
+				}
+			}
+			else{
+				save.data.buttons[0] = FlxPoint.get(_pad.buttonExtra2.x, _pad.buttonExtra2.y);
+				save.data.buttons[1] = FlxPoint.get(_pad.buttonExtra1.x, _pad.buttonExtra1.y);
+				save.data.buttons[2] = FlxPoint.get(_pad.buttonExtra3.x, _pad.buttonExtra3.y);
+				save.data.buttons[3] = FlxPoint.get(_pad.buttonExtra4.x, _pad.buttonExtra4.y);
 			}
 		}
 		save.flush();
@@ -67,31 +67,31 @@ class Config {
 			return _pad; 
 		var tempCount:Int = 0;
 		if (!isExtend){
-    		for(buttons in _pad){
-    			buttons.x = save.data.buttons[tempCount].x;
-    			buttons.y = save.data.buttons[tempCount].y;
-    			tempCount++;
-    		}
+			for(buttons in _pad){
+				buttons.x = save.data.buttons[tempCount].x;
+				buttons.y = save.data.buttons[tempCount].y;
+				tempCount++;
+			}
 		}
 		else{
-		    if (_pad.buttonExtra2 != null){
-		        _pad.buttonExtra2.x = save.data.buttons[0].x;
-			    _pad.buttonExtra2.y = save.data.buttons[0].y;
+			if (_pad.buttonExtra2 != null){
+				_pad.buttonExtra2.x = save.data.buttons[0].x;
+				_pad.buttonExtra2.y = save.data.buttons[0].y;
 			}
 			if (_pad.buttonExtra1 != null){
-			    _pad.buttonExtra1.x = save.data.buttons[1].x;
-			    _pad.buttonExtra1.y = save.data.buttons[1].y;
+				_pad.buttonExtra1.x = save.data.buttons[1].x;
+				_pad.buttonExtra1.y = save.data.buttons[1].y;
 			}
 			if (_pad.buttonExtra3 != null){
-		        _pad.buttonExtra3.x = save.data.buttons[2].x;
-			    _pad.buttonExtra3.y = save.data.buttons[2].y;
+				_pad.buttonExtra3.x = save.data.buttons[2].x;
+				_pad.buttonExtra3.y = save.data.buttons[2].y;
 			}
 			if (_pad.buttonExtra4 != null){
-		        _pad.buttonExtra4.x = save.data.buttons[3].x;
-			    _pad.buttonExtra4.y = save.data.buttons[3].y;
+				_pad.buttonExtra4.x = save.data.buttons[3].x;
+				_pad.buttonExtra4.y = save.data.buttons[3].y;
 			}
 		}
-	    return _pad;
+		return _pad;
 	}
 }
 
@@ -105,7 +105,7 @@ class MobileControls extends FlxSpriteGroup {
 	var config:Config;
 	var extendConfig:Config;
 
-	public function new() {
+	public function new(?CustomMode:Float = -1) {
 		super();
 
 		config = new Config('saved-controls');
@@ -123,42 +123,41 @@ class MobileControls extends FlxSpriteGroup {
 			case DUO:
 				initControler(3);
 			case HITBOX:
-		    if(ClientPrefs.data.hitboxmode != 'New')
-				initControler(4);
-		    else
-		        initControler(5);
-			case KEYBOARD:// nothing
+				if(ClientPrefs.data.hitboxmode == 'New') initControler(5, CustomMode);
+				else initControler(4);
+			case KEYBOARD:
+				// nothing
 		}
 	}
 
-	function initControler(vpadMode:Int) {
+	function initControler(vpadMode:Int, ?CustomMode:Float = -1) {
 		switch (vpadMode){
 			case 0:
-				vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend", false, true);	
-				add(vpad);						
+				vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend", false, true);
+				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 1:
 				vpad = new FlxVirtualPad("FULL", "controlExtend", false, true);
-				add(vpad);			
+				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 2:
 				vpad = new FlxVirtualPad("FULL", "controlExtend", true, true);
 				vpad = config.loadcustom(vpad);
-				add(vpad);	
+				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 3:
 				vpad = new FlxVirtualPad("DUO", "controlExtend", false, true);
-				add(vpad);		
+				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 4:
 				hbox = new FlxHitbox(0.75, ClientPrefs.data.antialiasing);
 				add(hbox);
 			case 5:
-			  newhbox = new FlxNewHitbox();
-			  add(newhbox);
+				newhbox = new FlxNewHitbox(CustomMode);
+				add(newhbox);
 			default:
 				newhbox = new FlxNewHitbox();
-			    add(newhbox);
+				add(newhbox);
 		}
 	}
 
