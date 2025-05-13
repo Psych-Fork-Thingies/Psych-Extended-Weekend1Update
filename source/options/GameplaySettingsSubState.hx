@@ -29,7 +29,7 @@ using StringTools;
 
 class GameplaySettingsSubState extends BaseOptionsMenu
 {
-    final lastModpack:Bool = ClientPrefs.data.Modpack;
+	final lastModpack:Bool = ClientPrefs.data.Modpack;
 	public function new()
 	{
 		title = 'Gameplay Settings';
@@ -40,15 +40,14 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'controllerMode',
 			'bool');
 		addOption(option);
-		
+
 		var option:Option = new Option('Modpack Folder',
 			'If checked, game uses modpack folder instead of mods folder.',
 			'Modpack',
 			'bool');
 		addOption(option);
 		option.onChange = changeModFolder;
-		
-		#if PsychExtended_Extras
+
 		var option:Option = new Option('Use Experimental Cameras',
 			"If checked, game uses 0.7x's Camera System instead of 0.6x's.\n(If you have a any camera issue, enable or disable this)",
 			'UseNewCamSystem',
@@ -61,14 +60,13 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			'string',
 			['HScript Old', 'HScript New', 'SScript']);
 		addOption(option);
-		
+
 		var option:Option = new Option('Chart System:',
 			"This Option Is Experimental\n(Choose Your Chart System)",
 			'chartLoadSystem',
 			'string',
 			['0.4-0.7x', '1.0x']);
 		addOption(option);
-		#end
 
 		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option('Downscroll', //Name
@@ -165,28 +163,28 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 
 		super();
 	}
-	
+
 	function changeModFolder()
 	{
-	    #if LUA_ALLOWED
+		#if LUA_ALLOWED
 		Mods.pushGlobalMods();
 		#end
 		Mods.loadTopMod();
 	}
-	
+
 	override public function destroy() {
 		super.destroy();
 		ClientPrefs.saveSettings();
 		if (ClientPrefs.data.Modpack != lastModpack) {
-    		TitleState.initialized = false;
-    		TitleState.closedState = false;
-    		FlxG.sound.music.fadeOut(0.3);
-    		if(FreeplayState.vocals != null)
-    		{
-    			FreeplayState.vocals.fadeOut(0.3);
-    			FreeplayState.vocals = null;
-    		}
-    		FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
+			TitleState.initialized = false;
+			TitleState.closedState = false;
+			FlxG.sound.music.fadeOut(0.3);
+			if(FreeplayState.vocals != null)
+			{
+				FreeplayState.vocals.fadeOut(0.3);
+				FreeplayState.vocals = null;
+			}
+			FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
 		}
 	}
 

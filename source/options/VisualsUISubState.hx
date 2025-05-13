@@ -40,40 +40,12 @@ class VisualsUISubState extends BaseOptionsMenu
 		title = 'Visuals and UI Settings';
 		rpcTitle = 'Visuals and UI Settings Menu'; //for Discord Rich Presence
 
-		#if PsychExtended_Extras
-		var option:Option = new Option('Freeplay Menu Style:',
-			"Choose your Freeplay Menu Style",
-			'FreeplayStyle',
-			'string',
-			['Psych', 'NovaFlare', 'NF']);
-		addOption(option);
-		
-		var option:Option = new Option('Main Menu Style:',
-			"Choose your Main Menu Style",
-			'MainMenuStyle',
-			'string',
-			['1.0', 'NovaFlare', '0.6.3', 'Extended']);
-		addOption(option);
-		
-		var option:Option = new Option('Pause Menu Style:',
-			"Choose your Pause Menu Style",
-			'PauseMenuStyle',
-			'string',
-			['Psych', 'NovaFlare']);
-		addOption(option);
-		
-		var option:Option = new Option('Transition Style:',
-			"Choose your Transition Style",
-			'TransitionStyle',
-			'string',
-			['Psych', 'NovaFlare', 'Extended']);
-		addOption(option);
-		
 		// for note skins
 		notes = new FlxTypedGroup<StrumNote>();
 		for (i in 0...Note.colArray.length)
 		{
 			var note:StrumNote = new StrumNote(370 + (560 / Note.colArray.length) * i, -200, i, 0);
+			changeNoteSkin(note);
 			note.centerOffsets();
 			note.centerOrigin();
 			note.playAnim('static');
@@ -98,21 +70,58 @@ class VisualsUISubState extends BaseOptionsMenu
 			noteOptionID = optionsArray.length - 1;
 		}
 
-		var option:Option = new Option('FPSCounter:',
-			"Choose your FPSCounter",
+		#if PsychExtended_ExtraFreeplayMenus
+		var option:Option = new Option('Freeplay Menu Style:',
+			"Choose your Freeplay Menu Style",
+			'FreeplayStyle',
+			'string',
+			['Psych', 'NovaFlare', 'NF']);
+		addOption(option);
+		#end
+
+		#if PsychExtended_ExtraMainMenus
+		var option:Option = new Option('Main Menu Style:',
+			"Choose your Main Menu Style",
+			'MainMenuStyle',
+			'string',
+			['1.0', 'NovaFlare', '0.6.3', 'Extended']);
+		addOption(option);
+		#end
+
+		#if PsychExtended_ExtraPauseMenus
+		var option:Option = new Option('Pause Menu Style:',
+			"Choose your Pause Menu Style",
+			'PauseMenuStyle',
+			'string',
+			['Psych', 'NovaFlare']);
+		addOption(option);
+		#end
+
+		#if PsychExtended_ExtraTransitions
+		var option:Option = new Option('Transition Style:',
+			"Choose your Transition Style",
+			'TransitionStyle',
+			'string',
+			['Psych', 'NovaFlare', 'Extended']);
+		addOption(option);
+		#end
+
+		#if PsychExtended_ExtraFPSCounters
+		var option:Option = new Option('FPS Counter Style:',
+			"Choose your FPS Counter Style",
 			'FPSCounter',
 			'string',
 			['Psych', 'NovaFlare', 'NF']);
 		addOption(option);
 		option.onChange = onChangeFPSCounterShit;
-		
+
 		var option:Option = new Option('FPS Rainbow',
 			"If unchecked, FPS not change color",
 			'rainbowFPS',
 			'bool');
 		addOption(option);
 		#end
-		
+
 		#if VIDEOS_ALLOWED
 		var option:Option = new Option('Disable Intro Video',
 			"If checked, disables the Intro Video",
@@ -132,7 +141,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'hideHud',
 			'bool');
 		addOption(option);
-		
+
 		var option:Option = new Option('Time Bar:',
 			"What should the Time Bar display?",
 			'timeBarType',
@@ -168,7 +177,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		option.decimals = 1;
 		addOption(option);
-		
+
 		var option:Option = new Option('FPS Counter',
 			'If unchecked, hides FPS Counter.',
 			'showFPS',
@@ -183,8 +192,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			['None', 'Breakfast', 'Tea Time']);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
-		
-		#if PsychExtended_Extras
+
 		var option:Option = new Option('Main Menu Song:',
 			"What song do you prefer for the Main Menu?",
 			'FreakyMenu',
@@ -192,8 +200,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			['Extended', 'Psych']);
 		addOption(option);
 		option.onChange = onChangeMenuMusic;
-		#end
-		
+
 		#if CHECK_FOR_UPDATES
 		var option:Option = new Option('Check for Updates',
 			'On Release builds, turn this on to check for updates when you start the game.',
@@ -239,7 +246,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 		changedMusic = true;
 	}
-	
+
 	function onChangeMenuMusic()
 	{
 		FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -253,28 +260,32 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	function onChangeFPSCounter()
 	{
+		#if PsychExtended_ExtraFPSCounters
 		if(Main.fpsVarNova != null && ClientPrefs.data.FPSCounter == 'NovaFlare')
 			Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
 		else if(Main.fpsVarNF != null && ClientPrefs.data.FPSCounter == 'NF')
 			Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
 		else if(Main.fpsVar != null && ClientPrefs.data.FPSCounter == 'Psych')
+		#end
 			Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}
-	
+
+	#if PsychExtended_ExtraFPSCounters
 	function onChangeFPSCounterShit()
 	{
-	    Main.fpsVar.visible = false;
-	    Main.fpsVarNF.visible = false;
-	    Main.fpsVarNova.visible = false;
-	    
+		Main.fpsVar.visible = false;
+		Main.fpsVarNF.visible = false;
+		Main.fpsVarNova.visible = false;
+
 		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
-	        Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
-	    else if (ClientPrefs.data.FPSCounter == 'NF')
-	        Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
-	    else if (ClientPrefs.data.FPSCounter == 'Psych')
-	        Main.fpsVar.visible = ClientPrefs.data.showFPS;
+			Main.fpsVarNova.visible = ClientPrefs.data.showFPS;
+		else if (ClientPrefs.data.FPSCounter == 'NF')
+			Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
+		else if (ClientPrefs.data.FPSCounter == 'Psych')
+			Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}
-	
+	#end
+
 	function onChangeNoteSkin()
 	{
 		notes.forEachAlive(function(note:StrumNote) {
@@ -287,7 +298,7 @@ class VisualsUISubState extends BaseOptionsMenu
 	function changeNoteSkin(note:StrumNote)
 	{
 		var skin:String = Note.defaultNoteSkin;
-		if (Note.getNoteSkinPostfix() == '' || Note.getNoteSkinPostfix() == null) skin = 'NOTE_assets';
+		if (ClientPrefs.data.noteSkin == 'Default') skin = 'NOTE_assets';
 		var customSkin:String = skin + Note.getNoteSkinPostfix();
 		if(Paths.fileExists('images/$customSkin.png', IMAGE)) skin = customSkin;
 

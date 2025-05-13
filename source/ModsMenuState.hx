@@ -17,9 +17,9 @@ import lime.utils.Assets;
 
 class ModsMenuState extends MusicBeatState
 {
-    public static var isFreePlay:Bool = false;
-    
-    var bg:FlxSprite;
+	public static var isFreePlay:Bool = false;
+	
+	var bg:FlxSprite;
 	var icon:FlxSprite;
 	var modName:AlphabetNew;
 	var modDesc:FlxText;
@@ -48,7 +48,7 @@ class ModsMenuState extends MusicBeatState
 	var noModsSine:Float = 0;
 	var noModsTxt:FlxText;
 
-    final LastControllerMode:Bool = ClientPrefs.data.controllerMode; //Mobile Fix (0.6x)
+	final LastControllerMode:Bool = ClientPrefs.data.controllerMode; //Mobile Fix (0.6x)
 	var _lastControllerMode:Bool = false;
 	var startMod:String = null;
 	public function new(startMod:String = null)
@@ -343,7 +343,7 @@ class ModsMenuState extends MusicBeatState
 			exiting = true;
 			saveTxt();
 
-            ClientPrefs.data.controllerMode = LastControllerMode;
+			ClientPrefs.data.controllerMode = LastControllerMode;
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			if(waitingToRestart)
 			{
@@ -361,11 +361,11 @@ class ModsMenuState extends MusicBeatState
 			}
 			else
 			{
-			    if (ClientPrefs.data.FreeplayStyle == 'NovaFlare' && isFreePlay)
-                    MusicBeatState.switchState(new FreeplayStateNOVA());
-        		else
-        			CustomSwitchState.switchMenus('MainMenu');
-        		isFreePlay = false;
+				if (isFreePlay)
+					CustomSwitchState.switchMenus('Freeplay');
+				else
+					CustomSwitchState.switchMenus('MainMenu');
+				isFreePlay = false;
 			}
 
 			persistentUpdate = false;
@@ -447,7 +447,7 @@ class ModsMenuState extends MusicBeatState
 						if(holdTime > 0.5 && Math.floor(lastHoldTime * 8) != Math.floor(holdTime * 8)) changeSelectedMod(shiftMult * (controls.UI_UP ? -1 : 1));
 					}
 
-                    #if !mobile
+					#if !mobile
 					else if(FlxG.mouse.pressed && !gottaClickAgain)
 					{
 						var curMod:ModItem = modsGroup.members[curSelectedMod];
@@ -606,9 +606,9 @@ class ModsMenuState extends MusicBeatState
 		super.closeSubState();
 		#if mobile
 		removeVirtualPad();
-    	addVirtualPad("UP_DOWN", "B");
-    	_virtualpad.y -= 215; // so that you can press the buttons.
-    	_virtualpad.alpha = 0.3;
+		addVirtualPad("UP_DOWN", "B");
+		_virtualpad.y -= 215; // so that you can press the buttons.
+		_virtualpad.alpha = 0.3;
 		#end
 	}
 

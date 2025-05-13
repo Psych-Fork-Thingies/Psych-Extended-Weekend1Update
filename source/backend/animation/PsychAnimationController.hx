@@ -5,7 +5,7 @@ import flixel.FlxG;
 
 /**
  * Animation Controller for 0.6.x
- * @author Lily Ross (mcagabe19)
+ * @author KralOyuncu2010x (ArkoseLabs)
  */
 
 class PsychAnimationController extends FlxAnimationController {

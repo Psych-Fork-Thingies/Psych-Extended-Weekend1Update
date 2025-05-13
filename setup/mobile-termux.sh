@@ -9,15 +9,15 @@ echo Installing dependencies...
 echo This might take a few moments depending on your internet speed.
 haxelib git linc_luajit https://github.com/PsychExtendedThings/linc_luajit --global
 haxelib install tjson --global
-haxelib git flixel https://github.com/MobilePorting/flixel 5.6.1 --global
+haxelib git flixel https://github.com/PsychExtendedThings/flixel 5.6.1 --global
 haxelib install flixel-addons 3.2.2 --global
 haxelib install flixel-ui 2.4.0 --global
 haxelib git SScript https://github.com/PsychExtendedThings/SScript --global
 haxelib git hscript-iris https://github.com/PsychExtendedThings/hscript-iris --global
 haxelib install hscript 2.4.0 --global
-haxelib git hxCodec https://github.com/MobilePorting/hxCodec-0.6.3 --global
-haxelib git hxcpp https://github.com/MobilePorting/hxcpp --global
-haxelib git lime https://github.com/MobilePorting/lime --global
+haxelib git hxCodec https://github.com/PsychExtendedThings/hxCodec-0.6.3 --global
+haxelib git hxcpp https://github.com/PsychExtendedThings/hxcpp --global
+haxelib git lime https://github.com/PsychExtendedThings/lime-new --global
 haxelib install openfl 9.3.3 --global
 haxelib git flxanimate https://github.com/ShadowMario/flxanimate.git dev --global
 haxelib git funkin.vis https://github.com/beihu235/funkVis-FrequencyFixed main --global

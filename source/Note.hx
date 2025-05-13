@@ -275,7 +275,7 @@ class Note extends FlxSprite
 	public var originalHeightForCalcs:Float = 6;
 	public function reloadNote(?prefix:String = '', texture:String = '', postfix:String = '') {
 		if(prefix == null) prefix = '';
-		if (Note.getNoteSkinPostfix() == '' || Note.getNoteSkinPostfix() == null) defaultNoteSkin = 'NOTE_assets';
+		if (ClientPrefs.data.noteSkin == 'Default') defaultNoteSkin = 'NOTE_assets';
 
 		if(prefix != null && texture == null || prefix != '' && texture == '')
 			texture = prefix;

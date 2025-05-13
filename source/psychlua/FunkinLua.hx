@@ -76,19 +76,19 @@ class FunkinLua {
 	public static var extra4:String = ClientPrefs.data.extraKeyReturn4.toUpperCase();
 	public static var FPSCounterText:String = null;
 
-    #if HSCRIPT_ALLOWED
+	#if HSCRIPT_ALLOWED
 	#if (SScript >= "3.0.0")
 	public var hscript:HScript = null;
 	#end
-	
+
 	#if hscript
 	public var hscriptog:HScriptOG = null;
 	#end
 	#end
-	
+
 	public var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
 	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
-	
+
 	public function new(scriptName:String) {
 		#if LUA_ALLOWED
 		lua = LuaL.newstate();
@@ -98,12 +98,12 @@ class FunkinLua {
 		//trace("LuaJIT version: " + Lua.versionJIT());
 
 		//LuaL.dostring(lua, CLENSE);
-		
+
 		this.scriptName = scriptName;
-		
+
 		var game:PlayState = PlayState.instance;
 		game.luaArray.push(this);
-		
+
 		var myFolder:Array<String> = this.scriptName.split('/');
 		if(myFolder[0] + '/' == Paths.mods() && (Mods.currentModDirectory == myFolder[1] || Mods.getGlobalMods().contains(myFolder[1]))) //is inside mods folder
 			this.modFolder = myFolder[1];
@@ -222,13 +222,13 @@ class FunkinLua {
 		set('currentModDirectory', Mods.currentModDirectory);
 
 		set('buildTarget', getBuildTarget());
-		
+
 		for (name => func in customFunctions)
 		{
 			if(func != null)
 				Lua_helper.add_callback(lua, name, func);
 		}
-		
+
 		// 0.6.3 custom lua substate functions
 		Lua_helper.add_callback(lua, "openCustomSubstate", function(name:String, ?pauseGame:Bool = false) {
 			if(pauseGame)
@@ -262,7 +262,7 @@ class FunkinLua {
 
 			return runningScripts;
 		});
-		
+
 		Lua_helper.add_callback(lua, "setOnScripts", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null) {
 			if(exclusions == null) exclusions = [];
 			if(ignoreSelf && !exclusions.contains(scriptName)) exclusions.push(scriptName);
@@ -279,7 +279,7 @@ class FunkinLua {
 			game.setOnLuas(varName, arg, exclusions);
 		});
 
-        Lua_helper.add_callback(lua, "callOnScripts", function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops=false, ?ignoreSelf:Bool = true, ?excludeScripts:Array<String> = null, ?excludeValues:Array<Dynamic> = null) {
+		Lua_helper.add_callback(lua, "callOnScripts", function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops=false, ?ignoreSelf:Bool = true, ?excludeScripts:Array<String> = null, ?excludeValues:Array<Dynamic> = null) {
 			if(excludeScripts == null) excludeScripts = [];
 			if(ignoreSelf && !excludeScripts.contains(scriptName)) excludeScripts.push(scriptName);
 			game.callOnScripts(funcName, args, ignoreStops, excludeScripts, excludeValues);
@@ -292,7 +292,7 @@ class FunkinLua {
 			return true;
 		});
 
-        Lua_helper.add_callback(lua, "callOnHScript", function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops=false, ?ignoreSelf:Bool = true, ?excludeScripts:Array<String> = null, ?excludeValues:Array<Dynamic> = null) {
+		Lua_helper.add_callback(lua, "callOnHScript", function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops=false, ?ignoreSelf:Bool = true, ?excludeScripts:Array<String> = null, ?excludeValues:Array<Dynamic> = null) {
 			if(excludeScripts == null) excludeScripts = [];
 			if(ignoreSelf && !excludeScripts.contains(scriptName)) excludeScripts.push(scriptName);
 			game.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
@@ -339,7 +339,7 @@ class FunkinLua {
 			var foundScript:String = findScript(luaFile);
 			if(foundScript != null)
 				for (luaInstance in game.luaArray)
-				    if(luaInstance.scriptName == foundScript)
+					if(luaInstance.scriptName == foundScript)
 						luaInstance.set(global, val);
 		});
 		/*Lua_helper.add_callback(lua, "getGlobals", function(luaFile:String) { // returns a copy of the specified file's globals
@@ -404,7 +404,7 @@ class FunkinLua {
 			var foundScript:String = findScript(luaFile);
 			if(foundScript != null)
 				for (luaInstance in game.luaArray)
-				    if(luaInstance.scriptName == foundScript)
+					if(luaInstance.scriptName == foundScript)
 						return true;
 			return false;
 		});
@@ -421,7 +421,7 @@ class FunkinLua {
 							luaTrace('addLuaScript: The script "' + foundScript + '" is already running!');
 							return;
 						}
-				
+
 				game.luaArray.push(new FunkinLua(foundScript));
 				return;
 			}
@@ -542,8 +542,8 @@ class FunkinLua {
 				LuaUtils.loadFrames(spr, image, spriteType);
 			}
 		});
-		
-        //shitass stuff for epic coders like me B)  *image of obama giving himself a medal*
+
+		//shitass stuff for epic coders like me B)  *image of obama giving himself a medal*
 		Lua_helper.add_callback(lua, "getObjectOrder", function(obj:String) {
 			var split:Array<String> = obj.split('.');
 			var leObj:FlxBasic = LuaUtils.getObjectDirectly(split[0]);
@@ -601,7 +601,7 @@ class FunkinLua {
 				luaTrace('startTween: Couldnt find object: ' + vars, false, false, FlxColor.RED);
 			}
 		});
-		
+
 		Lua_helper.add_callback(lua, "doTweenX", function(tag:String, vars:String, value:Dynamic, duration:Float, ease:String) {
 			oldTweenFunction(tag, vars, {x: value}, duration, ease, 'doTweenX');
 		});
@@ -818,7 +818,7 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, "getHealth", function() {
 			return game.health;
 		});
-		
+
 		//Identical functions
 		Lua_helper.add_callback(lua, "FlxColor", function(?color:String = '') return FlxColor.fromString(color));
 		Lua_helper.add_callback(lua, "getColorFromName", function(?color:String = '') return FlxColor.fromString(color));
@@ -829,7 +829,7 @@ class FunkinLua {
 			myColor = myColor.trim();
 			return Std.parseInt(myColor.startsWith('0x') ? myColor : '0xFF$myColor');
 		});
-		
+
 		// precaching
 		Lua_helper.add_callback(lua, "addCharacterToList", function(name:String, type:String) {
 			var charType:Int = 0;
@@ -848,7 +848,7 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, "precacheMusic", function(name:String) {
 			CoolUtil.precacheMusic(name);
 		});
-		
+
 		// others
 		Lua_helper.add_callback(lua, "triggerEvent", function(name:String, arg1:Dynamic, arg2:Dynamic) {
 			var value1:String = arg1;
@@ -880,15 +880,17 @@ class FunkinLua {
 				FlxTransitionableState.skipNextTransOut = true;
 			}
 
+			#if PsychExtended_ExtraTransitions
 			if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
-		        CustomFadeTransitionNOVA.nextCamera = game.camOther;
+				CustomFadeTransitionNOVA.nextCamera = game.camOther;
 			if(FlxTransitionableState.skipNextTransIn && ClientPrefs.data.TransitionStyle == 'NovaFlare')
 				CustomFadeTransitionNOVA.nextCamera = null;
+			#end
 
 			if(PlayState.isStoryMode)
 				CustomSwitchState.switchMenus('StoryMenu');
 			else
-			    CustomSwitchState.switchMenus('Freeplay');
+				CustomSwitchState.switchMenus('Freeplay');
 
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			PlayState.changedDifficulty = false;
@@ -1176,7 +1178,7 @@ class FunkinLua {
 		});
 		Lua_helper.add_callback(lua, "addLuaSprite", function(tag:String, front:Bool = false) {
 			if(game.modchartSprites.exists(tag)) {
-			    var shit:ModchartSprite = game.modchartSprites.get(tag);
+				var shit:ModchartSprite = game.modchartSprites.get(tag);
 				if(!shit.wasAdded) {
 					if(front)
 					{
@@ -1190,8 +1192,8 @@ class FunkinLua {
 						}
 						else
 						{
-    						GameOverSubstate.instance.insert(GameOverSubstate.instance.members.indexOf(GameOverSubstate.instance.boyfriend), shit);
-    					}
+							GameOverSubstate.instance.insert(GameOverSubstate.instance.members.indexOf(GameOverSubstate.instance.boyfriend), shit);
+						}
 					}
 					shit.wasAdded = true;
 					//trace('added a thing: ' + tag);
@@ -1297,7 +1299,7 @@ class FunkinLua {
 			var left:Null<FlxColor> = FlxColor.fromString(leftColor);
 			if(left == null) left = FlxColor.fromString('0x' + leftColor);
 			if(left == null) left = FlxColor.WHITE; //fail safe
-			
+
 			var right:Null<FlxColor> = FlxColor.fromString(rightColor);
 			if(right == null) right = FlxColor.fromString('0x' + rightColor);
 			if(right == null) right = FlxColor.WHITE; //fail safe
@@ -1309,7 +1311,7 @@ class FunkinLua {
 			var left:Null<FlxColor> = FlxColor.fromString(leftColor);
 			if(left == null) left = FlxColor.fromString('0x' + leftColor);
 			if(left == null) left = FlxColor.WHITE; //fail safe
-			
+
 			var right:Null<FlxColor> = FlxColor.fromString(rightColor);
 			if(right == null) right = FlxColor.fromString('0x' + rightColor);
 			if(right == null) right = FlxColor.WHITE; //fail safe
@@ -1592,7 +1594,7 @@ class FunkinLua {
 				}
 			}
 		});
-		
+
 		Lua_helper.add_callback(lua, "getSoundPitch", function(tag:String) {
 			if(tag != null && tag.length > 0 && game.modchartSounds.exists(tag)) {
 				return game.modchartSounds.get(tag).pitch;
@@ -1610,7 +1612,7 @@ class FunkinLua {
 				}
 			}
 		});
-		
+
 		// mod settings
 		Lua_helper.add_callback(lua, "getModSetting", function(saveTag:String, ?modName:String = null) {
 			if(modName == null)
@@ -1635,7 +1637,7 @@ class FunkinLua {
 			if (text5 == null) text5 = '';
 			luaTrace('' + text1 + text2 + text3 + text4 + text5, true, false);
 		});
-		
+
 		Lua_helper.add_callback(lua, "close", function() {
 			closed = true;
 			return closed;
@@ -1666,7 +1668,7 @@ class FunkinLua {
 		MobileFunctions.implement(this);
 		ExtraFunctions.implement(this);
 		TextFunctions.implement(this);
-		
+
 		try{
 			var result:Dynamic = LuaL.dofile(lua, scriptName);
 			var resultStr:String = Lua.tostring(lua, result);
@@ -1689,8 +1691,8 @@ class FunkinLua {
 		call('onCreate', []);
 		#end
 	}
-		
-    //main
+
+	//main
 	public var lastCalledFunction:String = '';
 	public static var lastCalledScript:FunkinLua = null;
 	public function call(func:String, args:Array<Dynamic>):Dynamic {
@@ -1736,7 +1738,7 @@ class FunkinLua {
 		#end
 		return Function_Continue;
 	}
-	
+
 	public function set(variable:String, data:Dynamic) {
 		#if LUA_ALLOWED
 		if(lua == null) {
@@ -1754,7 +1756,7 @@ class FunkinLua {
 		Lua.close(lua);
 		lua = null;
 		#end
-		
+
 		#if HSCRIPT_ALLOWED
 		#if (SScript >= "3.0.0")
 		if(hscript != null)
@@ -1763,10 +1765,10 @@ class FunkinLua {
 			hscript = null;
 		}
 		#end
-		
-    	if(hscriptog != null) hscriptog.interp = null;
-    	hscriptog = null;
-    	#end
+
+		if(hscriptog != null) hscriptog.interp = null;
+		hscriptog = null;
+		#end
 	}
 	//clone functions
 	public static function getBuildTarget():String
@@ -1789,10 +1791,10 @@ class FunkinLua {
 		return 'unknown';
 		#end
 	}
-	
+
 	function oldTweenFunction(tag:String, vars:String, tweenValue:Any, duration:Float, ease:String, funcName:String)
 	{
-	    #if LUA_ALLOWED
+		#if LUA_ALLOWED
 		var target:Dynamic = LuaUtils.tweenPrepare(tag, vars);
 		if(target != null) {
 			PlayState.instance.modchartTweens.set(tag, FlxTween.tween(target, tweenValue, duration, {ease: LuaUtils.getTweenEaseByString(ease),
@@ -1818,7 +1820,7 @@ class FunkinLua {
 		}
 		#end
 	}
-	
+
 	function findScript(scriptFile:String, ext:String = '.lua')
 	{
 		if(!scriptFile.endsWith(ext)) scriptFile += ext;
@@ -1829,7 +1831,7 @@ class FunkinLua {
 			return scriptFile;
 		else if(FileSystem.exists(path))
 			return path;
-	
+
 		if(FileSystem.exists(preloadPath))
 		#else
 		if(Assets.exists(preloadPath))
@@ -1857,7 +1859,7 @@ class FunkinLua {
 		return (result == 'true');
 	}
 	#end
-	
+
 	public function getErrorMessage(status:Int):String {
 		#if LUA_ALLOWED
 		var v:String = Lua.tostring(lua, -1);
@@ -1875,7 +1877,7 @@ class FunkinLua {
 		#end
 		return null;
 	}
-	
+
 	public function addLocalCallback(name:String, myFunction:Dynamic)
 	{
 		#if LUA_ALLOWED
@@ -1883,7 +1885,7 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, name, null); //just so that it gets called
 		#end
 	}
-	
+
 	#if (MODS_ALLOWED && !flash && sys)
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
 	#end
@@ -1901,7 +1903,7 @@ class FunkinLua {
 			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/shaders/'));
 		for(mod in Mods.getGlobalMods())
 			foldersToCheck.insert(0, Paths.mods(mod + '/shaders/'));
-		
+
 		for (folder in foldersToCheck)
 		{
 			if(FileSystem.exists(folder))

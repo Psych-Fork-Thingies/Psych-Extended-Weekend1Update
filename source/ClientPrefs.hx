@@ -11,28 +11,27 @@ import TitleState;
 @:structInit class SaveVariables {
 	//Psych Extended
 	public var noteSkin:String = 'Default';
-	//Extras (More Easier Than To remove everything)
-	#if !PsychExtended_Extras
-	public final FreeplayStyle:String = 'Psych';
-	public final PauseMenuStyle:String = 'Psych';
-	public final FreakyMenu:String = 'Extended';
-	public final TransitionStyle:String = 'Psych';
-	public final MainMenuStyle:String = '1.0';
-	public final touchmenus:Bool = #if UNUSED_TOUCHMENUS true #else false #end;
-	public final UseNewCamSystem:Bool = false;
-	public final hscriptversion:String = 'HScript Old';
-	public final chartLoadSystem:String = '0.4-0.7x';
-	#else
+	#if PsychExtended_ExtraFreeplayMenus
 	public var FreeplayStyle:String = 'Psych';
+	#end
+
+	#if PsychExtended_ExtraPauseMenus
 	public var PauseMenuStyle:String = 'Psych';
+	#end
+
 	public var FreakyMenu:String = 'Extended';
+	#if PsychExtended_ExtraTransitions
 	public var TransitionStyle:String = 'Psych';
+	#end
+
+	#if PsychExtended_ExtraMainMenus
 	public var MainMenuStyle:String = '1.0';
+	#end
+
 	public var touchmenus:Bool = #if UNUSED_TOUCHMENUS true #else false #end;
 	public var UseNewCamSystem:Bool = false;
 	public var hscriptversion:String = 'HScript Old';
 	public var chartLoadSystem:String = '0.4-0.7x';
-	#end
 	//end
 	public var Modpack:Bool = false;
 	public var wideScreen:Bool = false;
@@ -56,24 +55,21 @@ import TitleState;
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
 	#if VIDEOS_ALLOWED public var DisableIntroVideo:Bool = false; #end
 	#if FuckYou public var KeepMyFiles:Bool = false; #end
-	
-	//FPSCounter things
-	#if !PsychExtended_Extras
-	public final FPSCounter:String = 'Psych';
-	public final rainbowFPS:Bool = false;
-	#else
+
+	//NovaFlare FPSCounter things
+	#if PsychExtended_ExtraFPSCounters
 	public var FPSCounter:String = 'Psych';
 	public var rainbowFPS:Bool = false;
-	#end
 	public var memoryType:Int = 0;
-	
+	#end
+
 	//New Psych Features
 	public var loadingScreen:Bool = true;
-	
+
 	//PsychEngine
 	public var downScroll:Bool = false;
-	public var marvelousRating:Bool = true;	
-	public var marvelousSprite:Bool = true;	
+	public var marvelousRating:Bool = true;
+	public var marvelousSprite:Bool = true;
 	public var marvelousWindow:Int = 15;
 	public var middleScroll:Bool = false;
 	public var opponentStrums:Bool = true;
@@ -134,16 +130,6 @@ import TitleState;
 class ClientPrefs {
 	public static var data:SaveVariables = {};
 	public static var defaultData:SaveVariables = {};
-	
-	public static var psychExtrasKeys = [
-		#if !PsychExtended_Extras
-		//Visual and ui
-		'NoteSkin', 'FreeplayStyle', 'PauseMenuStyle', 'FreakyMenu',
-		'TransitionStyle', 'MainMenuStyle', 'touchmenus', 'FPSCounter', 'rainbowFPS',
-		//Gameplay
-		'UseNewCamSystem', 'hscriptversion', 'chartLoadSystem'
-		#end
-	];
 
 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
@@ -152,21 +138,21 @@ class ClientPrefs {
 		'note_down'		=> [S, DOWN],
 		'note_up'		=> [W, UP],
 		'note_right'	=> [D, RIGHT],
-		
+
 		'ui_left'		=> [A, LEFT],
 		'ui_down'		=> [S, DOWN],
 		'ui_up'			=> [W, UP],
 		'ui_right'		=> [D, RIGHT],
-		
+
 		'accept'		=> [SPACE, ENTER],
 		'back'			=> [BACKSPACE, ESCAPE],
 		'pause'			=> [ENTER, ESCAPE],
 		'reset'			=> [R, NONE],
-		
+
 		'volume_mute'	=> [ZERO, NONE],
 		'volume_up'		=> [NUMPADPLUS, PLUS],
 		'volume_down'	=> [NUMPADMINUS, MINUS],
-		
+
 		'debug_1'		=> [SEVEN, NONE],
 		'debug_2'		=> [EIGHT, NONE]
 	];
@@ -177,10 +163,9 @@ class ClientPrefs {
 		//trace(defaultKeys);
 	}
 
-	public static function saveSettings() {		
+	public static function saveSettings() {
 		for (key in Reflect.fields(data))
-			if (psychExtrasKeys.indexOf(key) == -1)
-				Reflect.setField(FlxG.save.data, key, Reflect.field(data, key));
+			Reflect.setField(FlxG.save.data, key, Reflect.field(data, key));
 
 		#if ACHIEVEMENTS_ALLOWED Achievements.save(); #end
 		FlxG.save.flush();
@@ -197,14 +182,16 @@ class ClientPrefs {
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 
 		for (key in Reflect.fields(data))
-			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key) && psychExtrasKeys.indexOf(key) == -1)
+			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key))
 				Reflect.setField(data, key, Reflect.field(FlxG.save.data, key));
-				
+
+		#if PsychExtended_ExtraFPSCounters
 		if(Main.fpsVarNova != null && ClientPrefs.data.FPSCounter == 'NovaFlare')
 			Main.fpsVarNova.visible = data.showFPS;
 		if(Main.fpsVarNF != null && ClientPrefs.data.FPSCounter == 'NF')
 			Main.fpsVarNF.visible = data.showFPS;
-		if(Main.fpsVar != null && ClientPrefs.data.FPSCounter == 'Psych')
+		#end
+		if(Main.fpsVar != null #if PsychExtended_ExtraFPSCounters && ClientPrefs.data.FPSCounter == 'Psych' #end)
 			Main.fpsVar.visible = data.showFPS;
 
 		#if (!html5 && !switch)
@@ -231,7 +218,7 @@ class ClientPrefs {
 			for (name => value in savedMap)
 				data.gameplaySettings.set(name, value);
 		}
-		
+
 		// flixel automatically saves your volume!
 		if(FlxG.save.data.volume != null)
 			FlxG.sound.volume = FlxG.save.data.volume;
@@ -255,7 +242,7 @@ class ClientPrefs {
 		if(!customDefaultValue) defaultValue = defaultData.gameplaySettings.get(name);
 		return /*PlayState.isStoryMode ? defaultValue : */ (data.gameplaySettings.exists(name) ? data.gameplaySettings.get(name) : defaultValue);
 	}
-	
+
 	public static function reloadVolumeKeys()
 	{
 		TitleState.muteKeys = keyBinds.get('volume_mute').copy();
@@ -273,7 +260,7 @@ class ClientPrefs {
 
 	public static function reloadControls() {
 		PlayerSettings.player1.controls.setKeyboardScheme(KeyboardScheme.Solo);
-		
+
 		TitleState.muteKeys = copyKey(keyBinds.get('volume_mute'));
 		TitleState.volumeDownKeys = copyKey(keyBinds.get('volume_down'));
 		TitleState.volumeUpKeys = copyKey(keyBinds.get('volume_up'));
@@ -281,7 +268,7 @@ class ClientPrefs {
 		FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 		FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
 	}
-	
+
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey> {
 		var copiedArray:Array<FlxKey> = arrayToCopy.copy();
 		var i:Int = 0;

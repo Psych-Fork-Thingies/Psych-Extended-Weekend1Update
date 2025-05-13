@@ -21,11 +21,11 @@ class CustomFadeTransition extends FlxSubState {
 
 	override function create()
 	{
-	    var cam:FlxCamera = new FlxCamera();
-	    cam.bgColor = 0x00;
-    	FlxG.cameras.add(cam, false);
+		var cam:FlxCamera = new FlxCamera();
+		cam.bgColor = 0x00;
+		FlxG.cameras.add(cam, false);
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]];
-		
+
 		var width:Int = Std.int(FlxG.width / Math.max(camera.zoom, 0.001));
 		var height:Int = Std.int(FlxG.height / Math.max(camera.zoom, 0.001));
 		transGradient = FlxGradient.createGradientFlxSprite(1, height, (isTransIn ? [0x0, FlxColor.BLACK] : [FlxColor.BLACK, 0x0]));
@@ -43,20 +43,22 @@ class CustomFadeTransition extends FlxSubState {
 		transBlack.screenCenter(X);
 		transBlack.cameras = [cam];
 		add(transBlack);
-		
+
+		#if PsychExtended_ExtraTransitions
 		if (ClientPrefs.data.TransitionStyle == 'Extended')
-    	{
-        	LoadBF = new FlxSprite(-150, 250);
-        	LoadBF.frames = Paths.getSparrowAtlas('bf running');
-        	LoadBF.animation.addByPrefix('bf running', 'bf running');
-        	LoadBF.animation.play('bf running');
-        	LoadBF.scale.x = 0.3;
-        	LoadBF.scale.y = 0.3;
-        	LoadBF.scrollFactor.set();
-        	LoadBF.antialiasing = ClientPrefs.data.antialiasing;
-        	LoadBF.cameras = [cam];
-        	add(LoadBF);
-    	}
+		{
+			LoadBF = new FlxSprite(-150, 250);
+			LoadBF.frames = Paths.getSparrowAtlas('bf running');
+			LoadBF.animation.addByPrefix('bf running', 'bf running');
+			LoadBF.animation.play('bf running');
+			LoadBF.scale.x = 0.3;
+			LoadBF.scale.y = 0.3;
+			LoadBF.scrollFactor.set();
+			LoadBF.antialiasing = ClientPrefs.data.antialiasing;
+			LoadBF.cameras = [cam];
+			add(LoadBF);
+		}
+		#end
 
 		if(isTransIn)
 			transGradient.y = transBlack.y - transBlack.height;
@@ -65,7 +67,7 @@ class CustomFadeTransition extends FlxSubState {
 
 		super.create();
 	}
-	
+
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 

@@ -424,7 +424,7 @@ typedef SharedObject = flash.net.SharedObject;
 
 /**
  * A save class for mobile devices.
- * @author Mihai Alexandru (M.A. Jigsaw), Karim Akra and Lily Ross (mcagabe19)
+ * @author Mihai Alexandru (M.A. Jigsaw)
  */
 class SaveUtil {
 	#if sys

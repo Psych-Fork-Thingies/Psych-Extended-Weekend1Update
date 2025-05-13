@@ -42,7 +42,6 @@ class CreditsState extends HScriptStateHandler
 		['KralOyuncu 2010X',	 'KralOyuncuV3',	'Creator of Psych Extended\n(Only Person Working on Psych Extended for now)',											'https://youtube.com/@kraloyuncurbx',		'378FC7'],
 		[''],
 		['Needed Credits'],
-		['MobilePorting',			 'MobilePorting',			"I'm using their Codes",						'https://github.com/MobilePorting',		'FFE7C0'],
 		['beihu',				 'beihu',			'Owner of NovaFlare Engine\n(I used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',			'FFC0CB'],
 		[''],
 		['Psych Engine Team'],

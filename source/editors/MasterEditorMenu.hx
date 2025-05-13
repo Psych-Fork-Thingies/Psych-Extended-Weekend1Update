@@ -143,11 +143,13 @@ class MasterEditorMenu extends HScriptStateHandler
 			}
 			FlxG.sound.music.volume = 0;
 			#if PRELOAD_ALL
+			#if PsychExtended_ExtraFreeplayMenus
 			if (ClientPrefs.data.FreeplayStyle == 'NF')
 				FreeplayStateNF.destroyFreeplayVocals();
 			else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
 				FreeplayStateNOVA.destroyFreeplayVocals();
 			else
+			#end
 				FreeplayState.destroyFreeplayVocals();
 			#end
 		}

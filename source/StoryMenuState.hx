@@ -370,11 +370,13 @@ class StoryMenuState extends HScriptStateHandler
 			{
 				if (!ClientPrefs.data.loadingScreen) FlxG.sound.music.stop();
 				LoadingState.loadAndSwitchState(new PlayState(), true);
+				#if PsychExtended_ExtraFreeplayMenus
 				if (ClientPrefs.data.FreeplayStyle == 'NF')
 					FreeplayStateNF.destroyFreeplayVocals();
 				else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
 					FreeplayStateNOVA.destroyFreeplayVocals();
 				else
+				#end
 					FreeplayState.destroyFreeplayVocals();
 			});
 		} else {

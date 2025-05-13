@@ -335,9 +335,11 @@ class PlayState extends MusicBeatState
 
 		debugKeysChart = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
 		debugKeysCharacter = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_2'));
+		#if PsychExtended_ExtraPauseMenus
 		if (ClientPrefs.data.PauseMenuStyle == 'NovaFlare')
 			PauseSubStateNOVA.songName = null; //Reset to default
 		else
+		#end
 			PauseSubState.songName = null; //Reset to default
 		playbackRate = ClientPrefs.getGameplaySetting('songspeed', 1);
 
@@ -411,8 +413,10 @@ class PlayState extends MusicBeatState
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>(8);
 
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
+		#if PsychExtended_ExtraTransitions
 		if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
 			CustomFadeTransitionNOVA.nextCamera = camOther;
+		#end
 
 		persistentUpdate = persistentDraw = true;
 
@@ -837,6 +841,7 @@ class PlayState extends MusicBeatState
 		precacheList.set('missnote2', 'sound');
 		precacheList.set('missnote3', 'sound');
 
+		#if PsychExtended_ExtraPauseMenus
 		if (ClientPrefs.data.PauseMenuStyle == 'NovaFlare')
 		{
 			if (PauseSubStateNOVA.songName != null)
@@ -846,11 +851,14 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
+		#end
 			if (PauseSubState.songName != null)
 				precacheList.set(PauseSubState.songName, 'music');
 			else if(ClientPrefs.data.pauseMusic != 'None')
 				precacheList.set(Paths.formatToSongPath(ClientPrefs.data.pauseMusic), 'music');
+		#if PsychExtended_ExtraPauseMenus
 		}
+		#end
 
 		precacheList.set('alphabet', 'image');
 
@@ -885,8 +893,10 @@ class PlayState extends MusicBeatState
 		super.create();
 		Paths.clearUnusedMemory();
 
+		#if PsychExtended_ExtraTransitions
 		if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
 			CustomFadeTransitionNOVA.nextCamera = camOther;
+		#end
 		if(eventNotes.length < 1) checkEventNote();
 	}
 
@@ -2237,8 +2247,9 @@ class PlayState extends MusicBeatState
 			opponentVocals.pause();
 		}
 
+		#if PsychExtended_ExtraPauseMenus
 		if (ClientPrefs.data.PauseMenuStyle == 'NovaFlare') openSubState(new PauseSubStateNOVA());
-		else openSubState(new PauseSubState());
+		else #end openSubState(new PauseSubState());
 
 		#if desktop
 		DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
@@ -2381,7 +2392,6 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	//I need to learn how can i add Lily and KarimAkra's Mobile Controls Otherwise I can't add controller support :(
 	public function getControl(key:String) {
 		var pressed:Bool = Reflect.getProperty(controls, key);
 		//trace('Control result: ' + pressed);
@@ -2811,9 +2821,10 @@ class PlayState extends MusicBeatState
 					Mods.loadTopMod();
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 
-					if(FlxTransitionableState.skipNextTransIn && ClientPrefs.data.TransitionStyle == 'NovaFlare') {
+					#if PsychExtended_ExtraTransitions
+					if(FlxTransitionableState.skipNextTransIn && ClientPrefs.data.TransitionStyle == 'NovaFlare')
 						CustomFadeTransitionNOVA.nextCamera = null;
-					}
+					#end
 					CustomSwitchState.switchMenus('StoryMenu');
 
 					// if ()
@@ -2858,8 +2869,10 @@ class PlayState extends MusicBeatState
 			{
 				trace('WENT BACK TO FREEPLAY??');
 				Mods.loadTopMod();
+				#if PsychExtended_ExtraTransitions
 				if(FlxTransitionableState.skipNextTransIn && ClientPrefs.data.TransitionStyle == 'NovaFlare')
 					CustomFadeTransitionNOVA.nextCamera = null;
+				#end
 				CustomSwitchState.switchMenus('Freeplay');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				changedDifficulty = false;

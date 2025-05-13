@@ -544,6 +544,7 @@ class TitleState extends HScriptStateHandler
 								}
 							});
 							FlxG.sound.music.fadeOut();
+							#if PsychExtended_ExtraFreeplayMenus
 							if (ClientPrefs.data.FreeplayStyle == 'NF')
 								if(FreeplayStateNF.vocals != null)
 									FreeplayStateNF.vocals.fadeOut();
@@ -552,6 +553,7 @@ class TitleState extends HScriptStateHandler
 								if(FreeplayStateNOVA.vocals != null)
 									FreeplayStateNOVA.vocals.fadeOut();
 							else
+							#end
 								if(FreeplayState.vocals != null)
 									FreeplayState.vocals.fadeOut();
 
@@ -761,6 +763,7 @@ class TitleState extends HScriptStateHandler
 				if(easteregg == 'SHADOW')
 				{
 					FlxG.sound.music.fadeOut();
+					#if PsychExtended_ExtraFreeplayMenus
 					if (ClientPrefs.data.FreeplayStyle == 'NF')
 						if(FreeplayStateNF.vocals != null)
 							FreeplayStateNF.vocals.fadeOut();
@@ -770,6 +773,7 @@ class TitleState extends HScriptStateHandler
 							FreeplayStateNOVA.vocals.fadeOut();
 
 					else
+					#end
 						if(FreeplayState.vocals != null)
 							FreeplayState.vocals.fadeOut();
 				}
@@ -845,6 +849,7 @@ class TitleState extends HScriptStateHandler
 	function FPSCounterShit()
 	{
 		Main.fpsVar.visible = false;
+		#if PsychExtended_ExtraFPSCounters
 		Main.fpsVarNF.visible = false;
 		Main.fpsVarNova.visible = false;
 
@@ -853,6 +858,7 @@ class TitleState extends HScriptStateHandler
 		else if (ClientPrefs.data.FPSCounter == 'NF')
 			Main.fpsVarNF.visible = ClientPrefs.data.showFPS;
 		else if (ClientPrefs.data.FPSCounter == 'Psych')
+		#end
 			Main.fpsVar.visible = ClientPrefs.data.showFPS;
 	}
 }

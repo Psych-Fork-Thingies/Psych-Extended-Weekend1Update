@@ -86,24 +86,26 @@ class ReflectionFunctions
 		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String) {
 			@:privateAccess
 			//Little 0.7x File Organization Support (Now You Can Play Funkindelix Psych 0.7x Port Fully Functional)
-    	    if (classVar.startsWith('backend.')) classVar = classVar.replace('backend.', '');
-    	    if (classVar.startsWith('objects.')) classVar = classVar.replace('objects.', '');
-    	    if (classVar.startsWith('states.')) classVar = classVar.replace('states.', '');
-    		
-    		//Old ClientPrefs And Custom PauseMenu Support
-    		if (variable == 'globalAntialiasing') variable = 'data.antialiasing';
-    		if (classVar == 'ClientPrefs' && !classVar.startsWith('data.')) variable = 'data.' + variable;
-    		if (classVar == 'PauseSubState' && ClientPrefs.data.PauseMenuStyle == 'NovaFlare') classVar = 'extras.substates.PauseSubStateNOVA';
+			if (classVar.startsWith('backend.')) classVar = classVar.replace('backend.', '');
+			if (classVar.startsWith('objects.')) classVar = classVar.replace('objects.', '');
+			if (classVar.startsWith('states.')) classVar = classVar.replace('states.', '');
+
+			//Old ClientPrefs And Custom PauseMenu Support
+			if (variable == 'globalAntialiasing') variable = 'data.antialiasing';
+			if (classVar == 'ClientPrefs' && !classVar.startsWith('data.')) variable = 'data.' + variable;
+			#if PsychExtended_ExtraPauseMenus
+			if (classVar == 'PauseSubState' && ClientPrefs.data.PauseMenuStyle == 'NovaFlare') classVar = 'extras.substates.PauseSubStateNOVA';
+			#end
 			//Normal Code
 			var myClass:Dynamic = classCheck(classVar);
 			var variableplus:String = varCheck(myClass, variable);
 			var killMe:Array<String> = variable.split('.');
 			if (MusicBeatState.mobilec != null && myClass == 'flixel.FlxG' && variableplus.indexOf('key') != -1){
-    		    var check:Dynamic;
-    		    check = specialKeyCheck(variableplus); //fuck you old lua 🙃
-    		    if (check != null) return check;
-    		}
-           
+				var check:Dynamic;
+				check = specialKeyCheck(variableplus); //fuck you old lua 🙃
+				if (check != null) return check;
+			}
+
 			if(killMe.length > 1) {
 				var coverMeInPiss:Dynamic = LuaUtils.getVarInArray(Type.resolveClass(classVar), killMe[0]);
 				for (i in 1...killMe.length-1) {
@@ -116,14 +118,16 @@ class ReflectionFunctions
 		Lua_helper.add_callback(lua, "setPropertyFromClass", function(classVar:String, variable:String, value:Dynamic) {
 			@:privateAccess
 			//Little 0.7x File Organization Support (Now You Can Play Funkindelix Psych 0.7x Port Fully Functional)
-    	    if (classVar.startsWith('backend.')) classVar = classVar.replace('backend.', '');
-    	    if (classVar.startsWith('objects.')) classVar = classVar.replace('objects.', '');
-    	    if (classVar.startsWith('states.')) classVar = classVar.replace('states.', '');
-    		
-    		//Old ClientPrefs And Custom PauseMenu Support
-    		if (variable == 'globalAntialiasing') variable = 'data.antialiasing';
-    		if (classVar == 'ClientPrefs' && !classVar.startsWith('data.')) variable = 'data.' + variable;
-    		if (classVar == 'PauseSubState' && ClientPrefs.data.PauseMenuStyle == 'NovaFlare') classVar = 'extras.substates.PauseSubStateNOVA';
+			if (classVar.startsWith('backend.')) classVar = classVar.replace('backend.', '');
+			if (classVar.startsWith('objects.')) classVar = classVar.replace('objects.', '');
+			if (classVar.startsWith('states.')) classVar = classVar.replace('states.', '');
+
+			//Old ClientPrefs And Custom PauseMenu Support
+			if (variable == 'globalAntialiasing') variable = 'data.antialiasing';
+			if (classVar == 'ClientPrefs' && !classVar.startsWith('data.')) variable = 'data.' + variable;
+			#if PsychExtended_ExtraPauseMenus
+			if (classVar == 'PauseSubState' && ClientPrefs.data.PauseMenuStyle == 'NovaFlare') classVar = 'extras.substates.PauseSubStateNOVA';
+			#end
 			//Normal Code
 			var killMe:Array<String> = variable.split('.');
 			if(killMe.length > 1) {
@@ -137,10 +141,10 @@ class ReflectionFunctions
 			LuaUtils.setVarInArray(Type.resolveClass(classVar), variable, value);
 			return true;
 		});
-		
+
 		Lua_helper.add_callback(lua, "callMethod", function(funcToRun:String, ?args:Array<Dynamic> = null) {
 			return callMethodFromObject(PlayState.instance, funcToRun, args);
-			
+
 		});
 		Lua_helper.add_callback(lua, "callMethodFromClass", function(className:String, funcToRun:String, ?args:Array<Dynamic> = null) {
 			return callMethodFromObject(Type.resolveClass(className), funcToRun, args);
@@ -152,7 +156,7 @@ class ReflectionFunctions
 			{
 				if(args == null) args = [];
 				var myType:Dynamic = Type.resolveClass(className);
-		
+
 				if(myType == null)
 				{
 					FunkinLua.luaTrace('createInstance: Variable $variableToSave is already being used and cannot be replaced!', false, false, FlxColor.RED);
@@ -211,33 +215,33 @@ class ReflectionFunctions
 		//trace('end: $obj');
 		return funcToRun != null ? Reflect.callMethod(obj, funcToRun, args) : null;
 	}
-	
+
 		public static function varCheck(className:Dynamic, variable:String):String{
-	    return variable;
+		return variable;
 	}
-	
+
 	public static function classCheck(className:String):Dynamic
 	{
-	    return Type.resolveClass(className);
+		return Type.resolveClass(className);
 	}
-	
+
 	public static function specialKeyCheck(keyName:String):Dynamic
 	{
-	    var textfix:Array<String> = keyName.trim().split('.');
-	    var type:String = textfix[1].trim();
-	    var key:String = textfix[2].trim();    			
-	    var extraControl:Dynamic = null;
-	    
-	    for (num in 1...5){
-	        if (ClientPrefs.data.extraKeys >= num && key == Reflect.field(ClientPrefs.data, 'extraKeyReturn' + num)){
-	            if (MusicBeatState.mobilec.newhbox != null)
-	                extraControl = Reflect.getProperty(MusicBeatState.mobilec.newhbox, 'buttonExtra' + num);	            
-	            else
-	                extraControl = Reflect.getProperty(MusicBeatState.mobilec.vpad, 'buttonExtra' + num);
-	            if (Reflect.getProperty(extraControl, type))
-	                return true;
-	        }
-	    }	    	    
-	    return null;
+		var textfix:Array<String> = keyName.trim().split('.');
+		var type:String = textfix[1].trim();
+		var key:String = textfix[2].trim();
+		var extraControl:Dynamic = null;
+
+		for (num in 1...5){
+			if (ClientPrefs.data.extraKeys >= num && key == Reflect.field(ClientPrefs.data, 'extraKeyReturn' + num)){
+				if (MusicBeatState.mobilec.newhbox != null)
+					extraControl = Reflect.getProperty(MusicBeatState.mobilec.newhbox, 'buttonExtra' + num);
+				else
+					extraControl = Reflect.getProperty(MusicBeatState.mobilec.vpad, 'buttonExtra' + num);
+				if (Reflect.getProperty(extraControl, type))
+					return true;
+			}
+		}
+		return null;
 	}
 }

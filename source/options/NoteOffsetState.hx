@@ -55,8 +55,10 @@ class NoteOffsetState extends MusicBeatState
 		FlxG.cameras.add(camOther, false);
 
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
+		#if PsychExtended_ExtraTransitions
 		if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
-		    CustomFadeTransitionNOVA.nextCamera = camOther;
+			CustomFadeTransitionNOVA.nextCamera = camOther;
+		#end
 		FlxG.camera.scroll.set(120, 130);
 
 		persistentUpdate = true;
@@ -200,7 +202,7 @@ class NoteOffsetState extends MusicBeatState
 		FlxG.sound.playMusic(Paths.music('offsetSong'), 1, true);
 
 		addVirtualPad("FULL", "A_B_C");
-    	addVirtualPadCamera();
+		addVirtualPadCamera();
 
 		super.create();
 	}
@@ -358,8 +360,10 @@ class NoteOffsetState extends MusicBeatState
 			if(beatTween != null) beatTween.cancel();
 
 			persistentUpdate = false;
+			#if PsychExtended_ExtraTransitions
 			if (ClientPrefs.data.TransitionStyle == 'NovaFlare')
-		        CustomFadeTransitionNOVA.nextCamera = camOther;
+				CustomFadeTransitionNOVA.nextCamera = camOther;
+			#end
 			CustomSwitchState.switchMenus('Options');
 			FlxG.sound.playMusic(Paths.music('freakyMenu'), 1, true);
 			#if HIDE_CURSOR FlxG.mouse.visible = false; #end

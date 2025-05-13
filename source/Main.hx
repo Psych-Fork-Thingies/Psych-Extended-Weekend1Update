@@ -2,9 +2,11 @@ package;
 
 import mobile.backend.CrashHandler;
 import openfl.events.UncaughtErrorEvent;
+#if PsychExtended_ExtraFPSCounters
 import extras.debug.FPS as FPSNova;
-import debug.FPSPsych;
 import debug.FPSNF;
+#end
+import debug.FPSPsych;
 import Highscore;
 import flixel.FlxGame;
 import haxe.io.Path;
@@ -42,8 +44,10 @@ class Main extends Sprite
 	};
 
 	public static var fpsVar:FPSPsych;
+	#if PsychExtended_ExtraFPSCounters
 	public static var fpsVarNova:FPSNova;
 	public static var fpsVarNF:FPSNF;
+	#end
 
 	public static final platform:String = #if mobile "Phones" #else "PCs" #end;
 
@@ -98,16 +102,6 @@ class Main extends Sprite
 
 		setupGame();
 	}
-	
-	private function detectFPSCounter():Void
-	{
-		if (ClientPrefs.data.FPSCounter == 'NovaFlare')
-			fpsVarNova.visible = ClientPrefs.data.showFPS;
-		else if (ClientPrefs.data.FPSCounter == 'NF')
-			fpsVarNF.visible = ClientPrefs.data.showFPS;
-		else if (ClientPrefs.data.FPSCounter == 'Psych')
-			fpsVar.visible = ClientPrefs.data.showFPS;
-	}
 
 	private function setupGame():Void
 	{
@@ -142,21 +136,23 @@ class Main extends Sprite
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		addChild(new FlxGame(game.width, game.height, #if (mobile && MODS_ALLOWED) CopyState.checkExistingFiles() ? SelectedState : CopyState #else SelectedState #end, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
+		#if PsychExtended_ExtraFPSCounters
 		// NovaFlare Engine FPS Counter
 		fpsVarNova = new FPSNova(5, 5);
 		addChild(fpsVarNova);
 		if(fpsVarNova != null) { fpsVarNova.scaleX = fpsVarNova.scaleY = 1;	fpsVarNova.visible = false; }
-		
+
 		// NF Engine FPS Counter
 		fpsVarNF = new FPSNF(10, 3, 0xFFFFFF);
 		addChild(fpsVarNF);
 		if(fpsVarNF != null) fpsVarNF.visible = false;
-		
+		#end
+
 		// PsychEngine FPS Counter
 		fpsVar = new FPSPsych(10, 3, 0xFFFFFF);
 		addChild(fpsVar);
 		if(fpsVar != null) fpsVar.visible = false;
-		
+
 		Lib.current.stage.align = "tl";
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 
@@ -179,7 +175,6 @@ class Main extends Sprite
 		#end
 
 		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
-		
 
 		#if mobile
 		FlxG.scaleMode = new MobileScaleMode();
@@ -187,16 +182,17 @@ class Main extends Sprite
 
 		// shader coords fix
 		FlxG.signals.gameResized.add(function (w, h) {
+			#if PsychExtended_ExtraFPSCounters
 			if(fpsVarNF != null)
 				fpsVarNF.positionFPS(10, 3, Math.min(w / FlxG.width, h / FlxG.height));
-			else if(fpsVar != null)
+			else #end if(fpsVar != null)
 				fpsVar.positionFPS(10, 3, Math.min(w / FlxG.width, h / FlxG.height));
-				
+
 			if (FlxG.cameras != null) {
-			  for (cam in FlxG.cameras.list) {
-				if (cam != null && cam.filters != null)
-				  resetSpriteCache(cam.flashSprite);
-			  }
+				for (cam in FlxG.cameras.list) {
+					if (cam != null && cam.filters != null)
+						resetSpriteCache(cam.flashSprite);
+				}
 			}
 
 			if (FlxG.game != null)

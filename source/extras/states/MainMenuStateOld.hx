@@ -55,6 +55,7 @@ class MainMenuStateOld extends HScriptStateHandler
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
+		#if PsychExtended_ExtraMainMenus
 		if (ClientPrefs.data.MainMenuStyle == '0.6.3')
 		{
 			optionShit = [
@@ -67,6 +68,7 @@ class MainMenuStateOld extends HScriptStateHandler
 				'options'
 			];
 		}
+		#end
 
 		#if SCRIPTING_ALLOWED
 		var className = Type.getClassName(Type.getClass(this));
@@ -182,9 +184,11 @@ class MainMenuStateOld extends HScriptStateHandler
 			#end
 		#end
 
+		#if PsychExtended_ExtraMainMenus
 		if (ClientPrefs.data.MainMenuStyle == '0.6.3')
 			addVirtualPad("UP_DOWN", "A_B_E");
 		else
+		#end
 			addVirtualPad("UP_DOWN", "A_B_E_C_M");
 
 		super.create();
@@ -201,11 +205,13 @@ class MainMenuStateOld extends HScriptStateHandler
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+			#if PsychExtended_ExtraFreeplayMenus
 			if (ClientPrefs.data.FreeplayStyle == 'NF')
 				if(FreeplayStateNF.vocals != null) FreeplayStateNF.vocals.volume += 0.5 * elapsed;
 			else if (ClientPrefs.data.FreeplayStyle == 'NovaFlare')
 				if(FreeplayStateNOVA.vocals != null) FreeplayStateNOVA.vocals.volume += 0.5 * elapsed;
 			else
+			#end
 				if(FreeplayState.vocals != null) FreeplayState.vocals.volume += 0.5 * elapsed;
 		}
 
