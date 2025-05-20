@@ -4,6 +4,8 @@ package;
 // "function set_noteType"
 
 import backend.NoteTypesConfig;
+import shaders.RGBPalette;
+import shaders.RGBPalette.RGBShaderReference;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -65,6 +67,8 @@ class Note extends FlxSprite
 	public var eventVal2:String = '';
 
 	public var colorSwap:ColorSwap;
+	public var rgbShader:RGBShaderReference;
+	public static var globalRgbShaders:Array<RGBPalette> = [];
 	public var inEditor:Bool = false;
 
 	public var animSuffix:String = '';
@@ -115,6 +119,25 @@ class Note extends FlxSprite
 	public var hitsoundChartEditor:Bool = true;
 	public var hitsound:String = 'hitsound';
 
+	public function defaultRGB()
+	{
+		var arr:Array<FlxColor> = ClientPrefs.data.arrowRGB[noteData];
+		if(PlayState.isPixelStage) arr = ClientPrefs.data.arrowRGBPixel[noteData];
+
+		if (arr != null && noteData > -1 && noteData <= arr.length)
+		{
+			rgbShader.r = arr[0];
+			rgbShader.g = arr[1];
+			rgbShader.b = arr[2];
+		}
+		else
+		{
+			rgbShader.r = 0xFFFF0000;
+			rgbShader.g = 0xFF00FF00;
+			rgbShader.b = 0xFF0000FF;
+		}
+	}
+
 	private function set_multSpeed(value:Float):Float {
 		resizeByRatio(value / multSpeed);
 		multSpeed = value;
@@ -139,23 +162,34 @@ class Note extends FlxSprite
 
 	private function set_noteType(value:String):String {
 		noteSplashTexture = PlayState.SONG.splashSkin;
-		if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
-		{
-			colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
-			colorSwap.saturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
-			colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+		if (ClientPrefs.data.useRGB) {
+			defaultRGB();
+		}
+		else {
+			if (noteData > -1 && noteData < ClientPrefs.data.arrowHSV.length)
+			{
+				colorSwap.hue = ClientPrefs.data.arrowHSV[noteData][0] / 360;
+				colorSwap.saturation = ClientPrefs.data.arrowHSV[noteData][1] / 100;
+				colorSwap.brightness = ClientPrefs.data.arrowHSV[noteData][2] / 100;
+			}
 		}
 
 		if(noteData > -1 && noteType != value) {
 			switch(value) {
 				case 'Hurt Note':
 					ignoreNote = mustPress;
-					reloadNote('HURT', "NOTE_assets");
 					noteSplashTexture = 'HURTnoteSplashes';
-					colorSwap.hue = 0;
-					colorSwap.saturation = 0;
-					colorSwap.brightness = 0;
-					
+					if (ClientPrefs.data.useRGB) {
+						rgbShader.r = 0xFF101010;
+						rgbShader.g = 0xFFFF0000;
+						rgbShader.b = 0xFF990022;
+					}
+					else {
+						reloadNote('HURT', "NOTE_assets");
+						colorSwap.hue = 0;
+						colorSwap.saturation = 0;
+						colorSwap.brightness = 0;
+					}
 					// gameplay data
 					lowPriority = true;
 					if(isSustainNote)
@@ -178,9 +212,11 @@ class Note extends FlxSprite
 			if (hitsound != 'hitsound' && ClientPrefs.data.hitsoundVolume > 0) Paths.sound(hitsound); //precache new sound for being idiot-proof
 			noteType = value;
 		}
-		noteSplashHue = colorSwap.hue;
-		noteSplashSat = colorSwap.saturation;
-		noteSplashBrt = colorSwap.brightness;
+		if (!ClientPrefs.data.useRGB) {
+			noteSplashHue = colorSwap.hue;
+			noteSplashSat = colorSwap.saturation;
+			noteSplashBrt = colorSwap.brightness;
+		}
 		return value;
 	}
 
@@ -208,9 +244,15 @@ class Note extends FlxSprite
 		this.noteData = noteData;
 
 		if(noteData > -1) {
+			if (ClientPrefs.data.useRGB) {
+				rgbShader = new RGBShaderReference(this, initializeGlobalRGBShader(noteData));
+				if(PlayState.SONG != null) rgbShader.enabled = true;
+			}
+			else {
+				colorSwap = new ColorSwap();
+				shader = colorSwap.shader;
+			}
 			texture = '';
-			colorSwap = new ColorSwap();
-			shader = colorSwap.shader;
 
 			x += swagWidth * (noteData);
 			if(!isSustainNote && noteData > -1 && noteData < 4) { //Doing this 'if' check to fix the warnings on Senpai songs
@@ -269,13 +311,39 @@ class Note extends FlxSprite
 		x += offsetX;
 	}
 
+	public static function initializeGlobalRGBShader(noteData:Int)
+	{
+		if(globalRgbShaders[noteData] == null)
+		{
+			var newRGB:RGBPalette = new RGBPalette();
+			var arr:Array<FlxColor> = (!PlayState.isPixelStage) ? ClientPrefs.data.arrowRGB[noteData] : ClientPrefs.data.arrowRGBPixel[noteData];
+			
+			if (arr != null && noteData > -1 && noteData <= arr.length)
+			{
+				newRGB.r = arr[0];
+				newRGB.g = arr[1];
+				newRGB.b = arr[2];
+			}
+			else
+			{
+				newRGB.r = 0xFFFF0000;
+				newRGB.g = 0xFF00FF00;
+				newRGB.b = 0xFF0000FF;
+			}
+			
+			globalRgbShaders[noteData] = newRGB;
+		}
+		return globalRgbShaders[noteData];
+	}
+
 	var lastNoteOffsetXForPixelAutoAdjusting:Float = 0;
 	var lastNoteScaleToo:Float = 1;
 	static var _lastValidChecked:String; //optimization
 	public var originalHeightForCalcs:Float = 6;
 	public function reloadNote(?prefix:String = '', texture:String = '', postfix:String = '') {
 		if(prefix == null) prefix = '';
-		if (ClientPrefs.data.noteSkin == 'Default') defaultNoteSkin = 'NOTE_assets';
+		if (ClientPrefs.data.noteSkin == 'Default' && !ClientPrefs.data.useRGB) defaultNoteSkin = 'NOTE_assets';
+		else if (ClientPrefs.data.noteSkin != 'Default' && !ClientPrefs.data.useRGB) defaultNoteSkin = 'NoteSkin/';
 
 		if(prefix != null && texture == null || prefix != '' && texture == '')
 			texture = prefix;
@@ -287,9 +355,13 @@ class Note extends FlxSprite
 
 		var skin:String = texture + postfix;
 		if(texture.length < 1) {
-			skin = PlayState.SONG.arrowSkin;
+			skin = PlayState.SONG != null ? PlayState.SONG.arrowSkin : null;
 			if(skin == null || skin.length < 1)
 				skin = defaultNoteSkin + postfix;
+		}
+		else {
+			if (ClientPrefs.data.useRGB)
+				rgbShader.enabled = false;
 		}
 
 		var animName:String = null;
@@ -302,12 +374,20 @@ class Note extends FlxSprite
 		var skinPostfix:String = getNoteSkinPostfix();
 		var customSkin:String = skin + skinPostfix;
 		var path:String = PlayState.isPixelStage ? 'pixelUI/' : '';
+
 		if(customSkin == _lastValidChecked || Paths.fileExists('images/' + path + customSkin + '.png', IMAGE))
 		{
 			skin = customSkin;
 			_lastValidChecked = customSkin;
 		}
 		else skinPostfix = '';
+
+		//use Original Pixel NOTE, If Custom One Doesn't Exist
+		if(!Paths.fileExists('images/pixelUI/' + skinPixel + skinPostfix + '.png', IMAGE)) {
+			skinPixel = 'NOTE_assets';
+			skinPostfix = '';
+			if (PlayState.isPixelStage && PlayState.instance != null) defaultNoteSkin = 'NOTE_assets';
+		}
 
 		if(PlayState.isPixelStage) {
 			if(isSustainNote) {
@@ -354,8 +434,10 @@ class Note extends FlxSprite
 	public static function getNoteSkinPostfix()
 	{
 		var skin:String = '';
-		if(ClientPrefs.data.noteSkin != ClientPrefs.defaultData.noteSkin)
+		if(ClientPrefs.data.noteSkin != ClientPrefs.defaultData.noteSkin && ClientPrefs.data.useRGB)
 			skin = '-' + ClientPrefs.data.noteSkin.trim().toLowerCase().replace(' ', '_');
+		else if(ClientPrefs.data.noteSkin != ClientPrefs.defaultData.noteSkin && !ClientPrefs.data.useRGB)
+			skin = ClientPrefs.data.noteSkin;
 		return skin;
 	}
 

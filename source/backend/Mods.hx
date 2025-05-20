@@ -253,4 +253,16 @@ class Mods
 			Mods.currentModDirectory = list[0];
 		#end
 	}
+
+	public static function getTopMod()
+	{
+		var modDirectory:String = '';
+		
+		#if MODS_ALLOWED
+		var list:Array<String> = Mods.parseList().enabled;
+		if(list != null && list[0] != null)
+			modDirectory = list[0];
+		#end
+		return modDirectory;
+	}
 }

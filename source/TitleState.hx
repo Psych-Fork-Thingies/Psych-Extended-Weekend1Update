@@ -652,7 +652,7 @@ class TitleState extends HScriptStateHandler
 					#end
 				case 4:
 					#if PSYCH_WATERMARKS
-					addMoreText('\nAloneDark & KralOyuncu', 15);
+					addMoreText('\nKralOyuncu', 15);
 					#else
 					addMoreText('present');
 					#end

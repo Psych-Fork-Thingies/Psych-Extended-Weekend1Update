@@ -69,7 +69,8 @@ class NotesSubState extends MusicBeatSubstate
 			}
 			
 			var defaultNoteSkin:String = 'noteSkins/NOTE_assets';
-			if (ClientPrefs.data.noteSkin == 'Default') defaultNoteSkin = 'NOTE_assets';
+			if (ClientPrefs.data.noteSkin == 'Default' && !ClientPrefs.data.useRGB) defaultNoteSkin = 'NOTE_assets';
+			else if (ClientPrefs.data.noteSkin != 'Default' && !ClientPrefs.data.useRGB) defaultNoteSkin = 'NoteSkin/';
 
 			var skin:String = null;
 			if(skin == null || skin.length < 1)

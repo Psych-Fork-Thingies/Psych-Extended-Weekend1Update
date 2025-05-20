@@ -4,6 +4,7 @@ import flixel.FlxBasic;
 import Character;
 import psychlua.LuaUtils;
 import psychlua.FunkinLua;
+import scripting.ScriptingVars;
 import psychlua.CustomSubstate;
 
 #if SCRIPTING_ALLOWED
@@ -49,8 +50,8 @@ class HScript extends Iris
 			this.origin = filePath;
 			#if MODS_ALLOWED
 			var myFolder:Array<String> = filePath.split('/');
-			if(myFolder[0] + '/' == Paths.mods() && (Mods.currentModDirectory == myFolder[1] || Mods.getGlobalMods().contains(myFolder[1]))) //is inside mods folder
-				this.modFolder = myFolder[1];
+			if(Mods.currentModDirectory == Mods.getTopMod()) //is inside mods folder
+				this.modFolder = myFolder[6];
 			#end
 		}
 		var scriptThing:String = file;
@@ -304,13 +305,26 @@ class HScript extends Iris
 			myClass.addTextToDebug(text, color);
 		});
 
+		set('getModSetting', function(saveTag:String, ?modName:String = null) {
+			if(modName == null)
+			{
+				if(this.modFolder == null)
+				{
+					Iris.error('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', this.interp.posInfos());
+					return null;
+				}
+				modName = this.modFolder;
+			}
+			return LuaUtils.getModSetting(saveTag, modName);
+		});
+
 		// For adding your own callbacks
 		#if LUAVPAD_ALLOWED
 		set('getSpesificVPadButton', function(buttonPostfix:String):Dynamic
 		{
-		    var buttonName = "button" + buttonPostfix;
-    		return Reflect.getProperty(myClass._hxvirtualpad, buttonName); //This Needs to be work
-    		return null;
+			var buttonName = "button" + buttonPostfix;
+			return Reflect.getProperty(myClass._hxvirtualpad, buttonName); //This Needs to be work
+			return null;
 		});
 		#end
 

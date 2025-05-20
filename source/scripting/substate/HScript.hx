@@ -310,13 +310,26 @@ class HScript extends Iris
 			myClass.addTextToDebug(text, color);
 		});
 
+		set('getModSetting', function(saveTag:String, ?modName:String = null) {
+			if(modName == null)
+			{
+				if(this.modFolder == null)
+				{
+					Iris.error('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', this.interp.posInfos());
+					return null;
+				}
+				modName = this.modFolder;
+			}
+			return LuaUtils.getModSetting(saveTag, modName);
+		});
+
 		// For adding your own callbacks
 		#if LUAVPAD_ALLOWED
 		set('getSpesificVPadButton', function(buttonPostfix:String):Dynamic
 		{
-		    var buttonName = "button" + buttonPostfix;
-    		return Reflect.getProperty(myClass._hxvirtualpad, buttonName); //This Needs to be work
-    		return null;
+			var buttonName = "button" + buttonPostfix;
+			return Reflect.getProperty(myClass._hxvirtualpad, buttonName); //This Needs to be work
+			return null;
 		});
 		#end
 

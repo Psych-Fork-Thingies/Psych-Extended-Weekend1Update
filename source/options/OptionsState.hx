@@ -41,7 +41,8 @@ class OptionsState extends MusicBeatState
 		if (label != "Adjust Delay and Combo") removeVirtualPad();
 		switch(label) {
 			case 'Note Colors':
-				openSubState(new options.NotesSubState());
+				if (ClientPrefs.data.useRGB) openSubState(new options.NotesColorSubState());
+				else openSubState(new options.NotesSubState());
 			case 'Controls':
 				openSubState(new options.ControlsSubState());
 			case 'Mobile Controls':
@@ -65,6 +66,8 @@ class OptionsState extends MusicBeatState
 	override function create() {
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
+
+		PlayState.isPixelStage = false; //Disable Pixel Stage Shit
 
 		#if desktop
 		DiscordClient.changePresence("Options Menu", null);

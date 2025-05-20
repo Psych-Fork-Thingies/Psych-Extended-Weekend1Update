@@ -3,7 +3,6 @@ package psychlua;
 import openfl.display.BitmapData;
 
 import psychlua.CustomFunctions;
-import psychlua.ModFunctions;
 
 import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepadInputID;
@@ -1625,7 +1624,7 @@ class FunkinLua {
 				modName = this.modFolder;
 			}
 
-			return ModFunctions.getModSetting(saveTag, modName);
+			return LuaUtils.getModSetting(saveTag, modName);
 		});
 		//
 

@@ -67,7 +67,10 @@ class ScriptState extends MusicBeatState
 	override public function create()
 	{
 		Paths.clearUnusedMemory();
-		
+
+		//this one needs to fix menu issue
+		Mods.loadTopMod();
+
 		camGame = initPsychCamera();
 
 		instance = this;
@@ -187,7 +190,6 @@ class ScriptState extends MusicBeatState
 
 	public function addTextToDebug(text:String, color:FlxColor) 
 	{
-		//fox
 		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
 		newText.text = text;
 		newText.color = color;
@@ -198,6 +200,9 @@ class ScriptState extends MusicBeatState
 		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
 			spr.y += newText.height + 2;
 		});
+
+		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
+		newText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue 2
 		luaDebugGroup.add(newText);
 
 		Sys.println(text);
@@ -449,6 +454,13 @@ class ScriptState extends MusicBeatState
 	public function openScriptSubState(subState:String)
 	{
 		openSubState(new ScriptSubstate(subState));
+	}
+
+	override function closeSubState() {
+		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubState'); #end
+		persistentUpdate = true;
+		super.closeSubState();
+		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
 	}
 
 	#if HXVIRTUALPAD_ALLOWED

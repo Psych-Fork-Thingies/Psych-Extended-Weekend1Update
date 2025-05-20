@@ -101,6 +101,11 @@ class PlayState extends MusicBeatState
 	#if LUAVPAD_ALLOWED
 	public var luaVirtualPad:FlxVirtualPad; //trust me, you'll never need to access this directly
 	#end
+	#if PSYCH_EXTENDED_NOTESKINS
+	public var noteSkin:String;
+	public var noteSkin1:String; // for opponent bleh
+	public var characterPlayingAsDad:Bool = false;
+	#end
 
 	public static var STRUM_X = 48.5;
 	public static var STRUM_X_MIDDLESCROLL = -278;
@@ -357,6 +362,12 @@ class PlayState extends MusicBeatState
 			'NOTE_RIGHT'
 		];
 
+		#if PSYCH_EXTENDED_NOTESKINS
+		characterPlayingAsDad = SONG.characterPlayingAsDad;
+		if (SONG.playerArrowSkin != null)
+			SONG.arrowSkin = SONG.playerArrowSkin;
+		#end
+
 		//Ratings
 		ratingsData.push(new Rating('sick')); //default rating
 
@@ -425,6 +436,15 @@ class PlayState extends MusicBeatState
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.bpm = SONG.bpm;
+
+		#if PSYCH_EXTENDED_NOTESKINS
+		noteSkin1 = (!characterPlayingAsDad) ? SONG.opponentArrowSkin : SONG.arrowSkin;
+		if (noteSkin1 == null)
+			noteSkin1 = Note.defaultNoteSkin;
+		noteSkin = (!characterPlayingAsDad) ? SONG.arrowSkin : SONG.opponentArrowSkin;
+		if (noteSkin == null)
+			noteSkin = Note.defaultNoteSkin;
+		#end
 
 		#if desktop
 		storyDifficultyText = Difficulty.getString();
@@ -518,7 +538,6 @@ class PlayState extends MusicBeatState
 
 		#if LUA_ALLOWED
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
-		luaDebugGroup.cameras = [camOther];
 		add(luaDebugGroup);
 		#end
 
@@ -941,7 +960,6 @@ class PlayState extends MusicBeatState
 
 	public function addTextToDebug(text:String, color:FlxColor) {
 		#if LUA_ALLOWED
-		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
 		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
 		newText.text = text;
 		newText.color = color;
@@ -952,6 +970,9 @@ class PlayState extends MusicBeatState
 		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
 			spr.y += newText.height + 2;
 		});
+
+		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
+		newText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue 2
 
 		luaDebugGroup.add(newText);
 
@@ -1223,8 +1244,21 @@ class PlayState extends MusicBeatState
 			if (skipCountdown || startOnTime > 0) skipArrowStartTween = true;
 			MusicBeatState.mobilec.visible = true;
 			if (MusicBeatState.checkHitbox != true) MusicBeatState.mobilec.alpha = ClientPrefs.data.VirtualPadAlpha; //better for pc build
+			#if PSYCH_EXTENDED_NOTESKINS
+			if (!characterPlayingAsDad)
+			{
+				generateStaticArrows(0, SONG.opponentArrowSkin);
+				generateStaticArrows(1, SONG.playerArrowSkin);
+			}
+			else
+			{
+				generateStaticArrows(1, SONG.opponentArrowSkin);
+				generateStaticArrows(0, SONG.playerArrowSkin);
+			}
+			#else
 			generateStaticArrows(0);
 			generateStaticArrows(1);
+			#end
 			for (i in 0...playerStrums.length) {
 				setOnScripts('defaultPlayerStrumX' + i, playerStrums.members[i].x);
 				setOnScripts('defaultPlayerStrumY' + i, playerStrums.members[i].y);
@@ -1748,7 +1782,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public var skipArrowStartTween:Bool = false; //for lua
-	private function generateStaticArrows(player:Int):Void
+	private function generateStaticArrows(player:Int #if PSYCH_EXTENDED_NOTESKINS , skin:String #end):Void
 	{
 		for (i in 0...4)
 		{
@@ -1760,7 +1794,7 @@ class PlayState extends MusicBeatState
 				else if(ClientPrefs.data.middleScroll) targetAlpha = 0.35;
 			}
 
-			var babyArrow:StrumNote = new StrumNote(ClientPrefs.data.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, strumLine.y, i, player);
+			var babyArrow:StrumNote = new StrumNote(ClientPrefs.data.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, strumLine.y, i, player #if PSYCH_EXTENDED_NOTESKINS ,skin #end);
 			babyArrow.downScroll = ClientPrefs.data.downScroll;
 			if (!isStoryMode && !skipArrowStartTween)
 			{
@@ -2059,6 +2093,12 @@ class PlayState extends MusicBeatState
 				var dunceNote:Note = unspawnNotes[0];
 				notes.insert(0, dunceNote);
 				dunceNote.spawned=true;
+				#if PSYCH_EXTENDED_NOTESKINS
+				if (dunceNote.mustPress && allowedNotes.contains(dunceNote.noteType))
+					dunceNote.texture = noteSkin;
+				else if (!dunceNote.mustPress && allowedNotes.contains(dunceNote.noteType))
+					dunceNote.texture = noteSkin1;
+				#end
 				callOnLuas('onSpawnNote', [notes.members.indexOf(dunceNote), dunceNote.noteData, dunceNote.noteType, dunceNote.isSustainNote, dunceNote.strumTime]);
 				callOnHScript('onSpawnNote', [dunceNote]);
 
@@ -3578,16 +3618,18 @@ class PlayState extends MusicBeatState
 		var hue:Float = 0;
 		var sat:Float = 0;
 		var brt:Float = 0;
-		if (data > -1 && data < ClientPrefs.data.arrowHSV.length)
-		{
-			hue = ClientPrefs.data.arrowHSV[data][0] / 360;
-			sat = ClientPrefs.data.arrowHSV[data][1] / 100;
-			brt = ClientPrefs.data.arrowHSV[data][2] / 100;
-			if(note != null) {
-				skin = note.noteSplashTexture;
-				hue = note.noteSplashHue;
-				sat = note.noteSplashSat;
-				brt = note.noteSplashBrt;
+		if (!ClientPrefs.data.useRGB) {
+			if (data > -1 && data < ClientPrefs.data.arrowHSV.length)
+			{
+				hue = ClientPrefs.data.arrowHSV[data][0] / 360;
+				sat = ClientPrefs.data.arrowHSV[data][1] / 100;
+				brt = ClientPrefs.data.arrowHSV[data][2] / 100;
+				if(note != null) {
+					skin = note.noteSplashTexture;
+					hue = note.noteSplashHue;
+					sat = note.noteSplashSat;
+					brt = note.noteSplashBrt;
+				}
 			}
 		}
 
@@ -3622,8 +3664,10 @@ class PlayState extends MusicBeatState
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		}
+		stagesFunc(function(stage:BaseStage) stage.destroy());
 		FlxG.animationTimeScale = 1;
 		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
+		if (ClientPrefs.data.useRGB) Note.globalRgbShaders = [];
 		instance = null;
 		shutdownThread = true;
 		FlxG.signals.preUpdate.remove(checkForResync);
@@ -4117,6 +4161,49 @@ class PlayState extends MusicBeatState
 		}
 		FlxG.log.warn('Missing shader $name .frag AND .vert files!');
 		return false;
+	}
+	#end
+
+	#if PSYCH_EXTENDED_NOTESKINS
+	//This Fucking Shit is Very Buggy
+	public function changeNoteSkin(player:Bool, skin:String)
+	{
+		if (!player)
+		{
+			if (skin != null || skin != '')
+			{
+				noteSkin1 = skin;
+				opponentStrums.forEachExists(function(strumNote:StrumNote)
+				{
+					strumNote.texture = skin;
+				});
+				notes.forEachExists(function(note:Note)
+				{
+					if (!note.mustPress)
+						note.texture = skin;
+				});
+			}
+			else
+				addTextToDebug("ERROR!! couldn't change opponent note skin because the inserted value is null.", FlxColor.RED);
+		}
+		if (player)
+		{
+			if (skin != null || skin != '')
+			{
+				noteSkin = skin;
+				playerStrums.forEachExists(function(strumNote:StrumNote)
+				{
+					strumNote.texture = skin;
+				});
+				notes.forEachExists(function(note:Note)
+				{
+					if (note.mustPress)
+						note.texture = skin;
+				});
+			}
+			else
+				addTextToDebug("ERROR!! couldn't change player note skin because the inserted value is null.", FlxColor.RED);
+		}
 	}
 	#end
 

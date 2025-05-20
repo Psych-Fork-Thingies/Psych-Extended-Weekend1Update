@@ -32,43 +32,47 @@ using StringTools;
 class VisualsUISubState extends BaseOptionsMenu
 {
 	var noteOptionID:Int = -1;
+	var noteSkins:Array<String>;
 	var notes:FlxTypedGroup<StrumNote>;
 	var notesTween:Array<FlxTween> = [];
+	var noteSkinOption:Option; //Access noteSkin Option outside of new()
 	var noteY:Float = 90;
 	public function new()
 	{
 		title = 'Visuals and UI Settings';
 		rpcTitle = 'Visuals and UI Settings Menu'; //for Discord Rich Presence
 
-		// for note skins
+		noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt', 'shared');
 		notes = new FlxTypedGroup<StrumNote>();
-		for (i in 0...Note.colArray.length)
-		{
-			var note:StrumNote = new StrumNote(370 + (560 / Note.colArray.length) * i, -200, i, 0);
-			changeNoteSkin(note);
-			note.centerOffsets();
-			note.centerOrigin();
-			note.playAnim('static');
-			notes.add(note);
-		}
+
+		// for note skins
+		if (ClientPrefs.data.useRGB) noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt', 'shared');
+		else noteSkins = Mods.mergeAllTextsNamed('images/NoteSkin/DataSet/noteSkinList.txt');
+		generateStrumline();
 
 		// options
-		var noteSkins:Array<String> = Mods.mergeAllTextsNamed('images/noteSkins/list.txt', 'shared');
 		if(noteSkins.length > 0)
 		{
 			if(!noteSkins.contains(ClientPrefs.data.noteSkin))
 				ClientPrefs.data.noteSkin = ClientPrefs.defaultData.noteSkin; //Reset to default if saved noteskin couldnt be found
 
 			noteSkins.insert(0, ClientPrefs.defaultData.noteSkin); //Default skin always comes first
-			var option:Option = new Option('Note Skins:',
+			noteSkinOption = new Option('Note Skins:',
 				"Select your prefered Note skin.",
 				'noteSkin',
 				'string',
 				noteSkins);
-			addOption(option);
-			option.onChange = onChangeNoteSkin;
+			addOption(noteSkinOption);
+			noteSkinOption.onChange = onChangeNoteSkin;
 			noteOptionID = optionsArray.length - 1;
 		}
+
+		var option:Option = new Option('use RGB Shader',
+			"If checked, Notes will be use RBG Shader\n(THIS OPTION DISABLES THE OLD NOTE COLOR SCREEN)",
+			'useRGB',
+			'bool');
+		addOption(option);
+		option.onChange = onChangeRGBShader;
 
 		#if PsychExtended_ExtraFreeplayMenus
 		var option:Option = new Option('Freeplay Menu Style:',
@@ -236,6 +240,25 @@ class VisualsUISubState extends BaseOptionsMenu
 		}
 	}
 
+	function onChangeRGBShader() {
+		ClientPrefs.saveSettings();
+		if (ClientPrefs.data.useRGB) noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt', 'shared');
+		else noteSkins = Mods.mergeAllTextsNamed('images/NoteSkin/DataSet/noteSkinList.txt');
+
+		noteSkinOption.options = noteSkins; //Change between NF's and Psych's Note Skin Folders
+		noteSkins.insert(0, ClientPrefs.defaultData.noteSkin); //I forgot to add this, cuz I'm a idiot
+
+		if(!noteSkins.contains(ClientPrefs.data.noteSkin))
+		{
+			noteSkinOption.defaultValue = noteSkinOption.options[0]; //Reset to default if saved noteskin couldnt be found in between folders
+
+			//this one needs to be update text
+			noteSkinOption.setValue(noteSkinOption.options[0]);
+			updateTextFrom(noteSkinOption);
+			noteSkinOption.change();
+		}
+	}
+
 	var changedMusic:Bool = false;
 	function onChangePauseMusic()
 	{
@@ -250,6 +273,19 @@ class VisualsUISubState extends BaseOptionsMenu
 	function onChangeMenuMusic()
 	{
 		FlxG.sound.playMusic(Paths.music('freakyMenu'));
+	}
+
+	function generateStrumline() {
+		for (i in 0...Note.colArray.length)
+		{
+			var note:StrumNote = new StrumNote(370 + (560 / Note.colArray.length) * i, -200, i, 0);
+			changeNoteSkin(note);
+			note.disableShadersInOptions = true; //Null Object Reference Fix
+			note.centerOffsets();
+			note.centerOrigin();
+			note.playAnim('static');
+			notes.add(note);
+		}
 	}
 
 	override function destroy()
@@ -298,7 +334,8 @@ class VisualsUISubState extends BaseOptionsMenu
 	function changeNoteSkin(note:StrumNote)
 	{
 		var skin:String = Note.defaultNoteSkin;
-		if (ClientPrefs.data.noteSkin == 'Default') skin = 'NOTE_assets';
+		if (ClientPrefs.data.noteSkin == 'Default' && !ClientPrefs.data.useRGB) skin = 'NOTE_assets';
+		else if (ClientPrefs.data.noteSkin != 'Default' && !ClientPrefs.data.useRGB) skin = 'NoteSkin/';
 		var customSkin:String = skin + Note.getNoteSkinPostfix();
 		if(Paths.fileExists('images/$customSkin.png', IMAGE)) skin = customSkin;
 

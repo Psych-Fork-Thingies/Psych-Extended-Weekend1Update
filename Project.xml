@@ -59,6 +59,7 @@
 	<define name="BASE_GAME_ASSETS" if="finalBuild" />
 	<define name="HXVIRTUALPAD_ALLOWED" />
 	<define name="LUAVPAD_ALLOWED" />
+	<define name="PSYCH_EXTENDED_NOTESKINS" /> <!-- Better Note Skin Changing Test (I took this from another Modified Psych) -->
 	<!-- PSYCH EXTENDED EXTRAS -->
 	<define name="PsychExtended_ExtraFreeplayMenus" unless="extras_disabled"/> <!-- DELETE THIS IF YOU WANT TO REMOVE EXTRA FREEPLAY MENUS IN YOUR BUILD -->
 	<define name="PsychExtended_ExtraMainMenus" unless="extras_disabled"/> <!-- DELETE THIS IF YOU WANT TO REMOVE EXTRA MAIN MENUS IN YOUR BUILD -->

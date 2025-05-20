@@ -9,7 +9,7 @@ import scripting.state.HScript;
 
 class HScriptStateHandler extends MusicBeatState
 {
-	private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
+	public var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
 	public static var instance:HScriptStateHandler;
 	public var hscriptArray:Array<HScript> = [];
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
@@ -35,7 +35,7 @@ class HScriptStateHandler extends MusicBeatState
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			HScriptStateHandler.instance.addTextToDebug('WARNING: $msgInfo', FlxColor.YELLOW);
+			if (HScriptStateHandler.instance != null) HScriptStateHandler.instance.addTextToDebug('WARNING: $msgInfo', FlxColor.YELLOW);
 		}
 		Iris.error = function(x, ?pos:haxe.PosInfos) {
 			Iris.logLevel(ERROR, x, pos);
@@ -46,7 +46,7 @@ class HScriptStateHandler extends MusicBeatState
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			HScriptStateHandler.instance.addTextToDebug('ERROR: $msgInfo', FlxColor.RED);
+			if (HScriptStateHandler.instance != null) HScriptStateHandler.instance.addTextToDebug('ERROR: $msgInfo', FlxColor.RED);
 		}
 		Iris.fatal = function(x, ?pos:haxe.PosInfos) {
 			Iris.logLevel(FATAL, x, pos);
@@ -57,7 +57,7 @@ class HScriptStateHandler extends MusicBeatState
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
-			HScriptStateHandler.instance.addTextToDebug('FATAL: $msgInfo', 0xFFBB0000);
+			if (HScriptStateHandler.instance != null) HScriptStateHandler.instance.addTextToDebug('FATAL: $msgInfo', 0xFFBB0000);
 		}
 	}
 
@@ -100,7 +100,6 @@ class HScriptStateHandler extends MusicBeatState
 
 	public function addTextToDebug(text:String, color:FlxColor) 
 	{
-		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
 		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
 		newText.text = text;
 		newText.color = color;
@@ -112,6 +111,8 @@ class HScriptStateHandler extends MusicBeatState
 		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
 			spr.y += newText.height + 2;
 		});
+		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
+		newText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue 2
 		luaDebugGroup.add(newText);
 
 		Sys.println(text);
@@ -135,20 +136,22 @@ class HScriptStateHandler extends MusicBeatState
 
 	public function startHScriptsNamed(scriptFile:String)
 	{
-		#if MODS_ALLOWED
-		var scriptToLoad:String = Paths.modFolders('scripts/states/' + scriptFile);
-		if(!FileSystem.exists(scriptToLoad))
-			scriptToLoad = Paths.getScriptPath('states/' + scriptFile);
-		#else
-		var scriptToLoad:String = Paths.getScriptPath('states/' + scriptFile);
-		#end
+		if (Mods.getTopMod() == Mods.currentModDirectory) {
+			#if MODS_ALLOWED
+			var scriptToLoad:String = Paths.modFolders('scripts/states/' + scriptFile);
+			if(!FileSystem.exists(scriptToLoad))
+				scriptToLoad = Paths.getScriptPath('states/' + scriptFile);
+			#else
+			var scriptToLoad:String = Paths.getScriptPath('states/' + scriptFile);
+			#end
 
-		if(FileSystem.exists(scriptToLoad))
-		{
-			if (Iris.instances.exists(scriptToLoad)) return false;
+			if(FileSystem.exists(scriptToLoad))
+			{
+				if (Iris.instances.exists(scriptToLoad)) return false;
 
-			initHScript(scriptToLoad);
-			return true;
+				initHScript(scriptToLoad);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -175,18 +178,8 @@ class HScriptStateHandler extends MusicBeatState
 	}
 
 	public function callOnScripts(funcToCall:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
-		#if HXFUCKER
-		var returnVal:Dynamic = FunkinLua.Function_Continue;
-		if(args == null) args = [];
-		if(exclusions == null) exclusions = [];
-		if(excludeValues == null) excludeValues = [FunkinLua.Function_Continue];
-
-		var result:Dynamic = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
-		if(result == null || excludeValues.contains(result)) result = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
-		return result;
-		#else
-		return callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
-		#end
+		if (Mods.getTopMod() == Mods.currentModDirectory) return callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
+		return null;
 	}
 
 	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
@@ -234,7 +227,7 @@ class HScriptStateHandler extends MusicBeatState
 
 	public function setOnScripts(variable:String, arg:Dynamic, exclusions:Array<String> = null) {
 		if(exclusions == null) exclusions = [];
-		setOnHScript(variable, arg, exclusions);
+		if (Mods.getTopMod() == Mods.currentModDirectory) setOnHScript(variable, arg, exclusions);
 	}
 
 	public function setOnHScript(variable:String, arg:Dynamic, exclusions:Array<String> = null) {

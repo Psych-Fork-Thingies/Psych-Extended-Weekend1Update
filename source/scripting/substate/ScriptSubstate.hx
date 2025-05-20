@@ -185,6 +185,8 @@ class ScriptSubstate extends MusicBeatSubstate
 		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
 			spr.y += newText.height + 2;
 		});
+		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
+		newText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue 2
 		luaDebugGroup.add(newText);
 
 		Sys.println(text);

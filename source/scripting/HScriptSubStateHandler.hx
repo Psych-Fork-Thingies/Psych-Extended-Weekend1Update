@@ -103,7 +103,6 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 
 	public function addTextToDebug(text:String, color:FlxColor)
 	{
-		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
 		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
 		newText.text = text;
 		newText.color = color;
@@ -115,6 +114,8 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) {
 			spr.y += newText.height + 2;
 		});
+		luaDebugGroup.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue
+		newText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length-1]]; //fix camera issue 2
 		luaDebugGroup.add(newText);
 
 		Sys.println(text);

@@ -344,6 +344,7 @@ class ModsMenuState extends MusicBeatState
 			saveTxt();
 
 			ClientPrefs.data.controllerMode = LastControllerMode;
+			MobileData.init(); //Reload Mobile Data (Otherwise You Need to restart game)
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			if(waitingToRestart)
 			{
@@ -527,6 +528,7 @@ class ModsMenuState extends MusicBeatState
 						var button = getButton();
 						button.ignoreCheck = button.onFocus = false;
 						changeSelectedMod();
+						Mods.currentModDirectory = modsList.all[0] != null ? modsList.all[0] : ''; //Set Current Mod (This one needs to fix menu switch problem)
 					}
 					else if(controls.ACCEPT)
 					{
