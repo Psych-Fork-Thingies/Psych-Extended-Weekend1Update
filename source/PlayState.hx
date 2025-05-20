@@ -2094,9 +2094,9 @@ class PlayState extends MusicBeatState
 				notes.insert(0, dunceNote);
 				dunceNote.spawned=true;
 				#if PSYCH_EXTENDED_NOTESKINS
-				if (dunceNote.mustPress && allowedNotes.contains(dunceNote.noteType))
+				if (dunceNote.mustPress)
 					dunceNote.texture = noteSkin;
-				else if (!dunceNote.mustPress && allowedNotes.contains(dunceNote.noteType))
+				else if (!dunceNote.mustPress)
 					dunceNote.texture = noteSkin1;
 				#end
 				callOnLuas('onSpawnNote', [notes.members.indexOf(dunceNote), dunceNote.noteData, dunceNote.noteType, dunceNote.isSustainNote, dunceNote.strumTime]);
