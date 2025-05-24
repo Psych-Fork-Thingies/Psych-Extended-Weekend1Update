@@ -345,7 +345,7 @@ class PlayState extends MusicBeatState
 
 		#if PSYCH_EXTENDED_NOTESKINS
 		characterPlayingAsDad = SONG.characterPlayingAsDad;
-		if (SONG.playerArrowSkin != null)
+		if (SONG.playerArrowSkin != null && SONG.playerArrowSkin.length > 1)
 			SONG.arrowSkin = SONG.playerArrowSkin;
 		#end
 
@@ -2071,9 +2071,10 @@ class PlayState extends MusicBeatState
 				notes.insert(0, dunceNote);
 				dunceNote.spawned=true;
 				#if PSYCH_EXTENDED_NOTESKINS
-				if (dunceNote.mustPress && noteSkin != null)
+				//Main Issue was there
+				if (dunceNote.mustPress && noteSkin != null && noteSkin.length > 1)
 					dunceNote.texture = noteSkin;
-				else if (!dunceNote.mustPress && noteSkin1 != null)
+				else if (!dunceNote.mustPress && noteSkin1 != null && noteSkin1.length > 1)
 					dunceNote.texture = noteSkin1;
 				#end
 				callOnLuas('onSpawnNote', [notes.members.indexOf(dunceNote), dunceNote.noteData, dunceNote.noteType, dunceNote.isSustainNote, dunceNote.strumTime]);

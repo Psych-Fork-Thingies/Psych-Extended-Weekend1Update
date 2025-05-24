@@ -103,7 +103,7 @@ class MainMenuStateNOVA extends HScriptStateHandler
 		#end
 		debugKeys = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
 
-		camGame = initPsychCamera();
+		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
 		camOther.bgColor.alpha = 0;

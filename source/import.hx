@@ -2,6 +2,7 @@
 #if !macro
 import Paths;
 import flixel.addons.ui.*; //Flixel-UI
+import options.OptionsState;
 
 //Stage Objects
 import stages.objects.*;

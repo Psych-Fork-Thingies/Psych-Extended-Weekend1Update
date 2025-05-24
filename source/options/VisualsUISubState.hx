@@ -321,14 +321,17 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	function changeNoteSkin(note:StrumNote)
 	{
-		var skin:String = Note.defaultNoteSkin;
+		var skin:String = 'noteSkins/NOTE_assets';
 		if (ClientPrefs.data.noteSkin == 'Default' && !ClientPrefs.data.useRGB) skin = 'NOTE_assets';
 		else if (ClientPrefs.data.noteSkin != 'Default' && !ClientPrefs.data.useRGB) skin = 'NoteSkin/';
 		var customSkin:String = skin + Note.getNoteSkinPostfix();
-		if(Paths.fileExists('images/$customSkin.png', IMAGE)) skin = customSkin;
+		if(Paths.fileExists('images/$customSkin.png', IMAGE)) {
+			Note.defaultNoteSkin = customSkin;
+			skin = customSkin;
+		}
+		else skin = 'NOTE_assets';
 
 		note.texture = skin; //Load texture and anims
-		note.reloadNote();
 		note.playAnim('static');
 	}
 }

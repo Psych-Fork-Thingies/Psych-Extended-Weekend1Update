@@ -49,10 +49,13 @@ class OptionsState extends MusicBeatState
 
 	var selectorLeft:Alphabet;
 	var selectorRight:Alphabet;
+	public static var inOptionsMenu:Bool = false; //this one needs to fix notes
 
 	override function create() {
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
+		
+		inOptionsMenu = true;
 
 		PlayState.isPixelStage = false; //Disable Pixel Stage Shit
 
@@ -125,6 +128,7 @@ class OptionsState extends MusicBeatState
 			changeSelection(1);
 		
 		if (controls.BACK) {
+			inOptionsMenu = false;
 			if (OptionsState.stateType == 2)
 				MusicBeatState.switchState(new FreeplayStateNF());
 			else if (OptionsState.stateType == 1)
