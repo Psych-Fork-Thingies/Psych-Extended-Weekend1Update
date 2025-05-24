@@ -250,12 +250,10 @@ class Paths
 	inline static public function voices(song:String, postfix:String = null):Sound
 	{
 		var songKey:String = '${formatToSongPath(song)}/Voices';
-		var diff = Difficulty.getString().toLowerCase();
 		if(postfix != null) songKey += '-' + postfix;
 		var voices = returnSound(null, songKey, 'songs');
-		var voicesDiff = returnSound(null, songKey + '-(' + diff + ')', 'songs');
 
-		try { return voicesDiff; } catch(e:Dynamic) { return voices; }
+		return voices;
 	}
 
 	inline public static function mergeAllTextsNamed(path:String, defaultDirectory:String = null, allowDuplicates:Bool = false)
@@ -321,11 +319,9 @@ class Paths
 	inline static public function inst(song:String):Sound
 	{
 		var songKey:String = '${formatToSongPath(song)}/Inst';
-		var diff = Difficulty.getString().toLowerCase();
 		var inst = returnSound(null, songKey, 'songs');
-		var instDiff = returnSound(null, songKey + '-(' + diff + ')', 'songs');
 
-		try { return instDiff; } catch(e:Dynamic) { return inst; }
+		return inst;
 	}
 
 	inline static public function image(key:String, ?library:String, ?extraLoad:Bool = false):FlxGraphic

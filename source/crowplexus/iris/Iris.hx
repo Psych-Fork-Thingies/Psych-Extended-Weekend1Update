@@ -232,6 +232,7 @@ class Iris {
 
 		parser = new Parser();
 		interp = new Interp();
+		interp.showPosOnLog = false;
 
 		parser.allowTypes = true;
 		parser.allowMetadata = true;
@@ -268,6 +269,7 @@ class Iris {
 			expr = parse();
 
 		Iris.instances.set(this.name, this);
+		this.config.packageName = parser.packageName;
 		return interp.execute(expr);
 	}
 
