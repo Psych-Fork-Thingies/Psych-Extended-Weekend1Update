@@ -4,11 +4,9 @@ import Sys.sleep;
 import discord_rpc.DiscordRpc;
 
 #if LUA_ALLOWED
-import llua.Lua;
 import llua.State;
 #end
 
-using StringTools;
 
 class DiscordClient
 {

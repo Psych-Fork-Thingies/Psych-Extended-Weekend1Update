@@ -1,22 +1,12 @@
 package mobile.substates;
 
-import flixel.util.FlxColor;
-import flixel.math.FlxPoint;
-import flixel.text.FlxText;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.addons.transition.FlxTransitionableState;
 import mobile.objects.MobileControls.Config;
 import flixel.ui.FlxButton as UIButton;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.util.FlxGradient;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.FlxCamera;
 import options.ControlsSubState;
 
-using StringTools;
 
 class MobileControlSelectSubState extends MusicBeatSubstate
 {

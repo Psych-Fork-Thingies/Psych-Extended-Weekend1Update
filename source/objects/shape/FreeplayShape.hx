@@ -7,7 +7,6 @@ import openfl.geom.Matrix;
 import openfl.geom.ColorTransform;
 import openfl.geom.Rectangle;
 import openfl.display.Shape;
-import objects.shape.ShapeEX;
 
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxStringUtil; 

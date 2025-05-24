@@ -8,7 +8,6 @@ import openfl.utils.Assets as OpenFlAssets;
 import flixel.graphics.FlxGraphic;
 import flixel.FlxState;
 
-import Song;
 import StageData;
 import Character;
 

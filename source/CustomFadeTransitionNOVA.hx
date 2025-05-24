@@ -1,11 +1,7 @@
 package;
 
 import flixel.util.FlxGradient;
-import flixel.text.FlxText;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxColor;
 import flixel.FlxSubState;
-import flixel.FlxSprite;
 import openfl.utils.Assets;
 import flixel.FlxObject;
  

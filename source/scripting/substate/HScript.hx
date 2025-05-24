@@ -35,6 +35,10 @@ class HScript extends Iris
 		interp.scriptObject = parent;
 	}
 
+	public function setPublicMap(map:Map<String, Dynamic>) {
+		this.interp.publicVariables = map;
+	}
+
 	public var origin:String;
 	override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false)
 	{
@@ -66,6 +70,9 @@ class HScript extends Iris
 		}
 		super(scriptThing, new IrisConfig(scriptName, false, false));
 		preset();
+		parser.preprocessorValues = crowplexus.iris.macro.DefineMacro.defines;
+		interp.staticVariables = ScriptingVars.staticVariables;
+		interp.allowStaticVariables = interp.allowPublicVariables = true;
 		this.varsToBring = varsToBring;
 		if (!manualRun) {
 			try {

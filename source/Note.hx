@@ -6,16 +6,10 @@ package;
 import backend.NoteTypesConfig;
 import shaders.RGBPalette;
 import shaders.RGBPalette.RGBShaderReference;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.math.FlxMath;
-import flixel.util.FlxColor;
 import openfl.display.BitmapData;
 import editors.ChartingState;
 import flixel.math.FlxRect;
 
-using StringTools;
 
 typedef EventNote = {
 	strumTime:Float,
@@ -355,7 +349,7 @@ class Note extends FlxSprite
 
 		var skin:String = texture + postfix;
 		if(texture.length < 1) {
-			skin = PlayState.SONG != null ? PlayState.SONG.arrowSkin : null;
+			skin = PlayState.instance != null ? PlayState.SONG.arrowSkin : null;
 			if(skin == null || skin.length < 1)
 				skin = defaultNoteSkin + postfix;
 		}

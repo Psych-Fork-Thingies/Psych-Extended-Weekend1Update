@@ -1,7 +1,6 @@
 package backend.animation;
 
 import flixel.animation.FlxAnimationController;
-import flixel.FlxG;
 
 /**
  * Animation Controller for 0.6.x

@@ -1,6 +1,5 @@
 package backend;
 
-import flixel.FlxG;
 import openfl.Lib;
 import openfl.events.Event;
 import sys.FileSystem;
@@ -8,8 +7,6 @@ import sys.FileSystem;
 import vlc.VLCBitmap;
 #end
 
-import flixel.FlxSprite;
-import flixel.util.FlxColor;
 
 /**
  * Handles video playback.

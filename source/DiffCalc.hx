@@ -1,8 +1,6 @@
 package;
 
 import openfl.system.System;
-import flixel.math.FlxMath;
-import Song;
 
 class SmallNote // basically Note.hx but small as fuck
 {

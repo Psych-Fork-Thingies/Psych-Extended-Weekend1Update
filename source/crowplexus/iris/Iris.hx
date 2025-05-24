@@ -3,7 +3,7 @@ package crowplexus.iris;
 import crowplexus.iris.utils.Ansi;
 import crowplexus.hscript.proxy.ProxyType;
 import haxe.ds.StringMap;
-import crowplexus.hscript.*;
+import crowplexus.hscript.*; //you can use HScript Improved, but Functions Doesn't work for now
 import crowplexus.iris.ErrorSeverity;
 import crowplexus.iris.IrisConfig;
 import crowplexus.iris.utils.UsingEntry;
@@ -232,7 +232,6 @@ class Iris {
 
 		parser = new Parser();
 		interp = new Interp();
-		interp.showPosOnLog = false;
 
 		parser.allowTypes = true;
 		parser.allowMetadata = true;
@@ -269,7 +268,6 @@ class Iris {
 			expr = parse();
 
 		Iris.instances.set(this.name, this);
-		this.config.packageName = parser.packageName;
 		return interp.execute(expr);
 	}
 
@@ -315,14 +313,7 @@ class Iris {
 		if (interp == null)
 			Iris.fatal("[Iris:get()]: " + interpErrStr + ", when trying to get variable \"" + field + "\", returning false...");
 		#end
-
-		var thing:Bool = false;
-		if (interp != null)
-			thing = interp.publicVariables.exists(field)
-		else
-			thing = false;
-
-		return thing;
+		return interp != null ? interp.variables.get(field) : false;
 	}
 
 	/**
@@ -332,15 +323,15 @@ class Iris {
 	 * @param allowOverride If set to true, when setting the new field, we will ignore any previously set fields of the same name.
 	 */
 	public function set(name: String, value: Dynamic, allowOverride: Bool = true): Void {
-		if (interp == null || interp.publicVariables == null) {
+		if (interp == null || interp.variables == null) {
 			#if IRIS_DEBUG
-			Iris.fatal("[Iris:set()]: " + interpErrStr + ", when trying to set variable \"" + name + "\" so variables/publicVariables cannot be set.");
+			Iris.fatal("[Iris:set()]: " + interpErrStr + ", when trying to set variable \"" + name + "\" so variables cannot be set.");
 			#end
 			return;
 		}
 
-		if (allowOverride || !interp.publicVariables.exists(name))
-			interp.publicVariables.set(name, value);
+		if (allowOverride || !interp.variables.exists(name))
+			interp.variables.set(name, value);
 	}
 
 	/**
@@ -360,7 +351,7 @@ class Iris {
 			args = [];
 
 		// fun-ny
-		var ny: Dynamic = interp.publicVariables.get(fun); // function signature
+		var ny: Dynamic = interp.variables.get(fun); // function signature
 		var isFunction: Bool = false;
 		try {
 			isFunction = ny != null && Reflect.isFunction(ny);
@@ -374,7 +365,7 @@ class Iris {
 		// @formatter:off
 		#if hscriptPos
 		catch (e:Expr.Error) {
-			Iris.error(Printer.errorToString(e, false), this.interp.posInfos());
+			Iris.error(Printer.errorToString(e), this.interp.posInfos());
 		}
 		#end
 		catch (e:haxe.Exception) {
@@ -394,14 +385,7 @@ class Iris {
 		if (interp == null)
 			trace("[Iris:exists()]: " + interpErrStr + ", returning false...");
 		#end
-
-		var thing:Bool = false;
-		if (interp != null)
-			thing = interp.publicVariables.exists(field)
-		else
-			thing = false;
-
-		return thing;
+		return (interp != null) ? interp.variables.exists(field) : false;
 	}
 
 	/**

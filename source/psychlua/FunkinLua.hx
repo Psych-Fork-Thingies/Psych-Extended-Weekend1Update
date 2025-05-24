@@ -7,21 +7,11 @@ import psychlua.CustomFunctions;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepadInputID;
 
-import mobile.psychlua.Functions;
 
-import flixel.FlxG;
-import flixel.tweens.FlxTween;
-import flixel.text.FlxText;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.util.FlxTimer;
-import flixel.FlxSprite;
-import flixel.FlxCamera;
-import flixel.util.FlxColor;
 import flixel.FlxBasic;
 import flixel.FlxObject;
 import openfl.Lib;
 import openfl.utils.Assets;
-import flixel.addons.transition.FlxTransitionableState;
 import haxe.Json;
 import haxe.format.JsonParser;
 
@@ -47,12 +37,10 @@ import psychlua.ModchartSprite;
 import psychlua.ModchartText;
 
 #if desktop
-import Discord;
 #end
 
 import haxe.Json;
 
-using StringTools;
 
 class FunkinLua {
 	public static var Function_Stop:Dynamic = "##PSYCHLUA_FUNCTIONSTOP";

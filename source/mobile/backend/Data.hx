@@ -1,6 +1,5 @@
 package mobile.backend;
 
-import haxe.ds.StringMap;
 
 class Data
 {

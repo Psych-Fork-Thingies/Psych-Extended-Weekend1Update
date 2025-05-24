@@ -1,7 +1,6 @@
 package extras.states;
 
 import flixel.util.FlxSpriteUtil;
-import flixel.addons.transition.FlxTransitionableState;
 
 import haxe.Json;
 import haxe.ds.ArraySort;
@@ -15,11 +14,9 @@ import openfl.filters.GlowFilter;
 
 import WeekData;
 import Highscore;
-import Song;
 import DiffCalc;
 
 import HealthIcon;
-import objects.shape.ShapeEX;
 import objects.shape.FreeplayShape;
 
 import GameplayChangersSubstate;

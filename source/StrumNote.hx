@@ -1,12 +1,8 @@
 package;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 import shaders.RGBPalette;
 import shaders.RGBPalette.RGBShaderReference;
 
-using StringTools;
 
 class StrumNote extends FlxSprite
 {

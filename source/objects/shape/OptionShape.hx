@@ -6,7 +6,6 @@ import openfl.geom.Point;
 import openfl.geom.Matrix;
 import openfl.geom.Rectangle;
 import openfl.display.Shape;
-import objects.shape.ShapeEX;
 
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxStringUtil;

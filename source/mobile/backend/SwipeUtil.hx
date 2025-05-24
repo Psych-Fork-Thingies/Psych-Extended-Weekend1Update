@@ -1,7 +1,6 @@
 package mobile.backend;
 
 #if FLX_POINTER_INPUT
-import flixel.FlxG;
 #end
 
 /**

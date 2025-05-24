@@ -5,7 +5,6 @@ import WeekData;
 import Character;
 import flixel.FlxObject;
 import flixel.FlxSubState;
-import flixel.math.FlxPoint;
 
 class GameOverSubstate extends MusicBeatSubstate
 {

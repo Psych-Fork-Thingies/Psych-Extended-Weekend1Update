@@ -15,36 +15,22 @@ import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
 #end
-import Song.SwagSection;
 import Song.SwagSong;
 import flixel.FlxBasic;
-import flixel.FlxCamera;
-import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxObject;
-import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxSubState;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.effects.FlxTrailArea;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxWaveEffect;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.atlas.FlxAtlas;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.util.FlxCollision;
-import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
-import flixel.util.FlxTimer;
 import haxe.Json;
 import lime.utils.Assets;
 import openfl.Lib;
@@ -54,7 +40,6 @@ import openfl.filters.BitmapFilter;
 import openfl.utils.Assets as OpenFlAssets;
 import editors.ChartingState;
 import editors.CharacterEditorState;
-import flixel.group.FlxSpriteGroup;
 import flixel.input.keyboard.FlxKey;
 import Note.EventNote;
 import openfl.events.KeyboardEvent;
@@ -63,7 +48,6 @@ import flixel.effects.particles.FlxParticle;
 import flixel.util.FlxSave;
 import flixel.animation.FlxAnimationController;
 // import animateatlas.AtlasFrameMaker;
-import Achievements;
 import StageData;
 import DialogueBoxPsych;
 import Conductor.Rating;
@@ -71,9 +55,7 @@ import flixel.system.FlxAssets.FlxShader;
 
 // stages
 import states.stages.*;
-import states.*;
 
-import psychlua.*;
 import psychlua.FunkinLua;
 
 #if (SScript >= "3.0.0")
@@ -94,7 +76,6 @@ import sys.io.File;
 import vlc.MP4Handler;
 #end
 
-using StringTools;
 
 class PlayState extends MusicBeatState
 {
@@ -439,11 +420,7 @@ class PlayState extends MusicBeatState
 
 		#if PSYCH_EXTENDED_NOTESKINS
 		noteSkin1 = (!characterPlayingAsDad) ? SONG.opponentArrowSkin : SONG.arrowSkin;
-		if (noteSkin1 == null)
-			noteSkin1 = Note.defaultNoteSkin;
 		noteSkin = (!characterPlayingAsDad) ? SONG.arrowSkin : SONG.opponentArrowSkin;
-		if (noteSkin == null)
-			noteSkin = Note.defaultNoteSkin;
 		#end
 
 		#if desktop
@@ -2094,9 +2071,9 @@ class PlayState extends MusicBeatState
 				notes.insert(0, dunceNote);
 				dunceNote.spawned=true;
 				#if PSYCH_EXTENDED_NOTESKINS
-				if (dunceNote.mustPress)
+				if (dunceNote.mustPress && noteSkin != null)
 					dunceNote.texture = noteSkin;
-				else if (!dunceNote.mustPress)
+				else if (!dunceNote.mustPress && noteSkin1 != null)
 					dunceNote.texture = noteSkin1;
 				#end
 				callOnLuas('onSpawnNote', [notes.members.indexOf(dunceNote), dunceNote.noteData, dunceNote.noteType, dunceNote.isSustainNote, dunceNote.strumTime]);
@@ -4173,11 +4150,11 @@ class PlayState extends MusicBeatState
 			if (skin != null || skin != '')
 			{
 				noteSkin1 = skin;
-				opponentStrums.forEachExists(function(strumNote:StrumNote)
+				opponentStrums.forEachAlive(function(strumNote:StrumNote)
 				{
 					strumNote.texture = skin;
 				});
-				notes.forEachExists(function(note:Note)
+				notes.forEachAlive(function(note:Note)
 				{
 					if (!note.mustPress)
 						note.texture = skin;
@@ -4191,11 +4168,11 @@ class PlayState extends MusicBeatState
 			if (skin != null || skin != '')
 			{
 				noteSkin = skin;
-				playerStrums.forEachExists(function(strumNote:StrumNote)
+				playerStrums.forEachAlive(function(strumNote:StrumNote)
 				{
 					strumNote.texture = skin;
 				});
-				notes.forEachExists(function(note:Note)
+				notes.forEachAlive(function(note:Note)
 				{
 					if (note.mustPress)
 						note.texture = skin;

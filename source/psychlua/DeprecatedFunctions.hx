@@ -1,9 +1,5 @@
 package psychlua;
 
-import flixel.FlxSprite;
-import flixel.FlxG;
-
-using StringTools;
 
 //
 // This is simply where i store deprecated functions for it to be more organized.

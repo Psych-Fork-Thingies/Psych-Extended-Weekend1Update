@@ -4,7 +4,6 @@ import editors.ChartingState;
 import options.OptionsState;
 
 import flixel.util.FlxStringUtil;
-import flixel.addons.transition.FlxTransitionableState;
 import openfl.utils.Assets;
 
 /*

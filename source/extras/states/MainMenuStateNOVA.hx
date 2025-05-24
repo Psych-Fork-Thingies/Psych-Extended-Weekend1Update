@@ -1,10 +1,8 @@
 package extras.states;
 
 import WeekData;
-import Achievements;
 
 import flixel.FlxObject;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.effects.FlxFlicker;
 
 import flixel.addons.display.FlxBackdrop;

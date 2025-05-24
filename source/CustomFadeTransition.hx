@@ -2,7 +2,6 @@ package;
 
 import flixel.util.FlxGradient;
 import flixel.FlxSubState;
-import flixel.FlxCamera;
 
 class CustomFadeTransition extends FlxSubState {
 	public static var finishCallback:Void->Void;

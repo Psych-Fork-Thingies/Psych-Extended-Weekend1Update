@@ -5,20 +5,12 @@ import Discord.DiscordClient;
 #end
 // import animateatlas.AtlasFrameMaker;
 #if flxanimate
-import flxanimate.*;
 #end
-import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.FlxCamera;
 import flixel.input.keyboard.FlxKey;
 import flixel.addons.display.FlxGridOverlay;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.graphics.FlxGraphic;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import flixel.addons.ui.*;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSpriteButton;
 import openfl.net.FileReference;
@@ -31,13 +23,11 @@ import Character;
 import flixel.system.debug.interaction.tools.Pointer.GraphicCursorCross;
 import lime.system.Clipboard;
 import flixel.animation.FlxAnimation;
-import flixel.util.FlxDestroyUtil;
 
 #if MODS_ALLOWED
 import sys.FileSystem;
 #end
 
-using StringTools;
 
 /**
 	*DEBUG MODE

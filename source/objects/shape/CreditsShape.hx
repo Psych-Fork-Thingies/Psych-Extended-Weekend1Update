@@ -1,6 +1,5 @@
 package objects.shape;
 
-import objects.shape.ShapeEX;
 import openfl.display.BitmapData;
 import flixel.graphics.FlxGraphic;
 import openfl.display.Shape;

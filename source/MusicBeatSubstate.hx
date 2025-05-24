@@ -1,16 +1,12 @@
 package;
 
 import Conductor.BPMChangeEvent;
-import flixel.FlxG;
 import flixel.FlxSubState;
 import flixel.FlxBasic;
-import flixel.FlxSprite;
 import flixel.input.actions.FlxActionInput;
-import flixel.util.FlxDestroyUtil;
 import backend.PsychCamera;
 
 import flixel.input.actions.FlxActionInput;
-import mobile.flixel.FlxVirtualPad;
 
 class MusicBeatSubstate extends FlxSubState
 {

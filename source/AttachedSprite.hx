@@ -1,8 +1,5 @@
 package;
 
-import flixel.FlxSprite;
-
-using StringTools;
 
 class AttachedSprite extends FlxSprite
 {

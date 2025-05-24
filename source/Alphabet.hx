@@ -1,15 +1,7 @@
 package;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxSpriteGroup;
-import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
-import flixel.util.FlxTimer;
 import openfl.media.Sound;
 
-using StringTools;
 
 enum Alignment
 {

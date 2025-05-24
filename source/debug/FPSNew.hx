@@ -1,6 +1,5 @@
 package debug;
 
-import flixel.FlxG;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.system.System;
@@ -10,7 +9,6 @@ import openfl.Lib;
 import openfl.system.Capabilities;
 import cpp.vm.Gc;
 import flixel.util.FlxStringUtil;
-import haxe.ds.StringMap;
 import haxe.Timer;
 import openfl.display.DisplayObject;
 import openfl.events.Event;

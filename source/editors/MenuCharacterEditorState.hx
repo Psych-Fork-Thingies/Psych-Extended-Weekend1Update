@@ -3,14 +3,7 @@ package editors;
 #if desktop
 import Discord.DiscordClient;
 #end
-import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
@@ -29,7 +22,6 @@ import haxe.Json;
 import sys.io.File;
 #end
 
-using StringTools;
 
 class MenuCharacterEditorState extends MusicBeatState
 {

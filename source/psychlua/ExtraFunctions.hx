@@ -5,14 +5,9 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 
-import flixel.FlxSprite;
-import flixel.FlxG;
 import flixel.util.FlxSave;
-import flixel.util.FlxColor;
-import flixel.math.FlxMath;
 import openfl.utils.Assets;
 
-using StringTools;
 
 //
 // Things to trivialize some dumb stuff like splitting strings on older Lua

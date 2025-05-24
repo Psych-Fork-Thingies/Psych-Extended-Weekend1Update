@@ -1,6 +1,5 @@
 package scripting;
 
-import haxe.ds.StringMap;
 
 import flixel.input.keyboard.FlxKey;
 
@@ -21,5 +20,6 @@ class ScriptingVars
 	public static var outdated:Bool = false;
 
 	public static var globalVars:StringMap<Dynamic> = new StringMap<Dynamic>();
-	public static var publicVariables:Map<String, Dynamic> = [];
+
+	public static var staticVariables:Map<String, Dynamic> = [];
 }

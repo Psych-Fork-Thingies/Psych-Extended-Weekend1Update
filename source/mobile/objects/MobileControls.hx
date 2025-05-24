@@ -1,9 +1,6 @@
 package mobile.objects;
 
-import flixel.FlxG;
-import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxSave;
-import flixel.math.FlxPoint;
 
 class Config {
 	var save:FlxSave;

@@ -2,7 +2,6 @@ package shaders;
 
 import openfl.filters.ColorMatrixFilter;
 import openfl.filters.BitmapFilter;
-import flixel.FlxG;
 import flixel.graphics.tile.FlxGraphicsShader;
 import openfl.filters.ShaderFilter;
 import flixel.system.FlxAssets.FlxShader;

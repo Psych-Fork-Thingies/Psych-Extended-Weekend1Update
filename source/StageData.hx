@@ -8,9 +8,7 @@ import openfl.utils.Assets;
 #end
 import haxe.Json;
 import haxe.format.JsonParser;
-import Song;
 
-using StringTools;
 
 typedef StageFile = {
 	var directory:String;

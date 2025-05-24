@@ -1,6 +1,5 @@
 package objects;
 
-import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 
 class HealthBar extends FlxSpriteGroup

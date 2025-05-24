@@ -2,7 +2,6 @@ package;
 
 import WeekData;
 import Highscore;
-import Song;
 
 import HealthIcon;
 import MusicPlayer;
@@ -10,9 +9,6 @@ import MusicPlayer;
 import GameplayChangersSubstate;
 import ResetScoreSubState;
 
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.math.FlxMath;
-import flixel.util.FlxDestroyUtil;
 import haxe.Json;
 
 class FreeplayState extends HScriptStateHandler

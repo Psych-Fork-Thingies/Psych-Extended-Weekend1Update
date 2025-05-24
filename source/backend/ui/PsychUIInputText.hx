@@ -2,7 +2,6 @@ package backend.ui;
 
 import flixel.FlxObject;
 import flixel.input.keyboard.FlxKey;
-import flixel.util.FlxDestroyUtil;
 import openfl.events.KeyboardEvent;
 import lime.system.Clipboard;
 

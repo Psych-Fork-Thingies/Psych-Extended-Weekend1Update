@@ -25,7 +25,6 @@ package crowplexus.hscript;
 import Type.ValueType;
 import crowplexus.hscript.Expr;
 import crowplexus.hscript.IHScriptCustomBehaviour;
-import haxe.iterators.StringKeyValueIteratorUnicode;
 import crowplexus.hscript.Tools;
 import crowplexus.iris.Iris;
 import crowplexus.iris.IrisUsingClass;
@@ -62,14 +61,16 @@ class Interp {
 
 	#if haxe3
 	public var variables: Map<String, Dynamic>;
-	public var publicVariables: Map<String, Dynamic>;
 	public var imports: Map<String, Dynamic>;
+	public var publicVariables:Map<String, Dynamic>;
+	public var staticVariables:Map<String, Dynamic>;
 
 	var locals: Map<String, LocalVar>;
 	var binops: Map<String, Expr->Expr->Dynamic>;
 	#else
 	public var variables: Hash<Dynamic>;
-	public var publicVariables: Hash<Dynamic>;
+	public var publicVariables:Hash<Dynamic>;
+	public var staticVariables:Hash<Dynamic>;
 	public var imports: Hash<Dynamic>;
 
 	var locals: Hash<LocalVar>;
@@ -81,8 +82,10 @@ class Interp {
 	var declared: Array<DeclaredVar>;
 	var returnValue: Dynamic;
 
-	var __instanceFields:Array<String> = [];
+	public var allowStaticVariables:Bool = false;
 	public var allowPublicVariables:Bool = false;
+
+	var __instanceFields:Array<String> = [];
 	#if hscriptPos
 	var curExpr: Expr;
 	#end
@@ -104,10 +107,12 @@ class Interp {
 		#if haxe3
 		variables = new Map<String, Dynamic>();
 		publicVariables = new Map<String, Dynamic>();
+		staticVariables = new Map<String, Dynamic>();
 		imports = new Map<String, Dynamic>();
 		#else
 		variables = new Hash();
 		publicVariables = new Hash();
+		staticVariables = new Hash();
 		imports = new Hash();
 		#end
 
@@ -178,7 +183,12 @@ class Interp {
 	}
 
 	public inline function setVar(name: String, v: Dynamic) {
-		publicVariables.set(name, v);
+		if (allowStaticVariables && staticVariables.exists(name))
+			staticVariables.set(name, v);
+		else if (allowPublicVariables && publicVariables.exists(name))
+			publicVariables.set(name, v);
+		else
+			variables.set(name, v);
 	}
 
 	function assign(e1: Expr, e2: Expr): Dynamic {
@@ -187,7 +197,7 @@ class Interp {
 			case EIdent(id):
 				var l = locals.get(id);
 				if (l == null) {
- 					if (!variables.exists(id) && !publicVariables.exists(id) && scriptObject != null) {
+ 					if (!variables.exists(id) && !staticVariables.exists(id) && !publicVariables.exists(id) && scriptObject != null) {
  						if (Type.typeof(scriptObject) == TObject) {
  							Reflect.setField(scriptObject, id, v);
  						} else {
@@ -424,9 +434,21 @@ class Interp {
 			var l = locals.get(id);
 			return l.r;
 		}
-		var vars = publicVariables.get(id);
+		var vars = variables.get(id);
+
+		if (variables.exists(id)) {
+			var v = variables.get(id);
+			return v;
+		}
+
 		if (publicVariables.exists(id)) {
-			return publicVariables.get(id);
+			var v = publicVariables.get(id);
+			return v;
+		}
+
+		if (staticVariables.exists(id)) {
+			var v = staticVariables.get(id);
+			return v;
 		}
 
 		if (imports.exists(id)) {
@@ -434,7 +456,7 @@ class Interp {
 			return v;
 		}
 
-		if (vars == null && !variables.exists(id) && !publicVariables.exists(id)) {
+		if (vars == null && !variables.exists(id)) {
 			if (scriptObject != null) {
 				// search in object
 				if (id == "this") {
@@ -480,12 +502,10 @@ class Interp {
 				}
 			case EIdent(id):
 				return resolve(id);
-			case EVar(n, _, v, isConst, isPublic):
+			case EVar(n, _, v, isConst, isPublic, isStatic):
 				declared.push({n: n, old: locals.get(n)});
 				locals.set(n, {r: (v == null) ? null : expr(v), const: isConst});
-				if (depth == 0) {
-					publicVariables.set(n, locals[n].r);
-				}
+				if (depth == 0) (isStatic == true ? staticVariables : (isPublic ? publicVariables : variables)).set(n, locals[n].r);
 				return null;
 			case EParent(e):
 				return expr(e);
@@ -584,7 +604,7 @@ class Interp {
 				}
 				return null; // yeah. -Crow
 
-			case EFunction(params, fexpr, name, _, isPublic):
+			case EFunction(params, fexpr, name, _, isPublic, isStatic):
 				var capturedLocals = duplicate(locals);
 				var me = this;
 				var hasOpt = false, minParams = 0;
@@ -646,7 +666,7 @@ class Interp {
 				if (name != null) {
 					if (depth == 0) {
 						// global function
-						publicVariables.set(name, f);
+						((isStatic && allowStaticVariables) ? staticVariables : ((isPublic && allowPublicVariables) ? publicVariables : variables)).set(name, f);
 					} else {
 						// function-in-function is a local function
 						declared.push({n: name, old: locals.get(name)});
@@ -812,7 +832,7 @@ class Interp {
 					}
 				}
 
-				publicVariables.set(enumName, obj);
+				variables.set(enumName, obj);
 			case EDirectValue(value):
 				return value;
 			case EUsing(name):

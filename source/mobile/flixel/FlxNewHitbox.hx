@@ -1,15 +1,8 @@
 package mobile.flixel;
 
 //new
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.FlxGraphic;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import flixel.FlxSprite;
 //old
-import flixel.FlxG;
-import flixel.group.FlxSpriteGroup;
-import flixel.util.FlxColor;
 import openfl.display.BitmapData;
 import openfl.display.Shape;
 import openfl.geom.Matrix;

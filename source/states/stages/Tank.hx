@@ -1,6 +1,5 @@
 package states.stages;
 
-import flixel.system.FlxSound;
 
 import states.stages.objects.*;
 

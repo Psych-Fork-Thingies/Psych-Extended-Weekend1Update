@@ -1,19 +1,10 @@
 package psychlua;
 
-import flixel.FlxG;
-import flixel.FlxCamera;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
 import openfl.display.BlendMode;
 //import animateatlas.AtlasFrameMaker;
 import Type.ValueType;
 
-import flixel.util.FlxTimer;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
 
-using StringTools;
 
 typedef LuaTweenOptions = {
 	type:FlxTweenType,

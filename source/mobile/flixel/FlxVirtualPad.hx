@@ -1,11 +1,6 @@
 package mobile.flixel;
 
-import flixel.FlxG;
 import flixel.graphics.frames.FlxTileFrames;
-import flixel.group.FlxSpriteGroup;
-import flixel.math.FlxPoint;
-import flixel.util.FlxDestroyUtil;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
 import openfl.utils.Assets;

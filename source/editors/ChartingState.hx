@@ -8,11 +8,8 @@ import haxe.Json;
 import haxe.format.JsonParser;
 import haxe.io.Bytes;
 import Conductor.BPMChangeEvent;
-import Song.SwagSection;
 import Song.SwagSong;
-import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUICheckBox;
@@ -21,18 +18,11 @@ import flixel.addons.ui.FlxUIDropDownMenu;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUISlider;
 import flixel.addons.ui.FlxUITabMenu;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
-import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
-import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
 #if desktop
 import flixel.ui.FlxButton;
 #end
-import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import lime.media.AudioBuffer;
 import lime.utils.Assets;
@@ -42,7 +32,6 @@ import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.Assets as OpenFlAssets;
 
-using StringTools;
 #if sys
 import openfl.media.Sound;
 import sys.FileSystem;

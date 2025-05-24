@@ -4,7 +4,6 @@ import lime.ui.Haptic;
 import mobile.backend.TouchFunctions;
 #if android
 import android.widget.Toast as AndroidToast;
-import android.Tools as AndroidTools;
 #end
 
 class MobileFunctions

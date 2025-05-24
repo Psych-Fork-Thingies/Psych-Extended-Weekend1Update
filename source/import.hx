@@ -2,7 +2,6 @@
 #if !macro
 import Paths;
 import flixel.addons.ui.*; //Flixel-UI
-#end
 
 //Stage Objects
 import stages.objects.*;
@@ -112,5 +111,6 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 import openfl.display3D.textures.RectangleTexture;
+#end
 
 using StringTools;

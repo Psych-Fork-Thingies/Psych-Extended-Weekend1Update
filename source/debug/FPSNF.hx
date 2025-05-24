@@ -4,8 +4,6 @@ import haxe.Timer;
 import openfl.events.Event;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
-import flixel.math.FlxMath;
-import flixel.util.FlxTimer;
 
 import openfl.utils.Assets;
 

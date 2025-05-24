@@ -14,7 +14,6 @@ import vlc.MP4Handler as VideoHandler;
 #end
 
 #if LUA_ALLOWED
-import psychlua.*;
 #end
 
 #if SCRIPTING_ALLOWED
@@ -299,6 +298,7 @@ class ScriptState extends MusicBeatState
 		try
 		{
 			(newScript = new HScript(null, file)).setParent(this);
+			newScript.setPublicMap(newScript.publicVariables);
 			if (newScript.exists('onCreate')) newScript.call('onCreate');
 			trace('initialized hscript interp successfully: $file');
 			hscriptArray.push(newScript);

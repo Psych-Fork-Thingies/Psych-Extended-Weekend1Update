@@ -2,7 +2,6 @@ package shaders;
 
 import flixel.system.FlxAssets.FlxShader as OriginalFlxShader;
 
-using StringTools;
 
 class FlxShader extends OriginalFlxShader
 {

@@ -2,7 +2,6 @@ package extras.states;
 
 import WeekData;
 import Highscore;
-import Song;
 import DiffCalc;
 import Difficulty;
 
@@ -18,7 +17,6 @@ import ResetScoreSubState;
 import options.OptionsState;
 
 import flixel.addons.ui.FlxInputText;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup;
 import flixel.addons.ui.FlxInputText;
 import flixel.util.FlxStringUtil;
@@ -29,10 +27,7 @@ import sys.FileSystem;
 #end
 
 import FreeplayState;
-import flixel.FlxG;
-import flixel.text.FlxText;
 import MusicBeatState;
-import flixel.math.FlxMath;
 import flixel.math.FlxRect;
 import PlayState;
 import LoadingState;

@@ -13,7 +13,6 @@ import openfl.display3D._internal.GLProgram;
 import openfl.display3D._internal.GLShader;
 import openfl.utils._internal.Log;
 
-using StringTools;
 
 @:access(openfl.display3D.Context3D)
 @:access(openfl.display3D.Program3D)

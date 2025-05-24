@@ -1,6 +1,5 @@
 package;
 
-import flixel.FlxG;
 import flixel.input.FlxInput;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionInput;
@@ -13,7 +12,6 @@ import flixel.input.keyboard.FlxKey;
 
 #if mobile
 import flixel.group.FlxGroup;
-import mobile.flixel.FlxVirtualPad;
 #end
 
 #if (haxe >= "4.0.0")
