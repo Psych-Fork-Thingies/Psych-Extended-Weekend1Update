@@ -1,6 +1,5 @@
 package states.stages.objects;
 
-
 class BackgroundDancer extends FlxSprite
 {
 	public function new(x:Float, y:Float)

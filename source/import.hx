@@ -21,6 +21,7 @@ import extras.states.*; //Extra States
 import extras.substates.*; //Extra Substates
 
 // 0.7x & 1.0 Support
+import backend.PsychCamera;
 import objects.AudioDisplay;
 import objects.shape.ShapeEX;
 import psychlua.*; //Psych-LUA

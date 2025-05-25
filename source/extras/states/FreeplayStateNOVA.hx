@@ -12,19 +12,10 @@ import openfl.system.System;
 import openfl.filters.BlurFilter;
 import openfl.filters.GlowFilter;
 
-import WeekData;
-import Highscore;
-import DiffCalc;
-
 import HealthIcon;
 import objects.shape.FreeplayShape;
+import backend.*;
 
-import GameplayChangersSubstate;
-import ResetScoreSubState;
-
-import MainMenuState;
-import PlayState;
-import LoadingState;
 import editors.ChartingState;
 import options.OptionsState;
 
@@ -49,7 +40,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 	var camGame:FlxCamera;
 	var camAudio:FlxCamera;
 	var camUI:FlxCamera;
-	var camHS:FlxCamera;
+	public static var camHS:FlxCamera;
 
 	var magenta:FlxSprite;
 	var intendedColor:Int;
@@ -231,11 +222,13 @@ class FreeplayStateNOVA extends HScriptStateHandler
 
 		voiceDis = new ExtraAudio(10, 10, Std.int(camAudio.width / 2 - 20), 90, FlxG.sound.music);
 		add(voiceDis);
+		voiceDis.audioDis.stopUpdate = true;
 		voiceDis.camera = camAudio;
 		voiceDis.alpha = 0.7;
 
 		instDis = new ExtraAudio(Std.int(camAudio.width) - 10 - Std.int(camAudio.width / 2 - 20) + 1, 10, Std.int(camAudio.width / 2 - 20), 90, FlxG.sound.music);
 		add(instDis);
+		instDis.audioDis.stopUpdate = true;
 		instDis.camera = camAudio;
 		instDis.alpha = 0.7;
 
@@ -332,6 +325,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 				disLine.alpha += elapsed * 8;
 				reduceAlpha = false;
 			}
+			eventArray[i].posUpdate(elapsed); //Make sure the choice is right
 		}
 		if (reduceAlpha) disLine.alpha -= elapsed * 8;
 
@@ -339,7 +333,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 
 		if (FlxG.mouse.x >= 660 && FlxG.mouse.x <= FlxG.width && FlxG.mouse.y >= FlxG.height * 0.25 && FlxG.mouse.y <= FlxG.height * 0.9)
 		{
-			position -= FlxG.mouse.wheel * 180;
+			position += FlxG.mouse.wheel * 180;
 			if (FlxG.mouse.pressed) 
 			{
 				isPressed = true;
@@ -350,7 +344,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 			if (FlxG.mouse.justReleased)
 			{
 				position += avgSpeed * 1.5 * (0.0166 / elapsed) * Math.pow(1.1, Math.abs(avgSpeed * 0.8));
-				if (Math.abs(avgSpeed * (0.0166 / elapsed)) < 1) {
+				if (Math.abs(avgSpeed * (0.0166 / elapsed)) < 5) {
 					for (i in 0...grpSongs.length)
 					{
 						if (FlxG.mouse.overlaps(grpSongs[i]) && !grpSongs[i].ignoreCheck)
@@ -363,12 +357,13 @@ class FreeplayStateNOVA extends HScriptStateHandler
 						}
 					}
 				}
+
 				try{
 					updateInfo(); //难度数据更新
 				} catch (e:Dynamic) {
-						infoNote.data = 0;
-						infoRating.data = 0;
-						infoSpeed.data = 0; //搜索后无歌曲的数据更新
+					infoNote.data = 0;
+					infoRating.data = 0;
+					infoSpeed.data = 0; //搜索后无歌曲的数据更新
 				}
 			}
 		} else {
@@ -382,7 +377,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		if (position > 360 - 45) position = FlxMath.lerp(360 - 45, position, Math.exp(-elapsed * 15));
 		if (position < 360 - 45 - 100 * (songs.length - 1) - Difficulty.list.length * 70) position = FlxMath.lerp(360 - 45 - 100 * (songs.length - 1) - Difficulty.list.length * 70, position, Math.exp(-elapsed * 15));
 
-		if (Math.abs(lerpPosition - position) < 0.1) lerpPosition = position;
+		if (Math.abs(lerpPosition - position) < 1) lerpPosition = position;
 		else lerpPosition = FlxMath.lerp(position, lerpPosition, Math.exp(-elapsed * 15));
 
 		songsRectPosUpdate(false);
@@ -416,9 +411,13 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		}
 	}
 
+	var startCheck:Bool = false;
 	function startGame() {
 		if (Math.abs(lerpPosition - position) > 1) return;
 		if (!musicMutex.tryAcquire()) return;
+
+		if (startCheck) return;
+		startCheck = true;
 
 		try
 		{
@@ -431,15 +430,21 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		catch(e:Dynamic)
 		{
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-
+			startCheck = false;
 			return;
 		}
-		destroyFreeplayVocals();
 		LoadingState.prepareToSong();
+		if (ClientPrefs.data.loadingScreen) {
+			FlxTransitionableState.skipNextTransIn = true;
+			FlxTransitionableState.skipNextTransOut = true;
+		} else {
+			destroyFreeplayVocals();
+		}
 		LoadingState.loadAndSwitchState(new PlayState());
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 	}
 
+	var closeCheck = false;
 	function extraChange() {
 		if (FlxG.mouse.overlaps(extraHS))
 		{
@@ -507,7 +512,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 			case 5:
 				randomSel();
 			case 6:
-				if (songs.length > 21 && curSelected < 22) {
+				if (songs.length > 21 && curSelected <= 21) {
 					curSelected = 22;
 					changeSelection(0);
 				}
@@ -537,7 +542,11 @@ class FreeplayStateNOVA extends HScriptStateHandler
 	var avgSpeed:Float = 0;
 	function mouseMove()
 	{
-		if (FlxG.mouse.justPressed) saveMouseY = FlxG.mouse.y;
+		if (FlxG.mouse.justPressed) 
+		{
+			saveMouseY = FlxG.mouse.y;
+			avgSpeed = 0;
+		}
 		moveData = FlxG.mouse.y - saveMouseY;
 		saveMouseY = FlxG.mouse.y;
 		avgSpeed = avgSpeed * 0.75 + moveData * 0.25;
@@ -596,9 +605,9 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		try{
 			updateInfo(); //难度数据更新
 		} catch (e:Dynamic) {
-				infoNote.data = 0;
-				infoRating.data = 0;
-				infoSpeed.data = 0; //搜索后无歌曲的数据更新
+			infoNote.data = 0;
+			infoRating.data = 0;
+			infoSpeed.data = 0; //搜索后无歌曲的数据更新
 		}
 		updateVoice();
 		_updateSongLastDifficulty();
@@ -624,9 +633,8 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		accSave.text =  'Accurate: ' + Std.string(FlxMath.roundDecimal(Highscore.getRating(songs[curSelected].songName, curDifficulty) * 100, 2)) + '%';
 		scoreSave.text =  'Score: ' + Std.string(Highscore.getScore(songs[curSelected].songName, curDifficulty));
 
-		var msArray = Highscore.getMsGroup(songs[curSelected].songName, curDifficulty);
-		var timeArray = Highscore.getTimeGroup(songs[curSelected].songName, curDifficulty);
-		result.updateRect(msArray, timeArray);
+		var details:Array<Dynamic> = Highscore.getDetails(songs[curSelected].songName, curDifficulty);
+		result.updateRect(details[9], details[10], details[2]);
 	}
 
 	var rectMutex:Mutex = new Mutex();
@@ -650,6 +658,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 	}
 
 	var rateMutex:Mutex = new Mutex();
+	var rates:StarRating = new StarRating();
 	function updateInfo() {
 
 		var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
@@ -664,7 +673,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 			return;
 		}
 
-		Thread.create(() -> {
+		var thread = Thread.create(() -> {
 			rateMutex.acquire();
 			for (i in jsonData.notes) // sections
 			{
@@ -676,8 +685,11 @@ class FreeplayStateNOVA extends HScriptStateHandler
 				}
 			}
 
-			var rate = DiffCalc.CalculateDiff(Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase())) / 5;
-			rate = FlxMath.roundDecimal(rate, 2);
+			//var rate = DiffCalc.CalculateDiff(Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase())) / 5;
+			//rate = FlxMath.roundDecimal(rate, 2);
+
+			var rate1 = rates.calculateFullDifficulty(Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase()));
+			var rate = rate1.stars;
 			speed = FlxMath.roundDecimal(speed, 2);
 
 			infoNote.maxData = Math.floor(rate * 300);
@@ -773,7 +785,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 
 			if (songs[curSelected] == null) return;
 
-			Thread.create(() -> {
+			var thread = Thread.create(() -> {
 				musicMutex.acquire();
 
 				if (songs[curSelected].songName == playedSongName)
@@ -908,7 +920,7 @@ class SongMetadata
 		this.songCharacter = songCharacter;
 		this.color = color;
 		this.folder = Mods.currentModDirectory;
-		this.bg = Paths.image('menuDesat');
+		this.bg = Paths.image('menuDesat', null, false);
 		this.searchnum = 0;
 		this.musican = musican;
 		this.charter = charter;

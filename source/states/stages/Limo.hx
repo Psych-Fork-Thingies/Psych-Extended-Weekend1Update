@@ -68,7 +68,7 @@ class Limo extends BaseStage
 			resetLimoKill();
 
 			//PRECACHE SOUND
-			precacheSound('dancerdeath');
+			Paths.sound('dancerdeath');
 			setDefaultGF('gf-car');
 		}
 
@@ -79,9 +79,9 @@ class Limo extends BaseStage
 	{
 		resetFastCar();
 		addBehindGF(fastCar);
-		
+
 		var limo:BGSprite = new BGSprite('limo/limoDrive', -120, 550, 1, 1, ['Limo stage'], true);
-		addBehindGF(limo); //Shitty layering but whatev it works LOL
+		addBehindBF(limo); //Shitty layering but whatev it works LOL | Switch addBehindGF with addBehindBF for better visual - KralOyuncu
 	}
 
 	var limoSpeed:Float = 0;
@@ -157,7 +157,7 @@ class Limo extends BaseStage
 					dancersParenting();
 
 				case STOPPING:
-					bgLimo.x = FlxMath.lerp(bgLimo.x, -150, CoolUtil.boundTo(elapsed * 9, 0, 1));
+					bgLimo.x = FlxMath.lerp(-150, bgLimo.x, Math.exp(-elapsed * 9));
 					if(Math.round(bgLimo.x) == -150) {
 						bgLimo.x = -150;
 						limoKillingState = WAIT;
@@ -181,7 +181,7 @@ class Limo extends BaseStage
 		if (FlxG.random.bool(10) && fastCarCanDrive)
 			fastCarDrive();
 	}
-	
+
 	// Substates for pausing/resuming tweens and timers
 	override function closeSubState()
 	{
@@ -215,7 +215,7 @@ class Limo extends BaseStage
 			dancers[i].x = (370 * i) + dancersDiff + bgLimo.x;
 		}
 	}
-	
+
 	function resetLimoKill():Void
 	{
 		limoMetalPole.x = -500;
@@ -242,7 +242,7 @@ class Limo extends BaseStage
 		//trace('Car drive');
 		FlxG.sound.play(Paths.soundRandom('carPass', 0, 1), 0.7);
 
-		fastCar.velocity.x = (FlxG.random.int(170, 220) / FlxG.elapsed) * 3;
+		fastCar.velocity.x = FlxG.random.int(30600, 39600);
 		fastCarCanDrive = false;
 		carTimer = new FlxTimer().start(2, function(tmr:FlxTimer)
 		{
@@ -253,7 +253,7 @@ class Limo extends BaseStage
 
 	function killHenchmen():Void
 	{
-		if(!ClientPrefs.data.lowQuality && ClientPrefs.data.violence) {
+		if(!ClientPrefs.data.lowQuality) {
 			if(limoKillingState == WAIT) {
 				limoMetalPole.x = -400;
 				limoMetalPole.visible = true;

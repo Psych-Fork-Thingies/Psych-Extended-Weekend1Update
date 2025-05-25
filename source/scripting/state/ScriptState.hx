@@ -260,6 +260,7 @@ class ScriptState extends MusicBeatState
 			if(script != null)
 			{
 				if(script.exists('onDestroy')) script.call('onDestroy');
+				else if (script.exists('destroy')) script.call('destroy');
 				script.destroy();
 			}
 
@@ -300,6 +301,7 @@ class ScriptState extends MusicBeatState
 			(newScript = new HScript(null, file)).setParent(this);
 			newScript.setPublicMap(newScript.publicVariables);
 			if (newScript.exists('onCreate')) newScript.call('onCreate');
+			else if (newScript.exists('create')) newScript.call('create');
 			trace('initialized hscript interp successfully: $file');
 			hscriptArray.push(newScript);
 		}
@@ -314,14 +316,7 @@ class ScriptState extends MusicBeatState
 	}
 
 	public function callOnScripts(funcToCall:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
-		var returnVal:Dynamic = FunkinLua.Function_Continue;
-		if(args == null) args = [];
-		if(exclusions == null) exclusions = [];
-		if(excludeValues == null) excludeValues = [FunkinLua.Function_Continue];
-
-		var result:Dynamic = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
-		if(result == null || excludeValues.contains(result)) result = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
-		return result;
+		return callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
 	}
 
 	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
@@ -355,6 +350,17 @@ class ScriptState extends MusicBeatState
 				if(myValue != null && !excludeValues.contains(myValue))
 					returnVal = myValue;
 			}
+		}
+
+		switch (funcToCall) //Codename Engine Functions (if you're using `update` function in your code, Don't add `onUpdate`)
+		{
+			case 'onCreate': callOnScripts('create', args, ignoreStops, exclusions, excludeValues);
+			case 'onCreatePost': callOnScripts('postCreate', args, ignoreStops, exclusions, excludeValues);
+			case 'onUpdate': callOnScripts('update', args, ignoreStops, exclusions, excludeValues);
+			case 'onUpdatePost': callOnScripts('postUpdate', args, ignoreStops, exclusions, excludeValues);
+			case 'onDestroy': callOnScripts('destroy', args, ignoreStops, exclusions, excludeValues);
+			case 'onCloseSubState': callOnScripts('closeSubState', args, ignoreStops, exclusions, excludeValues);
+			case 'onCloseSubStatePost': callOnScripts('postCloseSubState', args, ignoreStops, exclusions, excludeValues);
 		}
 
 		return returnVal;

@@ -128,6 +128,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 			if(script != null)
 			{
 				if(script.exists('onDestroy')) script.call('onDestroy');
+				else if (script.exists('destroy')) script.call('destroy');
 				script.destroy();
 			}
 		hscriptArray = null;
@@ -171,6 +172,7 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 		{
 			(newScript = new HScript(null, file)).setParent(this);
 			if (newScript.exists('onCreate')) newScript.call('onCreate');
+			else if (newScript.exists('create')) newScript.call('create');
 			trace('initialized hscript interp successfully: $file');
 			hscriptArray.push(newScript);
 		}
@@ -234,10 +236,13 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 
 		switch (funcToCall) //Codename Engine Functions (if you're using `update` function in your code, Don't add `onUpdate`)
 		{
-			case 'onCreate': callOnScripts('create');
-			case 'onCreatePost': callOnScripts('postCreate');
-			case 'onUpdate': callOnScripts('update');
-			case 'onUpdatePost': callOnScripts('postUpdate');
+			case 'onCreate': callOnScripts('create', args, ignoreStops, exclusions, excludeValues);
+			case 'onCreatePost': callOnScripts('postCreate', args, ignoreStops, exclusions, excludeValues);
+			case 'onUpdate': callOnScripts('update', args, ignoreStops, exclusions, excludeValues);
+			case 'onUpdatePost': callOnScripts('postUpdate', args, ignoreStops, exclusions, excludeValues);
+			case 'onDestroy': callOnScripts('destroy', args, ignoreStops, exclusions, excludeValues);
+			case 'onCloseSubState': callOnScripts('closeSubState', args, ignoreStops, exclusions, excludeValues);
+			case 'onCloseSubStatePost': callOnScripts('postCloseSubState', args, ignoreStops, exclusions, excludeValues);
 		}
 		return returnVal;
 	}

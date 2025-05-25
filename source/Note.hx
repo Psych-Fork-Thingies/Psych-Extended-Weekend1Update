@@ -338,6 +338,7 @@ class Note extends FlxSprite
 		if(prefix == null) prefix = '';
 		if (ClientPrefs.data.noteSkin == 'Default' && !ClientPrefs.data.useRGB) defaultNoteSkin = 'NOTE_assets';
 		else if (ClientPrefs.data.noteSkin != 'Default' && !ClientPrefs.data.useRGB) defaultNoteSkin = 'NoteSkin/';
+		else if (ClientPrefs.data.useRGB) defaultNoteSkin = 'noteSkins/NOTE_assets'; //this one needs to fix pixel notes
 
 		if(prefix != null && texture == null || prefix != '' && texture == '')
 			texture = prefix;
