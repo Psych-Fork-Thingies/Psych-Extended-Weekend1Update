@@ -433,12 +433,11 @@ class FreeplayStateNOVA extends HScriptStateHandler
 			startCheck = false;
 			return;
 		}
+		destroyFreeplayVocals();
 		LoadingState.prepareToSong();
 		if (ClientPrefs.data.loadingScreen) {
 			FlxTransitionableState.skipNextTransIn = true;
 			FlxTransitionableState.skipNextTransOut = true;
-		} else {
-			destroyFreeplayVocals();
 		}
 		LoadingState.loadAndSwitchState(new PlayState());
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
