@@ -3401,7 +3401,6 @@ class PlayState extends MusicBeatState
 	{
 		var result:Dynamic = callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
 		if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('opponentNoteHit', [note]);
-		callOnLuas('opponentNoteHitFix', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
 
 		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
 			camZooming = true;
@@ -3452,16 +3451,11 @@ class PlayState extends MusicBeatState
 		//maybe this can fix the problem
 		if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
 
-		var isSus:Bool = note.isSustainNote; //GET OUT OF MY HEAD, GET OUT OF MY HEAD, GET OUT OF MY HEAD
-		var leData:Int = Math.round(Math.abs(note.noteData));
-		var leType:String = note.noteType;
-
-		var result:Dynamic = callOnLuas('goodNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
-		if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('goodNoteHit', [note]);
-		callOnLuas('goodNoteHitFix', [notes.members.indexOf(note), leData, leType, isSus]);
-
 		if (!note.wasGoodHit)
 		{
+			var result:Dynamic = callOnLuas('goodNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
+			if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('goodNoteHit', [note]);
+
 			if (ClientPrefs.data.hitsoundVolume > 0 && !note.hitsoundDisabled)
 			{
 				FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.data.hitsoundVolume);
@@ -3550,7 +3544,7 @@ class PlayState extends MusicBeatState
 			vocals.volume = 1;
 
 			stagesFunc(function(stage:BaseStage) stage.goodNoteHit(note));
-			var result:Dynamic = callOnLuas('goodNoteHitPost', [notes.members.indexOf(note), leData, leType, isSus]);
+			var result:Dynamic = callOnLuas('goodNoteHitPost', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
 			if(result != FunkinLua.Function_Stop && result != FunkinLua.Function_StopHScript && result != FunkinLua.Function_StopAll) callOnHScript('goodNoteHitPost', [note]);
 
 			if (!note.isSustainNote)
