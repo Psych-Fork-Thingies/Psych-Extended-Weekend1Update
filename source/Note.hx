@@ -378,7 +378,7 @@ class Note extends FlxSprite
 		else skinPostfix = '';
 
 		//Pixel NOTE Fixes
-		if(Paths.fileExists('images/pixelUI/' + skinPixel + skinPostfix + '.png', IMAGE) && PlayState.isPixelStage && !ClientPrefs.data.useRGB) { //Pixel Stage Only
+		if(Paths.fileExists('images/pixelUI/' + skinPixel + skinPostfix + '.png', IMAGE) && PlayState.isPixelStage && !ClientPrefs.data.useRGB && ClientPrefs.data.noteSkin != 'Default') { //Pixel Stage Only
 			skinPixel = 'NoteSkin/' + getNoteSkinPostfix();
 			skinPostfix = '';
 			if (PlayState.isPixelStage && PlayState.instance != null) defaultNoteSkin = skinPixel;

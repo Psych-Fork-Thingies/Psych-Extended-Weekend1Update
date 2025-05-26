@@ -435,7 +435,7 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		}
 		destroyFreeplayVocals();
 		LoadingState.prepareToSong();
-		if (ClientPrefs.data.loadingScreen) {
+		if (ClientPrefs.data.loadingScreen && ClientPrefs.data.TransitionStyle == 'Psych') {
 			FlxTransitionableState.skipNextTransIn = true;
 			FlxTransitionableState.skipNextTransOut = true;
 		}

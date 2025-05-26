@@ -65,7 +65,7 @@ class StrumNote extends FlxSprite
 
 		var customSkin:String = skin + Note.getNoteSkinPostfix();
 		var nonRGBCustomPixelNote:String = 'NoteSkin/' + Note.getNoteSkinPostfix();
-		if(Paths.fileExists('images/pixelUI/' + nonRGBCustomPixelNote + '.png', IMAGE) && PlayState.isPixelStage && !ClientPrefs.data.useRGB) {
+		if(Paths.fileExists('images/pixelUI/' + nonRGBCustomPixelNote + '.png', IMAGE) && PlayState.isPixelStage && !ClientPrefs.data.useRGB && ClientPrefs.data.noteSkin != 'Default') {
 			customSkin = nonRGBCustomPixelNote;
 		}
 		if(Paths.fileExists('images/$customSkin.png', IMAGE)) skin = customSkin;
