@@ -377,8 +377,13 @@ class Note extends FlxSprite
 		}
 		else skinPostfix = '';
 
-		//use Original Pixel NOTE, If Custom One Doesn't Exist
-		if(!Paths.fileExists('images/pixelUI/' + skinPixel + skinPostfix + '.png', IMAGE)) {
+		//Pixel NOTE Fixes
+		if(Paths.fileExists('images/pixelUI/' + skinPixel + skinPostfix + '.png', IMAGE) && PlayState.isPixelStage && !ClientPrefs.data.useRGB) { //Pixel Stage Only
+			skinPixel = 'NoteSkin/' + getNoteSkinPostfix();
+			skinPostfix = '';
+			if (PlayState.isPixelStage && PlayState.instance != null) defaultNoteSkin = skinPixel;
+		}
+		else if(!Paths.fileExists('images/pixelUI/' + skinPixel + skinPostfix + '.png', IMAGE) && PlayState.isPixelStage) {
 			skinPixel = 'NOTE_assets';
 			skinPostfix = '';
 			if (PlayState.isPixelStage && PlayState.instance != null) defaultNoteSkin = 'NOTE_assets';
@@ -432,7 +437,7 @@ class Note extends FlxSprite
 		if(ClientPrefs.data.noteSkin != ClientPrefs.defaultData.noteSkin && ClientPrefs.data.useRGB)
 			skin = '-' + ClientPrefs.data.noteSkin.trim().toLowerCase().replace(' ', '_');
 		else if(ClientPrefs.data.noteSkin != ClientPrefs.defaultData.noteSkin && !ClientPrefs.data.useRGB)
-			skin = ClientPrefs.data.noteSkin;
+			skin = ClientPrefs.data.noteSkin.trim().replace(' ', '_');
 		return skin;
 	}
 
