@@ -1992,12 +1992,17 @@ class PlayState extends MusicBeatState
 		if (startedCountdown)
 		{
 			Conductor.songPosition += elapsed * 1000 * playbackRate;
-			if (Conductor.songPosition >= 0)
+			if(checkIfDesynced)
 			{
-				var timeDiff:Float = Math.abs(FlxG.sound.music.time - Conductor.songPosition - Conductor.offset);
-				Conductor.songPosition = FlxMath.lerp(Conductor.songPosition, FlxG.sound.music.time, FlxMath.bound(elapsed * 2.5, 0, 1));
-				if (timeDiff > 1000 * playbackRate)
-					Conductor.songPosition = Conductor.songPosition + 1000 * FlxMath.signOf(timeDiff);
+				var diff:Float = 20 * playbackRate;
+				var timeSub:Float = Conductor.songPosition - Conductor.offset;
+				if (Math.abs(FlxG.sound.music.time - timeSub) > diff
+					|| (vocals.length > 0 && Math.abs(vocals.time - timeSub) > diff)
+					|| (opponentVocals.length > 0 && Math.abs(opponentVocals.time - timeSub) > diff))
+				{
+					resyncVocals();
+				}
+				checkIfDesynced = false;
 			}
 		}
 
@@ -2861,7 +2866,7 @@ class PlayState extends MusicBeatState
 					Song.loadFromJson(PlayState.storyPlaylist[0] + difficulty, PlayState.storyPlaylist[0]);
 					FlxG.sound.music.stop();
 
-					LoadingState.prepareToSong();
+					if (ClientPrefs.data.loadingScreen) LoadingState.prepareToSong();
 					LoadingState.loadAndSwitchState(new PlayState(), false, false);
 				}
 			}
@@ -3641,9 +3646,12 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
+	var checkIfDesynced:Bool = false;
 	var lastStepHit:Int = -1;
 	override function stepHit()
 	{
+		if (SONG.needsVoices && FlxG.sound.music.time >= -ClientPrefs.data.noteOffset)
+			checkIfDesynced = true;
 
 		super.stepHit();
 

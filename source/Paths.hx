@@ -420,6 +420,21 @@ class Paths
 		return false;
 	}
 
+	inline static public function getAsepriteAtlas(key:String, ?parentFolder:String = null):FlxAtlasFrames
+	{
+		var imageLoaded:FlxGraphic = image(key, parentFolder);
+		#if MODS_ALLOWED
+		var jsonExists:Bool = false;
+
+		var json:String = modsImagesJson(key);
+		if(FileSystem.exists(json)) jsonExists = true;
+
+		return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, (jsonExists ? File.getContent(json) : getPath('images/$key' + '.json', TEXT, parentFolder)));
+		#else
+		return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, getPath('images/$key' + '.json', TEXT, parentFolder));
+		#end
+	}
+
 	public static function fileExistsInMods(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String = null)
 	{
 		#if MODS_ALLOWED
