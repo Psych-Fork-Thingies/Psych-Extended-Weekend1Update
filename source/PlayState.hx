@@ -504,6 +504,8 @@ class PlayState extends MusicBeatState
 			case 'school': new School();				//Week 6 - Senpai, Roses
 			case 'schoolEvil': new SchoolEvil();		//Week 6 - Thorns
 			case 'tank': new Tank();					//Week 7 - Ugh, Guns, Stress
+			case 'phillyStreets': new PhillyStreets(); 	//Weekend 1 - Darnell, Lit Up, 2Hot
+			case 'phillyBlazin': new PhillyBlazin();	//Weekend 1 - Blazin
 		}
 
 		if(isPixelStage) {
@@ -1057,6 +1059,7 @@ class PlayState extends MusicBeatState
 		char.y += char.positionArray[1];
 	}
 
+	var videoCutscene:MP4Handler = null;
 	public function startVideo(name:String)
 	{
 		#if VIDEOS_ALLOWED
@@ -1074,18 +1077,18 @@ class PlayState extends MusicBeatState
 			return;
 		}
 
-		var video:MP4Handler = new MP4Handler();
+		videoCutscene = new MP4Handler();
 		#if (hxCodec < "3.0.0" && !ios)
-		video.playVideo(filepath);
-		video.finishCallback = function()
+		videoCutscene.playVideo(filepath);
+		videoCutscene.finishCallback = function()
 		{
 			startAndEnd();
 			return;
 		}
 		#else
-		video.play(filepath);
-		video.onEndReached.add(function(){
-			video.dispose();
+		videoCutscene.play(filepath);
+		videoCutscene.onEndReached.add(function(){
+			videoCutscene.dispose();
 			startAndEnd();
 			return;
 		});

@@ -485,6 +485,32 @@ class Paths
 		return parentFrames;
 	}
 
+	//used for scripting
+	public static function getFixedMobilePath(originalPath:String):String {
+		final curStorageType:String = File.getContent(StorageUtil.rootDir + 'storagetype.txt');
+		final packageNameLocal = 'com.kraloyuncu.psychextended' #if debugBuild + '.debug' #end;
+		var fixedPath:String = originalPath.replace('/storage/emulated/0/Android/data/' + packageNameLocal + "/", '');
+
+		switch(curStorageType) {
+			case "EXTERNAL_MEDIA":
+				fixedPath = originalPath.replace('/storage/emulated/0/Android/media/' + lime.app.Application.current.meta.get('packageName') + "/", '');
+			case "EXTERNAL_DATA":
+				fixedPath = originalPath.replace('/storage/emulated/0/Android/data/' + packageNameLocal + "/", '');
+			case "EXTERNAL_OBB":
+				fixedPath = originalPath.replace('/storage/emulated/0/Android/obb/' + packageNameLocal + "/", '');
+			case "EXTERNAL_ONLINE":
+				fixedPath = originalPath.replace('/storage/emulated/0/.PsychOnline/', '');
+			case "EXTERNAL":
+				fixedPath = originalPath.replace('/storage/emulated/0/.PsychEngine/', '');
+			case "EXTERNAL_NF":
+				fixedPath = originalPath.replace('/storage/emulated/0/.NF Engine/', '');
+			case "EXTERNAL_EX":
+				fixedPath = originalPath.replace('/storage/emulated/0/.Psych Extended/', '');
+		}
+
+		return fixedPath;
+	}
+
 	inline static public function getSparrowAtlas(key:String, ?library:String):FlxAtlasFrames
 	{
 		#if MODS_ALLOWED
@@ -699,8 +725,11 @@ class Paths
 	}
 
 	#if MODS_ALLOWED
-	inline static public function mods(key:String = '') {
-		return if (ClientPrefs.data.Modpack) Sys.getCwd() + 'modpack/' + key; else Sys.getCwd() + 'mods/' + key;
+	inline static public function mods(key:String = '', ?doPathFix:Bool = false) {
+		if (doPathFix)
+			return if (ClientPrefs.data.Modpack) 'modpack/' + key; else 'mods/' + key;
+		else
+			return if (ClientPrefs.data.Modpack) Sys.getCwd() + 'modpack/' + key; else Sys.getCwd() + 'mods/' + key;
 	}
 
 	inline static public function modsFont(key:String) {

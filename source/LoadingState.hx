@@ -328,6 +328,7 @@ class LoadingState extends MusicBeatState
 		isIntrusive = false;
 
 		FlxTransitionableState.skipNextTransIn = true;
+		if (ClientPrefs.data.TransitionStyle == 'NovaFlare') FlxTransitionableState.skipNextTransOut = true;
 		if (threadPool != null) threadPool.shutdown(); // kill all workers safely
 		threadPool = null;
 		mutex = null;
