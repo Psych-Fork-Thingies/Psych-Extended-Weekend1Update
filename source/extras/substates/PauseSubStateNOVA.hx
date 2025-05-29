@@ -638,6 +638,7 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 						function(trm:FlxTimer) restartSong()
 					);
 					PlayState.chartingMode = false;
+					ChartingState.curSec = 0;
 				case 'Back':
 					for (i in debugBars)
 						FlxTween.tween(i, {x: -1000}, 0.5, {ease: FlxEase.quartIn});
