@@ -66,7 +66,7 @@
 	<define name="HIDE_CURSOR" if="mobile" /> <!-- DELETE THIS IF YOU WANT TO SEE CURSOR IN MOBILE BUILDS -->
 
 	<!-- PSYCH ENGINE CUSTOMIZATION -->
-	<section if="finalBuild">
+	<section if="finalBuild || officialBuild">
 		<define name="TITLE_SCREEN_EASTER_EGG" />
 		<define name="BASE_GAME_ASSETS" />
 	</section>
