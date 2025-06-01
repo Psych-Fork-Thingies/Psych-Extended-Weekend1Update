@@ -33,7 +33,7 @@ class ModsButtonRect extends FlxSpriteGroup //play/back button
                 bmp = Paths.cacheBitmap(Paths.mods('$folder/pack-pixel.png'));
             }
         } else {
-            bmp = Paths.cacheBitmap(Paths.getPreloadPath('images/menuExtend/CreditsState/groupIcon/$folder.png'));
+            bmp = Paths.cacheBitmap(Paths.getSharedPath('images/menuExtend/CreditsState/groupIcon/$folder.png'));
         }
 
         if(bmp != null)

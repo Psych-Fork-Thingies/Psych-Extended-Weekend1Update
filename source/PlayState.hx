@@ -522,7 +522,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		// "GLOBAL" SCRIPTS
-		var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'scripts/');
+		var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/');
 
 		for (folder in foldersToCheck)
 			for (file in FileSystem.readDirectory(folder))
@@ -793,7 +793,7 @@ class PlayState extends MusicBeatState
 		}
 
 		// SONG SPECIFIC SCRIPTS
-		var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getPreloadPath(), 'data/' + songName + '/');
+		var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getSharedPath(), 'data/' + songName + '/');
 
 		for (folder in foldersToCheck)
 			for (file in FileSystem.readDirectory(folder))
@@ -995,12 +995,12 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
-			luaFile = Paths.getPreloadPath(luaFile);
+			luaFile = Paths.getSharedPath(luaFile);
 			if(FileSystem.exists(luaFile))
 				doPush = true;
 		}
 		#else
-		luaFile = Paths.getPreloadPath(luaFile);
+		luaFile = Paths.getSharedPath(luaFile);
 		if(Assets.exists(luaFile)) doPush = true;
 		#end
 
@@ -1023,7 +1023,7 @@ class PlayState extends MusicBeatState
 		}
 		else 
 		{
-			scriptFile = Paths.getPreloadPath(scriptFile);
+			scriptFile = Paths.getSharedPath(scriptFile);
 			if(FileSystem.exists(scriptFile))
 				doPush = true;
 		}
@@ -3775,11 +3775,11 @@ class PlayState extends MusicBeatState
 		#if MODS_ALLOWED
 		var luaToLoad:String = Paths.modFolders(luaFile);
 		if(!FileSystem.exists(luaToLoad))
-			luaToLoad = Paths.getPreloadPath(luaFile);
+			luaToLoad = Paths.getSharedPath(luaFile);
 
 		if(FileSystem.exists(luaToLoad))
 		#elseif sys
-		var luaToLoad:String = Paths.getPreloadPath(luaFile);
+		var luaToLoad:String = Paths.getSharedPath(luaFile);
 		if(OpenFlAssets.exists(luaToLoad))
 		#end
 		{
@@ -3799,9 +3799,9 @@ class PlayState extends MusicBeatState
 		#if MODS_ALLOWED
 		var scriptToLoad:String = Paths.modFolders(scriptFile);
 		if(!FileSystem.exists(scriptToLoad))
-			scriptToLoad = Paths.getPreloadPath(scriptFile);
+			scriptToLoad = Paths.getSharedPath(scriptFile);
 		#else
-		var scriptToLoad:String = Paths.getPreloadPath(scriptFile);
+		var scriptToLoad:String = Paths.getSharedPath(scriptFile);
 		#end
 
 		if(FileSystem.exists(scriptToLoad))
@@ -4130,7 +4130,7 @@ class PlayState extends MusicBeatState
 			FlxG.log.warn('Shader $name was already initialized!');
 			return true;
 		}
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('shaders/')];
+		var foldersToCheck:Array<String> = [Paths.getSharedPath('shaders/')];
 		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
 			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/shaders/'));
 		for(mod in Mods.getGlobalMods())

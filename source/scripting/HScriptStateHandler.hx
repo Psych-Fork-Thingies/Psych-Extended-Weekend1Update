@@ -14,10 +14,6 @@ class HScriptStateHandler extends MusicBeatState
 	public var hscriptArray:Array<HScript> = [];
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
 
-	#if HXVIRTUALPAD_ALLOWED
-	public var _hxvirtualpad:FlxVirtualPad;
-	#end
-
 	override function create()
 	{
 		instance = this;
@@ -129,10 +125,6 @@ class HScriptStateHandler extends MusicBeatState
 			}
 		hscriptArray = null;
 		super.destroy();
-		#if HXVIRTUALPAD_ALLOWED
-		if (_hxvirtualpad != null)
-			_hxvirtualpad = FlxDestroyUtil.destroy(_hxvirtualpad);
-		#end
 	}
 
 	public function startHScriptsNamed(scriptFile:String)
@@ -240,46 +232,6 @@ class HScriptStateHandler extends MusicBeatState
 			script.set(variable, arg);
 		}
 	}
-
-	#if HXVIRTUALPAD_ALLOWED
-	public function addHxVirtualPad(DPad:String, Action:String)
-	{
-		if (_hxvirtualpad != null)
-			removeHxVirtualPad();
-
-		_hxvirtualpad = new FlxVirtualPad(DPad, Action);
-		add(_hxvirtualpad);
-
-		controls.setVirtualPadUI(_hxvirtualpad, DPad, Action);
-		trackedinputsUI = controls.trackedInputsUI;
-		controls.trackedInputsUI = [];
-		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
-	}
-
-	public function addHxVirtualPadCamera()
-	{
-		var camcontrol = new flixel.FlxCamera();
-		camcontrol.bgColor.alpha = 0;
-		FlxG.cameras.add(camcontrol, false);
-		_hxvirtualpad.cameras = [camcontrol];
-	}
-
-	public function removeHxVirtualPad()
-	{
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
-		if (_hxvirtualpad != null)
-			remove(_hxvirtualpad);
-	}
-
-	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
-		var buttonName = "button" + buttonPostfix;
-		var button = Reflect.getProperty(HScriptStateHandler.getState()._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
-		return Reflect.getProperty(button, type);
-		return false;
-	}
-	#end
 
 	public static function getState():HScriptStateHandler {
 		var curState:Dynamic = FlxG.state;

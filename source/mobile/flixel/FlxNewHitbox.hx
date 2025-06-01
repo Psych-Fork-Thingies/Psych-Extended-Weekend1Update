@@ -1,17 +1,16 @@
 package mobile.flixel;
 
-//new
 import flixel.graphics.FlxGraphic;
-//old
 import openfl.display.BitmapData;
 import openfl.display.Shape;
 import openfl.geom.Matrix;
 
 /**
- * A zone with 4 hint's (A hitbox).
+ * A zone with 34 hint's (A hitbox).
  * It's really easy to customize the layout.
  *
  * @author Mihai Alexandru (M.A. Jigsaw)
+ * @modifier KralOyuncu 2010x (ArkoseLabs)
  */
 @:build(mobile.flixel.MobileMacro.createExtraHitboxButtons(30))
 class FlxNewHitbox extends FlxSpriteGroup
@@ -29,8 +28,8 @@ class FlxNewHitbox extends FlxSpriteGroup
 	public function new(?MobileCType:String):Void
 	{
 		super();
-		if (ClientPrefs.data.hitboxhint && ClientPrefs.data.hitboxLocation != 'Bottom'){
-			hitbox_hint = new FlxSprite(0, 0).loadGraphic(Paths.image('mobilecontrols/hitbox/hitbox_hint'));
+		if (ClientPrefs.data.hitboxhint){
+			hitbox_hint = new FlxSprite(0, ClientPrefs.data.hitboxLocation == 'Bottom' ? -150 : 0).loadGraphic(Paths.image('mobile/Hitbox/hitbox_hint'));
 			add(hitbox_hint);
 		}
 		if ((ClientPrefs.data.hitboxmode != 'New' && ClientPrefs.data.hitboxmode != 'Classic' && MobileCType == null) || MobileCType != null){
@@ -45,7 +44,6 @@ class FlxNewHitbox extends FlxSpriteGroup
 				var buttonY = buttonData.y;
 				var buttonWidth = buttonData.width;
 				var buttonHeight = buttonData.height;
-				//Less Optimized but works
 				switch (location) {
 					case 'Top':
 						if (buttonData.topX != null) buttonX = buttonData.topX;
@@ -74,14 +72,12 @@ class FlxNewHitbox extends FlxSpriteGroup
 			add(buttonDown = createHint(FlxG.width / 4, 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 1), 0xFF00FFFF));
 			add(buttonUp = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 1), 0xFF12FA05));
 			add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 1), 0xFFF9393F));
-		}else {
+		}else{
 			if (ClientPrefs.data.hitboxLocation == 'Bottom') {
 				add(buttonLeft = createHint(0, 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 0.8), 0xFFC24B99));
 				add(buttonDown = createHint(FlxG.width / 4, 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 0.8), 0xFF00FFFF));
 				add(buttonUp = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 0.8), 0xFF12FA05));
 				add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), 0, Std.int(FlxG.width / 4), Std.int(FlxG.height * 0.8), 0xFFF9393F));
-				hitbox_hint = new FlxSprite(0, -150).loadGraphic(Paths.image('mobilecontrols/hitbox/hitbox_hint'));
-				add(hitbox_hint);
 
 				switch (ClientPrefs.data.extraKeys) {
 					case 1:
@@ -201,12 +197,6 @@ class FlxNewHitbox extends FlxSpriteGroup
 			shape.graphics.drawRect(3, 3, Width - 6, Height - 6);
 			shape.graphics.endFill();
 		}
-		
-		/*
-		shape.graphics.lineStyle(10, Color, 1);
-		shape.graphics.drawRect(0, 0, Width, Height);
-		shape.graphics.endFill();
-		*/
 
 		var bitmap:BitmapData = new BitmapData(Width, Height, true, 0);
 		bitmap.draw(shape);

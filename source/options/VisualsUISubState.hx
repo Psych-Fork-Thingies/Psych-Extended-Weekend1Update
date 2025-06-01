@@ -30,11 +30,11 @@ class VisualsUISubState extends BaseOptionsMenu
 		title = 'Visuals and UI Settings';
 		rpcTitle = 'Visuals and UI Settings Menu'; //for Discord Rich Presence
 
-		noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt', 'shared');
+		noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt');
 		notes = new FlxTypedGroup<StrumNote>();
 
 		// for note skins
-		if (ClientPrefs.data.useRGB) noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt', 'shared');
+		if (ClientPrefs.data.useRGB) noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt');
 		else noteSkins = Mods.mergeAllTextsNamed('images/NoteSkin/DataSet/noteSkinList.txt');
 		generateStrumline();
 
@@ -230,7 +230,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	function onChangeRGBShader() {
 		ClientPrefs.saveSettings();
-		if (ClientPrefs.data.useRGB) noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt', 'shared');
+		if (ClientPrefs.data.useRGB) noteSkins = Mods.mergeAllTextsNamed('images/noteSkins/list.txt');
 		else noteSkins = Mods.mergeAllTextsNamed('images/NoteSkin/DataSet/noteSkinList.txt');
 
 		noteSkinOption.options = noteSkins; //Change between NF's and Psych's Note Skin Folders

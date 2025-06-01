@@ -30,7 +30,7 @@ class FlxHitbox extends FlxSpriteGroup {
 		hitbox.add(add(buttonUp = createhitbox(640, 0, "up")));
 		hitbox.add(add(buttonRight = createhitbox(960, 0, "right")));
 
-		var hitbox_hint:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image('mobilecontrols/hitbox/hitbox_hint'));
+		var hitbox_hint:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image('mobile/Hitbox/hitbox_hint'));
 		hitbox_hint.antialiasing = orgAntialiasing;
 		hitbox_hint.alpha = orgAlpha;
 		add(hitbox_hint);
@@ -41,14 +41,14 @@ class FlxHitbox extends FlxSpriteGroup {
 		button.loadGraphic(FlxGraphic.fromFrame(getFrames().getByName(frames)));
 		button.antialiasing = orgAntialiasing;
 		button.alpha = 0;// sorry but I can't hard lock the hitbox alpha
-		button.onDown.callback = function (){FlxTween.num(0, 0.75, 0.075, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;});};
-		button.onUp.callback = function (){FlxTween.num(0.75, 0, 0.1, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;});}
-		button.onOut.callback = function (){FlxTween.num(button.alpha, 0, 0.2, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;});}
+		button.onDown.callback = function (){ FlxTween.num(0, 0.75, 0.075, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;}); };
+		button.onUp.callback = function (){ FlxTween.num(0.75, 0, 0.1, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;}); }
+		button.onOut.callback = function (){ FlxTween.num(button.alpha, 0, 0.2, {ease:FlxEase.circInOut}, function(alpha:Float){ button.alpha = alpha;}); }
 		return button;
 	}
 
 	public function getFrames():FlxAtlasFrames {
-		return Paths.getSparrowAtlas('mobilecontrols/hitbox/hitbox');
+		return Paths.getSparrowAtlas('mobile/Hitbox/hitbox');
 	}
 
 	override public function destroy():Void {

@@ -33,9 +33,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	final lastVirtualPadTexture:String = ClientPrefs.data.virtualpadTexture;
 
 	var virtualpadTextures:Array<String> = ["VirtualPad", "TouchPad"];
-	var virtualpadSkinList:Array<String> = CoolUtil.coolTextFile(Paths.getSharedPath('images/virtualpad/virtualpadSkinList'));
-	var virtualpadSkinListModsFolder:Array<String> = CoolUtil.coolTextFile(Paths.modsTxt('virtualpad/virtualpadSkinList'));
-
+	var VPadSkin:Array<String>;
 	var HitboxTypes:Array<String>;
 
 	public function new()
@@ -45,27 +43,17 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		#end
 		title = 'Mobile Options';
 		rpcTitle = 'Mobile Options Menu'; //hi, you can ask what is that, i will answer it's all what you needed lol.
-		HitboxTypes = Mods.mergeAllTextsNamed('mobile/HitBoxModes/hitboxModeList.txt');
-
-		if (ClientPrefs.data.virtualpadTexture == 'TouchPad')
-			virtualpadSkinList = CoolUtil.coolTextFile(Paths.getPreloadPath('images/touchpad/touchpadSkinList.txt'));
-
-		#if MODS_ALLOWED
-		final modsPath:String = Paths.modsTxt('virtualpad/virtualpadSkinList');
-		final modsPathTouch:String = Paths.modsTxt('touchpad/touchpadSkinList');
-
-		if(FileSystem.exists(modsPathTouch) && ClientPrefs.data.virtualpadTexture == 'TouchPad')
-			virtualpadSkinList = CoolUtil.coolTextFile(Paths.modsTxt('touchpad/touchpadSkinList'));
-		else if(FileSystem.exists(modsPath) && ClientPrefs.data.virtualpadTexture != 'TouchPad')
-			virtualpadSkinList = CoolUtil.coolTextFile(Paths.modsTxt('virtualpad/virtualpadSkinList'));
-		#end
+		HitboxTypes = Mods.mergeAllTextsNamed('mobile/Hitbox/HitboxModes/hitboxModeList.txt');
+		if(ClientPrefs.data.virtualpadTexture == 'TouchPad') VPadSkin = Mods.mergeAllTextsNamed('mobile/VirtualButton/TouchPad/skinList.txt');
+		else VPadSkin = Mods.mergeAllTextsNamed('mobile/VirtualButton/VirtualPad/skinList.txt');
 
 	if (ClientPrefs.data.VirtualPadAlpha != 0) {
+		VPadSkin.insert(0, "original"); //seperate the original skin from skinList.txt
 		var option:Option = new Option('VirtualPad Skin',
 			"Choose VirtualPad Skin",
 			'VirtualPadSkin',
 			'string',
-			virtualpadSkinList);
+			VPadSkin);
 
 		addOption(option);
 		option.onChange = resetVirtualPad;
@@ -75,10 +63,10 @@ class MobileOptionsSubState extends BaseOptionsMenu
 			'Changes VirtualPad Alpha -cool feature',
 			'VirtualPadAlpha',
 			'percent');
-		option.scrollSpeed = 1;
-		option.minValue = 0.001;
+		option.scrollSpeed = 1.6;
+		option.minValue = 0;
 		option.maxValue = 1;
-		option.changeValue = 0.05;
+		option.changeValue = 0.1;
 		option.decimals = 1;
 		option.onChange = () ->
 		{
@@ -86,7 +74,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		};
 		addOption(option);
 		super();
-		
+
 	if (ClientPrefs.data.VirtualPadAlpha != 0) {
 		var option:Option = new Option('Colored VirtualPad',
 			'If unchecked, disables VirtualPad colors\n(can be used to make custom colored VirtualPad)',
@@ -94,7 +82,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 		option.onChange = resetVirtualPad;
-		
+
 		var option:Option = new Option('VirtualPad Texture',
 			'Which VirtualPad Texture should use??',
 			'virtualpadTexture',
@@ -102,7 +90,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 			virtualpadTextures);
 		addOption(option);
 		option.onChange = resetVirtualPad; //remove buggy virtualpad/touchpad and add new one
-		
+
 		var option:Option = new Option('Extra Controls',
 			"Allow Extra Controls",
 			'extraKeys',
@@ -114,7 +102,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		option.decimals = 1;
 		addOption(option);
 	}
-		
+
 	var option:Option = new Option('Extra Control Location:',
 		"Choose Extra Control Location",
 		'hitboxLocation',
@@ -143,31 +131,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		'hitboxhint',
 		'bool');
 	addOption(option);
-	
-	var option:Option = new Option('Custom VPad Size Multipler', //KralOyuncu was here again
-		"Changes Custom VPad's size",
-		'vpadsize',
-		'float');
-	option.scrollSpeed = 1.6;
-	option.minValue = 1;
-	option.maxValue = 2;
-	option.changeValue = 0.1;
-	option.decimals = 1;
-	option.displayFormat = "%vX";
-	addOption(option);
-	
-	var option:Option = new Option('Extra VPad Size Multipler', //KralOyuncu was here again
-		"Changes Extra VPad's size",
-		'extravpadsize',
-		'float');
-	option.scrollSpeed = 1.6;
-	option.minValue = 1;
-	option.maxValue = 2;
-	option.changeValue = 0.1;
-	option.decimals = 1;
-	option.displayFormat = "%vX";
-	addOption(option);
-		
+
 	var option:Option = new Option('Hitbox Opacity', //mariomaster was here again
 		'Changes hitbox opacity -omg',
 		'hitboxalpha',
@@ -178,7 +142,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	option.changeValue = 0.1;
 	option.decimals = 1;
 	addOption(option);
-		
+
 	#if mobile
 	var option:Option = new Option('Wide Screen Mode',
 		'If checked, The game will stetch to fill your whole screen. (WARNING: Can result in bad visuals & break some mods that resizes the game/cameras)',
@@ -187,15 +151,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	option.onChange = () -> FlxG.scaleMode = new MobileScaleMode();
 	addOption(option);
 	#end
-	
-	#if FuckYou
-	var option:Option = new Option('Keep My Files',
-		"If checked, your files won't remove when you changed StorageType (only debug build)",
-		'KeepMyFiles',
-		'bool');
-	addOption(option);
-	#end
-		
+
 	#if android
 	var option:Option = new Option('Storage Type',
 		'Which folder Psych Engine should use?',
@@ -212,30 +168,18 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	function onStorageChange():Void
 	{
 		File.saveContent(lime.system.System.applicationStorageDirectory + 'storagetype.txt', ClientPrefs.data.storageType);
-	
-		var lastStoragePath:String = StorageType.fromStrForce(lastStorageType) + '/';
-		
-		try
-		{
-		// *sigh* this shit deleted my Psych Extended v1.0.2 Source Code 😭
-		 #if Allow_RemoveFiles
-			if ((lastStorageType != 'EXTERNAL' || lastStorageType != 'EXTERNAL_EX' || lastStorageType != 'EXTERNAL_NF' || lastStorageType != 'EXTERNAL_ONLINE') #if FuckYou && !ClientPrefs.data.KeepMyFiles #end)
-			Sys.command('rm', ['-rf', lastStoragePath]);
-		#end
-		}
-		catch (e:haxe.Exception)
-			trace('Failed to remove last directory. (${e.message})');
 	}
 	#end
 
 	override public function destroy() {
 		super.destroy();
-		
+
+		//This shit will be replaced with better one later
 		if (ClientPrefs.data.virtualpadTexture != lastVirtualPadTexture) //Better Way -AloneDark
 		{
 			ClientPrefs.data.VirtualPadSkin = 'original';
 			ClientPrefs.saveSettings();
-			
+
 			//Restart Game
 			TitleState.initialized = false;
 			TitleState.closedState = false;
@@ -247,7 +191,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 			}
 			FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
 		}
-			
+
 		#if android
 		if (ClientPrefs.data.storageType != lastStorageType) {
 			onStorageChange();
@@ -257,7 +201,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		}
 		#end
 	}
-	
+
 	function resetVirtualPad()
 	{
 		removeVirtualPad();

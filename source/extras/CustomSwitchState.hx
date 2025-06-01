@@ -40,7 +40,7 @@ class CustomSwitchState extends HScriptClassHandler
 				case 'StoryMenu':
 					switchState(new StoryMenuState());
 				case 'Options':
-					LoadingState.loadAndSwitchState(new options.OptionsState());
+					MusicBeatState.switchState(new options.OptionsState());
 				case 'Credits':
 					switchState(new CreditsState());
 				case 'Title':
@@ -53,7 +53,7 @@ class CustomSwitchState extends HScriptClassHandler
 					switchState(new ModsMenuState());
 				#if ACHIEVEMENTS_ALLOWED
 				case 'AchievementsMenu':
-					LoadingState.loadAndSwitchState(new AchievementsMenuState());
+					MusicBeatState.switchState(new AchievementsMenuState());
 				#end
 			}
 		}

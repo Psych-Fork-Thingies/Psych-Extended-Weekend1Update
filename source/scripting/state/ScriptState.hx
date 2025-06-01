@@ -28,19 +28,15 @@ import scripting.substate.ScriptSubstate;
 #if SCRIPTING_ALLOWED
 class ScriptState extends MusicBeatState
 {
-	public static var targetFileName:String; 
-	
-	#if HXVIRTUALPAD_ALLOWED
-	public var _hxvirtualpad:FlxVirtualPad;
-	#end
+	public static var targetFileName:String;
 
-	public function new(scriptName:String) 
+	public function new(scriptName:String)
 	{
 		super();
 
 		targetFileName = scriptName;
 	}
-	
+
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
 
 	public static var instance:ScriptState;
@@ -267,10 +263,6 @@ class ScriptState extends MusicBeatState
 		hscriptArray = null;
 
 		super.destroy();
-		#if HXVIRTUALPAD_ALLOWED
-		if (_hxvirtualpad != null)
-			_hxvirtualpad = FlxDestroyUtil.destroy(_hxvirtualpad);
-		#end
 	}
 
 	public function startHScriptsNamed(scriptFile:String)
@@ -468,46 +460,6 @@ class ScriptState extends MusicBeatState
 		super.closeSubState();
 		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
 	}
-
-	#if HXVIRTUALPAD_ALLOWED
-	public function addHxVirtualPad(DPad:String, Action:String)
-	{
-		if (_hxvirtualpad != null)
-			removeHxVirtualPad();
-
-		_hxvirtualpad = new FlxVirtualPad(DPad, Action);
-		add(_hxvirtualpad);
-
-		controls.setVirtualPadUI(_hxvirtualpad, DPad, Action);
-		trackedinputsUI = controls.trackedInputsUI;
-		controls.trackedInputsUI = [];
-		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
-	}
-
-	public function addHxVirtualPadCamera()
-	{
-		var camcontrol = new flixel.FlxCamera();
-		camcontrol.bgColor.alpha = 0;
-		FlxG.cameras.add(camcontrol, false);
-		_hxvirtualpad.cameras = [camcontrol];
-	}
-
-	public function removeHxVirtualPad()
-	{
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
-		if (_hxvirtualpad != null)
-			remove(_hxvirtualpad);
-	}
-
-	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
-		var buttonName = "button" + buttonPostfix;
-		var button = Reflect.getProperty(ScriptState.instance._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
-		return Reflect.getProperty(button, type);
-		return false;
-	}
-	#end
 }
 #else
 class ScriptState extends MusicBeatState

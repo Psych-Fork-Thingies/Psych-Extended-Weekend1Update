@@ -331,16 +331,6 @@ class HScript extends Iris
 			return LuaUtils.getModSetting(saveTag, modName);
 		});
 
-		// For adding your own callbacks
-		#if LUAVPAD_ALLOWED
-		set('getSpesificVPadButton', function(buttonPostfix:String):Dynamic
-		{
-			var buttonName = "button" + buttonPostfix;
-			return Reflect.getProperty(myClass._hxvirtualpad, buttonName); //This Needs to be work
-			return null;
-		});
-		#end
-
 		set('addHaxeLibrary', function(libName:String, ?libPackage:String = '') {
 			try {
 				var str:String = '';

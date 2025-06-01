@@ -158,9 +158,17 @@ class MainMenuState extends HScriptStateHandler
 	function createMenuItem(name:String, x:Float, y:Float):FlxSprite
 	{
 		var menuItem:FlxSprite = new FlxSprite(x, y);
-		menuItem.frames = Paths.getSparrowAtlas('mainmenu_1.0/menu_$name');
-		menuItem.animation.addByPrefix('idle', '$name idle', 24, true);
-		menuItem.animation.addByPrefix('selected', '$name selected', 24, true);
+		//Use mainmenu folder if exist
+		if (Paths.fileExists('images/mainmenu_1.0/menu_$name' + '.xml', TEXT, false, null, true) || !Paths.fileExists('images/mainmenu/menu_$name' + '.xml', IMAGE, false, null, true)) {
+			menuItem.frames = Paths.getSparrowAtlas('mainmenu_1.0/menu_$name');
+			menuItem.animation.addByPrefix('idle', '$name idle', 24, true);
+			menuItem.animation.addByPrefix('selected', '$name selected', 24, true);
+		}
+		else {
+			menuItem.frames = Paths.getSparrowAtlas('mainmenu/menu_$name');
+			menuItem.animation.addByPrefix('idle', '$name basic', 24);
+			menuItem.animation.addByPrefix('selected', '$name white', 24);
+		}
 		menuItem.animation.play('idle');
 		menuItem.updateHitbox();
 

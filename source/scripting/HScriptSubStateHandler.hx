@@ -14,10 +14,6 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 	public var hscriptArray:Array<HScript> = [];
 	public static var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
 
-	#if HXVIRTUALPAD_ALLOWED
-	public var _hxvirtualpad:FlxVirtualPad;
-	#end
-
 	override function create()
 	{
 		super.create();
@@ -133,16 +129,6 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 			}
 		hscriptArray = null;
 		super.destroy();
-
-		#if HXVIRTUALPAD_ALLOWED
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
-		if (_hxvirtualpad != null) {
-			_hxvirtualpad = FlxDestroyUtil.destroy(_hxvirtualpad);
-			remove(_hxvirtualpad);
-		}
-		#end
 	}
 
 	public function startHScriptsNamed(scriptFile:String)
@@ -261,51 +247,6 @@ class HScriptSubStateHandler extends MusicBeatSubstate
 			script.set(variable, arg);
 		}
 	}
-
-	#if HXVIRTUALPAD_ALLOWED
-	public function addHxVirtualPad(DPad:String, Action:String)
-	{
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
-		if (_hxvirtualpad != null)
-			removeHxVirtualPad();
-
-		_hxvirtualpad = new FlxVirtualPad(DPad, Action);
-		add(_hxvirtualpad);
-
-		controls.setVirtualPadUI(_hxvirtualpad, DPad, Action);
-		trackedinputsUI = controls.trackedInputsUI;
-		controls.trackedInputsUI = [];
-		_hxvirtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
-	}
-
-	public function addHxVirtualPadCamera()
-	{
-		var camcontrol = new flixel.FlxCamera();
-		camcontrol.bgColor.alpha = 0;
-		FlxG.cameras.add(camcontrol, false);
-		_hxvirtualpad.cameras = [camcontrol];
-	}
-
-	public function removeHxVirtualPad()
-	{
-		if (trackedinputsUI.length > 0)
-			controls.removeVirtualControlsInput(trackedinputsUI);
-
-		if (_hxvirtualpad != null) {
-			_hxvirtualpad = FlxDestroyUtil.destroy(_hxvirtualpad);
-			remove(_hxvirtualpad);
-		}
-	}
-
-	public static function checkVPadPress(buttonPostfix:String, type = 'justPressed') {
-		var buttonName = "button" + buttonPostfix;
-		var button = Reflect.getProperty(HScriptSubStateHandler.getState()._hxvirtualpad, buttonName); //Access Spesific HxVirtualPad Button
-		return Reflect.getProperty(button, type);
-		return false;
-	}
-	#end
 
 	public static function getState():HScriptSubStateHandler {
 		var curState:Dynamic = FlxG.state.subState;

@@ -56,7 +56,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Chart System:',
-			"This Option Is Experimental\n(Choose Your Chart System)",
+			"Choose Your Chart System",
 			'chartLoadSystem',
 			'string',
 			['0.4-0.7x', '1.0x']);

@@ -449,13 +449,13 @@ class FunkinLua {
 				doPush = true;
 			}
 			else {
-				cervix = Paths.getPreloadPath(cervix);
+				cervix = Paths.getSharedPath(cervix);
 				if(FileSystem.exists(cervix)) {
 					doPush = true;
 				}
 			}
 			#else
-			cervix = Paths.getPreloadPath(cervix);
+			cervix = Paths.getSharedPath(cervix);
 			if(Assets.exists(cervix)) {
 				doPush = true;
 			}
@@ -1812,7 +1812,7 @@ class FunkinLua {
 	function findScript(scriptFile:String, ext:String = '.lua')
 	{
 		if(!scriptFile.endsWith(ext)) scriptFile += ext;
-		var preloadPath:String = Paths.getPreloadPath(scriptFile);
+		var preloadPath:String = Paths.getSharedPath(scriptFile);
 		#if MODS_ALLOWED
 		var path:String = Paths.modFolders(scriptFile);
 		if(FileSystem.exists(scriptFile))
@@ -1886,7 +1886,7 @@ class FunkinLua {
 			luaTrace('Shader $name was already initialized!');
 			return true;
 		}
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('shaders/')];
+		var foldersToCheck:Array<String> = [Paths.getSharedPath('shaders/')];
 		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
 			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/shaders/'));
 		for(mod in Mods.getGlobalMods())

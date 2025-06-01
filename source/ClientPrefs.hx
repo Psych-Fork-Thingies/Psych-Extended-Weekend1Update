@@ -47,8 +47,6 @@ import TitleState;
 	public var hitboxmode:String = 'New';  //starting new way to change between hitboxes yay
 	public var hitboxtype:String = 'Gradient';
 	public var extraKeys:Int = 2;
-	public var vpadsize:Float = 1;
-	public var extravpadsize:Float = 1;
 	public var hitboxLocation:String = 'Bottom';
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
 	#if VIDEOS_ALLOWED public var DisableIntroVideo:Bool = false; #end

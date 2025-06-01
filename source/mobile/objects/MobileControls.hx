@@ -132,20 +132,20 @@ class MobileControls extends FlxSpriteGroup {
 	function initControler(vpadMode:Int, ?CustomMode:String) {
 		switch (vpadMode){
 			case 0:
-				vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend", false, true);
+				vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend");
 				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 1:
-				vpad = new FlxVirtualPad("FULL", "controlExtend", false, true);
+				vpad = new FlxVirtualPad("FULL", "controlExtend");
 				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 2:
-				vpad = new FlxVirtualPad("FULL", "controlExtend", true, true);
+				vpad = new FlxVirtualPad("FULL", "controlExtend");
 				vpad = config.loadcustom(vpad);
 				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 3:
-				vpad = new FlxVirtualPad("DUO", "controlExtend", false, true);
+				vpad = new FlxVirtualPad("DUO", "controlExtend");
 				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 4:
@@ -201,7 +201,7 @@ class CurrentManager {
 	public var buttonExtra4:VirtualButton;
 
 	public function new(control:MobileControls){
-		if(MobileControls.mode == HITBOX) {
+		if(MobileControls.mode == HITBOX && ClientPrefs.data.hitboxmode != 'Classic') {
 			buttonLeft = control.newhbox.buttonLeft;
 			buttonDown = control.newhbox.buttonDown;
 			buttonUp = control.newhbox.buttonUp;
@@ -210,7 +210,7 @@ class CurrentManager {
 			buttonExtra2 = control.newhbox.buttonExtra2;
 			buttonExtra3 = control.newhbox.buttonExtra3;
 			buttonExtra4 = control.newhbox.buttonExtra4;
-		} else {
+		} else if (ClientPrefs.data.hitboxmode != 'Classic') {
 			buttonLeft = control.vpad.buttonLeft;
 			buttonDown = control.vpad.buttonDown;
 			buttonUp = control.vpad.buttonUp;

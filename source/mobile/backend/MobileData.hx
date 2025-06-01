@@ -11,7 +11,6 @@ class MobileData
 	public static var actionModes:Map<String, VirtualButtonsData> = new Map();
 	public static var dpadModes:Map<String, VirtualButtonsData> = new Map();
 	public static var hitboxModes:Map<String, CustomHitboxData> = new Map();
-	public static var extraActions:Map<String, ExtraActions> = new Map();
 
 	public static var mode(get, set):Int;
 	public static var forcedMode:Null<Int>;
@@ -22,15 +21,18 @@ class MobileData
 		save = new FlxSave();
 		save.bind('MobileControls', CoolUtil.getSavePath());
 
-		readDirectory(Paths.getPreloadPath('mobile/DPadModes'), dpadModes);
-		readDirectory(Paths.getPreloadPath('mobile/HitboxModes'), hitboxModes);
-		readDirectory(Paths.getPreloadPath('mobile/ActionModes'), actionModes);
+		readDirectory(Paths.getSharedPath('mobile/VirtualButton/DPadModes'), dpadModes);
+		readDirectory(Paths.getSharedPath('mobile/Hitbox/HitboxModes'), hitboxModes);
+		readDirectory(Paths.getSharedPath('mobile/VirtualButton/ActionModes'), actionModes);
 		#if MODS_ALLOWED
-		for (folder in Mods.directoriesWithFile(Paths.getPreloadPath(), 'mobile/'))
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'mobile/VirtualButton/'))
 		{
 			readDirectory(Path.join([folder, 'DPadModes']), dpadModes);
-			readDirectory(Path.join([folder, 'HitboxModes']), hitboxModes);
 			readDirectory(Path.join([folder, 'ActionModes']), actionModes);
+		}
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'mobile/Hitbox/'))
+		{
+			readDirectory(Path.join([folder, 'HitboxModes']), hitboxModes);
 		}
 		#end
 	}
@@ -130,7 +132,7 @@ typedef CustomHitboxData =
 typedef HitboxData =
 {
 	button:String, // what Hitbox Button should be used, must be a valid Hitbox Button var from NewHitbox as a string.
-	//if nothing is setted these will be used
+	//if custom ones isn't setted these will be used
 	x:Float, // the button's X position on screen.
 	y:Float, // the button's Y position on screen.
 	width:Int, // the button's Width on screen.
@@ -160,11 +162,4 @@ typedef ButtonsData =
 	x:Float, // the button's X position on screen.
 	y:Float, // the button's Y position on screen.
 	color:String // the button color, default color is white.
-}
-
-enum ExtraActions
-{
-	SINGLE;
-	DOUBLE;
-	NONE;
 }

@@ -134,7 +134,6 @@ class MasterEditorMenu extends HScriptStateHandler
 					PlayState.chartingMode = true; // I don't understand why Psych 0.6.3 doesn't have this
 			}
 			FlxG.sound.music.volume = 0;
-			#if PRELOAD_ALL
 			#if PsychExtended_ExtraFreeplayMenus
 			if (ClientPrefs.data.FreeplayStyle == 'NF')
 				FreeplayStateNF.destroyFreeplayVocals();
@@ -143,7 +142,6 @@ class MasterEditorMenu extends HScriptStateHandler
 			else
 			#end
 				FreeplayState.destroyFreeplayVocals();
-			#end
 		}
 
 		var bullShit:Int = 0;
