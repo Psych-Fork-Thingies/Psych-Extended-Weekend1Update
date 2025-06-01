@@ -81,11 +81,13 @@ class GameOverSubstate extends MusicBeatSubstate
 		PlayState.instance.setOnScripts('inGameOver', true);
 		PlayState.instance.callOnScripts('onGameOverStart', []);
 		FlxG.sound.music.loadEmbedded(Paths.music(loopSoundName), true);
-		
-		addVirtualPad("NONE", "A_B");
-    	addVirtualPadCamera();
 
-        // For Pico Mix Mods ig
+		#if TOUCH_CONTROLS
+		addVirtualPad("NONE", "A_B");
+		addVirtualPadCamera();
+		#end
+
+		// For Pico Mix Mods ig
 		if(characterName == 'pico-dead')
 		{
 			overlay = new FlxSprite(boyfriend.x + 205, boyfriend.y - 80);

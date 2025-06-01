@@ -189,7 +189,7 @@ class ModsMenuState extends MusicBeatState
 
 			FlxG.autoPause = false;
 			changeSelectedMod();
-			addVirtualPad("NONE", "B");
+			#if TOUCH_CONTROLS addVirtualPad("NONE", "B"); #end
 			return super.create();
 		}
 
@@ -319,14 +319,14 @@ class ModsMenuState extends MusicBeatState
 		bottomText.scrollFactor.set();
 		add(bottomText);
 
+		#if TOUCH_CONTROLS
 		addVirtualPad("UP_DOWN", "B");
 		_virtualpad.y -= 215; // so that you can press the buttons.
-		#if mobile
-			_virtualpad.alpha = 0.3;
+		_virtualpad.alpha = 0.3;
 		#end
 		super.create();
 	}
-	
+
 	var nextAttempt:Float = 1;
 	var holdingMod:Bool = false;
 	var mouseOffsets:FlxPoint = new FlxPoint();
@@ -343,7 +343,7 @@ class ModsMenuState extends MusicBeatState
 			saveTxt();
 
 			ClientPrefs.data.controllerMode = LastControllerMode;
-			MobileData.init(); //Reload Mobile Data (Otherwise You Need to restart game)
+			#if TOUCH_CONTROLS MobileData.init(); #end //Reload Mobile Data (Otherwise You Need to restart game)
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			if(waitingToRestart)
 			{
@@ -605,7 +605,7 @@ class ModsMenuState extends MusicBeatState
 	override function closeSubState() // not needed but i want to use this (idk why) - KralOyuncu | Nope, This is Useful for Mobile Devices - AloneDark
 	{
 		super.closeSubState();
-		#if mobile
+		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("UP_DOWN", "B");
 		_virtualpad.y -= 215; // so that you can press the buttons.

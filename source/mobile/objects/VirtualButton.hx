@@ -194,9 +194,9 @@ class TypedVirtualButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		super(X, Y);
 
 		if (statusIndicatorType == BRIGHTNESS && ClientPrefs.data.virtualpadTexture == 'TouchPad')
- 			shader = brightShader;
- 		else
- 		    loadDefaultGraphic();
+			shader = brightShader;
+		else
+			loadDefaultGraphic();
 
 		onUp = new VirtualButtonEvent();
 		onDown = new VirtualButtonEvent();

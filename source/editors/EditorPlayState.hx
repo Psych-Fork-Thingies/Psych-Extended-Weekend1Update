@@ -135,10 +135,12 @@ class EditorPlayState extends MusicBeatSubstate
 		tipText.scrollFactor.set();
 		add(tipText);
 		FlxG.mouse.visible = false;
-		
+
+		#if TOUCH_CONTROLS
 		addMobileControls();
 		MusicBeatSubstate.mobilec.visible = true;
-		
+		#end
+
 		generateSong(PlayState.SONG.song);
 
 		if(!ClientPrefs.data.controllerMode)
@@ -504,9 +506,9 @@ class EditorPlayState extends MusicBeatSubstate
 			finishTimer.cancel();
 			finishTimer.destroy();
 		}
-		
-		MusicBeatSubstate.mobilec.visible = false;
-		
+
+		#if TOUCH_CONTROLS MusicBeatSubstate.mobilec.visible = false; #end
+
 		close();
 	}
 

@@ -362,14 +362,10 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 			changeMenuColor();
 		}, 0);
 
-		/* nope
-		if (PlayState.chartingMode)
-			addVirtualPad("PAUSE", "A");
-		else
-			addVirtualPad("UP_DOWN", "A");
-		*/
+		#if TOUCH_CONTROLS
 		addVirtualPad("PAUSE", "A");
 		addVirtualPadCamera();
+		#end
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
@@ -584,7 +580,7 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 					restartSong();
 				case 'Changers':
 					persistentUpdate = false;
-					removeVirtualPad();
+					#if TOUCH_CONTROLS removeVirtualPad(); #end
 					GameplayChangersSubstate.inThePauseMenu = true;
 					openSubState(new GameplayChangersSubstate());
 				case 'Exit':
@@ -827,8 +823,10 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 	override function closeSubState() {
 		persistentUpdate = true;
 		super.closeSubState();
+		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("PAUSE", "A");
 		addVirtualPadCamera();
+		#end
 	}
 }

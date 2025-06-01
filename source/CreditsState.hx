@@ -144,7 +144,7 @@ class CreditsState extends HScriptStateHandler
 		intendedColor = bg.color;
 		changeSelection();
 
-		addVirtualPad("UP_DOWN", "A_B");
+		#if TOUCH_CONTROLS addVirtualPad("UP_DOWN", "A_B"); #end
 		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 

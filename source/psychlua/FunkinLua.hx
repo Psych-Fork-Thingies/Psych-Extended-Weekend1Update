@@ -57,10 +57,12 @@ class FunkinLua {
 	public var scriptName:String = '';
 	public var modFolder:String = null;
 	public var closed:Bool = false;
+	#if TOUCH_CONTROLS
 	public static var extra1:String = ClientPrefs.data.extraKeyReturn1.toUpperCase();
 	public static var extra2:String = ClientPrefs.data.extraKeyReturn2.toUpperCase();
 	public static var extra3:String = ClientPrefs.data.extraKeyReturn3.toUpperCase();
 	public static var extra4:String = ClientPrefs.data.extraKeyReturn4.toUpperCase();
+	#end
 	public static var FPSCounterText:String = null;
 
 	#if HSCRIPT_ALLOWED

@@ -8,6 +8,7 @@ import MusicPlayer;
 
 import GameplayChangersSubstate;
 import ResetScoreSubState;
+import editors.ChartingState;
 
 import haxe.Json;
 
@@ -178,10 +179,11 @@ class FreeplayState extends HScriptStateHandler
 		add(bottomBG);
 
 		var leText:String;
-		if (ClientPrefs.data.mobileC)
-			leText = "Press X to listen to the Song / Press C to open the Gameplay Changers Menu / Press Y to Reset your Score and Accuracy.";
-		else
-			leText = "Press SPACE to listen to the Song / Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
+		#if TOUCH_CONTROLS
+		leText = "Press X to listen to the Song / Press C to open the Gameplay Changers Menu / Press Y to Reset your Score and Accuracy.";
+		#else
+		leText = "Press SPACE to listen to the Song / Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
+		#end
 
 		bottomString = leText;
 		var size:Int = 16;
@@ -196,7 +198,7 @@ class FreeplayState extends HScriptStateHandler
 		changeSelection();
 		updateTexts();
 
-		addVirtualPad("FULL", "A_B_C_X_Y_Z");
+		#if TOUCH_CONTROLS addVirtualPad("FULL", "A_B_C_X_Y_Z"); #end
 
 		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
@@ -207,8 +209,10 @@ class FreeplayState extends HScriptStateHandler
 		changeSelection(0, false);
 		persistentUpdate = true;
 		super.closeSubState();
+		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("FULL", "A_B_C_X_Y_Z");
+		#end
 		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
 	}
 
@@ -252,7 +256,7 @@ class FreeplayState extends HScriptStateHandler
 			ratingSplit[1] += '0';
 
 		var shiftMult:Int = 1;
-		if((FlxG.keys.pressed.SHIFT || _virtualpad.buttonZ.pressed) && !player.playingMusic) shiftMult = 3;
+		if((FlxG.keys.pressed.SHIFT #if TOUCH_CONTROLS || _virtualpad.buttonZ.pressed #end) && !player.playingMusic) shiftMult = 3;
 
 		if (!player.playingMusic)
 		{
@@ -336,13 +340,13 @@ class FreeplayState extends HScriptStateHandler
 			}
 		}
 
-		if((FlxG.keys.justPressed.CONTROL || _virtualpad.buttonC.justPressed) && !player.playingMusic)
+		if((FlxG.keys.justPressed.CONTROL #if TOUCH_CONTROLS || _virtualpad.buttonC.justPressed #end) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new GameplayChangersSubstate());
-			removeVirtualPad();
+			#if TOUCH_CONTROLS removeVirtualPad(); #end
 		}
-		else if(FlxG.keys.justPressed.SPACE || _virtualpad.buttonX.justPressed)
+		else if(FlxG.keys.justPressed.SPACE #if TOUCH_CONTROLS || _virtualpad.buttonX.justPressed #end)
 		{
 			if(instPlaying != curSelected && !player.playingMusic)
 			{
@@ -450,8 +454,16 @@ class FreeplayState extends HScriptStateHandler
 				return;
 			}
 
-			LoadingState.prepareToSong();
-			LoadingState.loadAndSwitchState(new PlayState());
+			if (FlxG.keys.pressed.SHIFT #if TOUCH_CONTROLS || _virtualpad.buttonZ.pressed #end)
+				LoadingState.loadAndSwitchState(new ChartingState());
+			else {
+				if (ClientPrefs.data.loadingScreen && ClientPrefs.data.TransitionStyle == 'NovaFlare') {
+					FlxTransitionableState.skipNextTransIn = true;
+					FlxTransitionableState.skipNextTransOut = true;
+				}
+				LoadingState.prepareToSong();
+				LoadingState.loadAndSwitchState(new PlayState());
+			}
 			if (!ClientPrefs.data.loadingScreen) FlxG.sound.music.stop();
 			stopMusicPlay = true;
 
@@ -460,11 +472,11 @@ class FreeplayState extends HScriptStateHandler
 			DiscordClient.loadModRPC();
 			#end
 		}
-		else if((controls.RESET || _virtualpad.buttonY.justPressed) && !player.playingMusic)
+		else if((controls.RESET #if TOUCH_CONTROLS || _virtualpad.buttonY.justPressed #end) && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
-			removeVirtualPad();
+			#if TOUCH_CONTROLS removeVirtualPad(); #end
 			FlxG.sound.play(Paths.sound('scrollMenu'));
 		}
 

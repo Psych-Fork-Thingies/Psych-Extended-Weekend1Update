@@ -105,8 +105,8 @@ class WeekEditorState extends MusicBeatState
 		reloadAllShit();
 
 		FlxG.mouse.visible = true;
-		
-		addVirtualPad("UP_DOWN", "B");
+
+		#if TOUCH_CONTROLS addVirtualPad("UP_DOWN", "B"); #end
 
 		super.create();
 	}
@@ -448,7 +448,7 @@ class WeekEditorState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if(_virtualpad.buttonB.justPressed || FlxG.keys.justPressed.ESCAPE) {
+			if(#if TOUCH_CONTROLS _virtualpad.buttonB.justPressed || #end FlxG.keys.justPressed.ESCAPE) {
 				CustomSwitchState.switchMenus('MasterEditor');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}
@@ -634,7 +634,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 		addEditorBox();
 		changeSelection();
 
-		addVirtualPad("UP_DOWN", "B");
+		#if TOUCH_CONTROLS addVirtualPad("UP_DOWN", "B"); #end
 
 		super.create();
 	}
@@ -819,7 +819,7 @@ class WeekEditorFreeplayState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if(_virtualpad.buttonB.justPressed || FlxG.keys.justPressed.ESCAPE) {
+			if(#if TOUCH_CONTROLS _virtualpad.buttonB.justPressed || #end FlxG.keys.justPressed.ESCAPE) {
 				CustomSwitchState.switchMenus('MasterEditor');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}

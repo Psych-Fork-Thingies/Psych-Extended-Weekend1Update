@@ -84,6 +84,9 @@ class FreeplayStateNOVA extends HScriptStateHandler
 	{
 		super.create();
 
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+
 		#if SCRIPTING_ALLOWED
 		var className = Type.getClassName(Type.getClass(this));
 		var classString:String = '${className}' + '.hx';
@@ -435,11 +438,11 @@ class FreeplayStateNOVA extends HScriptStateHandler
 			return;
 		}
 		destroyFreeplayVocals();
-		LoadingState.prepareToSong();
-		if (ClientPrefs.data.loadingScreen && ClientPrefs.data.TransitionStyle == 'Psych') {
+		if (ClientPrefs.data.loadingScreen && ClientPrefs.data.TransitionStyle == 'NovaFlare') {
 			FlxTransitionableState.skipNextTransIn = true;
 			FlxTransitionableState.skipNextTransOut = true;
 		}
+		LoadingState.prepareToSong();
 		LoadingState.loadAndSwitchState(new PlayState());
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 	}

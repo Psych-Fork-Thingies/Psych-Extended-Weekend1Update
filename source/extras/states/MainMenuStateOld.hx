@@ -171,12 +171,14 @@ class MainMenuStateOld extends HScriptStateHandler
 			#end
 		#end
 
+		#if TOUCH_CONTROLS
 		#if PsychExtended_ExtraMainMenus
 		if (ClientPrefs.data.MainMenuStyle == '0.6.3')
 			addVirtualPad("UP_DOWN", "A_B_E");
 		else
 		#end
 			addVirtualPad("UP_DOWN", "A_B_E_C_M");
+		#end
 
 		super.create();
 
@@ -226,6 +228,7 @@ class MainMenuStateOld extends HScriptStateHandler
 				CustomSwitchState.switchMenus('Title');
 			}
 
+			#if TOUCH_CONTROLS
 			if (_virtualpad.buttonM.justPressed)
 			{
 				selectedSomethin = true;
@@ -237,6 +240,7 @@ class MainMenuStateOld extends HScriptStateHandler
 				selectedSomethin = true;
 				CustomSwitchState.switchMenus('Credits');
 			}
+			#end
 
 			if (controls.ACCEPT)
 			{
@@ -291,13 +295,11 @@ class MainMenuStateOld extends HScriptStateHandler
 					});
 				}
 			}
-			#if (desktop || android)
-			else if (FlxG.keys.anyJustPressed(debugKeys) || _virtualpad.buttonE.justPressed)
+			else if (FlxG.keys.anyJustPressed(debugKeys) #if TOUCH_CONTROLS || _virtualpad.buttonE.justPressed #end)
 			{
 				selectedSomethin = true;
 				CustomSwitchState.switchMenus('MasterEditor');
 			}
-			#end
 		}
 
 		super.update(elapsed);

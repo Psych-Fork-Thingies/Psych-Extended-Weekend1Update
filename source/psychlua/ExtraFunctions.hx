@@ -23,6 +23,7 @@ class ExtraFunctions
 		Lua_helper.add_callback(lua, "keyboardJustPressed", function(name:String)
 		{
 			name = name.toUpperCase();
+			#if TOUCH_CONTROLS
 			if (MusicBeatState.mobilec != null){
 				var extraControl = MusicBeatState.mobilec.current;
 				if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase() && extraControl.buttonExtra1 != null && extraControl.buttonExtra1.justPressed) return true;
@@ -30,11 +31,13 @@ class ExtraFunctions
 				if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase() && extraControl.buttonExtra3 != null && extraControl.buttonExtra3.justPressed) return true;
 				if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase() && extraControl.buttonExtra4 != null && extraControl.buttonExtra4.justPressed) return true;
 			}
+			#end
 			return Reflect.getProperty(FlxG.keys.justPressed, name);
 		});
 		Lua_helper.add_callback(lua, "keyboardPressed", function(name:String)
 		{
 			name = name.toUpperCase();
+			#if TOUCH_CONTROLS
 			if (MusicBeatState.mobilec != null){
 				var extraControl = MusicBeatState.mobilec.current;
 				if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase() && extraControl.buttonExtra1 != null && extraControl.buttonExtra1.pressed) return true;
@@ -42,11 +45,13 @@ class ExtraFunctions
 				if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase() && extraControl.buttonExtra3 != null && extraControl.buttonExtra3.pressed) return true;
 				if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase() && extraControl.buttonExtra4 != null && extraControl.buttonExtra4.pressed) return true;
 			}
+			#end
 			return Reflect.getProperty(FlxG.keys.pressed, name);
 		});
 		Lua_helper.add_callback(lua, "keyboardReleased", function(name:String)
 		{
 			name = name.toUpperCase();
+			#if TOUCH_CONTROLS
 			if (MusicBeatState.mobilec != null){
 				var extraControl = MusicBeatState.mobilec.current;
 				if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase() && extraControl.buttonExtra1 != null && extraControl.buttonExtra1.justReleased) return true;
@@ -54,6 +59,7 @@ class ExtraFunctions
 				if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase() && extraControl.buttonExtra3 != null && extraControl.buttonExtra3.justReleased) return true;
 				if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase() && extraControl.buttonExtra4 != null && extraControl.buttonExtra4.justReleased) return true;
 			}
+			#end
 			return Reflect.getProperty(FlxG.keys.justReleased, name);
 		});
 
@@ -134,6 +140,7 @@ class ExtraFunctions
 				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_P');
 			}
 			name = name.toUpperCase();
+			#if TOUCH_CONTROLS
 			if (MusicBeatState.mobilec != null){
 				var extraControl = MusicBeatState.mobilec.current;
 				if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase() && extraControl.buttonExtra1 != null && extraControl.buttonExtra1.justPressed) return true;
@@ -141,6 +148,7 @@ class ExtraFunctions
 				if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase() && extraControl.buttonExtra3 != null && extraControl.buttonExtra3.justPressed) return true;
 				if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase() && extraControl.buttonExtra4 != null && extraControl.buttonExtra4.justPressed) return true;
 			}
+			#end
 			return key;
 		});
 		Lua_helper.add_callback(lua, "keyPressed", function(name:String) {
@@ -157,6 +165,7 @@ class ExtraFunctions
 				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT');
 			}
 			name = name.toUpperCase();
+			#if TOUCH_CONTROLS
 			if (MusicBeatState.mobilec != null){
 				var extraControl = MusicBeatState.mobilec.current;
 				if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase() && extraControl.buttonExtra1 != null && extraControl.buttonExtra1.pressed) return true;
@@ -164,6 +173,7 @@ class ExtraFunctions
 				if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase() && extraControl.buttonExtra3 != null && extraControl.buttonExtra3.pressed) return true;
 				if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase() && extraControl.buttonExtra4 != null && extraControl.buttonExtra4.pressed) return true;
 			}
+			#end
 			return key;
 		});
 		Lua_helper.add_callback(lua, "keyReleased", function(name:String) {
@@ -180,6 +190,7 @@ class ExtraFunctions
 				case 'ui_right': key = PlayState.instance.getControl('UI_RIGHT_R');
 			}
 			name = name.toUpperCase();
+			#if TOUCH_CONTROLS
 			if (MusicBeatState.mobilec != null){
 				var extraControl = MusicBeatState.mobilec.current;
 				if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase() && extraControl.buttonExtra1 != null && extraControl.buttonExtra1.justReleased) return true;
@@ -187,6 +198,7 @@ class ExtraFunctions
 				if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase() && extraControl.buttonExtra3 != null && extraControl.buttonExtra3.justReleased) return true;
 				if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase() && extraControl.buttonExtra4 != null && extraControl.buttonExtra4.justReleased) return true;
 			}
+			#end
 			return key;
 		});
 
@@ -356,24 +368,6 @@ class ExtraFunctions
 	public static function classCheck(className:String):Dynamic
 	{
 		return Type.resolveClass(className);
-	}
-
-	public static function specialKeyCheck(keyName:String):Dynamic
-	{
-		var textfix:Array<String> = keyName.trim().split('.');
-		var type:String = textfix[1].trim();
-		var key:String = textfix[2].trim();
-		var extraControl:Dynamic = null;
-
-		for (num in 0...5){
-			if (ClientPrefs.data.extraKeys >= num && key == Reflect.field(ClientPrefs.data, 'extraKeyReturn' + num)){
-				if (MusicBeatState.mobilec.newhbox != null)
-					extraControl = Reflect.getProperty(MusicBeatState.mobilec.newhbox, 'buttonExtra' + num);
-				if (Reflect.getProperty(extraControl, type))
-					return true;
-			}
-		}
-		return null;
 	}
 	#end
 }

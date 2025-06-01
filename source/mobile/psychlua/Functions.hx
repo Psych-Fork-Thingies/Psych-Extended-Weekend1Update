@@ -13,6 +13,7 @@ class MobileFunctions
 		#if LUA_ALLOWED
 		var lua:State = funk.lua;
 
+		#if TOUCH_CONTROLS
 		//Use them for 8k charts or something
 		Lua_helper.add_callback(lua, 'HitboxPressed', function(button:String):Bool
 		{
@@ -33,6 +34,7 @@ class MobileFunctions
 		{
 			return PlayState.checkHBoxPress(button, 'justReleased');
 		});
+		#end
 
 		#if LUAVPAD_ALLOWED
 		//OMG
@@ -79,11 +81,10 @@ class MobileFunctions
 		});
 		#end
 
-		Lua_helper.add_callback(lua, 'mobileC', ClientPrefs.data.mobileC);
-
+		#if TOUCH_CONTROLS
 		Lua_helper.add_callback(lua, "MobileC", function(enabled:Bool = false):Void
 		{
-			if (ClientPrefs.data.mobileC) MusicBeatState.mobilec.visible = enabled;
+			MusicBeatState.mobilec.visible = enabled;
 		});
 
 		Lua_helper.add_callback(lua, "changeMobileControls", function(?mode:String):Void
@@ -100,6 +101,7 @@ class MobileFunctions
 		{
 			PlayState.instance.removeControls();
 		});
+		#end
 
 		#if mobile
 		Lua_helper.add_callback(lua, "vibrate", function(duration:Null<Int>, ?period:Null<Int>)

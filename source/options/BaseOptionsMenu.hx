@@ -26,12 +26,12 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	private var curSelected:Int = 0;
 	private var optionsArray:Array<Option>;
 
-    private var grpNote:FlxTypedGroup<FlxSprite>;
+	private var grpNote:FlxTypedGroup<FlxSprite>;
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private var checkboxGroup:FlxTypedGroup<CheckboxThingie>;
 	private var grpTexts:FlxTypedGroup<AttachedText>;
 
-    private var boyfriend:Character = null;
+	private var boyfriend:Character = null;
 	private var descBox:FlxSprite;
 	private var descText:FlxText;
 
@@ -120,9 +120,9 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		changeSelection();
 		reloadCheckboxes();
 
-        addVirtualPad("FULL", "A_B_C");
-        
-        grpNote = new FlxTypedGroup<FlxSprite>();
+		#if TOUCH_CONTROLS addVirtualPad("FULL", "A_B_C"); #end
+
+		grpNote = new FlxTypedGroup<FlxSprite>();
 		add(grpNote);
 	}
 
@@ -147,7 +147,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		}
 
 		if (controls.BACK) {
-		    close();
+			close();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 		}
 
@@ -238,7 +238,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 				}
 			}
 
-			if(controls.RESET || _virtualpad.buttonC.justPressed)
+			if(controls.RESET #if TOUCH_CONTROLS || _virtualpad.buttonC.justPressed #end)
 			{
 				var leOption:Option = optionsArray[curSelected];
 				leOption.setValue(leOption.defaultValue);

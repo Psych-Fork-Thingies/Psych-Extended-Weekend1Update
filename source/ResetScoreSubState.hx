@@ -98,7 +98,7 @@ class ResetScoreSubState extends MusicBeatSubstate
 			close();
 		}
 		
-		if(FlxG.mouse.overlaps(yesText) && ClientPrefs.data.mobileC)
+		if(FlxG.mouse.overlaps(yesText))
 		{
 			if (!onYes) FlxG.sound.play(Paths.sound('scrollMenu'));
 			onYes = true;
@@ -113,7 +113,7 @@ class ResetScoreSubState extends MusicBeatSubstate
 			}
 		}
 
-		if(FlxG.mouse.overlaps(noText) && ClientPrefs.data.mobileC)
+		if(FlxG.mouse.overlaps(noText))
 		{
 			if (onYes) FlxG.sound.play(Paths.sound('scrollMenu'));
 			onYes = false;

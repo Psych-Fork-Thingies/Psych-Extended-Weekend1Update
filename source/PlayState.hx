@@ -765,9 +765,11 @@ class PlayState extends MusicBeatState
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
 
+		#if TOUCH_CONTROLS
 		addMobileControls();
 		MusicBeatState.mobilec.visible = false;
 		if (ClientPrefs.data.hitboxmode != 'Classic' && !ClientPrefs.data.hitboxhint) MusicBeatState.mobilec.alpha = 0.000001;
+		#end
 		startingSong = true;
 
 		#if LUA_ALLOWED
@@ -1202,8 +1204,10 @@ class PlayState extends MusicBeatState
 		var ret:Dynamic = callOnScripts('onStartCountdown', null, true);
 		if(ret != FunkinLua.Function_Stop) {
 			if (skipCountdown || startOnTime > 0) skipArrowStartTween = true;
+			#if TOUCH_CONTROLS
 			MusicBeatState.mobilec.visible = true;
 			if (MusicBeatState.checkHitbox != true) MusicBeatState.mobilec.alpha = ClientPrefs.data.VirtualPadAlpha; //better for pc build
+			#end
 			#if PSYCH_EXTENDED_NOTESKINS
 			if (!characterPlayingAsDad)
 			{
@@ -1964,7 +1968,7 @@ class PlayState extends MusicBeatState
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}
 
-		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #end #if ios || _virtualpad.buttonB.pressed #end && startedCountdown && canPause)
+		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #end && startedCountdown && canPause)
 		{
 			var ret:Dynamic = callOnScripts('onPause', null, true);
 			if(ret != FunkinLua.Function_Stop) {
@@ -2295,15 +2299,6 @@ class PlayState extends MusicBeatState
 		var percent:Float = ratingPercent;
 		if(Math.isNaN(percent)) percent = 0;
 		Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent, NoteMs, NoteTime);
-	}
-
-	// this things used in indie cross 0.6.3 port -KralOyuncu
-	// I don't need this but I can't remove this because of KralOyuncu -AloneDark
-	// This Shit is Dead ;] -KralOyuncu
-	function addCupheadGameoverButtons() // Why not
-	{
-		addVirtualPad("UP_DOWN", "A");
-		addVirtualPadCamera();
 	}
 
 	function openOptionsMenu()
@@ -2796,7 +2791,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		MusicBeatState.mobilec.visible = false;
+		#if TOUCH_CONTROLS MusicBeatState.mobilec.visible = false; #end
 		timeBarBG.visible = false;
 		timeBar.visible = false;
 		timeTxt.visible = false;
@@ -4254,6 +4249,7 @@ class PlayState extends MusicBeatState
 	}
 	#end
 
+	#if TOUCH_CONTROLS
 	public static function checkHBoxPress(button:String, type = 'justPressed') {
 		var button = Reflect.getProperty(MusicBeatState.mobilec.newhbox, button); //Access Spesific Hitbox Button
 		return Reflect.getProperty(button, type);
@@ -4275,6 +4271,7 @@ class PlayState extends MusicBeatState
 	{
 		removeMobileControls();
 	}
+	#end
 
 	function checkForResync()
 	{

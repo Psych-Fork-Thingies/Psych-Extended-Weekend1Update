@@ -33,8 +33,11 @@ import TitleState;
 	public var Modpack:Bool = false;
 	public var BetterSync:Bool = true;
 	public var wideScreen:Bool = false;
-	public var mobileC:Bool = true; //better than using if mobile
 	#if android public var storageType:String = "EXTERNAL_DATA"; #end
+
+	#if VIDEOS_ALLOWED public var DisableIntroVideo:Bool = false; #end
+
+	#if TOUCH_CONTROLS
 	public var virtualpadTexture:String = "VirtualPad";
 	public var VirtualPadSkin:String = 'original';
 	public var VirtualPadAlpha:Float = #if mobile 0.6 #else 0 #end;
@@ -44,13 +47,12 @@ import TitleState;
 	public var extraKeyReturn3:String = 'Q';
 	public var extraKeyReturn4:String = 'E';
 	public var hitboxhint:Bool = false;
-	public var hitboxmode:String = 'New';  //starting new way to change between hitboxes yay
+	public var hitboxmode:String = 'New'; //starting new way to change between hitboxes yay
 	public var hitboxtype:String = 'Gradient';
 	public var extraKeys:Int = 2;
 	public var hitboxLocation:String = 'Bottom';
 	public var hitboxalpha:Float = #if mobile 0.7 #else 0 #end; //someone request this lol
-	#if VIDEOS_ALLOWED public var DisableIntroVideo:Bool = false; #end
-	#if FuckYou public var KeepMyFiles:Bool = false; #end
+	#end
 
 	//NovaFlare FPSCounter things
 	#if PsychExtended_ExtraFPSCounters

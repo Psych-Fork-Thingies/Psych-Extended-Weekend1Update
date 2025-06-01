@@ -55,7 +55,7 @@ class ControlsSubState extends MusicBeatSubstate {
 	private var grpInputsAlt:Array<AttachedText> = [];
 	var rebindingKey:Bool = false;
 	var nextAccept:Int = 5;
-	var SelectSubstate = MobileControlSelectSubState;
+	#if TOUCH_CONTROLS var SelectSubstate = MobileControlSelectSubState; #end
 
 	public function new() {
 		super();
@@ -100,7 +100,7 @@ class ControlsSubState extends MusicBeatSubstate {
 		}
 		changeSelection();
 
-		addVirtualPad("FULL", "A_B");
+		#if TOUCH_CONTROLS addVirtualPad("FULL", "A_B"); #end
 	}
 
 	var leaving:Bool = false;
@@ -119,24 +119,26 @@ class ControlsSubState extends MusicBeatSubstate {
 
 			if (controls.BACK) {
 				ClientPrefs.reloadControls();
+				#if TOUCH_CONTROLS
 				if (MobileControlSelectSubState.inControlsSubstate)
 				{
-				    SelectSubstate.leftArrow.visible = SelectSubstate.rightArrow.visible = SelectSubstate.grpControls.visible = SelectSubstate.exit.visible = SelectSubstate.reset.visible = SelectSubstate.keyboard.visible = SelectSubstate.tipText.visible = true;
-				    
-				    if (SelectSubstate.daChoice == "Pad-Custom")
-                    {
-                        SelectSubstate.upPozition.visible = true;
-                        SelectSubstate.downPozition.visible = true;
-                        SelectSubstate.leftPozition.visible = true;
-                        SelectSubstate.rightPozition.visible = true;
-                        SelectSubstate.extra4Pozition.visible = true;
-                        SelectSubstate.extra3Pozition.visible = true;
-                        SelectSubstate.extra2Pozition.visible = true;
-                        SelectSubstate.extra1Pozition.visible = true;
-                    }
-                    SelectSubstate.titleText.text = 'Mobile Controls';
-				    MobileControlSelectSubState.inControlsSubstate = false; // Not Needed But IDK
+					SelectSubstate.leftArrow.visible = SelectSubstate.rightArrow.visible = SelectSubstate.grpControls.visible = SelectSubstate.exit.visible = SelectSubstate.reset.visible = SelectSubstate.keyboard.visible = SelectSubstate.tipText.visible = true;
+
+					if (SelectSubstate.daChoice == "Pad-Custom")
+					{
+						SelectSubstate.upPozition.visible = true;
+						SelectSubstate.downPozition.visible = true;
+						SelectSubstate.leftPozition.visible = true;
+						SelectSubstate.rightPozition.visible = true;
+						SelectSubstate.extra4Pozition.visible = true;
+						SelectSubstate.extra3Pozition.visible = true;
+						SelectSubstate.extra2Pozition.visible = true;
+						SelectSubstate.extra1Pozition.visible = true;
+					}
+					SelectSubstate.titleText.text = 'Mobile Controls';
+					MobileControlSelectSubState.inControlsSubstate = false; // Not Needed But IDK
 				}
+				#end
 				close();
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 			}

@@ -294,8 +294,10 @@ class MainMenuStateNOVA extends HScriptStateHandler
 		FlxG.mouse.visible = false;
 		#end
 
+		#if TOUCH_CONTROLS
 		addVirtualPad("UP_DOWN", "A_B_E");
 		_virtualpad.cameras = [camHUD];
+		#end
 		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
@@ -371,11 +373,11 @@ class MainMenuStateNOVA extends HScriptStateHandler
 			{
 				if (!FlxG.mouse.overlaps(spr)) {
 					if (FlxG.mouse.pressed
-					#if mobile && !FlxG.mouse.overlaps(_virtualpad.buttonA) #end){
+					#if TOUCH_CONTROLS && !FlxG.mouse.overlaps(_virtualpad.buttonA) #end){
 						spr.animation.play('idle');
 					}
 					if (FlxG.mouse.justReleased
-					#if mobile && !FlxG.mouse.overlaps(_virtualpad.buttonA) #end){
+					#if TOUCH_CONTROLS && !FlxG.mouse.overlaps(_virtualpad.buttonA) #end){
 						spr.animation.play('idle');
 					} //work better for use virtual pad
 				}
@@ -411,7 +413,7 @@ class MainMenuStateNOVA extends HScriptStateHandler
 				MusicBeatState.switchState(new TitleState());
 			}
 
-			else if (FlxG.keys.anyJustPressed(debugKeys) || _virtualpad.buttonE.justPressed)
+			else if (FlxG.keys.anyJustPressed(debugKeys) #if TOUCH_CONTROLS || _virtualpad.buttonE.justPressed #end)
 			{
 				endCheck = true;
 				MusicBeatState.switchState(new MasterEditorMenu());

@@ -177,7 +177,7 @@ class MusicPlayer extends FlxGroup
 			}
 		}
 
-		if (instance._virtualpad.buttonC.justPressed || controls.RESET)
+		if (#if TOUCH_CONTROLS instance._virtualpad.buttonC.justPressed || #end controls.RESET)
 		{
 			playbackRate = 1;
 			setPlaybackRate();
@@ -256,9 +256,11 @@ class MusicPlayer extends FlxGroup
 
 		if (playingMusic)
 		{
+			#if TOUCH_CONTROLS
 			if (ClientPrefs.data.VirtualPadAlpha != 0)
 				instance.bottomText.text = "Press X to Pause / Press B to Exit / Press C to Reset the Song";
 			else
+			#end
 				instance.bottomText.text = "Press SPACE to Pause / Press ESCAPE to Exit / Press R to Reset the Song";
 			positionSong();
 			

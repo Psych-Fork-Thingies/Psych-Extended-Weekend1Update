@@ -84,7 +84,7 @@ class MasterEditorMenu extends HScriptStateHandler
 
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 
-		addVirtualPad("FULL", "A_B");
+		#if TOUCH_CONTROLS addVirtualPad("FULL", "A_B"); #end
 		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 

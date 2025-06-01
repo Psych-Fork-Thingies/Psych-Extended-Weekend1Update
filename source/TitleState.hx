@@ -149,7 +149,9 @@ class TitleState extends HScriptStateHandler
 		#end
 
 		Highscore.load();
+		#if TOUCH_CONTROLS
 		MobileData.init();
+		#end
 
 		// IGNORE THIS!!!
 		titleJSON = Json.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));

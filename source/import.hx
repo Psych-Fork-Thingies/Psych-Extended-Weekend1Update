@@ -62,6 +62,7 @@ import Discord;
 #end
 
 // Mobile Things
+#if TOUCH_CONTROLS
 import mobile.flixel.*;
 import mobile.states.*;
 import mobile.objects.*;
@@ -74,6 +75,11 @@ import mobile.flixel.FlxHitbox;
 import mobile.flixel.FlxVirtualPad;
 import mobile.flixel.FlxNewHitbox;
 import mobile.backend.MobileData;
+#else
+import mobile.backend.StorageUtil;
+import mobile.backend.PsychJNI;
+import mobile.options.*;
+#end
 
 // Android
 #if android

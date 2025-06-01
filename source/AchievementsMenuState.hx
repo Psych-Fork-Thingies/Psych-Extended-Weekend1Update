@@ -134,7 +134,7 @@ class AchievementsMenuState extends MusicBeatState
 		
 		_changeSelection();
 		
-		addVirtualPad("FULL", "A_B_C");
+		#if TOUCH_CONTROLS addVirtualPad("FULL", "A_B_C"); #end
 		super.create();
 		
 		FlxG.camera.follow(camFollow, null, 0.15);
@@ -212,7 +212,7 @@ class AchievementsMenuState extends MusicBeatState
 				}
 			}
 			
-			if(controls.RESET && (options[curSelected].unlocked || options[curSelected].curProgress > 0) || _virtualpad.buttonC.pressed && (options[curSelected].unlocked || options[curSelected].curProgress > 0))
+			if(controls.RESET && (options[curSelected].unlocked || options[curSelected].curProgress > 0) #if TOUCH_CONTROLS || _virtualpad.buttonC.pressed && (options[curSelected].unlocked || options[curSelected].curProgress > 0) #end)
 			{
 			    persistentUpdate = false;
 				openSubState(new ResetAchievementSubstate());
@@ -270,8 +270,10 @@ class AchievementsMenuState extends MusicBeatState
 	
 	override function closeSubState() {
 		persistentUpdate = true;
+		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("FULL", "A_B_C");
+		#end
 		super.closeSubState();
 	}
 }
@@ -339,14 +341,14 @@ class ResetAchievementSubstate extends MusicBeatSubstate
 		if(controls.ACCEPT)
 			onYesFunction();
 
-		if(FlxG.mouse.overlaps(yesText) && ClientPrefs.data.mobileC) {
+		if(FlxG.mouse.overlaps(yesText)) {
 			if (!onYes) FlxG.sound.play(Paths.sound('scrollMenu'));
 			onYes = true;
 			updateOptions();
 			if (FlxG.mouse.justPressed) onYesFunction();
 		}
 
-		if(FlxG.mouse.overlaps(noText) && ClientPrefs.data.mobileC)
+		if(FlxG.mouse.overlaps(noText))
 		{
 			if (onYes) FlxG.sound.play(Paths.sound('scrollMenu'));
 			onYes = false;

@@ -29,7 +29,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 	function getOptions()
 	{
-	    var skip:Bool = inThePauseMenu;
+		var skip:Bool = inThePauseMenu;
 		var goption:GameplayOption = new GameplayOption('Scroll Type', 'scrolltype', 'string', 'multiplicative', ["multiplicative", "constant"]);
 		optionsArray.push(goption);
 
@@ -156,9 +156,11 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		changeSelection();
 		reloadCheckboxes();
 
-        addVirtualPad("FULL", "A_B_C");
-    	addVirtualPadCamera();
-		
+		#if TOUCH_CONTROLS
+		addVirtualPad("FULL", "A_B_C");
+		addVirtualPadCamera();
+		#end
+
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
@@ -299,7 +301,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 				}
 			}
 
-			if(controls.RESET || _virtualpad.buttonC.justPressed)
+			if(controls.RESET #if TOUCH_CONTROLS || _virtualpad.buttonC.justPressed #end)
 			{
 				for (i in 0...optionsArray.length)
 				{

@@ -152,11 +152,13 @@ class PauseSubState extends HScriptSubStateHandler
 		regenMenu();
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
+		#if TOUCH_CONTROLS
 		if (PlayState.chartingMode)
 			addVirtualPad("FULL", "A");
 		else
 			addVirtualPad("FULL", "A");
 		addVirtualPadCamera();
+		#end
 
 		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
@@ -335,7 +337,7 @@ class PauseSubState extends HScriptSubStateHandler
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				case "Change Gameplay Settings":
 					persistentUpdate = false;
-					removeVirtualPad();
+					#if TOUCH_CONTROLS removeVirtualPad(); #end
 					GameplayChangersSubstate.inThePauseMenu = true;
 					openSubState(new GameplayChangersSubstate());
 				case "Exit to menu":
@@ -384,9 +386,11 @@ class PauseSubState extends HScriptSubStateHandler
 	override function closeSubState() {
 		persistentUpdate = true;
 		super.closeSubState();
+		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("FULL", "A");
 		addVirtualPadCamera();
+		#end
 	}
 
 	public static function restartSong(noTrans:Bool = false)

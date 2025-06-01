@@ -193,7 +193,7 @@ class StoryMenuState extends HScriptStateHandler
 		changeWeek();
 		changeDifficulty();
 
-		addVirtualPad("NONE", "B_X_Y");
+		#if TOUCH_CONTROLS addVirtualPad("NONE", "B_X_Y"); #end
 
 		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
@@ -202,8 +202,10 @@ class StoryMenuState extends HScriptStateHandler
 		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubState'); #end
 		persistentUpdate = true;
 		changeWeek();
+		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("NONE", "B_X_Y");
+		#end
 		super.closeSubState();
 		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
 	}
@@ -263,15 +265,15 @@ class StoryMenuState extends HScriptStateHandler
 			else if (upP || downP || Swipe.Up || Swipe.Down)
 				changeDifficulty();
 
-				if(FlxG.keys.justPressed.CONTROL || _virtualpad.buttonX.justPressed)
+				if(FlxG.keys.justPressed.CONTROL #if TOUCH_CONTROLS || _virtualpad.buttonX.justPressed #end)
 				{
-					removeVirtualPad();
+					#if TOUCH_CONTROLS removeVirtualPad(); #end
 					persistentUpdate = false;
 					openSubState(new GameplayChangersSubstate());
 				}
-				else if(controls.RESET || _virtualpad.buttonY.justPressed)
+				else if(controls.RESET #if TOUCH_CONTROLS || _virtualpad.buttonY.justPressed #end)
 				{
-					removeVirtualPad();
+					#if TOUCH_CONTROLS removeVirtualPad(); #end
 					persistentUpdate = false;
 					openSubState(new ResetScoreSubState('', curDifficulty, '', curWeek));
 					//FlxG.sound.play(Paths.sound('scrollMenu'));

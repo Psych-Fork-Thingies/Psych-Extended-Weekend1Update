@@ -339,9 +339,10 @@ class Controls extends FlxActionSet
 		setKeyboardScheme(scheme, false);
 	}
 
+	#if TOUCH_CONTROLS
 	public var trackedInputsUI:Array<FlxActionInput> = [];
 	public var trackedInputsNOTES:Array<FlxActionInput> = [];
-	
+
 	public function addButtonNOTES(action:FlxActionDigital, button:Dynamic, state:FlxInputState):Void
 	{
 		var input:FlxActionInputDigitalIFlxInput = new FlxActionInputDigitalIFlxInput(button, state);
@@ -373,8 +374,7 @@ class Controls extends FlxActionSet
 		inline forEachBound(Control.NOTE_LEFT, (action, state) -> addHitboxNOTES(action, hitbox.buttonLeft, state));
 		inline forEachBound(Control.NOTE_RIGHT, (action, state) -> addHitboxNOTES(action, hitbox.buttonRight, state));	
 	}
-	
-	
+
 	public function setNewHitBox(Hitbox:FlxNewHitbox)
 	{
 		inline forEachBound(Control.NOTE_UP, (action, state) -> addHitboxNOTES(action, Hitbox.buttonUp, state));
@@ -503,7 +503,8 @@ class Controls extends FlxActionSet
 			}
 		}
 	}
-	
+	#end
+
 	override function update()
 	{
 		super.update();
@@ -685,7 +686,7 @@ class Controls extends FlxActionSet
 	 * Sets all actions that pertain to the binder to trigger when the supplied keys are used.
 	 * If binder is a literal you can inline this
 	 */
-        #if !mobile
+	#if !mobile
 	public function bindKeys(control:Control, keys:Array<FlxKey>)
 	{
 		var copyKeys:Array<FlxKey> = keys.copy();
@@ -714,7 +715,7 @@ class Controls extends FlxActionSet
 	public function unbindKeys(control:Control, keys:Array<FlxKey>)
 	{
 		inline forEachBound(control, (action, _) -> removeKeys(action, keys));
-	}	
+	}
 	#end
 
 	inline static function addKeys(action:FlxActionDigital, keys:Array<FlxKey>, state:FlxInputState)

@@ -100,11 +100,13 @@ class ReflectionFunctions
 			var myClass:Dynamic = classCheck(classVar);
 			var variableplus:String = varCheck(myClass, variable);
 			var killMe:Array<String> = variable.split('.');
+			#if TOUCH_CONTROLS
 			if (MusicBeatState.mobilec != null && myClass == 'flixel.FlxG' && variableplus.indexOf('key') != -1){
 				var check:Dynamic;
 				check = specialKeyCheck(variableplus); //fuck you old lua 🙃
 				if (check != null) return check;
 			}
+			#end
 
 			if(killMe.length > 1) {
 				var coverMeInPiss:Dynamic = LuaUtils.getVarInArray(Type.resolveClass(classVar), killMe[0]);
@@ -225,6 +227,7 @@ class ReflectionFunctions
 		return Type.resolveClass(className);
 	}
 
+	#if TOUCH_CONTROLS
 	public static function specialKeyCheck(keyName:String):Dynamic
 	{
 		var textfix:Array<String> = keyName.trim().split('.');
@@ -244,4 +247,5 @@ class ReflectionFunctions
 		}
 		return null;
 	}
+	#end
 }

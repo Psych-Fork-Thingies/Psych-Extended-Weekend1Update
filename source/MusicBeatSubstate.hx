@@ -31,11 +31,12 @@ class MusicBeatSubstate extends FlxSubState
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
+	#if TOUCH_CONTROLS
 	public var _virtualpad:FlxVirtualPad;
 	public static var mobilec:MobileControls;
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
-	
+
 	public function addVirtualPad(?DPad:String, ?Action:String) {
 		_virtualpad = new FlxVirtualPad(DPad, Action);
 		add(_virtualpad);
@@ -44,7 +45,7 @@ class MusicBeatSubstate extends FlxSubState
 		controls.trackedInputsUI = [];
 		_virtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
 	}
-	
+
 	public function addMobileControls() {
 		mobilec = new MobileControls();
 
@@ -88,15 +89,7 @@ class MusicBeatSubstate extends FlxSubState
 		FlxG.cameras.add(camcontrol, false);
 		_virtualpad.cameras = [camcontrol];
 	}
-	
-	public function initPsychCamera():PsychCamera
-	{
-		var camera = new PsychCamera();
-		FlxG.cameras.reset(camera);
-		FlxG.cameras.setDefaultDrawTarget(camera, true);
-		return camera;
-	}
-	
+
 	override function destroy() {
 		if (trackedinputsNOTES.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsNOTES);
@@ -111,6 +104,15 @@ class MusicBeatSubstate extends FlxSubState
 			
 		if (mobilec != null)
 			mobilec = FlxDestroyUtil.destroy(mobilec);
+	}
+	#end
+
+	public function initPsychCamera():PsychCamera
+	{
+		var camera = new PsychCamera();
+		FlxG.cameras.reset(camera);
+		FlxG.cameras.setDefaultDrawTarget(camera, true);
+		return camera;
 	}
 
 	override function update(elapsed:Float)

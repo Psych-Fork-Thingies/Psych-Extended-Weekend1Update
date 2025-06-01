@@ -36,13 +36,14 @@ class MusicBeatState extends FlxUIState
 	}
 
 	public var controls(get, never):Controls;
-	public static var checkHitbox:Bool = false;
 
 	public static var camBeat:FlxCamera;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
+	#if TOUCH_CONTROLS
+	public static var checkHitbox:Bool = false;
 	public var _virtualpad:FlxVirtualPad;
 	public static var mobilec:MobileControls;
 
@@ -129,6 +130,7 @@ class MusicBeatState extends FlxUIState
 		if (mobilec != null)
 			mobilec = FlxDestroyUtil.destroy(mobilec);
 	}
+	#end
 
 	override function create() {
 		camBeat = FlxG.camera;

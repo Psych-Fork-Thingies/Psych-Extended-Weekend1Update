@@ -166,10 +166,12 @@ class NotesColorSubState extends MusicBeatSubstate
 
 		FlxG.mouse.visible = true;
 
+		#if TOUCH_CONTROLS
 		addVirtualPad('NONE', 'B_C');
 		_virtualpad.buttonB.x = FlxG.width - 132;
 		_virtualpad.buttonC.x = 0;
 		_virtualpad.buttonC.y = FlxG.height - 135;
+		#end
 	}
 
 	function updateTip()
@@ -189,7 +191,7 @@ class NotesColorSubState extends MusicBeatSubstate
 		if (controls.BACK) {
 			FlxG.mouse.visible = false;
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			removeVirtualPad();
+			#if TOUCH_CONTROLS removeVirtualPad(); #end
 			close();
 			return;
 		}
@@ -400,7 +402,7 @@ class NotesColorSubState extends MusicBeatSubstate
 				}
 			} 
 		}
-		else if(_virtualpad.buttonC.justPressed || controls.RESET && hexTypeNum < 0)
+		else if(#if TOUCH_CONTROLS _virtualpad.buttonC.justPressed || #end controls.RESET && hexTypeNum < 0)
 		{
 			if(FlxG.keys.pressed.SHIFT || FlxG.gamepads.anyJustPressed(LEFT_SHOULDER))
 			{

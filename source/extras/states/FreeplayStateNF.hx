@@ -128,6 +128,9 @@ class FreeplayStateNF extends HScriptStateHandler {
 	{
 		super.create();
 
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
+
 		#if SCRIPTING_ALLOWED
 		var className = Type.getClassName(Type.getClass(this));
 		var classString:String = '${className}' + '.hx';
@@ -1260,6 +1263,10 @@ class FreeplayStateNF extends HScriptStateHandler {
 				}
 				destroyFreeplayVocals();
 				FlxG.sound.music.stop();
+				if (ClientPrefs.data.loadingScreen && ClientPrefs.data.TransitionStyle == 'NovaFlare') {
+					FlxTransitionableState.skipNextTransIn = true;
+					FlxTransitionableState.skipNextTransOut = true;
+				}
 				LoadingState.prepareToSong();
 				LoadingState.loadAndSwitchState(new PlayState());
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end

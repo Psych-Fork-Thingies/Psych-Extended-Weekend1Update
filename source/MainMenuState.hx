@@ -147,8 +147,10 @@ class MainMenuState extends HScriptStateHandler
     		#end
     	#end
 
+		#if TOUCH_CONTROLS
 		addVirtualPad("NONE", "E");
 		_virtualpad.alpha = 1;
+		#end
 
 		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 
@@ -362,7 +364,7 @@ class MainMenuState extends HScriptStateHandler
 				}
 				else CoolUtil.browserLoad('https://ninja-muffin24.itch.io/funkin');
 			}
-			else if (FlxG.keys.anyJustPressed(debugKeys) || _virtualpad.buttonE.justPressed)
+			else if (FlxG.keys.anyJustPressed(debugKeys) #if TOUCH_CONTROLS || _virtualpad.buttonE.justPressed #end)
 			{
 				selectedSomethin = true;
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end

@@ -16,7 +16,11 @@ import Controls;
 
 class OptionsState extends MusicBeatState
 {
+	#if TOUCH_CONTROLS
 	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
+	#else
+	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'];
+	#end
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var stateType:Int = 0;
@@ -25,23 +29,27 @@ class OptionsState extends MusicBeatState
 
 	function openSelectedSubstate(label:String) {
 		persistentUpdate = false;
-		if (label != "Adjust Delay and Combo") removeVirtualPad();
+		#if TOUCH_CONTROLS if (label != "Adjust Delay and Combo") removeVirtualPad(); #end
 		switch(label) {
 			case 'Note Colors':
 				if (ClientPrefs.data.useRGB) openSubState(new options.NotesColorSubState());
 				else openSubState(new options.NotesSubState());
 			case 'Controls':
 				openSubState(new options.ControlsSubState());
+			#if TOUCH_CONTROLS 
 			case 'Mobile Controls':
 				openSubState(new MobileControlSelectSubState());
+			#end
 			case 'Graphics':
 				openSubState(new options.GraphicsSettingsSubState());
 			case 'Visuals and UI':
 				openSubState(new options.VisualsUISubState());
 			case 'Gameplay':
 				openSubState(new options.GameplaySettingsSubState());
+			#if TOUCH_CONTROLS
 			case 'Mobile Options':
 				openSubState(new MobileOptionsSubState());
+			#end
 			case 'Adjust Delay and Combo':
 				CustomSwitchState.switchMenus('NoteOffset');
 		}
@@ -62,9 +70,11 @@ class OptionsState extends MusicBeatState
 		#if desktop
 		DiscordClient.changePresence("Options Menu", null);
 		#end
-		
-		if (ClientPrefs.data.VirtualPadAlpha != 0) 
+
+		#if TOUCH_CONTROLS
+		if (ClientPrefs.data.VirtualPadAlpha != 0)
 			options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
+		#end
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFFea71fd;
@@ -102,7 +112,7 @@ class OptionsState extends MusicBeatState
 		changeSelection();
 		ClientPrefs.saveSettings();
 
-		addVirtualPad("UP_DOWN", "A_B_E");
+		#if TOUCH_CONTROLS addVirtualPad("UP_DOWN", "A_B_E"); #end
 
 		super.create();
 	}
@@ -110,12 +120,14 @@ class OptionsState extends MusicBeatState
 	override function closeSubState() {
 		super.closeSubState();
 		ClientPrefs.saveSettings();
+		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("UP_DOWN", "A_B_E");
 		if (ClientPrefs.data.VirtualPadAlpha != 0) //pls work
 			options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 		else
 			options = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
+		#end
 		persistentUpdate = true;
 	}
 
@@ -144,12 +156,14 @@ class OptionsState extends MusicBeatState
 			onPlayState = false;
 			stateType = 0;
 		}
-		
+
+		#if TOUCH_CONTROLS 
 		if (_virtualpad.buttonE.justPressed) {
 			persistentUpdate = false;
 			removeVirtualPad();
 			openSubState(new MobileExtraControl());
 		}
+		#end
 
 		if (controls.ACCEPT)
 			openSelectedSubstate(options[curSelected]);
