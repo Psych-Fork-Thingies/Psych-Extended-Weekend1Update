@@ -13,7 +13,7 @@ import openfl.utils.Assets;
 	别骂了 -- TieGuo
 */
 
-class PauseSubStateNOVA extends HScriptSubStateHandler
+class PauseSubStateNOVA extends MusicBeatSubstate
 {
 	var filePath:String = 'menuExtend/PauseState/';
 	var font:String = Assets.getFont("assets/fonts/montserrat.ttf").fontName;
@@ -106,14 +106,6 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 		super.create();
 
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		var classString:String = '${className}' + '.hx';
-		if (classString.startsWith('extras.substates.')) classString = classString.replace('extras.substates.', '');
-		startHScriptsNamed(classString);
-		startHScriptsNamed('global.hx');
-		#end
 
 		pauseMusic = new FlxSound();
 		try
@@ -368,13 +360,9 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 		#end
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	override function update(elapsed:Float) {
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
-
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
 		super.update(elapsed);
@@ -486,8 +474,6 @@ class PauseSubStateNOVA extends HScriptSubStateHandler
 
 		if (accept)
 			doEvent();
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function changeOptions(num:Int) {

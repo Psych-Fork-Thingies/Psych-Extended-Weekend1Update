@@ -12,7 +12,9 @@ import shaders.flixel.system.FlxShader;
 import haxe.ds.StringMap;
 
 //scripting
+#if SCRIPTING_ALLOWED
 import scripting.*;
+#end
 
 // Extra
 #if (hxCodec >= "3.0.0" && VIDEOS_ALLOWED && !ios) import backend.VideoManager; #end //For Better MP4Handler Support
@@ -70,10 +72,8 @@ import mobile.options.*;
 import mobile.backend.*;
 import mobile.psychlua.*;
 import mobile.substates.*;
-import mobile.backend.Data;
-import mobile.flixel.FlxHitbox;
-import mobile.flixel.FlxVirtualPad;
-import mobile.flixel.FlxNewHitbox;
+import mobile.objects.Hitbox;
+import mobile.objects.MobilePad;
 import mobile.backend.MobileData;
 #else
 import mobile.backend.StorageUtil;
@@ -119,6 +119,18 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 import openfl.display3D.textures.RectangleTexture;
+
+
+//CNE Shit
+import flixel.FlxSprite;
+import flixel.FlxG;
+import flixel.FlxBasic;
+import flixel.FlxCamera;
+import flixel.FlxObject;
+import flixel.math.FlxMath;
+import flixel.tweens.FlxEase;
+import flixel.util.FlxDestroyUtil;
+import hxcodec.flixel.FlxVideo;
 #end
 
 using StringTools;

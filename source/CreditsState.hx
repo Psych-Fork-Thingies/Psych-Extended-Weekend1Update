@@ -12,7 +12,7 @@ import sys.io.File;
 import lime.utils.Assets;
 
 
-class CreditsState extends HScriptStateHandler
+class CreditsState extends MusicBeatState
 {
 	var curSelected:Int = -1;
 
@@ -77,21 +77,17 @@ class CreditsState extends HScriptStateHandler
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		startHScriptsNamed('${className}' + '.hx');
-		startHScriptsNamed('global.hx');
-		#end
-
 		#if MODS_ALLOWED
 		for (mod in Mods.parseList().enabled) pushModCreditsToList(mod);
 		#end
 
-		#if SCRIPTING_ALLOWED callOnScripts('onModCreditsPushed'); #end
+		call('modCreditsPushed');
 
 		for(i in defaultList){
 			creditsStuff.push(i);
 		}
+
+		call('creditsPushed');
 
 		for (i in 0...creditsStuff.length)
 		{
@@ -145,19 +141,18 @@ class CreditsState extends HScriptStateHandler
 		changeSelection();
 
 		#if TOUCH_CONTROLS addVirtualPad("UP_DOWN", "A_B"); #end
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	var quitting:Bool = false;
 	var holdTime:Float = 0;
 	override function update(elapsed:Float)
 	{
+		super.update(elapsed);
+
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate'); #end
 
 		if(!quitting)
 		{
@@ -224,9 +219,6 @@ class CreditsState extends HScriptStateHandler
 				}
 			}
 		}
-		super.update(elapsed);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost'); #end
 	}
 
 	var moveTween:FlxTween = null;

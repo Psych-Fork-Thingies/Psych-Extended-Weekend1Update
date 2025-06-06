@@ -5,16 +5,15 @@ import flixel.FlxSubState;
 import flixel.FlxBasic;
 import flixel.input.actions.FlxActionInput;
 import backend.PsychCamera;
+#if SCRIPTING_ALLOWED
+import scripting.HScript;
+#end
+import funkin.backend.scripting.events.CancellableEvent;
 
 import flixel.input.actions.FlxActionInput;
 
 class MusicBeatSubstate extends FlxSubState
 {
-	public function new()
-	{
-		super();
-	}
-	
 	private var curSection:Int = 0;
 	private var stepsToDo:Int = 0;
 
@@ -32,18 +31,22 @@ class MusicBeatSubstate extends FlxSubState
 		return PlayerSettings.player1.controls;
 
 	#if TOUCH_CONTROLS
-	public var _virtualpad:FlxVirtualPad;
+	public var _virtualpad:MobilePad; //this will be changed later
 	public static var mobilec:MobileControls;
 	var trackedinputsUI:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];
 
-	public function addVirtualPad(?DPad:String, ?Action:String) {
-		_virtualpad = new FlxVirtualPad(DPad, Action);
+	public function addMobilePad(?DPad:String, ?Action:String) {
+		_virtualpad = new MobilePad(DPad, Action);
 		add(_virtualpad);
-		controls.setVirtualPadUI(_virtualpad, DPad, Action);
+		controls.setMobilePadUI(_virtualpad, DPad, Action);
 		trackedinputsUI = controls.trackedInputsUI;
 		controls.trackedInputsUI = [];
-		_virtualpad.alpha = ClientPrefs.data.VirtualPadAlpha;
+		_virtualpad.alpha = ClientPrefs.data.mobilePadAlpha;
+	}
+
+	public function addVirtualPad(?DPad:String, ?Action:String) {
+		return addMobilePad(DPad, Action);
 	}
 
 	public function addMobileControls() {
@@ -51,15 +54,14 @@ class MusicBeatSubstate extends FlxSubState
 
 		switch (MobileControls.mode)
 		{
-			case VIRTUALPAD_RIGHT | VIRTUALPAD_LEFT | VIRTUALPAD_CUSTOM:
-				controls.setVirtualPadNOTES(mobilec.vpad, "FULL", "NONE");
+			case MOBILEPAD_RIGHT | MOBILEPAD_LEFT | MOBILEPAD_CUSTOM:
+				controls.setMobilePadNOTES(mobilec.vpad, "FULL", "NONE");
 				MusicBeatState.checkHitbox = false;
 			case DUO:
-				controls.setVirtualPadNOTES(mobilec.vpad, "DUO", "NONE");
+				controls.setMobilePadNOTES(mobilec.vpad, "DUO", "NONE");
 				MusicBeatState.checkHitbox = false;
 			case HITBOX:
-				if(ClientPrefs.data.hitboxmode == 'Classic') controls.setHitBox(mobilec.hbox);
-				else controls.setNewHitBox(mobilec.newhbox);
+				controls.setHitBox(mobilec.newhbox, mobilec.hbox);
 				MusicBeatState.checkHitbox = true;
 			default:
 		}
@@ -75,7 +77,7 @@ class MusicBeatSubstate extends FlxSubState
 		add(mobilec);
 	}
 
-	public function removeVirtualPad() {
+	public function removeMobilePad() {
 		if (trackedinputsUI.length > 0)
 			controls.removeVirtualControlsInput(trackedinputsUI);
 
@@ -83,12 +85,18 @@ class MusicBeatSubstate extends FlxSubState
 			remove(_virtualpad);
 	}
 
-	public function addVirtualPadCamera() {
+	public function addMobilePadCamera() {
 		var camcontrol = new flixel.FlxCamera();
 		camcontrol.bgColor.alpha = 0;
 		FlxG.cameras.add(camcontrol, false);
 		_virtualpad.cameras = [camcontrol];
 	}
+
+	public function removeVirtualPad()
+		return removeMobilePad();
+
+	public function addVirtualPadCamera()
+		return addMobilePadCamera();
 
 	override function destroy() {
 		if (trackedinputsNOTES.length > 0)
@@ -137,6 +145,7 @@ class MusicBeatSubstate extends FlxSubState
 			}
 		}
 
+		call("update", [elapsed]);
 		super.update(elapsed);
 	}
 	
@@ -212,5 +221,101 @@ class MusicBeatSubstate extends FlxSubState
 		var val:Null<Float> = 4;
 		if(PlayState.SONG != null && PlayState.SONG.notes[curSection] != null) val = PlayState.SONG.notes[curSection].sectionBeats;
 		return val == null ? 4 : val;
+	}
+
+	/**
+	 * SCRIPTING STUFF
+	 */
+	#if SCRIPTING_ALLOWED
+
+	/**
+	 * Current injected script attached to the state. To add one, create a file at path "data/states/stateName" (ex: "data/states/PauseMenuSubstate.hx")
+	 */
+	public var stateScripts:ScriptPack;
+
+	public var scriptsAllowed:Bool = true;
+
+	public var scriptName:String = null;
+
+	public function new(scriptsAllowed:Bool = true, ?scriptName:String) {
+		super();
+		this.scriptName = scriptName;
+	}
+
+	function loadScript(?customPath:String) {
+		var className = Type.getClassName(Type.getClass(this));
+		if (stateScripts == null)
+			(stateScripts = new ScriptPack(className)).setParent(this);
+		if (scriptsAllowed) {
+			if (stateScripts.scripts.length == 0) {
+				var scriptName = this.scriptName != null ? this.scriptName : className.substr(className.lastIndexOf(".")+1);
+				var filePath:String = "substates/" + scriptName;
+				if (customPath != null)
+					filePath = customPath;
+				var path = Paths.script(filePath);
+				var script = Script.create(path);
+				script.remappedNames.set(script.fileName, '${script.fileName}');
+				stateScripts.add(script);
+				script.load();
+				call('create');
+			}
+			else stateScripts.reload();
+		}
+	}
+
+	override function create()
+	{
+		loadScript();
+		super.create();
+	}
+	#end
+
+	public override function tryUpdate(elapsed:Float):Void
+	{
+		if (persistentUpdate || subState == null) {
+			call("preUpdate", [elapsed]);
+			update(elapsed);
+			call("postUpdate", [elapsed]);
+		}
+
+		if (_requestSubStateReset)
+		{
+			_requestSubStateReset = false;
+			resetSubState();
+		}
+		if (subState != null)
+		{
+			subState.tryUpdate(elapsed);
+		}
+	}
+
+	override function close() {
+		var event = event("onClose", new CancellableEvent());
+		if (!event.cancelled) {
+			super.close();
+			call("onClosePost");
+		}
+	}
+
+	public override function createPost() {
+		super.createPost();
+		call("postCreate");
+	}
+
+	public function call(name:String, ?args:Array<Dynamic>, ?defaultVal:Dynamic):Dynamic {
+		// calls the function on the assigned script
+		#if SCRIPTING_ALLOWED
+		if(stateScripts != null)
+			return stateScripts.call(name, args);
+		#end
+		return defaultVal;
+	}
+
+	public function event<T:CancellableEvent>(name:String, event:T):T {
+		#if SCRIPTING_ALLOWED
+		if(stateScripts != null)
+			stateScripts.call(name, [event]);
+		#end
+		return event;
 	}
 }

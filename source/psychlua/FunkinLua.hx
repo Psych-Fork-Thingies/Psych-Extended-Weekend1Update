@@ -28,19 +28,12 @@ import DialogueBoxPsych;
 import psychlua.LuaUtils;
 import psychlua.LuaUtils.LuaTweenOptions;
 
-import scripting.state.HScript as HScriptState;
-import scripting.substate.HScript as HScriptSubstate;
-
 import psychlua.HScript;
 import psychlua.DebugLuaText;
 import psychlua.ModchartSprite;
 import psychlua.ModchartText;
 
-#if desktop
-#end
-
 import haxe.Json;
-
 
 class FunkinLua {
 	public static var Function_Stop:Dynamic = "##PSYCHLUA_FUNCTIONSTOP";

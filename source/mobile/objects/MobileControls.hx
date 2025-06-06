@@ -26,7 +26,7 @@ class Config {
 		return save.data.buttonsmode[0];
 	}
 
-	public function savecustom(_pad:FlxVirtualPad) {
+	public function savecustom(_pad:MobilePad) {
 		if (save.data.buttons == null)
 		{
 			save.data.buttons = new Array();
@@ -59,7 +59,7 @@ class Config {
 		save.flush();
 	}
 
-	public function loadcustom(_pad:FlxVirtualPad):FlxVirtualPad {
+	public function loadcustom(_pad:MobilePad):MobilePad {
 		if (save.data.buttons == null) 
 			return _pad; 
 		var tempCount:Int = 0;
@@ -95,9 +95,9 @@ class Config {
 class MobileControls extends FlxSpriteGroup {
 	public static var mode:ControlsGroup = HITBOX;
 
-	public var hbox:FlxHitbox;
-	public var newhbox:FlxNewHitbox;
-	public var vpad:FlxVirtualPad;
+	public var hbox:HitboxOld;
+	public var newhbox:Hitbox;
+	public var vpad:MobilePad;
 	public var current:CurrentManager;
 
 	var config:Config;
@@ -112,11 +112,11 @@ class MobileControls extends FlxSpriteGroup {
 		mode = getModeFromNumber(config.getcontrolmode());
 
 		switch (mode){
-			case VIRTUALPAD_RIGHT:
+			case MOBILEPAD_RIGHT:
 				initControler(0);
-			case VIRTUALPAD_LEFT:
+			case MOBILEPAD_LEFT:
 				initControler(1);
-			case VIRTUALPAD_CUSTOM:
+			case MOBILEPAD_CUSTOM:
 				initControler(2);
 			case DUO:
 				initControler(3);
@@ -132,31 +132,31 @@ class MobileControls extends FlxSpriteGroup {
 	function initControler(vpadMode:Int, ?CustomMode:String) {
 		switch (vpadMode){
 			case 0:
-				vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend");
+				vpad = new MobilePad("RIGHT_FULL", "controlExtend");
 				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 1:
-				vpad = new FlxVirtualPad("FULL", "controlExtend");
+				vpad = new MobilePad("FULL", "controlExtend");
 				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 2:
-				vpad = new FlxVirtualPad("FULL", "controlExtend");
+				vpad = new MobilePad("FULL", "controlExtend");
 				vpad = config.loadcustom(vpad);
 				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 3:
-				vpad = new FlxVirtualPad("DUO", "controlExtend");
+				vpad = new MobilePad("DUO", "controlExtend");
 				add(vpad);
 				vpad = extendConfig.loadcustom(vpad);
 			case 4:
-				hbox = new FlxHitbox(0.75, ClientPrefs.data.antialiasing);
+				hbox = new HitboxOld(0.75, ClientPrefs.data.antialiasing);
 				add(hbox);
 			case 5:
-				if (CustomMode != null) newhbox = new FlxNewHitbox(CustomMode);
-				else newhbox = new FlxNewHitbox();
+				if (CustomMode != null) newhbox = new Hitbox(CustomMode);
+				else newhbox = new Hitbox();
 				add(newhbox);
 			default:
-				newhbox = new FlxNewHitbox();
+				newhbox = new Hitbox();
 				add(newhbox);
 		}
 	}
@@ -164,11 +164,11 @@ class MobileControls extends FlxSpriteGroup {
 	public static function getModeFromNumber(modeNum:Int):ControlsGroup {
 		return switch (modeNum){
 			case 0: 
-				VIRTUALPAD_RIGHT;
+				MOBILEPAD_RIGHT;
 			case 1: 
-				VIRTUALPAD_LEFT;
+				MOBILEPAD_LEFT;
 			case 2: 
-				VIRTUALPAD_CUSTOM;
+				MOBILEPAD_CUSTOM;
 			case 3: 
 				DUO;
 			case 4:
@@ -182,23 +182,23 @@ class MobileControls extends FlxSpriteGroup {
 }
 
 enum ControlsGroup {
-	VIRTUALPAD_RIGHT;
-	VIRTUALPAD_LEFT;
-	VIRTUALPAD_CUSTOM;
+	MOBILEPAD_RIGHT;
+	MOBILEPAD_LEFT;
+	MOBILEPAD_CUSTOM;
 	DUO;
 	HITBOX;
 	KEYBOARD;
 }
 
 class CurrentManager {
-	public var buttonLeft:VirtualButton;
-	public var buttonDown:VirtualButton;
-	public var buttonUp:VirtualButton;
-	public var buttonRight:VirtualButton;
-	public var buttonExtra1:VirtualButton;
-	public var buttonExtra2:VirtualButton;
-	public var buttonExtra3:VirtualButton;
-	public var buttonExtra4:VirtualButton;
+	public var buttonLeft:MobileButton;
+	public var buttonDown:MobileButton;
+	public var buttonUp:MobileButton;
+	public var buttonRight:MobileButton;
+	public var buttonExtra1:MobileButton;
+	public var buttonExtra2:MobileButton;
+	public var buttonExtra3:MobileButton;
+	public var buttonExtra4:MobileButton;
 
 	public function new(control:MobileControls){
 		if(MobileControls.mode == HITBOX && ClientPrefs.data.hitboxmode != 'Classic') {

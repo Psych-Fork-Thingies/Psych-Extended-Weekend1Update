@@ -38,9 +38,9 @@ import TitleState;
 	#if VIDEOS_ALLOWED public var DisableIntroVideo:Bool = false; #end
 
 	#if TOUCH_CONTROLS
-	public var virtualpadTexture:String = "VirtualPad";
-	public var VirtualPadSkin:String = 'original';
-	public var VirtualPadAlpha:Float = #if mobile 0.6 #else 0 #end;
+	public var mobilePadTexture:String = "VirtualPad";
+	public var mobilePadSkin:String = 'original';
+	public var mobilePadAlpha:Float = #if mobile 0.6 #else 0 #end;
 	public var coloredvpad:Bool = true;
 	public var extraKeyReturn1:String = 'SHIFT';
 	public var extraKeyReturn2:String = 'SPACE';

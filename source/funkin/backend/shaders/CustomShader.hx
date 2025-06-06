@@ -2,7 +2,7 @@ package funkin.backend.shaders;
 
 import haxe.Exception;
 import openfl.Assets;
-import crowplexus.hscript.IHScriptCustomBehaviour;
+import hscriptBase.IHScriptCustomBehaviour;
 
 /**
  * Class for custom shaders from Codename Engine, Added for Using Shaders in PsychEngine without any shitty code.

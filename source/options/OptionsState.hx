@@ -72,7 +72,7 @@ class OptionsState extends MusicBeatState
 		#end
 
 		#if TOUCH_CONTROLS
-		if (ClientPrefs.data.VirtualPadAlpha != 0)
+		if (ClientPrefs.data.mobilePadAlpha != 0)
 			options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 		#end
 
@@ -123,7 +123,7 @@ class OptionsState extends MusicBeatState
 		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("UP_DOWN", "A_B_E");
-		if (ClientPrefs.data.VirtualPadAlpha != 0) //pls work
+		if (ClientPrefs.data.mobilePadAlpha != 0) //pls work
 			options = ['Note Colors', 'Mobile Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];
 		else
 			options = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mobile Options'];

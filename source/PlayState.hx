@@ -81,7 +81,7 @@ import vlc.MP4Handler;
 class PlayState extends MusicBeatState
 {
 	#if LUAVPAD_ALLOWED
-	public var luaVirtualPad:FlxVirtualPad; //trust me, you'll never need to access this directly
+	public var luaVirtualPad:MobilePad; //trust me, you'll never need to access this directly
 	#end
 	#if PSYCH_EXTENDED_NOTESKINS
 	public var noteSkin:String;
@@ -1206,7 +1206,7 @@ class PlayState extends MusicBeatState
 			if (skipCountdown || startOnTime > 0) skipArrowStartTween = true;
 			#if TOUCH_CONTROLS
 			MusicBeatState.mobilec.visible = true;
-			if (MusicBeatState.checkHitbox != true) MusicBeatState.mobilec.alpha = ClientPrefs.data.VirtualPadAlpha; //better for pc build
+			if (MusicBeatState.checkHitbox != true) MusicBeatState.mobilec.alpha = ClientPrefs.data.mobilePadAlpha; //better for pc build
 			#end
 			#if PSYCH_EXTENDED_NOTESKINS
 			if (!characterPlayingAsDad)
@@ -3912,6 +3912,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
+		call(funcToCall, args); //access functions from `scripts/states/PlayState.hx`
 		var returnVal:Dynamic = FunkinLua.Function_Continue;
 
 		#if HSCRIPT_ALLOWED
@@ -4214,8 +4215,8 @@ class PlayState extends MusicBeatState
 		if(!variables.exists("luaVirtualPad"))
 			variables.set("luaVirtualPad", luaVirtualPad);
 
-		luaVirtualPad = new FlxVirtualPad(DPad, Action);
-		luaVirtualPad.alpha = ClientPrefs.data.VirtualPadAlpha;
+		luaVirtualPad = new MobilePad(DPad, Action);
+		luaVirtualPad.alpha = ClientPrefs.data.mobilePadAlpha;
 	}
 
 	public function addLuaVirtualPad() {

@@ -29,10 +29,10 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	var externalPaths:Array<String> = StorageUtil.checkExternalPaths(true);
 	final lastStorageType:String = ClientPrefs.data.storageType;
 	#end
-	final lastVirtualPadTexture:String = ClientPrefs.data.virtualpadTexture;
 
-	var virtualpadTextures:Array<String> = ["VirtualPad", "TouchPad"];
-	var VPadSkin:Array<String>;
+	var MPadSkinOption:Option;
+	var mobilePadTextures:Array<String> = ["VirtualPad", "TouchPad"];
+	var MPadSkin:Array<String>;
 	var HitboxTypes:Array<String>;
 
 	public function new()
@@ -44,24 +44,24 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		rpcTitle = 'Mobile Options Menu'; //hi, you can ask what is that, i will answer it's all what you needed lol.
 		#if TOUCH_CONTROLS
 		HitboxTypes = Mods.mergeAllTextsNamed('mobile/Hitbox/HitboxModes/hitboxModeList.txt');
-		if(ClientPrefs.data.virtualpadTexture == 'TouchPad') VPadSkin = Mods.mergeAllTextsNamed('mobile/VirtualButton/TouchPad/skinList.txt');
-		else VPadSkin = Mods.mergeAllTextsNamed('mobile/VirtualButton/VirtualPad/skinList.txt');
+		if(ClientPrefs.data.mobilePadTexture == 'TouchPad') MPadSkin = Mods.mergeAllTextsNamed('mobile/MobileButton/TouchPad/skinList.txt');
+		else MPadSkin = Mods.mergeAllTextsNamed('mobile/MobileButton/VirtualPad/skinList.txt');
 		#end
 
 	#if TOUCH_CONTROLS
-	VPadSkin.insert(0, "original"); //seperate the original skin from skinList.txt
-	var option:Option = new Option('VirtualPad Skin',
-		"Choose VirtualPad Skin",
-		'VirtualPadSkin',
+	MPadSkin.insert(0, "original"); //seperate the original skin from skinList.txt
+	MPadSkinOption = new Option('MobilePad Skin',
+		"Choose MobilePad Skin",
+		'mobilePadSkin',
 		'string',
-		VPadSkin);
+		MPadSkin);
 
-	addOption(option);
-	option.onChange = resetVirtualPad;
+	addOption(MPadSkinOption);
+	MPadSkinOption.onChange = resetMobilePad;
 
-	var option:Option = new Option('VirtualPad Alpha:',
-		'Changes VirtualPad Alpha -cool feature',
-		'VirtualPadAlpha',
+	var option:Option = new Option('MobilePad Alpha:',
+		'Changes MobilePad Alpha -cool feature',
+		'mobilePadAlpha',
 		'percent');
 	option.scrollSpeed = 1.6;
 	option.minValue = 0;
@@ -75,20 +75,20 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	addOption(option);
 	super();
 
-	var option:Option = new Option('Colored VirtualPad',
-		'If unchecked, disables VirtualPad colors\n(can be used to make custom colored VirtualPad)',
+	var option:Option = new Option('Colored MobilePad',
+		'If unchecked, disables MobilePad colors\n(can be used to make custom colored MobilePad)',
 		'coloredvpad',
 		'bool');
 	addOption(option);
-	option.onChange = resetVirtualPad;
+	option.onChange = resetMobilePad;
 
-	var option:Option = new Option('VirtualPad Texture',
-		'Which VirtualPad Texture should use??',
-		'virtualpadTexture',
+	var option:Option = new Option('MobilePad Texture',
+		'Which MobilePad Texture should use??',
+		'mobilePadTexture',
 		'string',
-		virtualpadTextures);
+		mobilePadTextures);
 	addOption(option);
-	option.onChange = resetVirtualPad; //remove buggy virtualpad/touchpad and add new one
+	option.onChange = onChangeTexture; //better way
 
 	var option:Option = new Option('Extra Controls',
 		"Allow Extra Controls",
@@ -111,7 +111,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	HitboxTypes.insert(0, "New");
 	HitboxTypes.insert(0, "Classic");
 	var option:Option = new Option('Hitbox Mode:',
-		"Choose your Hitbox Style!  -mariomaster",
+		"Choose your Hitbox Style! -mariomaster",
 		'hitboxmode',
 		'string',
 		HitboxTypes);
@@ -130,7 +130,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		'bool');
 	addOption(option);
 
-	var option:Option = new Option('Hitbox Opacity', //mariomaster was here again
+	var option:Option = new Option('Hitbox Opacity', //mariomaster was here again -I won't remove this because... Y'know This is here on almost 1 year
 		'Changes hitbox opacity -omg',
 		'hitboxalpha',
 		'float');
@@ -173,26 +173,6 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	override public function destroy() {
 		super.destroy();
 
-		#if TOUCH_CONTROLS
-		//This shit will be replaced with better one later
-		if (ClientPrefs.data.virtualpadTexture != lastVirtualPadTexture) //Better Way -AloneDark
-		{
-			ClientPrefs.data.VirtualPadSkin = 'original';
-			ClientPrefs.saveSettings();
-
-			//Restart Game
-			TitleState.initialized = false;
-			TitleState.closedState = false;
-			FlxG.sound.music.fadeOut(0.3);
-			if(FreeplayState.vocals != null)
-			{
-				FreeplayState.vocals.fadeOut(0.3);
-				FreeplayState.vocals = null;
-			}
-			FlxG.camera.fade(FlxColor.BLACK, 0.5, false, FlxG.resetGame, false);
-		}
-		#end
-
 		#if android
 		if (ClientPrefs.data.storageType != lastStorageType) {
 			onStorageChange();
@@ -204,7 +184,28 @@ class MobileOptionsSubState extends BaseOptionsMenu
 	}
 
 	#if TOUCH_CONTROLS
-	function resetVirtualPad()
+	function onChangeTexture() {
+		ClientPrefs.saveSettings();
+		if(ClientPrefs.data.mobilePadTexture == 'TouchPad') MPadSkin = Mods.mergeAllTextsNamed('mobile/MobileButton/TouchPad/skinList.txt');
+		else MPadSkin = Mods.mergeAllTextsNamed('mobile/MobileButton/VirtualPad/skinList.txt');
+
+		MPadSkinOption.options = MPadSkin; //Change between TouchPad's and VirtualPad's Note Skin Folders
+		MPadSkin.insert(0, "original");
+
+		//Reset to default if saved noteskin couldnt be found in between folders
+		if(!MPadSkin.contains(ClientPrefs.data.mobilePadSkin))
+		{
+			MPadSkinOption.defaultValue = MPadSkinOption.options[0];
+
+			//these needs to be update the text
+			MPadSkinOption.setValue(MPadSkinOption.options[0]);
+			updateTextFrom(MPadSkinOption);
+			MPadSkinOption.change();
+		}
+		resetMobilePad();
+	}
+
+	function resetMobilePad()
 	{
 		removeVirtualPad();
 		addVirtualPad("FULL", "A_B_C");

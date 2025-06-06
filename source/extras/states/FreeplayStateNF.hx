@@ -45,7 +45,7 @@ import options.OptionsState;
 	这个玩意铁锅拖了3个月
 */
 
-class FreeplayStateNF extends HScriptStateHandler {
+class FreeplayStateNF extends MusicBeatState {
 
 	var bg:FlxSprite;
 	var bgColorChange:FlxTween;
@@ -126,18 +126,10 @@ class FreeplayStateNF extends HScriptStateHandler {
 	var lookingTheTutorial:Bool = false;
 	override function create()
 	{
-		super.create();
-
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		var classString:String = '${className}' + '.hx';
-		if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
-		startHScriptsNamed(classString);
-		startHScriptsNamed('global.hx');
-		#end
+		super.create();
 
 		persistentUpdate = persistentDraw = true;
 		PlayState.isStoryMode = false;
@@ -525,8 +517,6 @@ class FreeplayStateNF extends HScriptStateHandler {
 
 		camSong.scroll.x = FlxMath.lerp(-(curSelected) * 20 * 0.75, camSong.scroll.x, 0);
 		camSong.scroll.y = FlxMath.lerp((curSelected) * 75 * 0.75, camSong.scroll.y, 0);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	var startMouseY:Float;
@@ -539,7 +529,7 @@ class FreeplayStateNF extends HScriptStateHandler {
 
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+		super.update(elapsed);
 
 		if (FlxG.sound.music.volume < 0.7)
 		{
@@ -646,17 +636,13 @@ class FreeplayStateNF extends HScriptStateHandler {
 			lookingTheTutorial = false;
 			curSelectedFloat = curSelected;
 		}
-		super.update(elapsed);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	override function closeSubState()
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubState'); #end
 		super.closeSubState();
 		persistentUpdate = true;
-		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
+		closeSubStatePost();
 	}
 
 	function overlapButton(tag:FlxSprite)

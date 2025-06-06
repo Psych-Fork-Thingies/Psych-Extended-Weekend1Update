@@ -39,7 +39,7 @@ typedef TitleData =
 	backgroundSprite:String,
 	bpm:Float
 }
-class TitleState extends HScriptStateHandler
+class TitleState extends MusicBeatState
 {
 	public static var instance:TitleState;
 	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
@@ -117,12 +117,6 @@ class TitleState extends HScriptStateHandler
 		Mods.pushGlobalMods();
 		#end
 		Mods.loadTopMod();
-
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		startHScriptsNamed('${className}' + '.hx');
-		startHScriptsNamed('global.hx');
-		#end
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
@@ -213,8 +207,6 @@ class TitleState extends HScriptStateHandler
 			}
 		}
 		#end
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	var logoBl:FlxSprite;
@@ -244,7 +236,7 @@ class TitleState extends HScriptStateHandler
 
 	function startIntro()
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onStartIntro'); #end
+		call("startIntro");
 		FPSCounterShit();
 
 		if (!initialized)
@@ -405,7 +397,7 @@ class TitleState extends HScriptStateHandler
 		else
 			initialized = true;
 
-		#if SCRIPTING_ALLOWED callOnScripts('onStartIntroPost'); #end
+		call("startIntroPost");
 
 		// credGroup.add(credTextShit);
 	}
@@ -436,7 +428,7 @@ class TitleState extends HScriptStateHandler
 
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+		super.update(elapsed);
 
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
@@ -569,10 +561,6 @@ class TitleState extends HScriptStateHandler
 			if(controls.UI_LEFT) swagShader.hue -= elapsed * 0.1;
 			if(controls.UI_RIGHT) swagShader.hue += elapsed * 0.1;
 		}
-
-		super.update(elapsed);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function createCoolText(textArray:Array<String>, ?offset:Float = 0)

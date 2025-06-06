@@ -19,7 +19,7 @@ enum MainMenuColumn {
 	RIGHT;
 }
 
-class MainMenuState extends HScriptStateHandler
+class MainMenuState extends MusicBeatState
 {
     public static var instance:MainMenuState;
     
@@ -55,7 +55,9 @@ class MainMenuState extends HScriptStateHandler
 
 	override function create()
 	{
-	    instance = this;
+		instance = this;
+
+		super.create();
 
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
@@ -95,14 +97,6 @@ class MainMenuState extends HScriptStateHandler
 		magenta.visible = false;
 		magenta.color = 0xFFfd719b;
 		add(magenta);
-
-		super.create();
-
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		startHScriptsNamed('${className}' + '.hx');
-		startHScriptsNamed('global.hx');
-		#end
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
@@ -148,11 +142,9 @@ class MainMenuState extends HScriptStateHandler
     	#end
 
 		#if TOUCH_CONTROLS
-		addVirtualPad("NONE", "E");
+		addMobilePad("NONE", "G_E");
 		_virtualpad.alpha = 1;
 		#end
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 
 		FlxG.camera.follow(camFollow, null, 0.15);
 	}
@@ -187,6 +179,8 @@ class MainMenuState extends HScriptStateHandler
 	{
 		if (FlxG.sound.music.volume < 0.8)
 			FlxG.sound.music.volume = Math.min(FlxG.sound.music.volume + 0.5 * elapsed, 0.8);
+
+		super.update(elapsed);
 
 		if (!selectedSomethin)
 		{
@@ -289,8 +283,6 @@ class MainMenuState extends HScriptStateHandler
 					}
 			}
 
-			#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
-
 			if (controls.BACK)
 			{
 				selectedSomethin = true;
@@ -327,7 +319,7 @@ class MainMenuState extends HScriptStateHandler
 							item = rightItem;
 					}
 
-					callOnScripts('onSelectItem', [option]);
+					call("onSelectItem", [option]);
 					FlxFlicker.flicker(item, 1, 0.06, false, false, function(flick:FlxFlicker)
 					{
 						switch (option)
@@ -370,18 +362,20 @@ class MainMenuState extends HScriptStateHandler
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 				CustomSwitchState.switchMenus('MasterEditor');
 			}
+			else if (FlxG.keys.justPressed.TAB #if TOUCH_CONTROLS || _virtualpad.buttonG.justPressed #end) //use unused button
+			{
+				#if TOUCH_CONTROLS removeMobilePad(); #end
+				persistentUpdate = false;
+				openSubState(new funkin.menus.ModSwitchMenu());
+			}
 		}
-
-		super.update(elapsed);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function changeItem(change:Int = 0)
 	{
 		if(change != 0) curColumn = CENTER;
 		curSelected = FlxMath.wrap(curSelected + change, 0, optionShit.length - 1);
-		callOnScripts('onChangeItem', [curSelected]);
+		call("onChangeItem", [curSelected]);
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 
 		for (item in menuItems)
@@ -408,5 +402,15 @@ class MainMenuState extends HScriptStateHandler
 	override function destroy() {
 		instance = null;
 		super.destroy();
+	}
+	
+	override function closeSubState() {
+		persistentUpdate = true;
+		#if TOUCH_CONTROLS
+		removeVirtualPad();
+		addMobilePad("NONE", "G_E");
+		_virtualpad.alpha = 1;
+		#end
+		super.closeSubState();
 	}
 }

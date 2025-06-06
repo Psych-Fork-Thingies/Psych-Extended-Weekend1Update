@@ -53,8 +53,10 @@
 	</section>
 
 	<classpath name="source" />
+	<classpath name="library" /> <!-- For experimental things -->
 
 	<!-- PSYCH EXTENDED CUSTOMIZATION -->
+	<define name="COMPILE_CLASSES" />
 	<define name="PSYCH_EXTENDED_NOTESKINS" /> <!-- Better Note Skin Changing Test (I took this from another Modified Psych) -->
 	<!-- PSYCH EXTENDED EXTRAS -->
 	<define name="PsychExtended_ExtraFreeplayMenus" unless="extras_disabled"/> <!-- DELETE THIS IF YOU WANT TO REMOVE EXTRA FREEPLAY MENUS IN YOUR BUILD -->
@@ -149,6 +151,7 @@
 	<haxelib name="tjson"/>
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="discord_rpc" if="desktop"/>
+	<haxelib name="hscript-improved" if="SCRIPTING_ALLOWED" />
 	<haxelib name="SScript" if="HSCRIPT_ALLOWED"/>
 	<haxelib name="hscript-iris" if="SCRIPTING_ALLOWED" />
 	<haxedef name="openflPos" />
@@ -218,6 +221,13 @@
 
 	<!-- Allow Access to Engine Files in mobile for EXTERNAL_DATA -->
 	<haxedef name="SHARE_MOBILE_FILES" if="mobile" />
+
+	<section if="COMPILE_CLASSES">
+		<haxeflag name="-dce" value="no" />
+		<haxeflag name="--macro" value="funkin.backend.system.macros.Macros.addAdditionalClasses()" />
+	</section>
+
+	<haxeflag name="--macro" value="funkin.backend.system.macros.Macros.initMacros()" />
 
 	<!--Macro fixes-->
 	<haxeflag name="--macro" value="allowPackage('flash')" />

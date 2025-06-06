@@ -12,7 +12,7 @@ import editors.ChartingState;
 
 import haxe.Json;
 
-class FreeplayState extends HScriptStateHandler
+class FreeplayState extends MusicBeatState
 {
 	public var songs:Array<SongMetadata> = [];
 
@@ -54,11 +54,7 @@ class FreeplayState extends HScriptStateHandler
 
 		super.create();
 
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		startHScriptsNamed('${className}' + '.hx');
-		startHScriptsNamed('global.hx');
-		#end
+		super.create();
 
 		persistentUpdate = true;
 		PlayState.isStoryMode = false;
@@ -199,21 +195,18 @@ class FreeplayState extends HScriptStateHandler
 		updateTexts();
 
 		#if TOUCH_CONTROLS addVirtualPad("FULL", "A_B_C_X_Y_Z"); #end
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	override function closeSubState()
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubState'); #end
+		super.closeSubState();
 		changeSelection(0, false);
 		persistentUpdate = true;
-		super.closeSubState();
 		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("FULL", "A_B_C_X_Y_Z");
 		#end
-		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
+		super.closeSubState();
 	}
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String, color:Int)
@@ -235,7 +228,7 @@ class FreeplayState extends HScriptStateHandler
 	var stopMusicPlay:Bool = false;
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+		super.update(elapsed);
 
 		if (FlxG.sound.music.volume < 0.7)
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -481,9 +474,6 @@ class FreeplayState extends HScriptStateHandler
 		}
 
 		updateTexts(elapsed);
-		super.update(elapsed);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function getVocalFromCharacter(char:String)

@@ -1,199 +1,280 @@
-import haxe.ds.StringMap;
-
-import flixel.text.FlxText;
-import flixel.text.FlxTextFormat;
-import flixel.text.FlxTextFormatMarkerPair;
-import flixel.text.FlxTextBorderStyle;
-import extras.CustomSwitchState;
-
-import AttachedSprite;
-
-import tjson.TJSON as Json;
-
+import flixel.addons.display.FlxGridOverlay;
+import lime.utils.Assets;
+import Alphabet;
 import backend.Mods;
+import AttachedSprite;
+import Alphabet.Alignment;
+import flixel.text.FlxText.FlxTextAlign;
+
+
+var curSelected:Int = -1;
+
+var grpOptions:FlxTypedGroup<Alphabet>;
+var iconArray:Array<AttachedSprite> = [];
+var creditsStuff:Array<Array<String>> = [];
 
 var bg:FlxSprite;
+var descText:FlxText;
+var intendedColor:Int;
+var colorTween:FlxTween;
+var descBox:AttachedSprite;
 
-var devLvlTxt:FlxText;
-var devLvlBG:FlxSprite;
+var offsetThing:Float = -75;
 
-var devDescTxt:FlxText;
-var devDescBG:FlxSprite;
+var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
+	['Psych Extended'],
+	['KralOyuncu 2010X',	 'KralOyuncuV3',	'Creator of Psych Extended\n(Only Person Working on Psych Extended for now)',											'https://youtube.com/@kraloyuncurbx',		'378FC7'],
+	[''],
+	['Needed Credits'],
+	['beihu',				 'beihu',			'Owner of NovaFlare Engine\n(I used some codes from NovaFlare)',	'https://youtube.com/@hoyou235',			'FFC0CB'],
+	[''],
+	['Psych Engine Team'],
+	['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],
+	['RiverOaken',			'river',			'Main Artist/Animator of Psych Engine',							'https://twitter.com/RiverOaken',		'B42F71'],
+	['shubs',				'shubs',			'Additional Programmer of Psych Engine',						'https://twitter.com/yoshubs',			'5E99DF'],
+	[''],
+	['Former Engine Members'],
+	['bb-panzu',			'bb',				'Ex-Programmer of Psych Engine',								'https://twitter.com/bbsub3',			'3E813A'],
+	[''],
+	['Engine Contributors'],
+	['iFlicky',				'flicky',			'Composer of Psync and Tea Time\nMade the Dialogue Sounds',		'https://twitter.com/flicky_i',			'9E29CF'],
+	['SqirraRNG',			'sqirra',			'Crash Handler and Base code for\nChart Editor\'s Waveform',	'https://twitter.com/gedehari',			'E1843A'],
+	['EliteMasterEric',		'mastereric',		'Runtime Shaders support',										'https://twitter.com/EliteMasterEric',	'FFBD40'],
+	['PolybiusProxy',		'proxy',			'.MP4 Video Loader Library (hxCodec)',							'https://twitter.com/polybiusproxy',	'DCD294'],
+	['KadeDev',				'kade',				'Fixed some cool stuff on Chart Editor\nand other PRs',			'https://twitter.com/kade0912',			'64A250'],
+	['Keoiki',				'keoiki',			'Note Splash Animations',										'https://twitter.com/Keoiki_',			'D2D2D2'],
+	['Nebula the Zorua',	'nebula',			'LUA JIT Fork and some Lua reworks',							'https://twitter.com/Nebula_Zorua',		'7D40B2'],
+	['Smokey',				'smokey',			'Sprite Atlas Support',											'https://twitter.com/Smokey_5_',		'483D92'],
+	[''],
+	["Funkin' Crew"],
+	['ninjamuffin99',		'ninjamuffin99',	"Programmer of Friday Night Funkin'",							'https://twitter.com/ninja_muffin99',	'CF2D2D'],
+	['PhantomArcade',		'phantomarcade',	"Animator of Friday Night Funkin'",								'https://twitter.com/PhantomArcade3K',	'FADC45'],
+	['evilsk8r',			'evilsk8r',			"Artist of Friday Night Funkin'",								'https://twitter.com/evilsk8r',			'5ABD4B'],
+	['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",								'https://twitter.com/kawaisprite',		'378FC7']
+];
 
-var canSelect = false;
-
-function onCreate()
+function create()
 {
-    var filesToLoad = [];
+	persistentUpdate = true;
+	bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+	add(bg);
+	bg.screenCenter();
 
-    bg = new FlxSprite().loadGraphic(Paths.image('menuBG'));
-    bg.scale.set(1.25, 1.25);
-    bg.screenCenter('x');
-    add(bg);
-    bg.antialiasing = ClientPrefs.data.antialiasing;
-    bg.alpha = 0;
+	grpOptions = new FlxTypedGroup();
+	add(grpOptions);
 
-    if (FileSystem.exists(Paths.mods(Mods.currentModDirectory + 'credits.json'))) filesToLoad.push(Paths.mods(Mods.currentModDirectory + 'credits.json'));
-    if (FileSystem.exists(Paths.getScriptPath('credits.json'))) filesToLoad.push(Paths.getScriptPath('credits.json'));
+	#if MODS_ALLOWED
+	for (mod in Mods.parseList().enabled) pushModCreditsToList(mod);
+	#end
 
-    for (file in filesToLoad)
-    {
-        var jsonData = Json.parse(File.getContent(file));
+	for(i in defaultList){
+		creditsStuff.push(i);
+	}
 
-        for (group in jsonData.groups)
-        {
-            for (member in group.members)
-            {
-                addDeveloper(group.name, member.name, member.description, member.icon, member.color);
-            }
-        }
-    }
+	for (i in 0...creditsStuff.length)
+	{
+		var isSelectable:Bool = !unselectableCheck(i);
+		var optionText:Alphabet = new Alphabet(FlxG.width / 2, 300, creditsStuff[i][0], !isSelectable);
+		optionText.isMenuItem = true;
+		optionText.targetY = i;
+		optionText.changeX = false;
+		optionText.snapToPosition();
+		grpOptions.add(optionText);
 
-    devLvlBG = new FlxSprite().makeGraphic(FlxG.width, 1, FlxColor.BLACK);
-    devLvlBG.alpha = 0.5;
-    devLvlBG.scrollFactor.x = devLvlBG.scrollFactor.y = 0;
-    add(devLvlBG);
+		if(isSelectable) {
+			if(creditsStuff[i][5] != null)
+			{
+				Mods.currentModDirectory = creditsStuff[i][5];
+			}
 
-    devLvlTxt = new FlxText(0, 10, FlxG.width);
-    devLvlTxt.setFormat(Paths.font('vcr.ttf'), 80, FlxColor.WHITE, 'center');
-    devLvlTxt.antialiasing = ClientPrefs.data.antialiasing;
-    devLvlTxt.scrollFactor.x = devLvlTxt.scrollFactor.y = 0;
-    add(devLvlTxt);
+			var str:String = 'credits/missing_icon';
+			if (Paths.image('credits/' + creditsStuff[i][1]) != null) str = 'credits/' + creditsStuff[i][1];
+			var icon:AttachedSprite = new AttachedSprite(str);
+			icon.xAdd = optionText.width + 10;
+			icon.sprTracker = optionText;
 
-    devDescBG = new FlxSprite().makeGraphic(FlxG.width, 1, FlxColor.BLACK);
-    devDescBG.alpha = 0.5;
-    devDescBG.scrollFactor.x = devDescBG.scrollFactor.y = 0;
-    add(devDescBG);
+			// using a FlxGroup is too much fuss!
+			iconArray.push(icon);
+			add(icon);
+			Mods.currentModDirectory = '';
 
-    devDescTxt = new FlxText(0, 10, FlxG.width);
-    devDescTxt.setFormat(Paths.font('vcr.ttf'), 40, FlxColor.WHITE, 'center');
-    devDescTxt.antialiasing = ClientPrefs.data.antialiasing;
-    devDescTxt.scrollFactor.x = devDescTxt.scrollFactor.y = 0;
-    add(devDescTxt);
+			if(curSelected == -1) curSelected = i;
+		}
+		else optionText.alignment = Alignment.CENTERED;
+	}
 
-    new FlxTimer().start(1, function(tmr:FlxTimer)
-    {
-        changeShit();
-        canSelect = true;
-    });
-    
-    addVirtualPad('UP_DOWN', 'A_B');
-    addVirtualPadCamera();
+	descBox = new AttachedSprite();
+	descBox.makeGraphic(1, 1, FlxColor.BLACK);
+	descBox.xAdd = -10;
+	descBox.yAdd = -10;
+	descBox.alphaMult = 0.6;
+	descBox.alpha = 0.6;
+	add(descBox);
+
+	descText = new FlxText(50, FlxG.height + offsetThing - 25, 1180, "", 32);
+	descText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, FlxTextAlign.CENTER);
+	descText.scrollFactor.set();
+	descBox.sprTracker = descText;
+	add(descText);
+
+	bg.color = getCurrentBGColor();
+	intendedColor = bg.color;
+	changeSelection(0);
+
+	#if TOUCH_CONTROLS addVirtualPad("UP_DOWN", "A_B"); #end
 }
 
-var developers:Array<StringMap> = [];
-
-var selInt:Int = existsGlobalVar('creditsStateSelInt') ? getGlobalVar('creditsStateSelInt') : 0;
-
-function onUpdate()
-{
-    for (developer in developers)
-    {
-        if (developer.get('icon').scale.x != 1 || developer.get('icon').scale.y != 1 )
-        {
-            developer.get('icon').scale.x = fpsLerp(developer.get('icon').scale.x, 1, 0.33); 
-            developer.get('icon').scale.y = fpsLerp(developer.get('icon').scale.y, 1, 0.33); 
-        }
-    }
-
-    if (canSelect)
-    {
-        if (developers.length > 1)
-        {
-            if (controls.UI_UP_P || controls.UI_DOWN_P || FlxG.mouse.wheel != 0)
-            {
-                if (controls.UI_UP_P || FlxG.mouse.wheel > 0)
-                {
-                    if (selInt > 0) selInt -= 1;
-                    else if (selInt == 0) selInt = developers.length - 1;
-                } else if (controls.UI_DOWN_P || FlxG.mouse.wheel < 0) {
-                    if (selInt < developers.length - 1) selInt += 1;
-                    else if (selInt == developers.length - 1) selInt = 0;
-                }
-
-                changeShit();
-            }
-        }
-        
-        if (controls.BACK)
-        {
-            CustomSwitchState.switchMenus('MainMenu');
-
-            FlxG.sound.play(Paths.sound('cancelMenu'), 0.7);
-
-            canSelect = false;
-
-            setGlobalVar('creditsStateSelInt', selInt);
-        }
-    }
+function getCurrentBGColor() {
+	var bgColor:String = creditsStuff[curSelected][4];
+	bgColor = '0xFF' + bgColor;
+	return Std.parseInt(bgColor);
 }
 
-function onBeatHit()
+var moveTween:FlxTween = null;
+function changeSelection(change:Int = 0)
 {
-    for (developer in developers)
-    {
-        if (developers.indexOf(developer) == selInt && canSelect)
-        {
-            developer.get('icon').scale.x = 1.2;
-            developer.get('icon').scale.y = 1.2;
-        }
-    }
+	FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+	do {
+		curSelected += change;
+		if (curSelected < 0)
+			curSelected = creditsStuff.length - 1;
+		if (curSelected >= creditsStuff.length)
+			curSelected = 0;
+	} while(unselectableCheck(curSelected));
+
+	var newColor:Int =  getCurrentBGColor();
+		if(newColor != intendedColor) {
+			if(colorTween != null) {
+				colorTween.cancel();
+			}
+			intendedColor = newColor;
+			colorTween = FlxTween.color(bg, 1, bg.color, intendedColor, {
+				onComplete: function(twn:FlxTween) {
+					colorTween = null;
+				}
+			});
+		}
+
+	var bullShit:Int = 0;
+
+	for (item in grpOptions.members)
+	{
+		item.targetY = bullShit - curSelected;
+		bullShit++;
+
+		if(!unselectableCheck(bullShit-1)) {
+			item.alpha = 0.6;
+			if (item.targetY == 0) {
+				item.alpha = 1;
+			}
+		}
+	}
+
+	descText.text = creditsStuff[curSelected][2];
+	descText.y = FlxG.height - descText.height + offsetThing - 60;
+
+	if(moveTween != null) moveTween.cancel();
+	moveTween = FlxTween.tween(descText, {y : descText.y + 75}, 0.25, {ease: FlxEase.sineOut});
+
+	descBox.setGraphicSize(Std.int(descText.width + 20), Std.int(descText.height + 25));
+	descBox.updateHitbox();
 }
 
-function changeShit()
+
+var quitting:Bool = false;
+var holdTime:Float = 0;
+function update(elapsed:Float)
 {
-    FlxTween.cancelTweensOf(bg);
-    FlxTween.tween(bg, {y: FlxG.height / 2 - bg.height / 2 - (25 * (selInt)) / developers.length}, 60 / Conductor.bpm, {ease: FlxEase.cubeOut});
+	if(!quitting)
+	{
+		if(creditsStuff.length > 1)
+		{
+			var shiftMult:Int = 1;
+			if(FlxG.keys.pressed.SHIFT) shiftMult = 3;
 
-    for (developer in developers)
-    {
-        if (developers.indexOf(developer) == selInt)
-        {
-            if (developer.get('text').alpha != 1) developer.get('text').alpha = 1;
+			var upP = controls.UI_UP_P;
+			var downP = controls.UI_DOWN_P;
 
-            FlxTween.color(bg, 60 / Conductor.bpm, bg.color, developer.get('color'), {ease: FlxEase.cubeOut});
+			if (upP)
+			{
+				changeSelection(-shiftMult);
+				holdTime = 0;
+			}
+			if (downP)
+			{
+				changeSelection(shiftMult);
+				holdTime = 0;
+			}
 
-            devLvlTxt.text = developer.get('category');
-            devLvlBG.scale.y = (devLvlTxt.height + 20) * 2;
+			if(controls.UI_DOWN || controls.UI_UP)
+			{
+				var checkLastHold:Int = Math.floor((holdTime - 0.5) * 10);
+				holdTime += elapsed;
+				var checkNewHold:Int = Math.floor((holdTime - 0.5) * 10);
 
-            devDescTxt.text = developer.get('description');
-            devDescTxt.y = FlxG.height - devDescTxt.height - 10;
-            devDescBG.scale.y = (devDescTxt.height + 20) * 2;
-            devDescBG.y = FlxG.height - devDescBG.height;
-        } else {
-            if (developer.get('text').alpha != 0.5) developer.get('text').alpha = 0.5;
-        }
+				if(holdTime > 0.5 && checkNewHold - checkLastHold > 0)
+				{
+					changeSelection((checkNewHold - checkLastHold) * (controls.UI_UP ? -shiftMult : shiftMult));
+				}
+			}
+		}
 
-        FlxTween.cancelTweensOf(developer.get('text'));
-        FlxTween.tween(developer.get('text'), {x: 100 + 28 * (developers.indexOf(developer) - selInt), y: 350 + 110 * (developers.indexOf(developer) - selInt)}, 30 / Conductor.bpm, {ease: FlxEase.cubeOut});
-    }
+		if(controls.ACCEPT && (creditsStuff[curSelected][3] == null || creditsStuff[curSelected][3].length > 4)) {
+			CoolUtil.browserLoad(creditsStuff[curSelected][3]);
+		}
+		if (controls.BACK)
+		{
+			if(colorTween != null) {
+				colorTween.cancel();
+			}
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+			CustomSwitchState.switchMenus('MainMenu');
+			quitting = true;
+		}
+	}
 
-    FlxG.sound.play(Paths.sound('scrollMenu'));
+	for (item in grpOptions.members)
+	{
+		if(!item.bold)
+		{
+			var lerpVal:Float = CoolUtil.boundTo(elapsed * 12, 0, 1);
+			if(item.targetY == 0)
+			{
+				var lastX:Float = item.x;
+				item.screenCenter(FlxAxes.X);
+				item.x = FlxMath.lerp(lastX, item.x - 70, lerpVal);
+			}
+			else
+			{
+				item.x = FlxMath.lerp(item.x, 200 + -40 * Math.abs(item.targetY), lerpVal);
+			}
+		}
+	}
 }
 
-function addDeveloper(category:String, name:String, description:String, icon:String, color:Array)
-{
-    var developerData:StringMap = new StringMap();
-
-    var text:Alphabet = new Alphabet(100 + 28 * (developers.length - selInt), 350 + 110 * (developers.length - selInt), name, true);
-    text.snapToPosition();
-    add(text);
-    text.antialiasing = ClientPrefs.data.antialiasing;
-    text.alpha = 0.5;
-
-    var iconSprite:AttachedSprite = new AttachedSprite('credits/' + icon);
-    add(iconSprite);
-    iconSprite.antialiasing = ClientPrefs.data.antialiasing;
-    iconSprite.xAdd = text.width + 10;
-    iconSprite.yAdd = text.height / 2 - iconSprite.height / 2;
-    iconSprite.sprTracker = text;
-    iconSprite.alpha = 0.25;
-    
-    developerData.set('category', category);
-    developerData.set('text', text);
-    developerData.set('icon', iconSprite);
-    developerData.set('description', description);
-    developerData.set('color', CoolUtil.colorFromString(color));
-
-    developers.push(developerData);
+function unselectableCheck(num:Int):Bool {
+	return creditsStuff[num].length <= 1;
 }
+
+#if MODS_ALLOWED
+function pushModCreditsToList(folder:String)
+{
+	var creditsFile:String = null;
+	/* this shit is doesn't work, if you want you can fix
+	if(folder != null && folder.trim().length > 0) creditsFile = Paths.mods(folder + '/data/credits.txt');
+	else */
+	creditsFile = Paths.mods('data/credits.txt');
+
+	if (FileSystem.exists(creditsFile))
+	{
+		var firstarray:Array<String> = File.getContent(creditsFile).split('\n');
+		for(i in firstarray)
+		{
+			var arr:Array<String> = i.replace('\\n', '\n').split("::");
+			if(arr.length >= 5) arr.push(folder);
+			creditsStuff.push(arr);
+		}
+		creditsStuff.push(['']);
+	}
+}
+#end

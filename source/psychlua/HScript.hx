@@ -15,11 +15,6 @@ import hscript.Expr;
 import haxe.Exception;
 #end
 
-#if SCRIPTING_ALLOWED
-import scripting.substate.ScriptSubstate;
-import scripting.state.ScriptState;
-#end
-
 #if (HSCRIPT_ALLOWED && SScript >= "3.0.0")
 import tea.SScript;
 class HScript extends SScript
@@ -163,86 +158,24 @@ class HScript extends SScript
 		});
 
 		#if SCRIPTING_ALLOWED
-		//State
-		set('setStateVar', function(name:String, value:Dynamic) {
-			HScriptStateHandler.getState().variables.set(name, value);
+		set('setGlobalVar', function(name:String, value:Dynamic) {
+			ScriptingVars.globalVars.set(name, value);
 			return value;
 		});
-		set('getStateVar', function(name:String) {
+		set('getGlobalVar', function(name:String) {
 			var result:Dynamic = null;
-			if(HScriptStateHandler.getState().variables.exists(name)) result = HScriptStateHandler.getState().variables.get(name);
+			if(ScriptingVars.globalVars.exists(name)) result = ScriptingVars.globalVars.get(name);
 			return result;
 		});
-		set('removeStateVar', function(name:String)
+		set('removeGlobalVar', function(name:String)
 		{
-			if(HScriptStateHandler.getState().variables.exists(name))
+			if(ScriptingVars.globalVars.exists(name))
 			{
-				HScriptStateHandler.getState().variables.remove(name);
+				ScriptingVars.globalVars.remove(name);
 				return true;
 			}
 			return false;
 		});
-
-		//Substate
-		set('setSubStateVar', function(name:String, value:Dynamic) {
-			HScriptSubStateHandler.variables.set(name, value);
-			return value;
-		});
-		set('getSubStateVar', function(name:String) {
-			var result:Dynamic = null;
-			if(HScriptSubStateHandler.variables.exists(name)) result = HScriptSubStateHandler.variables.get(name);
-			return result;
-		});
-		set('removeSubStateVar', function(name:String)
-		{
-			if(HScriptSubStateHandler.variables.exists(name))
-			{
-				HScriptSubStateHandler.variables.remove(name);
-				return true;
-			}
-			return false;
-		});
-
-		//Script State
-		set('setScriptStateVar', function(name:String, value:Dynamic) {
-			ScriptSubstate.variables.set(name, value);
-			return value;
-		});
-		set('getScriptStateVar', function(name:String) {
-			var result:Dynamic = null;
-			if(ScriptState.instance.variables.exists(name)) result = ScriptState.instance.variables.get(name);
-			return result;
-		});
-		set('removeScriptStateVar', function(name:String)
-		{
-			if(ScriptState.instance.variables.exists(name))
-			{
-				ScriptState.instance.variables.remove(name);
-				return true;
-			}
-			return false;
-		});
-
-		//Script SubState
-		set('setScriptSubstateVar', function(name:String, value:Dynamic) {
-			ScriptState.instance.variables.set(name, value);
-			return value;
-		});
-		set('getScriptSubstateVar', function(name:String) {
-			var result:Dynamic = null;
-			if(ScriptSubstate.variables.exists(name)) result = ScriptSubstate.variables.get(name);
-			return result;
-		});
-		set('removeScriptSubstateVar', function(name:String)
-		{
-			if(ScriptSubstate.variables.exists(name))
-			{
-				ScriptSubstate.variables.remove(name);
-				return true;
-			}
-			return false;
-		});
-
 		#end
 
 		//Others

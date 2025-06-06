@@ -8,8 +8,8 @@ import flixel.util.FlxSave;
 
 class MobileData
 {
-	public static var actionModes:Map<String, VirtualButtonsData> = new Map();
-	public static var dpadModes:Map<String, VirtualButtonsData> = new Map();
+	public static var actionModes:Map<String, MobileButtonsData> = new Map();
+	public static var dpadModes:Map<String, MobileButtonsData> = new Map();
 	public static var hitboxModes:Map<String, CustomHitboxData> = new Map();
 
 	public static var mode(get, set):Int;
@@ -21,11 +21,11 @@ class MobileData
 		save = new FlxSave();
 		save.bind('MobileControls', CoolUtil.getSavePath());
 
-		readDirectory(Paths.getSharedPath('mobile/VirtualButton/DPadModes'), dpadModes);
+		readDirectory(Paths.getSharedPath('mobile/MobileButton/DPadModes'), dpadModes);
 		readDirectory(Paths.getSharedPath('mobile/Hitbox/HitboxModes'), hitboxModes);
-		readDirectory(Paths.getSharedPath('mobile/VirtualButton/ActionModes'), actionModes);
+		readDirectory(Paths.getSharedPath('mobile/MobileButton/ActionModes'), actionModes);
 		#if MODS_ALLOWED
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'mobile/VirtualButton/'))
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'mobile/MobileButton/'))
 		{
 			readDirectory(Path.join([folder, 'DPadModes']), dpadModes);
 			readDirectory(Path.join([folder, 'ActionModes']), actionModes);
@@ -37,7 +37,7 @@ class MobileData
 		#end
 	}
 
-	public static function setVirtualPadCustom(virtualPad:FlxVirtualPad):Void
+	public static function setVirtualPadCustom(virtualPad:MobilePad):Void
 	{
 		if (save.data.buttons == null)
 		{
@@ -58,7 +58,7 @@ class MobileData
 		save.flush();
 	}
 
-	public static function getVirtualPadCustom(virtualPad:FlxVirtualPad):FlxVirtualPad
+	public static function getVirtualPadCustom(virtualPad:MobilePad):MobilePad
 	{
 		var tempCount:Int = 0;
 
@@ -90,7 +90,7 @@ class MobileData
 			{
 				file = Path.join([folder, Path.withoutDirectory(file)]);
 				var str = #if MODS_ALLOWED File.getContent(file) #else Assets.getText(file) #end;
-				var json:VirtualButtonsData = cast Json.parse(str);
+				var json:MobileButtonsData = cast Json.parse(str);
 				var mapKey:String = Path.withoutDirectory(Path.withoutExtension(fileWithNoLib));
 				map.set(mapKey, json);
 			}
@@ -119,7 +119,7 @@ class MobileData
 	}
 }
 
-typedef VirtualButtonsData =
+typedef MobileButtonsData =
 {
 	buttons:Array<ButtonsData>
 }
@@ -157,7 +157,7 @@ typedef HitboxData =
 
 typedef ButtonsData =
 {
-	button:String, // what VirtualButton should be used, must be a valid VirtualButton var from VirtualPad as a string.
+	button:String, // what MobileButton should be used, must be a valid MobileButton var from VirtualPad as a string.
 	graphic:String, // the graphic of the button, usually can be located in the VirtualPad xml .
 	x:Float, // the button's X position on screen.
 	y:Float, // the button's Y position on screen.

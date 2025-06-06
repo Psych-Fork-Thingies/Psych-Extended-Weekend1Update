@@ -20,7 +20,7 @@ import haxe.Json;
 import sys.thread.Thread;
 import sys.thread.Mutex;
 
-class MainMenuStateNOVA extends HScriptStateHandler
+class MainMenuStateNOVA extends MusicBeatState
 {
 	public static var psychEngineVersion:String = '0.7.3'; //This is also used for Discord RPC
 	public static var novaFlareEngineDataVersion:Float = 2.6;
@@ -111,14 +111,6 @@ class MainMenuStateNOVA extends HScriptStateHandler
 		persistentUpdate = persistentDraw = true;
 
 		super.create();
-
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		var classString:String = '${className}' + '.hx';
-		if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
-		startHScriptsNamed(classString);
-		startHScriptsNamed('global.hx');
-		#end
 
 		var yScroll:Float = Math.max(0.25 - (0.05 * (optionShit.length - 4)), 0.1);
 		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG', null, false));
@@ -295,10 +287,9 @@ class MainMenuStateNOVA extends HScriptStateHandler
 		#end
 
 		#if TOUCH_CONTROLS
-		addVirtualPad("UP_DOWN", "A_B_E");
+		addMobilePad("UP_DOWN", "A_B_E_G");
 		_virtualpad.cameras = [camHUD];
 		#end
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	var canClick:Bool = true;
@@ -309,7 +300,7 @@ class MainMenuStateNOVA extends HScriptStateHandler
 
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+		super.update(elapsed);
 
 		#if (debug && android)
 			if (FlxG.android.justReleased.BACK)
@@ -330,8 +321,14 @@ class MainMenuStateNOVA extends HScriptStateHandler
 
 		if (FlxG.mouse.justPressed) usingMouse = true;
 
-		if(!endCheck){
+		if (FlxG.keys.justPressed.TAB #if TOUCH_CONTROLS || _virtualpad.buttonG.justPressed #end) //use unused button
+		{
+			persistentUpdate = false;
+			openSubState(new funkin.menus.ModSwitchMenu());
+			#if TOUCH_CONTROLS removeVirtualPad(); #end
+		}
 
+		if(!endCheck){
 
 		if (controls.UI_UP_P)
 			{
@@ -453,10 +450,6 @@ class MainMenuStateNOVA extends HScriptStateHandler
 			spr.centerOffsets();
 			spr.centerOrigin();
 		});
-
-		super.update(elapsed);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function selectSomething()
@@ -588,5 +581,15 @@ class MainMenuStateNOVA extends HScriptStateHandler
 			trace('exception: $e');
 			callback({ status: "exception", conclusion: "exception" });
 		}
+	}
+
+	override function closeSubState() {
+		super.closeSubState();
+		persistentUpdate = true;
+		#if TOUCH_CONTROLS
+		removeVirtualPad();
+		addMobilePad("UP_DOWN", "A_B_E_G");
+		#end
+		super.closeSubState();
 	}
 }

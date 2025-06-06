@@ -8,8 +8,7 @@ import flixel.addons.display.FlxGridOverlay;
 import sys.FileSystem;
 #end
 
-
-class MasterEditorMenu extends HScriptStateHandler
+class MasterEditorMenu extends MusicBeatState
 {
 	var options:Array<String> = [
 		'Week Editor',
@@ -44,14 +43,6 @@ class MasterEditorMenu extends HScriptStateHandler
 		grpTexts = new FlxTypedGroup<Alphabet>();
 		add(grpTexts);
 
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		var classString:String = '${className}' + '.hx';
-		if (classString.startsWith('editors.')) classString = classString.replace('editors.', '');
-		startHScriptsNamed(classString);
-		startHScriptsNamed('global.hx');
-		#end
-
 		for (i in 0...options.length)
 		{
 			var leText:Alphabet = new Alphabet(90, 320, options[i], true);
@@ -85,12 +76,11 @@ class MasterEditorMenu extends HScriptStateHandler
 		#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 
 		#if TOUCH_CONTROLS addVirtualPad("FULL", "A_B"); #end
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+		super.update(elapsed);
 
 		if (controls.UI_UP_P)
 		{
@@ -159,9 +149,6 @@ class MasterEditorMenu extends HScriptStateHandler
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
-		super.update(elapsed);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function changeSelection(change:Int = 0)
@@ -179,7 +166,7 @@ class MasterEditorMenu extends HScriptStateHandler
 	#if MODS_ALLOWED
 	function changeDirectory(change:Int = 0)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onDirectoryChanged'); #end
+		call('changeDirectory', [change]);
 
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
@@ -200,7 +187,7 @@ class MasterEditorMenu extends HScriptStateHandler
 		}
 		directoryTxt.text = directoryTxt.text.toUpperCase();
 
-		#if SCRIPTING_ALLOWED callOnScripts('onDirectoryChangedPost'); #end
+		call('changeDirectoryPost', [change]);
 	}
 	#end
 }

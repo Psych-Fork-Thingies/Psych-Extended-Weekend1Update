@@ -831,15 +831,28 @@ class ModsMenuState extends MusicBeatState
 	function saveTxt()
 	{
 		var fileStr:String = '';
+		var value = '0';
+
+		var modFolder:String = 'modsList.txt';
+		if (ClientPrefs.data.Modpack) modFolder = 'modpackList.txt';
+
 		for (mod in modsList.all)
 		{
 			if(mod.trim().length < 1) continue;
 
 			if(fileStr.length > 0) fileStr += '\n';
 
+			for(menu in Mods.getSelectedMenuMod()){
+				var dat:Array<String> = menu.split("|");
+				if (dat[0] == mod && dat[1] == "1") value = "1";
+				else value = "0";
+				trace(dat + ' && ' + value);
+			}
+
 			var on = '1';
 			if(modsList.disabled.contains(mod)) on = '0';
-			fileStr += '$mod|$on';
+			trace("in modsList: " + mod + " || " + value);
+			fileStr += '$mod|$on|$value';
 		}
 
 		var path:String = 'modsList.txt';

@@ -10,9 +10,9 @@ import options.ControlsSubState;
 
 class MobileControlSelectSubState extends MusicBeatSubstate
 {
-	var vpad:FlxVirtualPad;
-	var hbox:FlxHitbox;
-	var newhbox:FlxNewHitbox;
+	var vpad:MobilePad;
+	var hbox:HitboxOld;
+	var newhbox:Hitbox;
 	public static var upPozition:FlxText;
 	public static var downPozition:FlxText;
 	public static var leftPozition:FlxText;
@@ -81,17 +81,17 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 		titleText.cameras = [ui];
 		add(titleText);
 
-		vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend");
+		vpad = new MobilePad("RIGHT_FULL", "controlExtend");
 		vpad.alpha = 0;
 		vpad.cameras = [ui];
 		add(vpad);
 
-		hbox = new FlxHitbox(0.75, ClientPrefs.data.antialiasing);
+		hbox = new HitboxOld(0.75, ClientPrefs.data.antialiasing);
 		hbox.visible = false;
 		hbox.cameras = [ui];
 		add(hbox);
 
-		newhbox = new FlxNewHitbox();
+		newhbox = new Hitbox();
 		newhbox.visible = false;
 		newhbox.cameras = [ui];
 		add(newhbox);
@@ -262,30 +262,34 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 		{
 			case 'Pad-Right':
 				reset.y = keyboard.height + keyboard.y + 20;
+				reset.visible = true;
 				keyboard.visible = true;
 				remove(vpad);
-				vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend");
+				vpad = new MobilePad("RIGHT_FULL", "controlExtend");
 				add(vpad);
 				loadcustom(false);
 			case 'Pad-Left':
 				reset.y = keyboard.height + keyboard.y + 20;
+				reset.visible = true;
 				keyboard.visible = true;
 				remove(vpad);
-				vpad = new FlxVirtualPad("FULL", "controlExtend");
+				vpad = new MobilePad("FULL", "controlExtend");
 				add(vpad);
 				loadcustom(false);
 			case 'Pad-Custom':
 				reset.y = exit.height + exit.y + 20;
+				reset.visible = true;
 				keyboard.visible = false;
 				remove(vpad);
-				vpad = new FlxVirtualPad("RIGHT_FULL", "controlExtend");
+				vpad = new MobilePad("RIGHT_FULL", "controlExtend");
 				add(vpad);
 				loadcustom(true);
 			case 'Duo':
 				reset.y = keyboard.height + keyboard.y + 20;
+				reset.visible = true;
 				keyboard.visible = true;
 				remove(vpad);
-				vpad = new FlxVirtualPad("DUO", "controlExtend");
+				vpad = new MobilePad("DUO", "controlExtend");
 				add(vpad);
 				loadcustom(false);
 			case 'Hitbox':

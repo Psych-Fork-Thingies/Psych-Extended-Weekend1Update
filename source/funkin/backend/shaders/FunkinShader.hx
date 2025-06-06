@@ -3,7 +3,7 @@ package funkin.backend.shaders;
 import flixel.graphics.FlxGraphic;
 import flixel.system.FlxAssets.FlxShader;
 import haxe.Exception;
-import crowplexus.hscript.IHScriptCustomBehaviour;
+import hscriptBase.IHScriptCustomBehaviour;
 import lime.utils.Float32Array;
 import openfl.display.BitmapData;
 import openfl.display.ShaderInput;

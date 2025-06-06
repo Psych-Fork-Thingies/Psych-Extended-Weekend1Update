@@ -17,8 +17,8 @@ import sys.thread.Thread;
 import sys.thread.Mutex;
 import StageData;
 
-#if HSCRIPT_ALLOWED
-import scripting.state.HScript; //use State Scripting's HScript
+#if SCRIPTING_ALLOWED
+import scripting.iris.HScript; //use HScript Iris
 import crowplexus.iris.Iris;
 import crowplexus.hscript.Expr.Error as IrisError;
 import crowplexus.hscript.Printer;
@@ -78,7 +78,7 @@ class LoadingState extends MusicBeatState
 	var funkay:FlxSprite;
 	#end
 
-	#if HSCRIPT_ALLOWED
+	#if SCRIPTING_ALLOWED
 	var hscript:HScript;
 	#end
 	override function create()
@@ -99,7 +99,7 @@ class LoadingState extends MusicBeatState
 		barGroup.add(bar);
 		barWidth = Std.int(barBack.width - 10);
 
-		#if HSCRIPT_ALLOWED
+		#if SCRIPTING_ALLOWED
 		if(Mods.currentModDirectory != null && Mods.currentModDirectory.trim().length > 0)
 		{
 			var scriptPath:String = 'mods/${Mods.currentModDirectory}/data/LoadingScreen.hx'; //mods/My-Mod/data/LoadingScreen.hx
@@ -215,7 +215,7 @@ class LoadingState extends MusicBeatState
 			bar.updateHitbox();
 		}
 		
-		#if HSCRIPT_ALLOWED
+		#if SCRIPTING_ALLOWED
 		if(hscript != null)
 		{
 			if(hscript.exists('onUpdate')) hscript.call('onUpdate', [elapsed]);
@@ -293,7 +293,7 @@ class LoadingState extends MusicBeatState
 		#end
 	}
 
-	#if HSCRIPT_ALLOWED
+	#if SCRIPTING_ALLOWED
 	override function destroy()
 	{
 		if(hscript != null)

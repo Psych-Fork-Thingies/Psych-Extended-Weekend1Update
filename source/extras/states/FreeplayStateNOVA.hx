@@ -19,7 +19,7 @@ import backend.*;
 import editors.ChartingState;
 import options.OptionsState;
 
-class FreeplayStateNOVA extends HScriptStateHandler
+class FreeplayStateNOVA extends MusicBeatState
 {
 	static public var instance:FreeplayStateNOVA;
 
@@ -80,20 +80,15 @@ class FreeplayStateNOVA extends HScriptStateHandler
 	public static var vocals:FlxSound = null;
 	public static var opponentVocals:FlxSound = null;
 
+	var missingTextBG:FlxSprite;
+	var missingText:FlxText;
+
 	override function create()
 	{
-		super.create();
-
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		var classString:String = '${className}' + '.hx';
-		if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
-		startHScriptsNamed(classString);
-		startHScriptsNamed('global.hx');
-		#end
+		super.create();
 
 		instance = this;
 
@@ -299,18 +294,25 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		backButton = new BackRect(0, bottomBG.y, 200, bottomBG.height, "BACK", 0x41E9FF, backMenu);
 		add(backButton);
 
+		missingTextBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		missingTextBG.alpha = 0.6;
+		missingTextBG.visible = false;
+		add(missingTextBG);
+
+		missingText = new FlxText(50, 0, FlxG.width - 100, '', 24);
+		missingText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		missingText.scrollFactor.set();
+		missingText.visible = false;
+		add(missingText);
+
 		changeSelection(0, false, true);
 		songsRectPosUpdate(true);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	public var ignoreCheck:Bool = false; //最高级控制更新
 	var isPressed:Bool = false; //修复出判定释放
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
-
 		super.update(elapsed);
 
 		if (ignoreCheck) return;
@@ -384,19 +386,16 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		else lerpPosition = FlxMath.lerp(position, lerpPosition, Math.exp(-elapsed * 15));
 
 		songsRectPosUpdate(false);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	override function closeSubState()
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubState'); #end
 		super.closeSubState();
 
 		new FlxTimer().start(0.1, function(tmr:FlxTimer){
 			ignoreCheck = false;
 		});
-		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
+		closeSubStatePost();
 	}
 
 	var pressCheck:Bool = false;
@@ -421,10 +420,10 @@ class FreeplayStateNOVA extends HScriptStateHandler
 
 		if (startCheck) return;
 		startCheck = true;
+		var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
 
 		try
 		{
-			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
 			var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
 			if (ClientPrefs.data.chartLoadSystem == '1.0x') Song.loadFromJson(poop, songLowercase);
 			else PlayState.SONG = Song.loadFromJson(poop, songLowercase);
@@ -433,6 +432,15 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		}
 		catch(e:Dynamic)
 		{
+			trace('ERROR! $e');
+
+			var errorStr:String = e.toString();
+			if(errorStr.startsWith('[lime.utils.Assets] ERROR:')) errorStr = 'Missing file: ' + errorStr.substring(errorStr.indexOf(songLowercase), errorStr.length-1); //Missing chart
+
+			missingText.text = 'ERROR WHILE LOADING CHART:\n$errorStr';
+			missingText.screenCenter(Y);
+			missingText.visible = true;
+			missingTextBG.visible = true;
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			startCheck = false;
 			return;
@@ -561,6 +569,8 @@ class FreeplayStateNOVA extends HScriptStateHandler
 			grpSongs[i].y = lerpPosition + i * 100 + grpSongs[i].lerpPosY;
 			grpSongs[i].x = 660 + Math.abs(grpSongs[i].y + grpSongs[i].background.height / 2 - FlxG.height / 2) / FlxG.height / 2 * 250 + grpSongs[i].lerpPosX;
 		}
+		missingText.visible = false;
+		missingTextBG.visible = false;
 	}
 
 	public function changeSelection(change:Int = 0, playSound:Bool = true, start:Bool = false)
@@ -614,6 +624,9 @@ class FreeplayStateNOVA extends HScriptStateHandler
 		}
 		updateVoice();
 		_updateSongLastDifficulty();
+
+		missingText.visible = false;
+		missingTextBG.visible = false;
 	}
 
 	inline private function _updateSongLastDifficulty()

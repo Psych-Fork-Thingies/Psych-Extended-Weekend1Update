@@ -10,7 +10,7 @@ import editors.MasterEditorMenu;
 import flixel.input.keyboard.FlxKey;
 
 
-class MainMenuStateOld extends HScriptStateHandler
+class MainMenuStateOld extends MusicBeatState
 {
 	public var curSelected:Int = 0;
 
@@ -42,6 +42,8 @@ class MainMenuStateOld extends HScriptStateHandler
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
+		super.create();
+
 		#if PsychExtended_ExtraMainMenus
 		if (ClientPrefs.data.MainMenuStyle == '0.6.3')
 		{
@@ -55,14 +57,6 @@ class MainMenuStateOld extends HScriptStateHandler
 				'options'
 			];
 		}
-		#end
-
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		var classString:String = '${className}' + '.hx';
-		if (classString.startsWith('extras.states.')) classString = classString.replace('extras.states.', '');
-		startHScriptsNamed(classString);
-		startHScriptsNamed('global.hx');
 		#end
 
 		#if MODS_ALLOWED
@@ -174,22 +168,18 @@ class MainMenuStateOld extends HScriptStateHandler
 		#if TOUCH_CONTROLS
 		#if PsychExtended_ExtraMainMenus
 		if (ClientPrefs.data.MainMenuStyle == '0.6.3')
-			addVirtualPad("UP_DOWN", "A_B_E");
+			addMobilePad("UP_DOWN", "A_B_E_G");
 		else
 		#end
-			addVirtualPad("UP_DOWN", "A_B_E_C_M");
+			addMobilePad("UP_DOWN", "A_B_E_C_M_G");
 		#end
-
-		super.create();
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	var selectedSomethin:Bool = false;
 
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+		super.update(elapsed);
 
 		if (FlxG.sound.music.volume < 0.8)
 		{
@@ -228,19 +218,24 @@ class MainMenuStateOld extends HScriptStateHandler
 				CustomSwitchState.switchMenus('Title');
 			}
 
-			#if TOUCH_CONTROLS
-			if (_virtualpad.buttonM.justPressed)
+			if (FlxG.keys.justPressed.M #if TOUCH_CONTROLS || _virtualpad.buttonM.justPressed #end)
 			{
 				selectedSomethin = true;
 				CustomSwitchState.switchMenus('ModsMenu');
 			}
 
-			if (_virtualpad.buttonC.justPressed)
+			if (FlxG.keys.justPressed.C #if TOUCH_CONTROLS || _virtualpad.buttonC.justPressed #end)
 			{
 				selectedSomethin = true;
 				CustomSwitchState.switchMenus('Credits');
 			}
-			#end
+
+			if (FlxG.keys.justPressed.TAB #if TOUCH_CONTROLS || _virtualpad.buttonG.justPressed #end) //use unused button
+			{
+				#if TOUCH_CONTROLS removeMobilePad(); #end
+				persistentUpdate = false;
+				openSubState(new funkin.menus.ModSwitchMenu());
+			}
 
 			if (controls.ACCEPT)
 			{
@@ -302,10 +297,6 @@ class MainMenuStateOld extends HScriptStateHandler
 			}
 		}
 
-		super.update(elapsed);
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
-
 		menuItems.forEach(function(spr:FlxSprite)
 		{
 			spr.screenCenter(X);
@@ -342,5 +333,16 @@ class MainMenuStateOld extends HScriptStateHandler
 	override function destroy() {
 		instance = null;
 		super.destroy();
+	}
+
+	override function closeSubState() {
+		super.closeSubState();
+		persistentUpdate = true;
+		#if TOUCH_CONTROLS
+		removeVirtualPad();
+		#if PsychExtended_ExtraMainMenus if (ClientPrefs.data.MainMenuStyle == '0.6.3') addMobilePad("UP_DOWN", "A_B_E_G");
+		else #end addMobilePad("UP_DOWN", "A_B_E_C_M_G");
+		#end
+		super.closeSubState();
 	}
 }

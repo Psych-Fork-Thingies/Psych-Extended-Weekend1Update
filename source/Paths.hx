@@ -15,12 +15,11 @@ import sys.FileSystem;
 import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
 import haxe.Json;
-
-import openfl.media.Sound;
-
-#if MODS_ALLOWED
+#if SCRIPTING_ALLOWED
+import scripting.HScript.Script;
 #end
 
+import openfl.media.Sound;
 
 typedef ModsList = {
 	enabled:Array<String>,
@@ -160,6 +159,25 @@ class Paths
 		return 'scripting/$file';
 	}
 
+	inline static public function script(key:String, ?library:String, isAssetsPath:Bool = false) {
+		#if SCRIPTING_ALLOWED
+		var scriptToLoad:String = null;
+		for(ex in Script.scriptExtensions) {
+			#if MODS_ALLOWED
+			scriptToLoad = Paths.menuFolders('scripts/${key}.$ex');
+			if(!FileSystem.exists(scriptToLoad))
+				scriptToLoad = Paths.getScriptPath('${key}.$ex');
+			#else
+			scriptToLoad = Paths.getScriptPath('${key}.$ex');
+			#end
+
+			if(FileSystem.exists(scriptToLoad))
+				break;
+		}
+		return scriptToLoad;
+		#end
+	}
+
 	inline static public function file(file:String, type:AssetType = TEXT, ?library:String)
 	{
 		return getPath(file, type, library);
@@ -243,80 +261,31 @@ class Paths
 		return file;
 	}
 
-	inline static public function voices(song:String, postfix:String = null):Sound
+	static public function voices(song:String, postfix:String = null):Sound
 	{
+		var diff = Difficulty.getString().toLowerCase();
 		var songKey:String = '${formatToSongPath(song)}/Voices';
 		if(postfix != null) songKey += '-' + postfix;
 		var voices = returnSound(null, songKey, 'songs');
 
+		var songKeyDiff:String = '${formatToSongPath(song)}/Voices-$diff';
+		if(postfix != null) songKeyDiff += '-' + postfix;
+		var voicesDiff = returnSound(null, songKeyDiff, 'songs');
+
+		if (voicesDiff != null) return voicesDiff;
 		return voices;
-	}
-
-	inline public static function mergeAllTextsNamed(path:String, defaultDirectory:String = null, allowDuplicates:Bool = false)
-	{
-		if(defaultDirectory == null) defaultDirectory = Paths.getSharedPath();
-		defaultDirectory = defaultDirectory.trim();
-		if(!defaultDirectory.endsWith('/')) defaultDirectory += '/';
-		if(!defaultDirectory.startsWith('assets/')) defaultDirectory = 'assets/$defaultDirectory';
-
-		var mergedList:Array<String> = [];
-		var paths:Array<String> = directoriesWithFile(defaultDirectory, path);
-
-		var defaultPath:String = defaultDirectory + path;
-		if(paths.contains(defaultPath))
-		{
-			paths.remove(defaultPath);
-			paths.insert(0, defaultPath);
-		}
-
-		for (file in paths)
-		{
-			var list:Array<String> = CoolUtil.coolTextFile(file);
-			for (value in list)
-				if((allowDuplicates || !mergedList.contains(value)) && value.length > 0)
-					mergedList.push(value);
-		}
-		return mergedList;
-	}
-
-	inline public static function directoriesWithFile(path:String, fileToFind:String, mods:Bool = true)
-	{
-		var foldersToCheck:Array<String> = [];
-		#if sys
-		if(FileSystem.exists(path + fileToFind))
-		#end
-			foldersToCheck.push(path + fileToFind);
-
-		#if MODS_ALLOWED
-		if(mods)
-		{
-			// Global mods first
-			for(mod in Mods.getGlobalMods())
-			{
-				var folder:String = Paths.mods(mod + '/' + fileToFind);
-				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
-			}
-
-			// Then "PsychEngine/mods/" main folder
-			var folder:String = Paths.mods(fileToFind);
-			if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(Paths.mods(fileToFind));
-
-			// And lastly, the loaded mod's folder
-			if(Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0)
-			{
-				var folder:String = Paths.mods(Paths.currentModDirectory + '/' + fileToFind);
-				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
-			}
-		}
-		#end
-		return foldersToCheck;
 	}
 
 	inline static public function inst(song:String):Sound
 	{
+		var diff = Difficulty.getString().toLowerCase();
 		var songKey:String = '${formatToSongPath(song)}/Inst';
 		var inst = returnSound(null, songKey, 'songs');
 
+		var songKeyDiff:String = '${formatToSongPath(song)}/Inst-$diff';
+		var instDiff = returnSound(null, songKeyDiff, 'songs');
+
+		if (instDiff != null) return instDiff;
 		return inst;
 	}
 
@@ -749,6 +718,17 @@ class Paths
 
 	inline static public function modsImagesJson(key:String)
 		return modFolders('images/' + key + '.json');
+
+	static public function menuFolders(key:String) {
+		for(mod in Mods.getSelectedMenuMod()){
+			var dat:Array<String> = mod.split("|");
+			var fileToCheck:String = mods(dat[0] + '/' + key);
+			if(FileSystem.exists(fileToCheck) && dat[1] == "1") {
+				return fileToCheck;
+			}
+		}
+		return if (ClientPrefs.data.Modpack) Sys.getCwd() + 'modpack/' + key; else Sys.getCwd() + 'mods/' + key;
+	}
 
 	static public function modFolders(key:String) {
 		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0) {

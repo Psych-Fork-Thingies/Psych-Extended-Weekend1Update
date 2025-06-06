@@ -10,7 +10,7 @@ import flixel.graphics.FlxGraphic;
 import WeekData;
 
 
-class StoryMenuState extends HScriptStateHandler
+class StoryMenuState extends MusicBeatState
 {
 	public static var weekCompleted:Map<String, Bool> = new Map<String, Bool>();
 
@@ -44,12 +44,6 @@ class StoryMenuState extends HScriptStateHandler
 		Paths.clearUnusedMemory();
 
 		super.create();
-
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		startHScriptsNamed('${className}' + '.hx');
-		startHScriptsNamed('global.hx');
-		#end
 
 		PlayState.isStoryMode = true;
 		WeekData.reloadWeekFiles(true);
@@ -194,25 +188,22 @@ class StoryMenuState extends HScriptStateHandler
 		changeDifficulty();
 
 		#if TOUCH_CONTROLS addVirtualPad("NONE", "B_X_Y"); #end
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	override function closeSubState() {
-		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubState'); #end
+		super.closeSubState();
 		persistentUpdate = true;
 		changeWeek();
 		#if TOUCH_CONTROLS
 		removeVirtualPad();
 		addVirtualPad("NONE", "B_X_Y");
 		#end
-		super.closeSubState();
-		#if SCRIPTING_ALLOWED callOnScripts('onCloseSubStatePost'); #end
+		closeSubStatePost();
 	}
 
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
+		super.update(elapsed);
 
 		if(WeekData.weeksList.length < 1)
 			return;
@@ -292,15 +283,11 @@ class StoryMenuState extends HScriptStateHandler
 			CustomSwitchState.switchMenus('MainMenu');
 		}
 
-		super.update(elapsed);
-
 		grpLocks.forEach(function(lock:FlxSprite)
 		{
 			lock.y = grpWeekText.members[lock.ID].y;
 			lock.visible = (lock.y > FlxG.height / 2);
 		});
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	var movedBack:Bool = false;

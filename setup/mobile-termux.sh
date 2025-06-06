@@ -14,6 +14,7 @@ haxelib install flixel-addons 3.2.2 --global
 haxelib install flixel-ui 2.4.0 --global
 haxelib git SScript https://github.com/PsychExtendedThings/SScript --global
 haxelib git hscript-iris https://github.com/PsychExtendedThings/hscript-iris --global
+haxelib git hscript-improved https://github.com/PsychExtendedThings/HScript-Improved --global
 haxelib install hscript 2.4.0 --global
 haxelib git hxCodec https://github.com/PsychExtendedThings/hxCodec-0.6.3 --global
 haxelib git hxcpp https://github.com/PsychExtendedThings/hxcpp --global

@@ -4,7 +4,7 @@ import flixel.util.FlxStringUtil;
 import options.OptionsState;
 import editors.ChartingState;
 
-class PauseSubState extends HScriptSubStateHandler
+class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
@@ -31,13 +31,6 @@ class PauseSubState extends HScriptSubStateHandler
 		instance = this;
 
 		super.create();
-
-		#if SCRIPTING_ALLOWED
-		var className = Type.getClassName(Type.getClass(this));
-		startHScriptsNamed('${className}' + '.hx');
-		startHScriptsNamed('global.hx');
-		setErrorHandler();
-		#end
 
 		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
 
@@ -159,8 +152,6 @@ class PauseSubState extends HScriptSubStateHandler
 			addVirtualPad("FULL", "A");
 		addVirtualPadCamera();
 		#end
-
-		#if SCRIPTING_ALLOWED callOnScripts('onCreatePost'); #end
 	}
 
 	function getPauseSong()
@@ -176,8 +167,6 @@ class PauseSubState extends HScriptSubStateHandler
 	var cantUnpause:Float = 0.1;
 	override function update(elapsed:Float)
 	{
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdate', [elapsed]); #end
-
 		cantUnpause -= elapsed;
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
@@ -367,8 +356,6 @@ class PauseSubState extends HScriptSubStateHandler
 					FlxG.camera.followLerp = 0;
 			}
 		}
-
-		#if SCRIPTING_ALLOWED callOnScripts('onUpdatePost', [elapsed]); #end
 	}
 
 	function deleteSkipTimeText()
@@ -417,7 +404,8 @@ class PauseSubState extends HScriptSubStateHandler
 	function changeSelection(change:Int = 0):Void
 	{
 		curSelected = FlxMath.wrap(curSelected + change, 0, menuItems.length - 1);
-		callOnScripts('onSelectItem', [curSelected]);
+		call('onSelectItem', [curSelected]);
+		call('changeSelection', [curSelected]); //same thing with onSelectItem
 		for (num => item in grpMenuShit.members)
 		{
 			item.targetY = num - curSelected;
