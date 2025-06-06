@@ -54,8 +54,6 @@ class FreeplayState extends MusicBeatState
 
 		super.create();
 
-		super.create();
-
 		persistentUpdate = true;
 		PlayState.isStoryMode = false;
 		WeekData.reloadWeekFiles(false);
@@ -206,7 +204,7 @@ class FreeplayState extends MusicBeatState
 		removeVirtualPad();
 		addVirtualPad("FULL", "A_B_C_X_Y_Z");
 		#end
-		super.closeSubState();
+		closeSubStatePost();
 	}
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String, color:Int)

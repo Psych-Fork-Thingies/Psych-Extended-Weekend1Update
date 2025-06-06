@@ -343,6 +343,6 @@ class MainMenuStateOld extends MusicBeatState
 		#if PsychExtended_ExtraMainMenus if (ClientPrefs.data.MainMenuStyle == '0.6.3') addMobilePad("UP_DOWN", "A_B_E_G");
 		else #end addMobilePad("UP_DOWN", "A_B_E_C_M_G");
 		#end
-		super.closeSubState();
+		closeSubStatePost();
 	}
 }

@@ -590,6 +590,6 @@ class MainMenuStateNOVA extends MusicBeatState
 		removeVirtualPad();
 		addMobilePad("UP_DOWN", "A_B_E_G");
 		#end
-		super.closeSubState();
+		closeSubStatePost();
 	}
 }

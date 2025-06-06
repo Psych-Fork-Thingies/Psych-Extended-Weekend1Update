@@ -846,12 +846,12 @@ class ModsMenuState extends MusicBeatState
 				var dat:Array<String> = menu.split("|");
 				if (dat[0] == mod && dat[1] == "1") value = "1";
 				else value = "0";
-				trace(dat + ' && ' + value);
+				//trace(dat + ' && ' + value);
 			}
 
 			var on = '1';
 			if(modsList.disabled.contains(mod)) on = '0';
-			trace("in modsList: " + mod + " || " + value);
+			//trace("in modsList: " + mod + " || " + value);
 			fileStr += '$mod|$on|$value';
 		}
 

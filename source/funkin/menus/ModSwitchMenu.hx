@@ -37,7 +37,9 @@ class ModSwitchMenu extends MusicBeatSubstate {
 		add(alphabets);
 		changeSelection(0, true);
 
+		#if TOUCH_CONTROLS
 		addMobilePad("UP_DOWN", "A_B");
+		#end
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
 		fadeCamera.bgColor.alpha = 0;
