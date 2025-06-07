@@ -1,15 +1,16 @@
 package;
 
+import shaders.RGBPalette;
 
 class NoteSplash extends FlxSprite
 {
+	public var rgbShader:RGBPalette = null;
 	public var colorSwap:ColorSwap = null;
-	private var idleAnim:String;
 	private var textureLoaded:String = null;
 
 	public function new(x:Float = 0, y:Float = 0, ?note:Int = 0) {
 		super(x, y);
-		
+
 		animation = new PsychAnimationController(this);
 
 		var skin:String = 'noteSplashes';
@@ -17,15 +18,17 @@ class NoteSplash extends FlxSprite
 		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
 
 		loadAnims(skin);
-		
-		colorSwap = new ColorSwap();
-		shader = colorSwap.shader;
+
+		if (!ClientPrefs.data.useRGB) {
+			colorSwap = new ColorSwap();
+			shader = colorSwap.shader;
+		}
 
 		setupNoteSplash(x, y, note);
 		antialiasing = ClientPrefs.data.antialiasing;
 	}
 
-	public function setupNoteSplash(x:Float, y:Float, note:Int = 0, texture:String = null, hueColor:Float = 0, satColor:Float = 0, brtColor:Float = 0) {
+	public function setupNoteSplash(x:Float, y:Float, note:Int = 0, ?texture:String, ?hueColor:Float = 0, ?satColor:Float = 0, ?brtColor:Float = 0, ?rgbNote:Note = null) {
 		setPosition(x - Note.swagWidth * 0.95, y - Note.swagWidth);
 		alpha = 0.6;
 
@@ -38,9 +41,19 @@ class NoteSplash extends FlxSprite
 		if(textureLoaded != texture) {
 			loadAnims(texture);
 		}
-		colorSwap.hue = hueColor;
-		colorSwap.saturation = satColor;
-		colorSwap.brightness = brtColor;
+		if (ClientPrefs.data.useRGB) {
+			shader = null;
+			if(rgbNote != null && !rgbNote.noteSplashGlobalShader)
+				rgbShader = rgbNote.rgbShader.parent;
+			else
+				rgbShader = Note.globalRgbShaders[note];
+			
+			if(rgbShader != null) shader = rgbShader.shader;
+		} else {
+			colorSwap.hue = hueColor;
+			colorSwap.saturation = satColor;
+			colorSwap.brightness = brtColor;
+		}
 		offset.set(10, 10);
 
 		var animNum:Int = FlxG.random.int(1, 2);
@@ -56,11 +69,11 @@ class NoteSplash extends FlxSprite
 			animation.addByPrefix("note0-" + i, "note splash purple " + i, 24, false);
 			animation.addByPrefix("note3-" + i, "note splash red " + i, 24, false);
 		}
+		textureLoaded = skin;
 	}
 
 	override function update(elapsed:Float) {
-		if(animation.curAnim != null)if(animation.curAnim.finished) kill();
-
+		if(animation.curAnim != null && animation.curAnim.finished) kill();
 		super.update(elapsed);
 	}
 }
