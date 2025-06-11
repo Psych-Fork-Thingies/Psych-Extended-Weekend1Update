@@ -93,7 +93,7 @@ class PhillyBlazin extends BaseStage
 		{
 			switch (songName)
 			{
-				case 'blazin':
+				case "blazin'":
 					setEndCallback(function()
 					{
 						game.endingSong = true;
