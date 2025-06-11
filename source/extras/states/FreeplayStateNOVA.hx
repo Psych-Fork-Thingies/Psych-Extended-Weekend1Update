@@ -146,7 +146,6 @@ class FreeplayStateNOVA extends MusicBeatState
 			return Reflect.compare(a.songName.toLowerCase(), b.songName.toLowerCase());
 		});
 
-		Mods.loadTopMod();
 
 		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
 		magenta.scale.x = FlxG.width * 1.05 / magenta.width;
@@ -400,7 +399,6 @@ class FreeplayStateNOVA extends MusicBeatState
 
 	var pressCheck:Bool = false;
 	function backMenu() {
-		Mods.loadTopMod();
 		if (!pressCheck){
 			pressCheck = true;
 			FlxG.sound.music.stop();
