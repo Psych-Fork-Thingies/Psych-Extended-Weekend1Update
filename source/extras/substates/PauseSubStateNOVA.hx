@@ -573,7 +573,6 @@ class PauseSubStateNOVA extends MusicBeatSubstate
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;
 
-					Mods.loadTopMod();
 					if(PlayState.isStoryMode)
 						CustomSwitchState.switchMenus('StoryMenu');
 					else
