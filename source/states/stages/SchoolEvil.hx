@@ -17,6 +17,7 @@ class SchoolEvil extends BaseStage
 		GameOverSubstate.loopSoundName = 'gameOver-pixel';
 		GameOverSubstate.endSoundName = 'gameOverEnd-pixel';
 		GameOverSubstate.characterName = 'bf-pixel-dead';
+		PauseSubstate.songName = 'breakfast-pixel';
 		
 		var posX = 400;
 		var posY = 200;
