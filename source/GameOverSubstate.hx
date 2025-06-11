@@ -167,7 +167,6 @@ class GameOverSubstate extends MusicBeatSubstate
 				PlayState.seenCutscene = false;
 				PlayState.chartingMode = false;
 	
-				Mods.loadTopMod();
 				if (PlayState.isStoryMode)
 					CustomSwitchState.switchMenus('StoryMenu');
 				else
