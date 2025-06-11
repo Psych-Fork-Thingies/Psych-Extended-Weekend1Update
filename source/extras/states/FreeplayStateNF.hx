@@ -1264,7 +1264,6 @@ class FreeplayStateNF extends MusicBeatState {
 			} else if ((selectedThing == 'back' && FlxG.pixelPerfectOverlap(backButton, mousechecker, 25)) || controls.BACK) {
 				if (searching) {closeSearchMenu(); backText.text = 'EXIT'; return;}
 				if (listening) {closeListenMenu(); backText.text = 'EXIT'; return;}
-				Mods.loadTopMod();
 				#if HIDE_CURSOR FlxG.mouse.visible = false; #end
 				if(colorTween != null) {
 					colorTween.cancel();
@@ -1537,7 +1536,6 @@ class FreeplayStateNF extends MusicBeatState {
 				addSong(song[0], i, song[1], FlxColor.fromRGB(colors[0], colors[1], colors[2]));
 			}
 		}
-		Mods.loadTopMod();
 	}
 
 	function addSongTxt()
