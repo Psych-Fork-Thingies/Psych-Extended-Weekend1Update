@@ -17,6 +17,7 @@ class School extends BaseStage
 		GameOverSubstate.loopSoundName = 'gameOver-pixel';
 		GameOverSubstate.endSoundName = 'gameOverEnd-pixel';
 		GameOverSubstate.characterName = 'bf-pixel-dead';
+		PauseSubstate.songName = 'breakfast-pixel';
 
 		var bgSky:BGSprite = new BGSprite('weeb/weebSky', 0, 0, 0.1, 0.1);
 		add(bgSky);
