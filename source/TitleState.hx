@@ -116,7 +116,6 @@ class TitleState extends MusicBeatState
 		#if LUA_ALLOWED
 		Mods.pushGlobalMods();
 		#end
-		Mods.loadTopMod();
 
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
