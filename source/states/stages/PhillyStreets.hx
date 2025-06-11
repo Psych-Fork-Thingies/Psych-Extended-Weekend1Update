@@ -511,6 +511,12 @@ class PhillyStreets extends BaseStage
 			case 'the-phonics-song':
 				rainShaderStartIntensity = 0;
 				rainShaderEndIntensity = 0.1;
+			case 'score':
+				rainShaderStartIntensity = 0;
+				rainShaderEndIntensity = 0.1;
+			case 'skooled':
+				rainShaderStartIntensity = 0;
+				rainShaderEndIntensity = 0.1;
 			case 'lit-up':
 				rainShaderStartIntensity = 0.1;
 				rainShaderEndIntensity = 0.2;
