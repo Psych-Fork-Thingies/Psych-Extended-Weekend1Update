@@ -18,7 +18,7 @@ haxelib git hscript-improved https://github.com/PsychExtendedThings/HScript-Impr
 haxelib install hscript 2.4.0 --quiet
 haxelib git hxCodec https://github.com/PsychExtendedThings/hxCodec-0.6.3 --quiet
 haxelib git hxcpp https://github.com/PsychExtendedThings/hxcpp --quiet
-haxelib git lime https://github.com/PsychExtendedThings/lime-new --quiet
+haxelib git lime https://github.com/PsychExtendedThings/lime --quiet
 haxelib install openfl 9.3.3 --quiet
 haxelib git flxanimate https://github.com/ShadowMario/flxanimate.git dev --quiet
 haxelib git funkin.vis https://github.com/beihu235/funkVis-FrequencyFixed main --quiet
